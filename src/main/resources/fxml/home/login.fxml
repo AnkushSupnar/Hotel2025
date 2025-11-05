@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="login-root" stylesheets="@../css/Login.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.frontend.controller.LoginController">
+
+    <!-- Background Container -->
+    <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <!-- Main Content -->
+        <HBox alignment="CENTER" spacing="0">
+
+            <!-- Left Panel - Brand Section -->
+            <VBox alignment="CENTER" prefWidth="500.0" styleClass="brand-panel">
+                <VBox alignment="CENTER" spacing="30">
+
+                    <!-- Logo Icon -->
+                    <StackPane styleClass="logo-container">
+                        <Circle radius="60" style="-fx-fill: rgba(255,255,255,0.2); -fx-stroke: transparent;"/>
+                        <Label text="🏨" style="-fx-font-size: 72px;"/>
+                    </StackPane>
+
+                    <!-- Brand Name -->
+                    <VBox alignment="CENTER" spacing="10">
+                        <Label styleClass="brand-title" text="Hotel Management System"
+                               style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                        <Label styleClass="brand-subtitle" text="Streamline your hospitality operations"
+                               style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                    </VBox>
+
+                    <!-- Features List -->
+                    <VBox spacing="20" styleClass="features-list">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label text="✓" styleClass="feature-icon"
+                                   style="-fx-text-fill: #81C784; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                            <Label styleClass="feature-text" text="Efficient order management"
+                                   style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label text="✓" styleClass="feature-icon"
+                                   style="-fx-text-fill: #81C784; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                            <Label styleClass="feature-text" text="Real-time inventory tracking"
+                                   style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label text="✓" styleClass="feature-icon"
+                                   style="-fx-text-fill: #81C784; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                            <Label styleClass="feature-text" text="Comprehensive billing system"
+                                   style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+
+            <!-- Right Panel - Login Form -->
+            <VBox alignment="CENTER" prefWidth="700.0" styleClass="form-panel">
+
+                <!-- Login Card -->
+                <VBox styleClass="login-card" maxWidth="450" spacing="0">
+
+                    <!-- Header Section -->
+                    <VBox spacing="8" styleClass="card-header">
+                        <Label styleClass="welcome-title" text="Welcome Back"
+                               style="-fx-text-fill: #1a237e; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+                        <Label styleClass="welcome-subtitle" text="Please login to your account"
+                               style="-fx-text-fill: #757575; -fx-font-size: 15px;"/>
+                    </VBox>
+
+                    <!-- Form Section -->
+                    <VBox spacing="24" styleClass="card-body">
+
+                        <!-- Username Field -->
+                        <VBox spacing="8">
+                            <Label styleClass="input-label" text="USERNAME"
+                                   style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                            <HBox styleClass="input-container" alignment="CENTER_LEFT" spacing="12">
+                                <Label text="👤" styleClass="input-icon"
+                                       style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;"/>
+                                <TextField fx:id="txtUserName" promptText="Enter your username"
+                                         styleClass="material-input" HBox.hgrow="ALWAYS"
+                                         style="-fx-text-fill: #212121;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Password Field -->
+                        <VBox spacing="8">
+                            <Label styleClass="input-label" text="PASSWORD"
+                                   style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                            <HBox styleClass="input-container" alignment="CENTER_LEFT" spacing="12">
+                                <Label text="🔒" styleClass="input-icon"
+                                       style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;"/>
+                                <PasswordField fx:id="txtPassword" promptText="Enter your password"
+                                             styleClass="material-input" HBox.hgrow="ALWAYS"
+                                             style="-fx-text-fill: #212121;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Hidden Server URL Field -->
+                        <TextField fx:id="txtServerUrl" managed="false" visible="false"/>
+
+                        <!-- Action Buttons -->
+                        <VBox spacing="16">
+                            <!-- Login Button -->
+                            <Button fx:id="btnLogin" styleClass="btn-primary" maxWidth="Infinity" text="SIGN IN"/>
+
+                            <!-- Cancel Button -->
+                            <Button fx:id="btnCancel" styleClass="btn-secondary" maxWidth="Infinity" text="CANCEL"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Footer Section -->
+                    <VBox styleClass="card-footer" alignment="CENTER">
+                        <!-- Support text - shown when users exist -->
+                        <Label fx:id="lblSupport" styleClass="footer-text" text="Need help? Contact support"/>
+
+                        <!-- Registration link - shown when no users exist (first-time setup) -->
+                        <Hyperlink fx:id="linkRegister" styleClass="register-link"
+                                   text="Register your restaurant"
+                                   visible="false" managed="false"/>
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </HBox>
+    </StackPane>
+</AnchorPane>

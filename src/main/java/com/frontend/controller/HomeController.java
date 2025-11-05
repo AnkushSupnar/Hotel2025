@@ -1,0 +1,138 @@
+package com.frontend.controller;
+
+import com.frontend.common.CommonData;
+import com.frontend.config.SpringFXMLLoader;
+import com.frontend.service.SessionService;
+import com.frontend.view.StageManager;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+@Component
+public class HomeController implements Initializable {
+    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
+    @Autowired @Lazy
+    StageManager stageManager;
+    @Autowired
+    SpringFXMLLoader loader;
+    @Autowired
+    SessionService sessionService;
+    @FXML private Label lblShopeeName;
+    @FXML private BorderPane mainPane;
+    @FXML private HBox menuDashboard;
+    @FXML private HBox menuTransaction;
+    @FXML private HBox menuBilling;
+    @FXML private HBox menuMaster;
+    @FXML private HBox menuReport;
+    @FXML private Text txtUserName;
+    @FXML private HBox menuExit;
+    @FXML private Label lblTodayRevenue;
+    @FXML private Label lblTodayOrders;
+    @FXML private Label lblActiveTables;
+
+    private Pane pane;
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        try {
+            // Set hotel name
+            lblShopeeName.setText("Gurukrupa Hotel Management");
+            
+            // Display logged-in user information
+            if (sessionService.isLoggedIn()) {
+                String username = sessionService.getCurrentUsername();
+                String role = sessionService.getCurrentUserRole();
+                txtUserName.setText(username + " (" + role + ")");
+            } else {
+                txtUserName.setText("Guest User");
+            }
+            
+            initializeDashboardData();
+        } catch (Exception e) {
+            LOG.error("Error initializing user data: ", e);
+        }
+        menuDashboard.setOnMouseClicked(e->{
+            try {
+                pane = loader.getPage("/fxml/dashboard/Home.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading dashboard: ", ex);
+            }
+        });
+        menuBilling.setOnMouseClicked(e -> {
+            try {
+                pane = loader.getPage("/fxml/transaction/BillingFrame.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading billing: ", ex);
+            }
+        });
+        
+        menuTransaction.setOnMouseClicked(e -> {
+            try {
+                pane = loader.getPage("/fxml/transaction/TransactionMenu.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading transaction: ", ex);
+            }
+        });
+//        menuCreate.setOnMouseClicked(e->{
+//            pane =loader.getPage("/fxml/create/CreateMenu.fxml");
+//            mainPane.setCenter(pane);
+//        });
+
+        menuReport.setOnMouseClicked(e->{
+            try {
+                pane = loader.getPage("/fxml/report/ReportMenu.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading reports: ", ex);
+            }
+        });
+        menuExit.setOnMouseClicked(e -> logout());
+        menuMaster.setOnMouseClicked(e->{
+            try {
+                pane = loader.getPage("/fxml/master/MasterMenu.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading master: ", ex);
+            }
+        });
+    }
+    
+    private void initializeDashboardData() {
+        try {
+            lblTodayRevenue.setText("₹0.00");
+            lblTodayOrders.setText("0");
+            lblActiveTables.setText("0");
+        } catch (Exception e) {
+            LOG.error("Error initializing dashboard data: ", e);
+        }
+    }
+    
+    private void logout() {
+        try {
+            // Clear user session
+            sessionService.clearSession();
+            
+            // Navigate back to login
+            stageManager.switchScene(com.frontend.view.FxmlView.LOGIN);
+            
+            LOG.info("User logged out successfully");
+        } catch (Exception e) {
+            LOG.error("Error during logout: ", e);
+        }
+    }
+}

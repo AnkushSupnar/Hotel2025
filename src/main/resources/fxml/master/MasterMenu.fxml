@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.MasterMenuController">
+   <stylesheets>
+      <URL value="@../css/master.css" />
+   </stylesheets>
+   <children>
+      <!-- Header -->
+      <HBox alignment="CENTER_LEFT" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+         <children>
+            <Circle fill="#3498db" radius="8.0" />
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="Master Data Management">
+               <HBox.margin>
+                  <Insets left="15.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      
+      <!-- Menu Grid -->
+      <GridPane hgap="20.0" vgap="20.0" style="-fx-padding: 30;">
+         <children>
+            <!-- Category Management -->
+            <StackPane fx:id="categoryCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#e74c3c" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Category Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage food categories" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            
+            <!-- Item Management -->
+            <StackPane fx:id="itemCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#f39c12" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Item Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage menu items" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            
+            <!-- Customer Management -->
+            <StackPane fx:id="customerCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#2ecc71" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Customer Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage customers" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            
+            <!-- Employee Management -->
+            <StackPane fx:id="employeeCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#9b59b6" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Employee Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage employees" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            
+            <!-- Supplier Management -->
+            <StackPane fx:id="supplierCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#34495e" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Supplier Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage suppliers" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            
+            <!-- User Management -->
+            <StackPane fx:id="userCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Circle fill="#1abc9c" radius="25.0" />
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="User Master" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage system users" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </GridPane>
+   </children>
+</VBox>
