@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="mainPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.HomeController">
+<BorderPane fx:id="mainPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.HomeController">
    <stylesheets>
       <URL value="@../css/home-material.css" />
    </stylesheets>
@@ -23,11 +23,11 @@
          <children>
             <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <!-- App Logo Section -->
-                  <VBox alignment="CENTER" styleClass="sidebar-header">
+                  <!-- App Logo Section - Clickable -->
+                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="106.0" prefWidth="280.0" styleClass="sidebar-header, clickable-header">
                      <children>
                         <FontAwesomeIcon fill="#FFFFFF" glyphName="HOTEL" size="3em" styleClass="app-logo" />
-                        <Label styleClass="app-title-sidebar" text="Gurukrupa" />
+                        <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
                         <Label styleClass="app-subtitle-sidebar" text="Hotel Management" />
                      </children>
                   </VBox>
@@ -101,10 +101,10 @@
                   </VBox>
                   
                   <!-- Bottom Menu Items -->
-                  <VBox alignment="BOTTOM_CENTER" spacing="8.0" styleClass="bottom-menu" VBox.vgrow="ALWAYS">
+                  <VBox alignment="BOTTOM_CENTER" prefHeight="180.0" prefWidth="280.0" spacing="8.0" styleClass="bottom-menu" VBox.vgrow="ALWAYS">
                      <children>
                         <!-- Settings Menu -->
-                        <HBox alignment="CENTER_LEFT" styleClass="menu-item">
+                        <HBox fx:id="menuSettings" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="COG" size="1.5em" styleClass="menu-icon" />
                               <Text styleClass="menu-text" text="SETTINGS">
@@ -159,7 +159,7 @@
             <!-- User Info -->
             <HBox alignment="CENTER_RIGHT" spacing="12.0" styleClass="user-info-container">
                <children>
-                  <FontAwesomeIcon fill="#1976D2" glyphName="USER_CIRCLE" size="1.8em" />
+                  <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="1.8em" />
                   <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
                </children>
             </HBox>

@@ -1,6 +1,5 @@
 package com.frontend.controller;
 
-import com.frontend.common.CommonData;
 import com.frontend.config.SpringFXMLLoader;
 import com.frontend.service.SessionService;
 import com.frontend.view.StageManager;
@@ -10,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +28,15 @@ public class HomeController implements Initializable {
     @Autowired
     SessionService sessionService;
     @FXML private Label lblShopeeName;
+    @FXML private Label lblSidebarShopName;
+    @FXML private javafx.scene.layout.VBox sidebarHeader;
     @FXML private BorderPane mainPane;
     @FXML private HBox menuDashboard;
     @FXML private HBox menuTransaction;
     @FXML private HBox menuBilling;
     @FXML private HBox menuMaster;
     @FXML private HBox menuReport;
+    @FXML private HBox menuSettings;
     @FXML private Text txtUserName;
     @FXML private HBox menuExit;
     @FXML private Label lblTodayRevenue;
@@ -43,22 +44,40 @@ public class HomeController implements Initializable {
     @FXML private Label lblActiveTables;
 
     private Pane pane;
+    private javafx.scene.Node initialDashboard;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         try {
-            // Set hotel name
-            lblShopeeName.setText("Gurukrupa Hotel Management");
-            
+            // Set restaurant name from session
+            String restaurantName = "Hotel Management System";
+            if (SessionService.isLoggedIn() && SessionService.getCurrentShop() != null) {
+                restaurantName = SessionService.getCurrentRestaurantName();
+                lblShopeeName.setText(restaurantName);
+                lblSidebarShopName.setText(restaurantName);
+            } else {
+                lblShopeeName.setText(restaurantName);
+                lblSidebarShopName.setText("Restaurant Name");
+            }
+
             // Display logged-in user information
-            if (sessionService.isLoggedIn()) {
-                String username = sessionService.getCurrentUsername();
-                String role = sessionService.getCurrentUserRole();
+            if (SessionService.isLoggedIn()) {
+                String username = SessionService.getCurrentUsername();
+                String role = SessionService.getCurrentUserRole();
                 txtUserName.setText(username + " (" + role + ")");
             } else {
                 txtUserName.setText("Guest User");
             }
-            
+
+            // Store initial dashboard content
+            initialDashboard = mainPane.getCenter();
+
+            // Store in mainPane properties for access from other controllers
+            mainPane.getProperties().put("initialDashboard", initialDashboard);
+
+            // Make sidebar header clickable to return to dashboard
+            sidebarHeader.setOnMouseClicked(e -> showInitialDashboard());
+
             initializeDashboardData();
         } catch (Exception e) {
             LOG.error("Error initializing user data: ", e);
@@ -110,8 +129,35 @@ public class HomeController implements Initializable {
                 LOG.error("Error loading master: ", ex);
             }
         });
+
+        menuSettings.setOnMouseClicked(e->{
+            try {
+                pane = loader.getPage("/fxml/setting/SettingMenu.fxml");
+                mainPane.setCenter(pane);
+                LOG.info("Loaded Settings Menu");
+            } catch (Exception ex) {
+                LOG.error("Error loading settings: ", ex);
+            }
+        });
     }
     
+    /**
+     * Show initial dashboard with statistics
+     */
+    private void showInitialDashboard() {
+        try {
+            LOG.info("Showing initial dashboard");
+            // Restore the initial dashboard content
+            if (initialDashboard != null) {
+                mainPane.setCenter(initialDashboard);
+                // Refresh dashboard data
+                initializeDashboardData();
+            }
+        } catch (Exception e) {
+            LOG.error("Error showing initial dashboard: ", e);
+        }
+    }
+
     private void initializeDashboardData() {
         try {
             lblTodayRevenue.setText("₹0.00");
@@ -121,15 +167,15 @@ public class HomeController implements Initializable {
             LOG.error("Error initializing dashboard data: ", e);
         }
     }
-    
+
     private void logout() {
         try {
             // Clear user session
             sessionService.clearSession();
-            
+
             // Navigate back to login
             stageManager.switchScene(com.frontend.view.FxmlView.LOGIN);
-            
+
             LOG.info("User logged out successfully");
         } catch (Exception e) {
             LOG.error("Error during logout: ", e);

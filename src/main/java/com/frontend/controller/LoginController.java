@@ -1,19 +1,21 @@
 package com.frontend.controller;
 
 import com.frontend.customUI.AutoCompleteTextField;
-import com.frontend.dto.LoginResponse;
+import com.frontend.entity.Shop;
+import com.frontend.entity.User;
 import com.frontend.repository.UserRepository;
 import com.frontend.service.AuthApiService;
 import com.frontend.service.SessionService;
+import com.frontend.service.ShopService;
 import com.frontend.view.AlertNotification;
 import com.frontend.view.FxmlView;
 import com.frontend.view.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,9 @@ public class LoginController {
 
     @FXML
     private Button btnLogin;
+
+    @FXML
+    private ComboBox<Shop> cmbShop;
 
     @FXML
     private PasswordField txtPassword;
@@ -57,7 +62,8 @@ public class LoginController {
     @Autowired
     UserRepository userRepository;
 
-    private AutoCompleteTextField autoCompleteUsername;
+    @Autowired
+    ShopService shopService;
 
     @FXML
     private void initialize() {
@@ -68,6 +74,9 @@ public class LoginController {
            txtServerUrl.setManaged(false);
        }
 
+       // Initialize shop dropdown
+       initializeShopDropdown();
+
        // Initialize autocomplete for username field and check for first-time setup
        initializeUsernameAutocomplete();
 
@@ -75,6 +84,58 @@ public class LoginController {
        if(linkRegister != null) {
            linkRegister.setOnAction(event -> openRegistrationScreen());
        }
+    }
+
+    /**
+     * Initialize shop dropdown with available restaurants
+     */
+    private void initializeShopDropdown() {
+        try {
+            List<Shop> shops = shopService.getAllShops();
+
+            if(shops != null && !shops.isEmpty()) {
+                cmbShop.getItems().addAll(shops);
+
+                // Set custom cell factory to display restaurant name
+                cmbShop.setCellFactory(param -> new javafx.scene.control.ListCell<Shop>() {
+                    @Override
+                    protected void updateItem(Shop item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item.getRestaurantName());
+                        }
+                    }
+                });
+
+                // Set button cell to display selected restaurant name
+                cmbShop.setButtonCell(new javafx.scene.control.ListCell<Shop>() {
+                    @Override
+                    protected void updateItem(Shop item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText("Select your restaurant");
+                        } else {
+                            setText(item.getRestaurantName());
+                        }
+                    }
+                });
+
+                // Auto-select if only one shop exists
+                if(shops.size() == 1) {
+                    cmbShop.getSelectionModel().selectFirst();
+                    System.out.println("Auto-selected single restaurant: " + shops.get(0).getRestaurantName());
+                }
+
+                System.out.println("Loaded " + shops.size() + " restaurant(s) into dropdown");
+            } else {
+                System.out.println("No restaurants found in database");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading shops: " + e.getMessage());
+            // Continue without shops if there's an error
+        }
     }
 
     private void initializeUsernameAutocomplete() {
@@ -107,8 +168,7 @@ public class LoginController {
                     linkRegister.setManaged(false);
                 }
 
-                // Initialize autocomplete with the username text field
-                autoCompleteUsername = new AutoCompleteTextField(txtUserName, usernames);
+                new AutoCompleteTextField(txtUserName, usernames);
                 System.out.println("Autocomplete initialized with " + usernames.size() + " usernames");
             }
         } catch (Exception e) {
@@ -128,6 +188,12 @@ public class LoginController {
     }
     public void login(){
 
+        // Validate shop selection
+        if(cmbShop.getSelectionModel().getSelectedItem() == null) {
+            alertNotification.showError("Please select a restaurant");
+            return;
+        }
+
         if(txtUserName.getText().isEmpty()){
             alertNotification.showError("Please Enter User Name");
             return;
@@ -139,6 +205,7 @@ public class LoginController {
 
         String username = txtUserName.getText().trim();
         String password = txtPassword.getText().trim();
+        Shop selectedShop = cmbShop.getSelectionModel().getSelectedItem();
 
         // Validate inputs
         if(username.isEmpty()) {
@@ -157,15 +224,29 @@ public class LoginController {
                 return;
             }
 
-            // Attempt login
-            LoginResponse loginResponse = authApiService.login(username, password);
+            // Attempt login - now returns User entity
+            User user = authApiService.login(username, password);
 
-            if(loginResponse != null) {
-                // Store user session
-                sessionService.setUserSession(loginResponse);
+            if(user != null) {
+                // Store user session with selected shop
+                sessionService.setUserSession(user, selectedShop);
 
-                // Show success message
-                alertNotification.showSuccess("Login Successful!\nWelcome " + loginResponse.getUsername() + " (" + loginResponse.getRole() + ")");
+                // Build success message
+                StringBuilder successMessage = new StringBuilder();
+                successMessage.append("Login Successful!\n\n");
+                successMessage.append("Restaurant: ").append(selectedShop.getRestaurantName()).append("\n");
+                successMessage.append("User: ").append(user.getUsername());
+                successMessage.append(" (").append(user.getRole()).append(")");
+
+                // Add employee info if available
+                if(user.getEmployee() != null) {
+                    successMessage.append("\n").append(user.getEmployee().getFullName());
+                    if(user.getEmployee().getDesignation() != null) {
+                        successMessage.append(" - ").append(user.getEmployee().getDesignation());
+                    }
+                }
+
+                alertNotification.showSuccess(successMessage.toString());
 
                 // Navigate to dashboard
                 stageManager.switchScene(FxmlView.DASHBOARD);

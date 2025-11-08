@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Circle?>
 
 <AnchorPane prefHeight="750.0" prefWidth="1300.0" styleClass="registration-root" stylesheets="@../css/create_shope.css"
-            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.frontend.controller.CreateShopeController">
 
     <!-- Background Container -->

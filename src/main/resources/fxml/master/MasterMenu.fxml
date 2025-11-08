@@ -1,112 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.MasterMenuController">
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.MasterMenuController">
    <stylesheets>
-      <URL value="@../css/master.css" />
+      <URL value="@../css/master-material.css" />
    </stylesheets>
    <children>
-      <!-- Header -->
-      <HBox alignment="CENTER_LEFT" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="master-header">
          <children>
-            <Circle fill="#3498db" radius="8.0" />
-            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="Master Data Management">
-               <HBox.margin>
-                  <Insets left="15.0" />
-               </HBox.margin>
-            </Label>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="master-title" text="Master Data Management" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
          </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
       </HBox>
-      
-      <!-- Menu Grid -->
-      <GridPane hgap="20.0" vgap="20.0" style="-fx-padding: 30;">
+
+      <!-- Content Area with Cards -->
+      <VBox spacing="25.0" styleClass="master-content">
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
          <children>
-            <!-- Category Management -->
-            <StackPane fx:id="categoryCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+
+            <!-- First Row of Cards -->
+            <HBox alignment="CENTER" spacing="25.0">
                <children>
-                  <VBox alignment="CENTER" spacing="15.0">
+                  <!-- Category Management Card -->
+                  <StackPane fx:id="categoryCard" styleClass="master-card, category-card" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#e74c3c" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Category Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage food categories" />
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, category-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#E91E63" glyphName="SITEMAP" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Category Master" />
+                              <Label styleClass="card-description" text="Manage food categories and menu sections" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </StackPane>
+
+                  <!-- Item Management Card -->
+                  <StackPane fx:id="itemCard" styleClass="master-card, item-card" HBox.hgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, item-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FF9800" glyphName="CUTLERY" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Item Master" />
+                              <Label styleClass="card-description" text="Manage menu items and dishes" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- Table Management Card -->
+                  <StackPane fx:id="tableCard" styleClass="master-card, table-card" HBox.hgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, table-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#F44336" glyphName="TABLE" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Table Master" />
+                              <Label styleClass="card-description" text="Manage restaurant tables" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
                </children>
-            </StackPane>
-            
-            <!-- Item Management -->
-            <StackPane fx:id="itemCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            </HBox>
+
+            <!-- Second Row of Cards -->
+            <HBox alignment="CENTER" spacing="25.0">
                <children>
-                  <VBox alignment="CENTER" spacing="15.0">
+                  <!-- Customer Management Card -->
+                  <StackPane fx:id="customerCard" styleClass="master-card, customer-card" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#f39c12" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Item Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage menu items" />
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, customer-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#4CAF50" glyphName="USERS" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Customer Master" />
+                              <Label styleClass="card-description" text="Manage customer information" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-               </children>
-            </StackPane>
-            
-            <!-- Customer Management -->
-            <StackPane fx:id="customerCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="0">
-               <children>
-                  <VBox alignment="CENTER" spacing="15.0">
+                  </StackPane>
+
+                  <!-- Employee Management Card -->
+                  <StackPane fx:id="employeeCard" styleClass="master-card, employee-card" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#2ecc71" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Customer Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage customers" />
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, employee-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#9C27B0" glyphName="USER_CIRCLE" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Employee Master" />
+                              <Label styleClass="card-description" text="Manage employee records" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-               </children>
-            </StackPane>
-            
-            <!-- Employee Management -->
-            <StackPane fx:id="employeeCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="1">
-               <children>
-                  <VBox alignment="CENTER" spacing="15.0">
+                  </StackPane>
+
+                  <!-- Supplier Management Card -->
+                  <StackPane fx:id="supplierCard" styleClass="master-card, supplier-card" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#9b59b6" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Employee Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage employees" />
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, supplier-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#2196F3" glyphName="TRUCK" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Supplier Master" />
+                              <Label styleClass="card-description" text="Manage supplier details" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-               </children>
-            </StackPane>
-            
-            <!-- Supplier Management -->
-            <StackPane fx:id="supplierCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <VBox alignment="CENTER" spacing="15.0">
+                  </StackPane>
+
+                  <!-- User Management Card -->
+                  <StackPane fx:id="userCard" styleClass="master-card, user-card" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fill="#34495e" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Supplier Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage suppliers" />
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, user-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#00BCD4" glyphName="USER_PLUS" size="2.5em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="User Master" />
+                              <Label styleClass="card-description" text="Manage system users and access" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </StackPane>
                </children>
-            </StackPane>
-            
-            <!-- User Management -->
-            <StackPane fx:id="userCard" style="-fx-background-color: #ecf0f1; -fx-background-radius: 10; -fx-padding: 30; -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <children>
-                  <VBox alignment="CENTER" spacing="15.0">
-                     <children>
-                        <Circle fill="#1abc9c" radius="25.0" />
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="User Master" />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Manage system users" />
-                     </children>
-                  </VBox>
-               </children>
-            </StackPane>
+            </HBox>
          </children>
-      </GridPane>
+      </VBox>
    </children>
 </VBox>

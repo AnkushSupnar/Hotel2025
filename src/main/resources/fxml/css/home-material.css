@@ -17,6 +17,24 @@
     -fx-border-width: 0 0 2 0;
 }
 
+/* Clickable Header */
+.clickable-header {
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.clickable-header:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.clickable-header:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
 .app-logo {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 3);
 }
@@ -117,7 +135,7 @@
 /* =============== MAIN CONTENT STYLES =============== */
 
 .main-content-area {
-    -fx-background-color: linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #E8F5E8 100%);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #E3F2FD 0%, #F3E5F5 50%, #E8F5E8 100%);
 }
 
 .dashboard-container {

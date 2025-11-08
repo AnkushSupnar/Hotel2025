@@ -3,7 +3,6 @@ package com.frontend.repository;
 import com.frontend.entity.MenuItem;
 import com.frontend.entity.CategoryMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

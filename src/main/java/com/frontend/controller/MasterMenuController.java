@@ -3,6 +3,7 @@ package com.frontend.controller;
 import com.frontend.config.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -16,35 +17,81 @@ import java.util.ResourceBundle;
 
 @Component
 public class MasterMenuController implements Initializable {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(MasterMenuController.class);
-    
+
     @Autowired
     SpringFXMLLoader loader;
-    
+
+    @FXML
+    private Button btnBack;
+
     @FXML
     private StackPane categoryCard;
-    
+
     @FXML
     private StackPane itemCard;
-    
+
+    @FXML
+    private StackPane tableCard;
+
     @FXML
     private StackPane customerCard;
-    
+
     @FXML
     private StackPane employeeCard;
-    
+
     @FXML
     private StackPane supplierCard;
-    
+
     @FXML
     private StackPane userCard;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setupBackButton();
         setupMenuActions();
     }
-    
+
+    /**
+     * Setup back button to return to initial home dashboard
+     */
+    private void setupBackButton() {
+        btnBack.setOnAction(e -> {
+            try {
+                LOG.info("Back button clicked - returning to home dashboard");
+                showInitialDashboard();
+            } catch (Exception ex) {
+                LOG.error("Error returning to home dashboard: ", ex);
+            }
+        });
+    }
+
+    /**
+     * Show initial home dashboard with statistics
+     */
+    private void showInitialDashboard() {
+        try {
+            BorderPane mainPane = getMainPane();
+            if (mainPane != null) {
+                // Get the stored initial dashboard from HomeController
+                javafx.scene.Node initialDashboard = (javafx.scene.Node) mainPane.getProperties().get("initialDashboard");
+
+                if (initialDashboard != null) {
+                    mainPane.setCenter(initialDashboard);
+                    LOG.info("Successfully restored initial dashboard");
+                } else {
+                    // Fallback: load Home.fxml dashboard page
+                    Pane pane = loader.getPage("/fxml/dashboard/Home.fxml");
+                    mainPane.setCenter(pane);
+                    LOG.info("Loaded dashboard from file");
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error showing initial dashboard: ", e);
+        }
+    }
+
     private void setupMenuActions() {
         // Category Management
         categoryCard.setOnMouseClicked(e -> {
@@ -58,26 +105,25 @@ public class MasterMenuController implements Initializable {
         // Item Management
         itemCard.setOnMouseClicked(e -> {
             try {
-                // Navigate to existing item management
-                BorderPane mainPane = getMainPane();
-                if (mainPane != null) {
-                    Pane pane = loader.getPage("/fxml/create/AddItem.fxml");
-                    mainPane.setCenter(pane);
-                }
+                loadItemManagement();
             } catch (Exception ex) {
                 LOG.error("Error loading item management: ", ex);
             }
         });
-        
+
+        // Table Management
+        tableCard.setOnMouseClicked(e -> {
+            try {
+                loadTableManagement();
+            } catch (Exception ex) {
+                LOG.error("Error loading table management: ", ex);
+            }
+        });
+
         // Customer Management
         customerCard.setOnMouseClicked(e -> {
             try {
-                // Navigate to existing customer management
-                BorderPane mainPane = getMainPane();
-                if (mainPane != null) {
-                    Pane pane = loader.getPage("/fxml/create/AddCustomer.fxml");
-                    mainPane.setCenter(pane);
-                }
+                loadCustomerManagement();
             } catch (Exception ex) {
                 LOG.error("Error loading customer management: ", ex);
             }
@@ -86,12 +132,7 @@ public class MasterMenuController implements Initializable {
         // Employee Management
         employeeCard.setOnMouseClicked(e -> {
             try {
-                // Navigate to existing employee management
-                BorderPane mainPane = getMainPane();
-                if (mainPane != null) {
-                    Pane pane = loader.getPage("/fxml/create/AddEmployee.fxml");
-                    mainPane.setCenter(pane);
-                }
+                loadEmployeeManagement();
             } catch (Exception ex) {
                 LOG.error("Error loading employee management: ", ex);
             }
@@ -124,9 +165,6 @@ public class MasterMenuController implements Initializable {
                 LOG.error("Error loading user management: ", ex);
             }
         });
-        
-        // Add hover effects
-        addHoverEffects();
     }
     
     private void loadCategoryManagement() {
@@ -136,7 +174,39 @@ public class MasterMenuController implements Initializable {
             mainPane.setCenter(pane);
         }
     }
-    
+
+    private void loadItemManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddItem.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadTableManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddTable.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadCustomerManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddCustomer.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadEmployeeManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddEmployee.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
     private BorderPane getMainPane() {
         try {
             // Find the main BorderPane in the parent hierarchy
@@ -144,22 +214,6 @@ public class MasterMenuController implements Initializable {
         } catch (Exception e) {
             LOG.warn("Could not find main pane, navigation might not work properly");
             return null;
-        }
-    }
-    
-    private void addHoverEffects() {
-        StackPane[] cards = {categoryCard, itemCard, customerCard, employeeCard, supplierCard, userCard};
-        
-        for (StackPane card : cards) {
-            // Mouse enter effect
-            card.setOnMouseEntered(e -> {
-                card.setStyle(card.getStyle() + "; -fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 2);");
-            });
-            
-            // Mouse exit effect
-            card.setOnMouseExited(e -> {
-                card.setStyle(card.getStyle().replaceAll("; -fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow\\(gaussian, rgba\\(0,0,0,0.2\\), 10, 0.5, 0, 2\\);", ""));
-            });
         }
     }
 }

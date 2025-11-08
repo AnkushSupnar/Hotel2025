@@ -1,6 +1,6 @@
 package com.frontend.service;
 
-import com.frontend.dto.LoginResponse;
+import com.frontend.entity.Employee;
 import com.frontend.entity.User;
 import com.frontend.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,11 +26,12 @@ public class AuthApiService {
     public AuthApiService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     /**
      * Authenticate user with database (plain text password comparison)
+     * Returns User entity for desktop application session
      */
-    public LoginResponse login(String username, String password) {
+    public User login(String username, String password) {
         LOG.debug("Attempting login for user: {}", username);
 
         Optional<User> userOptional = userRepository.findByUsername(username);
@@ -48,16 +49,17 @@ public class AuthApiService {
             throw new RuntimeException("Invalid username or password");
         }
 
-        LOG.info("Login successful for user: {}", username);
+        LOG.info("Login successful for user: {} (Role: {})", username, user.getRole());
 
-        // Create login response
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken("session-" + System.currentTimeMillis()); // Simple session token
-        loginResponse.setUsername(user.getUsername());
-        loginResponse.setRole(user.getRole());
+        // Log employee information if linked
+        if (user.getEmployee() != null) {
+            LOG.info("User linked to employee: {} - {} (ID: {})",
+                     user.getEmployee().getFullName(),
+                     user.getEmployee().getDesignation(),
+                     user.getEmployee().getEmployeeId());
+        }
 
-        LOG.debug("Generated session token for user: {}", username);
-        return loginResponse;
+        return user;
     }
     
     /**
@@ -81,6 +83,38 @@ public class AuthApiService {
         userRepository.save(user);
 
         LOG.info("Registration successful for user: {}", username);
+        return true;
+    }
+
+    /**
+     * Register new user with employee link in database (plain text password)
+     */
+    public boolean registerWithEmployee(String username, String password, String role, Employee employee) {
+        LOG.debug("Attempting registration for user: {} with role: {} and employee: {}",
+                  username, role, employee != null ? employee.getEmployeeId() : null);
+
+        // Check if username already exists
+        if (userRepository.existsByUsername(username)) {
+            LOG.error("Registration failed: Username already exists - {}", username);
+            throw new RuntimeException("Username already exists");
+        }
+
+        // Validate employee
+        if (employee == null || employee.getEmployeeId() == null) {
+            LOG.error("Registration failed: Invalid employee");
+            throw new RuntimeException("Valid employee is required for user registration");
+        }
+
+        // Create new user with plain text password and employee link
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password); // Store password as plain text
+        user.setRole(role.toUpperCase());
+        user.setEmployee(employee);
+
+        userRepository.save(user);
+
+        LOG.info("Registration successful for user: {} linked to employee: {}", username, employee.getEmployeeId());
         return true;
     }
     

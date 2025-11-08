@@ -20,6 +20,10 @@ public class User {
     @Column(nullable = false, length = 20)
     private String role;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee_id", referencedColumnName = "Id")
+    private Employee employee;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -45,6 +49,13 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String username, String password, String role, Employee employee) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.employee = employee;
     }
 
     // Getters and Setters
@@ -80,6 +91,14 @@ public class User {
         this.role = role;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -102,6 +121,7 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", role='" + role + '\'' +
+                ", employeeId=" + (employee != null ? employee.getEmployeeId() : null) +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

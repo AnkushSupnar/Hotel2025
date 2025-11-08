@@ -1,0 +1,473 @@
+/* ========================================
+   CATEGORY MANAGEMENT - MATERIAL DESIGN
+   Matching Login Screen Color Scheme
+   ======================================== */
+
+/* Root Container */
+.category-root {
+    -fx-background-color: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+}
+
+/* ========================================
+   HEADER SECTION
+   ======================================== */
+
+.category-header {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #667eea 0%, #764ba2 100%);
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.2), 15, 0, 0, 5);
+}
+
+.category-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+/* Back Button (Reusing from master-material.css) */
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 8;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgb(255, 255, 255, 0.3), 8, 0, 0, 0);
+}
+
+.back-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.back-icon {
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.3), 2, 0, 0, 1);
+}
+
+.back-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: white;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* ========================================
+   CONTENT SECTION
+   ======================================== */
+
+.category-content {
+    -fx-background-color: transparent;
+}
+
+/* ========================================
+   LEFT SECTION - FORM
+   ======================================== */
+
+.form-section {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 15, 0, 0, 3);
+    -fx-min-width: 380;
+    -fx-max-width: 420;
+    -fx-pref-width: 400;
+}
+
+.form-section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a237e;
+}
+
+/* Input Fields */
+.input-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #5e35b1;
+    -fx-letter-spacing: 0.5px;
+}
+
+.input-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 0 16;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.08), 4, 0, 0, 2);
+}
+
+.input-container:focused-within {
+    -fx-border-color: #5e35b1;
+    -fx-effect: dropshadow(gaussian, rgb(94, 53, 177, 0.25), 8, 0, 0, 2);
+}
+
+.input-icon {
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.2), 2, 0, 0, 1);
+}
+
+.material-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 14 0;
+    -fx-font-size: 15px;
+    -fx-text-fill: #212121;
+    -fx-prompt-text-fill: #9e9e9e;
+}
+
+.material-input:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Radio Buttons in Form */
+.material-radio {
+    -fx-font-size: 15px;
+    -fx-text-fill: #212121;
+    -fx-font-weight: 500;
+}
+
+.material-radio .radio {
+    -fx-border-color: #7E57C2;
+    -fx-border-width: 2;
+    -fx-border-radius: 50%;
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-padding: 5;
+}
+
+.material-radio:selected .radio {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+}
+
+.material-radio:selected .radio .dot {
+    -fx-background-color: #7E57C2;
+    -fx-background-radius: 50%;
+    -fx-background-insets: 0;
+}
+
+.material-radio:hover {
+    -fx-cursor: hand;
+}
+
+.material-radio:hover .radio {
+    -fx-border-color: #5e35b1;
+    -fx-effect: dropshadow(gaussian, rgb(94, 53, 177, 0.3), 4, 0, 0, 0);
+}
+
+/* Action Buttons */
+.btn-primary-full {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #667eea 0%, #764ba2 100%);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 28;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgb(102, 126, 234, 0.4), 12, 0, 0, 4);
+    -fx-letter-spacing: 1px;
+    -fx-graphic-text-gap: 10;
+}
+
+.btn-primary-full:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #5568d3 0%, #6440a0 100%);
+    -fx-effect: dropshadow(gaussian, rgb(102, 126, 234, 0.6), 16, 0, 0, 6);
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}
+
+.btn-primary-full:pressed {
+    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.98;
+}
+
+.btn-warning-full {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #FF9800 0%, #F57C00 100%);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 28;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgb(255, 152, 0, 0.4), 12, 0, 0, 4);
+    -fx-letter-spacing: 1px;
+    -fx-graphic-text-gap: 10;
+}
+
+.btn-warning-full:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #FB8C00 0%, #EF6C00 100%);
+    -fx-effect: dropshadow(gaussian, rgb(255, 152, 0, 0.6), 16, 0, 0, 6);
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}
+
+.btn-warning-full:pressed {
+    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.98;
+}
+
+.btn-secondary-full {
+    -fx-background-color: white;
+    -fx-text-fill: #667eea;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 28;
+    -fx-background-radius: 8;
+    -fx-border-color: #667eea;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-letter-spacing: 1px;
+    -fx-graphic-text-gap: 10;
+}
+
+.btn-secondary-full:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}
+
+.btn-secondary-full:pressed {
+    -fx-background-color: #eeeeee;
+    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.98;
+}
+
+/* Info Box */
+.info-box {
+    -fx-background-color: #E3F2FD;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.info-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1565C0;
+}
+
+.info-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #0D47A1;
+}
+
+/* ========================================
+   RIGHT SECTION - TABLE
+   ======================================== */
+
+.table-section {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 15, 0, 0, 3);
+}
+
+.table-section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a237e;
+}
+
+/* Icon Button (Refresh) */
+.icon-button {
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.icon-button:hover {
+    -fx-background-color: rgba(102, 126, 234, 0.2);
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.icon-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Search Section */
+.search-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #5e35b1;
+    -fx-letter-spacing: 0.3px;
+}
+
+.search-container {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 8;
+    -fx-padding: 0 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.search-container:focused-within {
+    -fx-border-color: #5e35b1;
+    -fx-background-color: white;
+}
+
+.search-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #212121;
+    -fx-prompt-text-fill: #9e9e9e;
+}
+
+.search-input:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.filter-combo {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: #212121;
+    -fx-prompt-text-fill: #9e9e9e;
+}
+
+.filter-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-padding: 0;
+}
+
+.filter-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 6;
+}
+
+.filter-combo .arrow {
+    -fx-background-color: #9e9e9e;
+    -fx-padding: 3;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+/* Table Styling - Custom styling for specific columns */
+
+/* ID Column - Larger font, no custom font */
+.id-column .table-cell {
+    -fx-text-fill: #212121;
+    -fx-font-size: 18px;
+    -fx-padding: 10 8;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+}
+
+/* Category Name Column - Will use custom font (applied in controller) */
+.category-name-column .table-cell {
+    -fx-text-fill: #212121;
+    -fx-font-size: 25px;
+    -fx-padding: 10 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Stock Status Column - Larger font, no custom font */
+.stock-column .table-cell {
+    -fx-text-fill: #212121;
+    -fx-font-size: 18px;
+    -fx-padding: 10 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Table Action Buttons - DISABLED TO USE NATIVE JAVAFX STYLING */
+/*
+.table-edit-button,
+.table-delete-button {
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 4, 0, 0, 1);
+}
+
+.table-edit-button {
+    -fx-background-color: white;
+    -fx-text-fill: #2196F3;
+    -fx-border-color: #2196F3;
+}
+
+.table-edit-button:hover {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgb(33, 150, 243, 0.4), 8, 0, 0, 2);
+}
+
+.table-edit-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.table-delete-button {
+    -fx-background-color: white;
+    -fx-text-fill: #F44336;
+    -fx-border-color: #F44336;
+}
+
+.table-delete-button:hover {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgb(244, 67, 54, 0.4), 8, 0, 0, 2);
+}
+
+.table-delete-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+*/
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 1400px) {
+    .form-section {
+        -fx-min-width: 320;
+        -fx-max-width: 360;
+        -fx-pref-width: 340;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+.btn-primary-full,
+.btn-warning-full,
+.btn-secondary-full,
+.back-button,
+.icon-button {
+    -fx-transition: all 0.3s ease;
+}
