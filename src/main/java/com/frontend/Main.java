@@ -50,7 +50,8 @@ public class Main extends Application {
 	protected void displayInitialScene() {
 		// For now, always show login screen
 		// Later, this will check with the backend API for shop configuration
-		stageManager.switchScene(FxmlView.LOGIN);
+		//stageManager.switchScene(FxmlView.LOGIN);
+		stageManager.switchScene(FxmlView.BILLING);
 	}
 	private ConfigurableApplicationContext bootstrapSpringApplicationContext() {
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);

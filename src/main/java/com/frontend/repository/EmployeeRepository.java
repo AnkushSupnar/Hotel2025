@@ -11,7 +11,7 @@ import java.util.Optional;
  * Repository for Employee entity
  */
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     /**
      * Find employee by contact number

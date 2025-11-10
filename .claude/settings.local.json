@@ -5,6 +5,7 @@
       "Bash(find:*)",
       "Bash(mvn clean:*)"
     ],
+    
     "deny": []
   }
 }

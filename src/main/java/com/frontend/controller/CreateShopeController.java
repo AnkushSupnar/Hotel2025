@@ -1,6 +1,5 @@
 package com.frontend.controller;
 
-import com.frontend.entity.Designation;
 import com.frontend.entity.Employee;
 import com.frontend.entity.Shop;
 import com.frontend.service.AuthApiService;
@@ -14,8 +13,6 @@ import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 @Component
 public class CreateShopeController {

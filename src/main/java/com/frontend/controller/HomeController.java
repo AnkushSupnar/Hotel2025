@@ -5,11 +5,16 @@ import com.frontend.service.SessionService;
 import com.frontend.view.StageManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +97,7 @@ public class HomeController implements Initializable {
         });
         menuBilling.setOnMouseClicked(e -> {
             try {
-                pane = loader.getPage("/fxml/transaction/BillingFrame.fxml");
-                mainPane.setCenter(pane);
+                openBillingWindow();
             } catch (Exception ex) {
                 LOG.error("Error loading billing: ", ex);
             }
@@ -179,6 +183,45 @@ public class HomeController implements Initializable {
             LOG.info("User logged out successfully");
         } catch (Exception e) {
             LOG.error("Error during logout: ", e);
+        }
+    }
+
+    /**
+     * Open Billing screen in a new window
+     */
+    private void openBillingWindow() {
+        try {
+            LOG.info("Opening Billing window");
+
+            // Load the FXML file
+            Parent billingRoot = (Parent) loader.load("/fxml/transaction/BillingFrame.fxml");
+
+            // Create a new stage (window)
+            Stage billingStage = new Stage();
+            billingStage.setTitle("Billing - " + SessionService.getCurrentRestaurantName());
+
+            // Create scene
+            Scene billingScene = new Scene(billingRoot);
+            billingStage.setScene(billingScene);
+
+            // Set window to fullscreen or maximized
+            Screen screen = Screen.getPrimary();
+            Rectangle2D bounds = screen.getVisualBounds();
+            billingStage.setX(bounds.getMinX());
+            billingStage.setY(bounds.getMinY());
+            billingStage.setWidth(bounds.getWidth());
+            billingStage.setHeight(bounds.getHeight());
+
+            // Optionally, set to maximized
+            billingStage.setMaximized(true);
+
+            // Show the window
+            billingStage.show();
+
+            LOG.info("Billing window opened successfully");
+
+        } catch (Exception e) {
+            LOG.error("Error opening billing window: ", e);
         }
     }
 }

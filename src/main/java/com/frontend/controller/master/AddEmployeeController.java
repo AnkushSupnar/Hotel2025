@@ -7,6 +7,7 @@ import com.frontend.service.SessionService;
 import com.frontend.view.AlertNotification;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -89,7 +90,7 @@ public class AddEmployeeController implements Initializable {
     private TableView<EmployeeData> tblEmployees;
 
     @FXML
-    private TableColumn<EmployeeData, Integer> colId;
+    private TableColumn<EmployeeData, Long> colId;
 
     @FXML
     private TableColumn<EmployeeData, String> colFullName;
@@ -546,7 +547,7 @@ public class AddEmployeeController implements Initializable {
 
     // Inner class for table data
     public static class EmployeeData {
-        private final SimpleIntegerProperty id;
+        private final SimpleLongProperty id;
         private final SimpleStringProperty firstName;
         private final SimpleStringProperty middleName;
         private final SimpleStringProperty lastName;
@@ -558,10 +559,10 @@ public class AddEmployeeController implements Initializable {
         private final SimpleStringProperty salaryType;
         private final SimpleStringProperty status;
 
-        public EmployeeData(Integer id, String firstName, String middleName, String lastName,
+        public EmployeeData(Long id, String firstName, String middleName, String lastName,
                            String address, String contact, String designation, Float salary,
                            String salaryType, String status) {
-            this.id = new SimpleIntegerProperty(id);
+            this.id = new SimpleLongProperty(id);
             this.firstName = new SimpleStringProperty(firstName);
             this.middleName = new SimpleStringProperty(middleName);
             this.lastName = new SimpleStringProperty(lastName);
@@ -574,11 +575,11 @@ public class AddEmployeeController implements Initializable {
             this.status = new SimpleStringProperty(status);
         }
 
-        public Integer getId() {
+        public Long getId() {
             return id.get();
         }
 
-        public SimpleIntegerProperty idProperty() {
+        public SimpleLongProperty idProperty() {
             return id;
         }
 

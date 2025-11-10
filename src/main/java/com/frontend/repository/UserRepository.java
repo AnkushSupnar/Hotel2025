@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find users by employee ID
      */
     @Query("SELECT u FROM User u WHERE u.employee.id = :employeeId")
-    List<User> findByEmployeeId(@Param("employeeId") Integer employeeId);
+    List<User> findByEmployeeId(@Param("employeeId") Long employeeId);
 
     /**
      * Find users by employee
@@ -43,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Count users for an employee
      */
     @Query("SELECT COUNT(u) FROM User u WHERE u.employee.id = :employeeId")
-    long countByEmployeeId(@Param("employeeId") Integer employeeId);
+    long countByEmployeeId(@Param("employeeId") Long employeeId);
 
     /**
      * Get all usernames

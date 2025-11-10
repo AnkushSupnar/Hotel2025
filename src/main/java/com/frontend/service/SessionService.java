@@ -110,7 +110,7 @@ public class SessionService {
     /**
      * Get current employee ID
      */
-    public static Integer getCurrentEmployeeId() {
+    public static Long getCurrentEmployeeId() {
         return currentEmployee != null ? currentEmployee.getEmployeeId() : null;
     }
 

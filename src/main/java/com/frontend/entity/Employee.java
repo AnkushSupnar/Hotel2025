@@ -13,7 +13,7 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "FNAME", nullable = false, length = 45)
     private String firstName;
@@ -77,11 +77,11 @@ public class Employee {
     }
 
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -183,14 +183,14 @@ public class Employee {
     /**
      * Backward compatibility method for old code
      */
-    public Integer getEmployeeId() {
+    public Long getEmployeeId() {
         return id;
     }
 
     /**
      * Backward compatibility method for old code
      */
-    public void setEmployeeId(Integer employeeId) {
+    public void setEmployeeId(Long employeeId) {
         this.id = employeeId;
     }
 

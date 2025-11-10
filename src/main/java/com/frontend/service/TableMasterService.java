@@ -179,4 +179,30 @@ public class TableMasterService {
     public boolean existsByTableName(String tableName) {
         return tableMasterRepository.existsByTableName(tableName);
     }
+
+    /**
+     * Get all unique descriptions (sections) from tablemaster
+     */
+    public List<String> getUniqueDescriptions() {
+        try {
+            LOG.info("Fetching unique descriptions from tablemaster");
+            return tableMasterRepository.findDistinctDescriptions();
+        } catch (Exception e) {
+            LOG.error("Error fetching unique descriptions", e);
+            throw new RuntimeException("Error fetching descriptions: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Get all tables for a specific description (section)
+     */
+    public List<TableMaster> getTablesByDescription(String description) {
+        try {
+            LOG.info("Fetching tables for description: {}", description);
+            return tableMasterRepository.findByDescription(description);
+        } catch (Exception e) {
+            LOG.error("Error fetching tables for description: {}", description, e);
+            throw new RuntimeException("Error fetching tables: " + e.getMessage(), e);
+        }
+    }
 }

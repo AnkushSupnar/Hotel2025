@@ -37,7 +37,7 @@ public class EmployeeService {
     /**
      * Get employee by ID
      */
-    public Employee getEmployeeById(Integer id) {
+    public Employee getEmployeeById(Long id) {
         try {
             LOG.info("Fetching employee by ID: {}", id);
             return employeeRepository.findById(id)
@@ -155,7 +155,7 @@ public class EmployeeService {
      * Update existing employee
      */
     @Transactional
-    public Employee updateEmployee(Integer id, Employee employee) {
+    public Employee updateEmployee(Long id, Employee employee) {
         try {
             LOG.info("Updating employee with ID: {}", id);
 
@@ -195,7 +195,7 @@ public class EmployeeService {
      * Delete employee by ID
      */
     @Transactional
-    public void deleteEmployee(Integer id) {
+    public void deleteEmployee(Long id) {
         try {
             LOG.info("Deleting employee with ID: {}", id);
 
@@ -215,7 +215,7 @@ public class EmployeeService {
     /**
      * Check if employee exists by ID
      */
-    public boolean existsById(Integer id) {
+    public boolean existsById(Long id) {
         return employeeRepository.existsById(id);
     }
 
