@@ -56,10 +56,45 @@ public class AutoCompleteTextField {
             if (newText == null || newText.isEmpty()) {
                 suggestionsPopup.hide();
                 selectedIndex = 0; // Reset selected index
+            } else if (newText.trim().isEmpty() && newText.startsWith(" ")) {
+                // Show all suggestions when space is entered as first character
+                filteredSuggestions = new ArrayList<>(suggestions);
+                // Sort alphabetically
+                filteredSuggestions.sort(String.CASE_INSENSITIVE_ORDER);
+                selectedIndex = 0; // Select first item
+                populatePopup();
+                if (!suggestionsPopup.isShowing()) {
+                    suggestionsPopup.show(textField,
+                            textField.localToScreen(textField.getBoundsInLocal()).getMinX(),
+                            textField.localToScreen(textField.getBoundsInLocal()).getMaxY());
+                }
             } else {
-                filteredSuggestions = suggestions.stream()
-                        .filter(item -> item.toLowerCase().startsWith(newText.toLowerCase()))
+                // Filter and sort suggestions based on search text
+                String searchText = newText.toLowerCase().trim();
+
+                // First, filter items that contain the search text
+                List<String> matchedItems = suggestions.stream()
+                        .filter(item -> item.toLowerCase().contains(searchText))
                         .collect(Collectors.toList());
+
+                // Sort: items starting with search text come first, then others alphabetically
+                matchedItems.sort((item1, item2) -> {
+                    String lower1 = item1.toLowerCase();
+                    String lower2 = item2.toLowerCase();
+
+                    boolean starts1 = lower1.startsWith(searchText);
+                    boolean starts2 = lower2.startsWith(searchText);
+
+                    if (starts1 && !starts2) {
+                        return -1; // item1 starts with search, comes first
+                    } else if (!starts1 && starts2) {
+                        return 1; // item2 starts with search, comes first
+                    } else {
+                        return lower1.compareTo(lower2); // Both same priority, sort alphabetically
+                    }
+                });
+
+                filteredSuggestions = matchedItems;
 
                 if (filteredSuggestions.isEmpty()) {
                     suggestionsPopup.hide();
@@ -203,6 +238,6 @@ public class AutoCompleteTextField {
         );
     }
 
-    private static final String HIGHLIGHT_LABEL_STYLE = "-fx-background-color: #5e35b1; -fx-font-weight: 600; -fx-background-radius: 6px;";
+    private static final String HIGHLIGHT_LABEL_STYLE = "-fx-background-color: #5529b4ff; -fx-font-weight: 600; -fx-background-radius: 6px;";
     private static final String NORMAL_LABEL_STYLE = "-fx-background-color: transparent;";
 }

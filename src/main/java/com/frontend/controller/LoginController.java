@@ -249,7 +249,8 @@ public class LoginController {
                 alertNotification.showSuccess(successMessage.toString());
 
                 // Navigate to dashboard
-                stageManager.switchScene(FxmlView.DASHBOARD);
+                //stageManager.switchScene(FxmlView.DASHBOARD);
+                stageManager.switchScene(FxmlView.BILLING);
             } else {
                 alertNotification.showError("Login failed. Please try again.");
             }
