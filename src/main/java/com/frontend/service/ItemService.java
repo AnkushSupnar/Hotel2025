@@ -70,6 +70,32 @@ public class ItemService {
         }
     }
 
+    public Item getItemByCode(int code) {
+        try {
+            LOG.info("Fetching item by code: {}", code);
+            Item item = itemRepository.findByItemCode(code)
+                    .orElse(null);
+            return item;
+        } catch (Exception e) {
+            LOG.error("Error fetching item by code: {}", code, e);
+            throw new RuntimeException("Error fetching item: " + e.getMessage(), e);
+        }
+    }
+
+    /* get the item_name List<String>ItemNameByCategoryId by provided category id */
+    public List<String> getItemNameByCategoryId(Integer categoryId) {
+        try {
+            LOG.info("Fetching item name by category ID: {}", categoryId);
+            List<Item> items = itemRepository.findByCategoryIdWithCategory(categoryId);
+            return items.stream()
+                    .map(Item::getItemName)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.error("Error fetching item name by category ID: {}", categoryId, e);
+            throw new RuntimeException("Error fetching item name: " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Search items by name
      */
@@ -209,5 +235,9 @@ public class ItemService {
         item.setRate(dto.getRate());
         item.setItemCode(dto.getItemCode());
         return item;
+    }
+
+    public List<String> getAllItemNames() {
+        return itemRepository.findAllItemNames();
     }
 }

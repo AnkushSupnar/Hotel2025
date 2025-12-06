@@ -25,17 +25,12 @@ public class CategoryApiService {
         this.categoryRepository = categoryRepository;
         this.sessionService = sessionService;
     }
-    
+
     /**
      * Get all categories from database
      */
     public List<CategoryMasterDto> getAllCategories() {
         LOG.debug("Fetching all categories from database");
-
-        // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
-            throw new RuntimeException("User not logged in. Please login first.");
-        }
 
         List<CategoryMaster> categories = categoryRepository.findAll();
         LOG.info("Successfully fetched {} categories", categories.size());
@@ -78,7 +73,7 @@ public class CategoryApiService {
         entity.setStock(dto.getStock());
         return entity;
     }
-    
+
     /**
      * Create new category
      */
@@ -102,7 +97,7 @@ public class CategoryApiService {
         LOG.info("Category created successfully: {}", categoryDto.getCategory());
         return convertToDto(saved);
     }
-    
+
     /**
      * Update existing category
      */

@@ -141,6 +141,13 @@
 			<version>8.0.10</version>
 		</dependency>
 
+		<!-- MaterialFX - Modern Material Design library for JavaFX -->
+		<dependency>
+			<groupId>io.github.palexdev</groupId>
+			<artifactId>materialfx</artifactId>
+			<version>11.17.0</version>
+		</dependency>
+
 
 	</dependencies>
 

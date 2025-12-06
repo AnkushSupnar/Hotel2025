@@ -5,6 +5,7 @@ import com.frontend.entity.Employee;
 import com.frontend.entity.Shop;
 import com.frontend.entity.User;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class SessionService {
     // Static Font object - loaded once for entire application lifecycle
     private static Font customFont;
 
+    // Cached font family name for creating fonts with different sizes
+    private static String cachedFontFamily;
+
+    // Multiplier to match Swing font size appearance in JavaFX
+    private static final double JAVAFX_FONT_SIZE_MULTIPLIER = 1.33;
+
     /**
      * Set user session after successful login
      */
@@ -51,9 +58,9 @@ public class SessionService {
         loadApplicationSettings();
 
         LOG.info("Session established - User: {}, Employee: {}, Shop: {}",
-                 getCurrentUsername(),
-                 currentEmployee != null ? currentEmployee.getFullName() : "Not linked",
-                 shop != null ? shop.getRestaurantName() : "Not selected");
+                getCurrentUsername(),
+                currentEmployee != null ? currentEmployee.getFullName() : "Not linked",
+                shop != null ? shop.getRestaurantName() : "Not selected");
     }
 
     /**
@@ -80,7 +87,7 @@ public class SessionService {
     /**
      * Check if user is logged in
      */
-    public static boolean isLoggedIn() {
+    public boolean isLoggedIn() {
         boolean loggedIn = currentUser != null;
         LOG.debug("Checking isLoggedIn: {}", loggedIn);
         return loggedIn;
@@ -126,8 +133,8 @@ public class SessionService {
      */
     public static String getCurrentEmployeeDesignation() {
         return currentEmployee != null && currentEmployee.getDesignation() != null
-               ? currentEmployee.getDesignation()
-               : null;
+                ? currentEmployee.getDesignation()
+                : null;
     }
 
     /**
@@ -163,13 +170,14 @@ public class SessionService {
      */
     public void clearSession() {
         LOG.info("Clearing session for user: {} from shop: {}",
-                 getCurrentUsername(),
-                 getCurrentRestaurantName());
+                getCurrentUsername(),
+                getCurrentRestaurantName());
         currentUser = null;
         currentEmployee = null;
         currentShop = null;
         applicationSettings = null;
-        customFont = null; // Clear font on logout
+        customFont = null;
+        cachedFontFamily = null;
     }
 
     /**
@@ -202,35 +210,60 @@ public class SessionService {
         try {
             String fontPath = getApplicationSetting("input_font_path");
 
-            if (fontPath != null && !fontPath.trim().isEmpty()) {
-                File fontFile = new File(fontPath);
-
-                if (fontFile.exists()) {
-                    FileInputStream fontStream = new FileInputStream(fontFile);
-                    customFont = Font.loadFont(fontStream, 25); // Load with default size 15
-                    fontStream.close();
-
-                    if (customFont != null) {
-                        LOG.info("Custom font loaded successfully: {}", fontPath);
-                    } else {
-                        LOG.warn("Failed to load custom font from: {}", fontPath);
-                    }
-                } else {
-                    LOG.warn("Custom font file does not exist: {}", fontPath);
-                    customFont = null;
-                }
-            } else {
+            if (fontPath == null || fontPath.trim().isEmpty()) {
                 LOG.debug("No custom font configured");
                 customFont = null;
+                cachedFontFamily = null;
+                return;
             }
+
+            File fontFile = new File(fontPath);
+
+            if (!fontFile.exists()) {
+                LOG.warn("Custom font file does not exist: {}", fontPath);
+                customFont = null;
+                cachedFontFamily = null;
+                return;
+            }
+
+            // Try loading font using file URI first (sometimes works better)
+            String fontUri = fontFile.toURI().toString();
+            customFont = Font.loadFont(fontUri, 25);
+
+            // If URI method fails, try FileInputStream with try-with-resources
+            if (customFont == null) {
+                try (FileInputStream fontStream = new FileInputStream(fontFile)) {
+                    customFont = Font.loadFont(fontStream, 25);
+                }
+            }
+
+            if (customFont != null) {
+                cachedFontFamily = customFont.getFamily();
+                LOG.info("Custom font loaded successfully:");
+                LOG.info("  Path: {}", fontPath);
+                LOG.info("  Family: {}", customFont.getFamily());
+                LOG.info("  Name: {}", customFont.getName());
+                LOG.info("  Style: {}", customFont.getStyle());
+                LOG.info("  Size: {}", customFont.getSize());
+
+                // Debug: Check if font family is registered in JavaFX
+                boolean familyExists = Font.getFamilies().contains(customFont.getFamily());
+                LOG.info("  Family registered in JavaFX: {}", familyExists);
+            } else {
+                LOG.warn("Failed to load custom font from: {}", fontPath);
+                cachedFontFamily = null;
+            }
+
         } catch (Exception e) {
             LOG.error("Error loading custom font: ", e);
             customFont = null;
+            cachedFontFamily = null;
         }
     }
 
     /**
      * Get application setting value by name
+     * 
      * @param settingName the setting name
      * @return setting value or null if not found
      */
@@ -240,6 +273,7 @@ public class SessionService {
 
     /**
      * Get font path setting
+     * 
      * @return font file path or null
      */
     public static String getFontPath() {
@@ -248,6 +282,7 @@ public class SessionService {
 
     /**
      * Get document directory setting
+     * 
      * @return document directory path or null
      */
     public static String getDocumentDirectory() {
@@ -256,6 +291,7 @@ public class SessionService {
 
     /**
      * Get custom font object (loaded once for entire application)
+     * 
      * @return Font object or null if not configured
      */
     public static Font getCustomFont() {
@@ -264,14 +300,107 @@ public class SessionService {
 
     /**
      * Get custom font with specific size
+     * 
      * @param size the font size
      * @return Font object with specified size or null
      */
     public static Font getCustomFont(double size) {
-        if (customFont != null) {
-            return Font.font(customFont.getFamily(), size);
+        if (customFont == null || cachedFontFamily == null) {
+            return null;
         }
-        return null;
+
+        // Try to use system-installed font with BOLD weight
+        Font boldFont = Font.font(cachedFontFamily, FontWeight.BOLD, size);
+
+        if (boldFont != null && boldFont.getFamily().equalsIgnoreCase(cachedFontFamily)) {
+            LOG.debug("Using font '{}' with BOLD weight, size: {}", cachedFontFamily, size);
+            return boldFont;
+        }
+
+        // Fall back to regular font
+        LOG.debug("Using font '{}' with regular weight, size: {}", cachedFontFamily, size);
+        return Font.font(cachedFontFamily, size);
+    }
+
+    /**
+     * Get custom font with size adjusted to match Swing rendering
+     * Use this method when migrating from Swing to match visual appearance
+     * 
+     * @param swingSize the font size as used in Swing
+     * @return Font with adjusted size for JavaFX or null if not configured
+     */
+    public static Font getCustomFontForSwingSize(double swingSize) {
+        if (customFont == null || cachedFontFamily == null) {
+            return null;
+        }
+
+        double adjustedSize = swingSize * JAVAFX_FONT_SIZE_MULTIPLIER;
+        LOG.debug("Converting Swing size {} to JavaFX size {} for font '{}'",
+                swingSize, adjustedSize, cachedFontFamily);
+        return Font.font(cachedFontFamily, adjustedSize);
+    }
+
+    /**
+     * Get custom font with specific size and weight
+     * 
+     * @param size   the font size
+     * @param weight the font weight (e.g., FontWeight.BOLD, FontWeight.NORMAL)
+     * @return Font object with specified size and weight or null
+     */
+    public static Font getCustomFont(double size, FontWeight weight) {
+        if (customFont == null || cachedFontFamily == null) {
+            return null;
+        }
+        return Font.font(cachedFontFamily, weight, size);
+    }
+
+    /**
+     * Get the font family name of loaded custom font
+     * 
+     * @return font family name or null if not loaded
+     */
+    public static String getCustomFontFamily() {
+        return cachedFontFamily;
+    }
+
+    /**
+     * Check if custom font is loaded and available
+     * 
+     * @return true if custom font is loaded
+     */
+    public static boolean isCustomFontLoaded() {
+        return customFont != null && cachedFontFamily != null;
+    }
+
+    /**
+     * Debug method to print font information
+     * Call this to troubleshoot font loading issues
+     */
+    public static void debugFontInfo() {
+        LOG.info("=== Font Debug Info ===");
+        if (customFont != null) {
+            LOG.info("Custom Font Loaded: YES");
+            LOG.info("  Family: {}", customFont.getFamily());
+            LOG.info("  Name: {}", customFont.getName());
+            LOG.info("  Style: {}", customFont.getStyle());
+            LOG.info("  Cached Family: {}", cachedFontFamily);
+
+            // Check if font family exists in system
+            boolean familyExists = Font.getFamilies().contains(cachedFontFamily);
+            LOG.info("  Registered in JavaFX: {}", familyExists);
+
+            // List similar font families
+            List<String> similarFonts = Font.getFamilies().stream()
+                    .filter(f -> f.toLowerCase().contains("kiran"))
+                    .toList();
+            if (!similarFonts.isEmpty()) {
+                LOG.info("  Similar fonts found: {}", similarFonts);
+            }
+        } else {
+            LOG.info("Custom Font Loaded: NO");
+            LOG.info("  Font Path Setting: {}", getFontPath());
+        }
+        LOG.info("=======================");
     }
 
     /**

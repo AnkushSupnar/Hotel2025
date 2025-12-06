@@ -214,6 +214,16 @@ public enum FxmlView {
         public String getFxmlFile() {
             return "/fxml/master/AddCategory.fxml";
         }
+    },
+    MATERIALFX_DEMO {
+        @Override
+        String getTitle() {
+            return "MaterialFX Components Demo";
+        }
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/demo/MaterialFXDemo.fxml";
+        }
     }
     ;
     abstract String getTitle();

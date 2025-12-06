@@ -13,25 +13,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1443.0" style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1443.0" style="-fx-background-color: #ECEFF1;" stylesheets="@../css/billing-material.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
 
     <left>
-        <!-- Left Panel - TABLE (35%) -->
+        <!-- Left Panel - TABLE SECTIONS (35%) -->
         <VBox prefWidth="505.0" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
 
             <!-- Refresh Tables Button -->
-            <Button fx:id="btnRefreshTables" maxWidth="Infinity" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 4; -fx-cursor: hand;" text="🔄 REFRESH TABLES">
+            <Button fx:id="btnRefreshTables" maxWidth="Infinity" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="🔄 REFRESH TABLES">
                 <VBox.margin>
                     <Insets bottom="12.0" />
                 </VBox.margin>
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font>
+                <font>
+                    <Font name="Kiran" size="14.0" />
+                </font>
             </Button>
 
             <!-- ScrollPane for sections list -->
             <ScrollPane fitToWidth="true" prefHeight="589.0" prefWidth="531.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-                <VBox fx:id="sectionsContainer" spacing="8.0" style="-fx-background-color: transparent;" />
+                <VBox fx:id="sectionsContainer" spacing="12.0" style="-fx-background-color: transparent; -fx-padding: 8;" />
             </ScrollPane>
         </VBox>
     </left>
@@ -48,39 +48,59 @@
 
                 <!-- Top Bar: Customer Search + Table Number -->
                 <HBox alignment="CENTER_LEFT" maxHeight="80" prefHeight="80" spacing="12" style="-fx-padding: 0;">
-                    <!-- Customer Search Section - Material Design -->
+                    <!-- Customer Search Section -->
                     <VBox spacing="6" style="-fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 1); -fx-background-radius: 4; -fx-padding: 8;" HBox.hgrow="ALWAYS">
                         <!-- Search Box with Icon -->
                         <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #F5F5F5; -fx-background-radius: 4; -fx-padding: 4 8; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4;">
                             <FontAwesomeIcon fill="#757575" glyphName="SEARCH" size="1em" />
-                            <TextField fx:id="txtCustomerSearch" promptText="ga`ahkacao naava" HBox.hgrow="ALWAYS">
-                        <font>
-                           <Font name="Kiran" size="25.0" />
-                        </font></TextField>
-                            <Button fx:id="btnAddNewCustomer" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 10px; -fx-padding: 6 12; -fx-background-radius: 4; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);" text="ADD NEW">
+                            <TextField fx:id="txtCustomerSearch" promptText="ga`ahkacao naava" style="-fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font name="Kiran" size="14.0" />
+                                </font>
+                            </TextField>
+                            <Button fx:id="btnAddNewCustomer" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand;" text="ADD NEW">
                                 <graphic>
                                     <FontAwesomeIcon fill="white" glyphName="USER_PLUS" size="0.9em" />
                                 </graphic>
+                                <font>
+                                    <Font name="Kiran" size="10.0" />
+                                </font>
                             </Button>
                         </HBox>
 
                         <!-- Selected Customer Display - Material Chip Style -->
                         <HBox fx:id="selectedCustomerDisplay" alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #E3F2FD; -fx-border-color: #1976D2; -fx-border-width: 1; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 12;" visible="false">
                             <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="0.9em" />
-                            <Label fx:id="lblCustomerName" text="-" />
+                            <Label fx:id="lblCustomerName" text="-">
+                                <font>
+                                    <Font name="Kiran" size="12.0" />
+                                </font>
+                            </Label>
                             <Label style="-fx-text-fill: #90CAF9; -fx-font-size: 10px;" text="•" />
-                            <Label fx:id="lblCustomerMobile" text="-" />
+                            <Label fx:id="lblCustomerMobile" text="-">
+                                <font>
+                                    <Font name="Kiran" size="12.0" />
+                                </font>
+                            </Label>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnClearCustomer" style="-fx-background-color: transparent; -fx-text-fill: #D32F2F; -fx-cursor: hand; -fx-font-size: 9px; -fx-padding: 2 4; -fx-background-radius: 12;" text="✕" />
+                            <Button fx:id="btnClearCustomer" style="-fx-background-color: transparent; -fx-text-fill: #D32F2F; -fx-cursor: hand; -fx-font-size: 9px; -fx-padding: 2 4; -fx-background-radius: 12;" text="✕">
+                                <font>
+                                    <Font name="Kiran" size="9.0" />
+                                </font>
+                            </Button>
                         </HBox>
                     </VBox>
 
-                    <!-- Table/Booking Number Display - Material Design -->
+                    <!-- Table/Booking Number Display -->
                     <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom, #1976D2, #1565C0); -fx-background-radius: 6; -fx-padding: 12 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2); -fx-min-width: 140; -fx-max-width: 140;">
-                        <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 9px; -fx-font-weight: bold; -fx-letter-spacing: 1px;" text="TABLE NO" />
+                        <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 9px; -fx-font-weight: bold; -fx-letter-spacing: 1px;" text="TABLE NO">
+                            <font>
+                                <Font name="Kiran" size="9.0" />
+                            </font>
+                        </Label>
                         <TextField fx:id="txtTableNumber" alignment="CENTER" editable="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-insets: 0; -fx-padding: 0; -fx-cursor: default;" text="HB12">
                             <font>
-                                <Font name="System Bold" size="28.0" />
+                                <Font name="Kiran" size="28.0" />
                             </font>
                         </TextField>
                     </VBox>
@@ -91,49 +111,198 @@
                     <graphic>
                         <FontAwesomeIcon fill="#1976D2" glyphName="CUTLERY" size="1em" />
                     </graphic>
+                    <font>
+                        <Font name="Kiran" size="10.0" />
+                    </font>
                 </Label>
 
                 <!-- Content area for menu items -->
                 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
                <content>
-                  <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="54.0" prefWidth="591.0" spacing="5.0" style="-fx-padding: 8;">
+                  <VBox spacing="8" style="-fx-padding: 4;">
                      <children>
-                        <!-- Category Name - Left Side -->
-                        <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8;">
+                        <!-- First Row: Category Name and Waiter Name - Using MaterialFX -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0;">
                            <children>
-                              <Label style="-fx-text-fill: #424242;" text="k^TogaIrIcao naava">
-                                 <font>
-                                    <Font name="Kiran" size="20.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtCategoryName" prefHeight="42.0" prefWidth="350.0" promptText="k^TogaIrIcao naava" style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8;">
-                                 <font>
-                                    <Font name="Kiran" size="25.0" />
-                                 </font>
-                              </TextField>
+                              <!-- Category Name -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="k^TogaIrIcao naava">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtCategoryName" prefHeight="32.0" promptText="k^TogaIrIcao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;" HBox.hgrow="ALWAYS">
+                                        <font>
+                                            <Font name="Kiran" size="16.0" />
+                                        </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+
+                              <!-- Waiter Name -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 180;" HBox.hgrow="SOMETIMES">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="vaoTrcao naava">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtWaitorName" prefHeight="32.0" promptText="vaoTrcao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                        <font>
+                                            <Font name="Kiran" size="16.0" />
+                                        </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
 
-                        <!-- Spacer to push waiter name to the right -->
-                        <Region HBox.hgrow="ALWAYS" />
-
-                        <!-- Waiter Name - Right Side -->
-                        <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8;">
+                        <!-- Second Row: Code, Item Name, Quantity, Price, Amount - Using MaterialFX -->
+                        <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0;">
                            <children>
-                              <Label style="-fx-text-fill: #424242;" text="vaoTrcao naava">
-                                 <font>
-                                    <Font name="Kiran" size="20.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtWaitorName" prefHeight="41.0" prefWidth="229.0" promptText="vaoTrcao naava" style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8;">
-                                 <font>
-                                    <Font name="Kiran" size="25.0" />
-                                 </font>
-                              </TextField>
+                              <!-- Code Field -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 80; -fx-max-width: 100;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="kaoD">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtCode" prefHeight="32.0" promptText="kaoD" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                       <font>
+                                          <Font name="Kiran" size="16.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+
+                              <!-- Item Name Field -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="maalaacao naava">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtItemName" prefHeight="32.0" promptText="maalaacao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                       <font>
+                                          <Font name="Kiran" size="16.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+
+                              <!-- Quantity Field -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 70; -fx-max-width: 90;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="naga">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtQuantity" prefHeight="32.0" promptText="naga" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                       <font>
+                                          <Font name="Kiran" size="16.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+
+                              <!-- Price Field -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 80; -fx-max-width: 100;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="Baava">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtPrice" prefHeight="32.0" promptText="Baava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                       <font>
+                                          <Font name="Kiran" size="16.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+
+                              <!-- Amount Field -->
+                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 85; -fx-max-width: 110;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #616161;" text="r@kma">
+                                       <font>
+                                          <Font name="Kiran" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtAmount" prefHeight="32.0" promptText="r@kma" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                       <font>
+                                          <Font name="Kiran" size="16.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+
+                        <!-- Action Buttons Row -->
+                        <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10">
+                                 <children>
+                                    <!-- Add Button -->
+                                    <Button fx:id="btnAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="ADD">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="PLUS" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
+
+                                    <!-- Order Button -->
+                                    <Button fx:id="btnOrder" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="ORDER">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="SHOPPING_CART" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
+
+                                    <!-- Edit Button -->
+                                    <Button fx:id="btnEdit" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="EDIT">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="EDIT" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
+
+                                    <!-- Remove Button -->
+                                    <Button fx:id="btnRemove" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="REMOVE">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="TRASH" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
+
+                                    <!-- Clear Button -->
+                                    <Button fx:id="btnClear" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="CLEAR">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="TIMES_CIRCLE" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>
-                  </HBox>
+                  </VBox>
                </content></ScrollPane>
             </VBox>
 

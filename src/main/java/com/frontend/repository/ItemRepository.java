@@ -78,5 +78,11 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
      * Find items by category ID and name containing with category eagerly loaded
      */
     @Query("SELECT i FROM Item i LEFT JOIN FETCH i.category WHERE i.categoryId = :categoryId AND LOWER(i.itemName) LIKE LOWER(CONCAT('%', :itemName, '%'))")
-    List<Item> findByCategoryIdAndItemNameContainingIgnoreCaseWithCategory(@Param("categoryId") Integer categoryId, @Param("itemName") String itemName);
+    List<Item> findByCategoryIdAndItemNameContainingIgnoreCaseWithCategory(@Param("categoryId") Integer categoryId,
+            @Param("itemName") String itemName);
+
+    /* Get all item.item_name as List<String> */
+    @Query("SELECT i.itemName FROM Item i")
+    List<String> findAllItemNames();
+
 }
