@@ -81,7 +81,7 @@ public class CategoryApiService {
         LOG.debug("Creating new category: {}", categoryDto.getCategory());
 
         // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
+        if (!SessionService.isLoggedIn()) {
             throw new RuntimeException("User not logged in. Please login first.");
         }
 
@@ -105,7 +105,7 @@ public class CategoryApiService {
         LOG.debug("Updating category with ID: {}", id);
 
         // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
+        if (!SessionService.isLoggedIn()) {
             throw new RuntimeException("User not logged in. Please login first.");
         }
 
@@ -132,7 +132,7 @@ public class CategoryApiService {
         LOG.debug("Deleting category with ID: {}", id);
 
         // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
+        if (!SessionService.isLoggedIn()) {
             throw new RuntimeException("User not logged in. Please login first.");
         }
 
@@ -153,7 +153,7 @@ public class CategoryApiService {
         LOG.debug("Fetching category with ID: {}", id);
 
         // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
+        if (!SessionService.isLoggedIn()) {
             throw new RuntimeException("User not logged in. Please login first.");
         }
 
@@ -170,21 +170,12 @@ public class CategoryApiService {
     /**
      * Search category by name
      */
-    public CategoryMasterDto getCategoryByName(String name) {
+    public Optional<CategoryMaster> getCategoryByName(String name) {
         LOG.debug("Searching category by name: {}", name);
 
-        // Check if user is logged in
-        if (!sessionService.isLoggedIn()) {
-            throw new RuntimeException("User not logged in. Please login first.");
-        }
-
         Optional<CategoryMaster> categoryOptional = categoryRepository.findByCategoryIgnoreCase(name);
-        if (categoryOptional.isEmpty()) {
-            LOG.error("Category not found with name: {}", name);
-            throw new RuntimeException("Category not found");
-        }
 
         LOG.info("Category found with name: {}", name);
-        return convertToDto(categoryOptional.get());
+        return categoryOptional;
     }
 }

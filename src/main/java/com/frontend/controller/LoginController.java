@@ -1,7 +1,6 @@
 package com.frontend.controller;
 
 import com.frontend.customUI.AutoCompleteTextField;
-import com.frontend.customUI.AutoCompleteTextField_old;
 import com.frontend.entity.Shop;
 import com.frontend.entity.User;
 import com.frontend.repository.UserRepository;

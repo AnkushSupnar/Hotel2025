@@ -1,16 +1,16 @@
-2025-12-07T00:08:14.810+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 10512 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-07T00:08:14.842+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-07T00:08:16.246+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-07T00:08:16.523+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 228 ms. Found 13 JPA repository interfaces.
-2025-12-07T00:08:17.774+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-07T00:08:17.902+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-07T00:08:17.981+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-07T00:08:18.652+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-07T00:08:18.712+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-07T00:08:19.047+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72064c3e
-2025-12-07T00:08:19.050+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-07T00:08:19.150+05:30  WARN 10512 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-07T00:08:19.192+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-09T00:01:43.395+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 15972 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:01:43.410+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:01:44.496+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:01:44.685+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 153 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:01:45.736+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:01:45.858+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:01:45.932+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:01:46.496+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:01:46.561+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:01:46.892+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7c95bc07
+2025-12-09T00:01:46.895+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:01:46.995+05:30  WARN 15972 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:01:47.029+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -18,71 +18,72 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-07T00:08:20.991+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-07T00:08:21.268+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-07T00:08:21.846+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-07T00:08:23.998+05:30  INFO 10512 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 10.265 seconds (process running for 11.647)
-2025-12-07T00:08:24.970+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-07T00:08:33.035+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-07T00:08:33.036+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-07T00:08:33.087+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-07T00:08:33.088+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-07T00:08:33.090+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-07T00:08:33.125+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-07T00:08:33.138+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
-2025-12-07T00:08:33.140+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
-2025-12-07T00:08:33.142+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-07T00:08:33.143+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-07T00:08:33.143+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-07T00:08:33.144+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
-2025-12-07T00:08:33.146+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
-2025-12-07T00:08:33.147+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-07T00:08:33.323+05:30  WARN 10512 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-07T00:08:33.400+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-07T00:08:33.401+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
-2025-12-07T00:08:33.403+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-07T00:08:33.404+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:08:33.405+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
-2025-12-07T00:08:33.407+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-07T00:08:33.418+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-07T00:08:33.421+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:08:33.428+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
-2025-12-07T00:08:33.431+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-07T00:08:33.432+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-07T00:08:33.452+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-07T00:08:33.453+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-07T00:08:33.455+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:08:33.458+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-07T00:08:33.460+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-07T00:08:33.461+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-07T00:08:34.080+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-07T00:08:34.105+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-07T00:08:34.117+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-07T00:08:34.127+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-07T00:08:34.137+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-07T00:08:34.147+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-07T00:08:34.160+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-07T00:08:34.172+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-07T00:08:34.184+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-07T00:08:34.197+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-07T00:08:34.205+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
-2025-12-07T00:08:46.636+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:08:46.637+05:30 DEBUG 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:08:46.654+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:08:46.656+05:30  INFO 10512 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:10:14.491+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 17288 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-07T00:10:14.504+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-07T00:10:15.758+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-07T00:10:15.987+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 181 ms. Found 13 JPA repository interfaces.
-2025-12-07T00:10:17.256+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-07T00:10:17.401+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-07T00:10:17.482+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-07T00:10:18.192+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-07T00:10:18.258+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-07T00:10:18.564+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2ad99fdc
-2025-12-07T00:10:18.566+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-07T00:10:18.648+05:30  WARN 17288 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-07T00:10:18.692+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-09T00:01:48.610+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:01:48.947+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:01:49.518+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:01:51.618+05:30  INFO 15972 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.207 seconds (process running for 10.642)
+2025-12-09T00:01:52.639+05:30 DEBUG 15972 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:01:52.818+05:30 ERROR 15972 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.view.StageManager           : unable to load fxml view: /fxml/home/login.fxml
+
+java.lang.reflect.InvocationTargetException: null
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at com.sun.javafx.reflect.Trampoline.invoke(MethodUtil.java:77) ~[javafx-base-19.0.2.1-win.jar:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at com.sun.javafx.reflect.MethodUtil.invoke(MethodUtil.java:275) ~[javafx-base-19.0.2.1-win.jar:na]
+	at com.sun.javafx.fxml.MethodHelper.invoke(MethodHelper.java:84) ~[javafx-fxml-19.0.2.1-win.jar:na]
+	at javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2680) ~[javafx-fxml-19.0.2.1-win.jar:na]
+	at javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2555) ~[javafx-fxml-19.0.2.1-win.jar:na]
+	at javafx.fxml.FXMLLoader.load(FXMLLoader.java:2523) ~[javafx-fxml-19.0.2.1-win.jar:na]
+	at com.frontend.config.SpringFXMLLoader.load(SpringFXMLLoader.java:28) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359) ~[spring-aop-6.2.6.jar:6.2.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:724) ~[spring-aop-6.2.6.jar:6.2.6]
+	at com.frontend.config.SpringFXMLLoader$$SpringCGLIB$$0.load(<generated>) ~[classes/:na]
+	at com.frontend.view.StageManager.loadViewNodeHierarchy(StageManager.java:99) ~[classes/:na]
+	at com.frontend.view.StageManager.switchScene(StageManager.java:38) ~[classes/:na]
+	at com.frontend.Main.displayInitialScene(Main.java:77) ~[classes/:na]
+	at com.frontend.Main.start(Main.java:47) ~[classes/:na]
+	at com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$9(LauncherImpl.java:847) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at com.sun.javafx.application.PlatformImpl.lambda$runAndWait$12(PlatformImpl.java:484) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:457) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399) ~[na:na]
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:456) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:96) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:184) ~[javafx-graphics-19.0.2.1-win.jar:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+Caused by: java.lang.Error: Unresolved compilation problems: 
+	The method stylePopup() is undefined for the type AutoCompleteTextField
+	The method stylePopup() is undefined for the type AutoCompleteTextField
+
+	at com.frontend.customUI.AutoCompleteTextField.<init>(AutoCompleteTextField.java:80) ~[classes/:na]
+	at com.frontend.customUI.AutoCompleteTextField.<init>(AutoCompleteTextField.java:99) ~[classes/:na]
+	at com.frontend.controller.LoginController.initializeUsernameAutocomplete(LoginController.java:172) ~[classes/:na]
+	at com.frontend.controller.LoginController.initialize(LoginController.java:82) ~[classes/:na]
+	... 35 common frames omitted
+
+2025-12-09T00:02:32.210+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 17328 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:02:32.217+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:02:33.105+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:02:33.293+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 155 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:02:34.291+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:02:34.395+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:02:34.467+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:02:35.051+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:02:35.109+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:02:35.436+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7736c1e3
+2025-12-09T00:02:35.440+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:02:35.527+05:30  WARN 17328 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:02:35.571+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -90,96 +91,68 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-07T00:10:20.254+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-07T00:10:20.480+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-07T00:10:21.114+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-07T00:10:23.138+05:30  INFO 17288 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.815 seconds (process running for 11.19)
-2025-12-07T00:10:24.165+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-07T00:10:33.079+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-07T00:10:33.080+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-07T00:10:33.131+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-07T00:10:33.133+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-07T00:10:33.137+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-07T00:10:33.165+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-07T00:10:33.177+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
-2025-12-07T00:10:33.178+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
-2025-12-07T00:10:33.180+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-07T00:10:33.180+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-07T00:10:33.180+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-07T00:10:33.181+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
-2025-12-07T00:10:33.182+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
-2025-12-07T00:10:33.183+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-07T00:10:33.342+05:30  WARN 17288 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-07T00:10:33.421+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-07T00:10:33.423+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
-2025-12-07T00:10:33.425+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-07T00:10:33.426+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:10:33.426+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
-2025-12-07T00:10:33.427+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-07T00:10:33.437+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-07T00:10:33.441+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:10:33.449+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
-2025-12-07T00:10:33.453+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-07T00:10:33.453+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-07T00:10:33.479+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-07T00:10:33.480+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-07T00:10:33.484+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:10:33.487+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-07T00:10:33.489+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:10:33.491+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-07T00:10:33.492+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-07T00:10:34.057+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-07T00:10:34.072+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-07T00:10:34.090+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-07T00:10:34.103+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-07T00:10:34.114+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-07T00:10:34.126+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-07T00:10:34.138+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-07T00:10:34.150+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-07T00:10:34.161+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-07T00:10:34.174+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-07T00:10:34.183+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
-2025-12-07T00:10:42.459+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:10:42.459+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:10:42.469+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:10:42.470+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:11:44.170+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:11:44.171+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:11:44.181+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:11:44.183+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:12:11.894+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:12:11.896+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:12:11.903+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:12:11.905+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:12:30.446+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:12:30.447+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:12:30.454+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:12:30.454+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:12:50.823+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:12:50.825+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:12:50.831+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:12:50.832+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:13:09.819+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:13:09.819+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:13:09.827+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:13:09.828+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:13:28.143+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: AMjanaI spoaSala
-2025-12-07T00:13:28.143+05:30 DEBUG 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:13:28.151+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: AMjanaI spoaSala
-2025-12-07T00:13:28.154+05:30  INFO 17288 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 23
-2025-12-07T00:22:07.549+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 13212 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-07T00:22:07.562+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-07T00:22:08.837+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-07T00:22:09.084+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 213 ms. Found 13 JPA repository interfaces.
-2025-12-07T00:22:10.206+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-07T00:22:10.322+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-07T00:22:10.385+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-07T00:22:11.026+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-07T00:22:11.078+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-07T00:22:11.383+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1b42fe72
-2025-12-07T00:22:11.388+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-07T00:22:11.490+05:30  WARN 13212 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-07T00:22:11.524+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-09T00:02:37.027+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:02:37.229+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:02:37.745+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:02:39.863+05:30  INFO 17328 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 8.507 seconds (process running for 9.765)
+2025-12-09T00:02:40.742+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:03:04.540+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:03:04.541+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:03:04.589+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:03:04.590+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:03:04.593+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:03:04.630+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:03:04.644+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:03:04.645+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:03:04.646+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:03:04.648+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:03:04.649+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:03:04.650+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:03:04.652+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:03:04.653+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:03:04.813+05:30  WARN 17328 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:03:04.892+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:03:04.892+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:03:04.895+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:03:04.896+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:03:04.896+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:03:04.897+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:03:04.910+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:03:04.913+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:03:04.919+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:03:04.921+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:03:04.922+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:03:04.945+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:03:04.947+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:03:04.950+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:03:04.952+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:03:04.952+05:30 DEBUG 17328 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:03:04.955+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:03:04.956+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:03:05.450+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:03:05.466+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:03:05.477+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:03:05.488+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:03:05.496+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:03:05.504+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:03:05.514+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:03:05.525+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:03:05.537+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:03:05.545+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:03:05.553+05:30  INFO 17328 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:04:00.155+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 14124 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:04:00.163+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:04:01.056+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:04:01.243+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 156 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:04:02.249+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:04:02.335+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:04:02.399+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:04:02.961+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:04:03.017+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:04:03.349+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@26a72c73
+2025-12-09T00:04:03.353+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:04:03.438+05:30  WARN 14124 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:04:03.482+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -187,84 +160,24 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-07T00:22:13.258+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-07T00:22:13.522+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-07T00:22:14.163+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-07T00:22:16.273+05:30  INFO 13212 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.847 seconds (process running for 11.252)
-2025-12-07T00:22:17.336+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-07T00:22:28.306+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-07T00:22:28.308+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-07T00:22:28.350+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-07T00:22:28.352+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-07T00:22:28.356+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-07T00:22:28.391+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-07T00:22:28.402+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
-2025-12-07T00:22:28.403+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
-2025-12-07T00:22:28.404+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-07T00:22:28.406+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-07T00:22:28.407+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-07T00:22:28.408+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
-2025-12-07T00:22:28.409+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
-2025-12-07T00:22:28.410+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-07T00:22:28.573+05:30  WARN 13212 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-07T00:22:28.641+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-07T00:22:28.643+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
-2025-12-07T00:22:28.645+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-07T00:22:28.646+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:22:28.647+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
-2025-12-07T00:22:28.647+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-07T00:22:28.659+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-07T00:22:28.660+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:22:28.665+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
-2025-12-07T00:22:28.666+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-07T00:22:28.668+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-07T00:22:28.693+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-07T00:22:28.694+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-07T00:22:28.697+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:22:28.699+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-07T00:22:28.700+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:22:28.702+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-07T00:22:28.703+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-07T00:22:29.300+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-07T00:22:29.325+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-07T00:22:29.338+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-07T00:22:29.348+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-07T00:22:29.358+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-07T00:22:29.369+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-07T00:22:29.379+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-07T00:22:29.392+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-07T00:22:29.404+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-07T00:22:29.415+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-07T00:22:29.424+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
-2025-12-07T00:22:58.041+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
-2025-12-07T00:22:58.042+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:22:58.059+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
-2025-12-07T00:22:58.061+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
-2025-12-07T00:25:34.451+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
-2025-12-07T00:25:34.453+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:25:34.464+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
-2025-12-07T00:25:34.465+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
-2025-12-07T00:25:39.332+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
-2025-12-07T00:25:39.335+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:25:39.346+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
-2025-12-07T00:25:39.347+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
-2025-12-07T00:26:38.762+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
-2025-12-07T00:26:38.762+05:30 DEBUG 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
-2025-12-07T00:26:38.768+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
-2025-12-07T00:26:38.770+05:30  INFO 13212 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
-2025-12-07T00:28:22.999+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 15812 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-07T00:28:23.013+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-07T00:28:24.388+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-07T00:28:24.659+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 242 ms. Found 13 JPA repository interfaces.
-2025-12-07T00:28:25.903+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-07T00:28:26.062+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-07T00:28:26.128+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-07T00:28:26.718+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-07T00:28:26.774+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-07T00:28:27.055+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4802525f
-2025-12-07T00:28:27.058+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-07T00:28:27.132+05:30  WARN 15812 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-07T00:28:27.174+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-09T00:04:05.119+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:04:05.353+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:04:05.882+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:04:07.599+05:30  INFO 14124 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 8.283 seconds (process running for 9.605)
+2025-12-09T00:04:08.384+05:30 DEBUG 14124 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:05:11.737+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 1840 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:05:11.743+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:05:12.676+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:05:12.839+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 131 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:05:13.840+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:05:13.943+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:05:14.030+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:05:14.666+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:05:14.727+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:05:15.077+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@67617326
+2025-12-09T00:05:15.080+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:05:15.183+05:30  WARN 1840 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:05:15.226+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -272,68 +185,68 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-07T00:28:28.838+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-07T00:28:29.119+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-07T00:28:29.810+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-07T00:28:32.017+05:30  INFO 15812 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 10.029 seconds (process running for 11.374)
-2025-12-07T00:28:33.094+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-07T00:28:41.549+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-07T00:28:41.550+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-07T00:28:41.617+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-07T00:28:41.618+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-07T00:28:41.621+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-07T00:28:41.654+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-07T00:28:41.665+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
-2025-12-07T00:28:41.668+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
-2025-12-07T00:28:41.668+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-07T00:28:41.669+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-07T00:28:41.669+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-07T00:28:41.669+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
-2025-12-07T00:28:41.670+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
-2025-12-07T00:28:41.672+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-07T00:28:41.838+05:30  WARN 15812 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-07T00:28:41.914+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-07T00:28:41.917+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
-2025-12-07T00:28:41.920+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-07T00:28:41.921+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:28:41.922+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
-2025-12-07T00:28:41.923+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-07T00:28:41.938+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-07T00:28:41.940+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:28:41.949+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
-2025-12-07T00:28:41.953+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-07T00:28:41.955+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-07T00:28:41.975+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-07T00:28:41.977+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-07T00:28:41.980+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:28:41.983+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-07T00:28:41.984+05:30 DEBUG 15812 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:28:41.986+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-07T00:28:41.987+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-07T00:28:42.572+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-07T00:28:42.591+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-07T00:28:42.605+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-07T00:28:42.614+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-07T00:28:42.626+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-07T00:28:42.636+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-07T00:28:42.647+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-07T00:28:42.661+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-07T00:28:42.674+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-07T00:28:42.686+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-07T00:28:42.693+05:30  INFO 15812 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
-2025-12-07T00:40:10.210+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 10312 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-07T00:40:10.222+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-07T00:40:11.651+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-07T00:40:11.908+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 215 ms. Found 13 JPA repository interfaces.
-2025-12-07T00:40:13.223+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-07T00:40:13.366+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-07T00:40:13.443+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-07T00:40:14.170+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-07T00:40:14.248+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-07T00:40:14.659+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a1ab9d0
-2025-12-07T00:40:14.665+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-07T00:40:14.787+05:30  WARN 10312 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-07T00:40:14.831+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-09T00:05:16.785+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:05:16.995+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:05:17.544+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:05:19.426+05:30  INFO 1840 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 8.568 seconds (process running for 9.73)
+2025-12-09T00:05:20.219+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:06:04.503+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:06:04.505+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:06:04.545+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:06:04.546+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:06:04.548+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:06:04.585+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:06:04.599+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:06:04.600+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:06:04.601+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:06:04.602+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:06:04.603+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:06:04.604+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:06:04.606+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:06:04.607+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:06:04.775+05:30  WARN 1840 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:06:04.848+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:06:04.851+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:06:04.851+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:06:04.852+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:06:04.852+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:06:04.853+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:06:04.863+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:06:04.864+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:06:04.869+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:06:04.870+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:06:04.872+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:06:04.890+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:06:04.891+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:06:04.893+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:06:04.895+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:06:04.896+05:30 DEBUG 1840 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:06:04.898+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:06:04.899+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:06:05.385+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:06:05.402+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:06:05.414+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:06:05.422+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:06:05.431+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:06:05.442+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:06:05.453+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:06:05.467+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:06:05.478+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:06:05.490+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:06:05.501+05:30  INFO 1840 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:19:01.190+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 12620 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:19:01.197+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:19:02.165+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:19:02.368+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 163 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:19:03.365+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:19:03.495+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:19:03.570+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:19:04.305+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:19:04.363+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:19:04.687+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@76612207
+2025-12-09T00:19:04.691+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:19:04.784+05:30  WARN 12620 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:19:04.847+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -341,52 +254,407 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-07T00:40:16.579+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-07T00:40:16.858+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-07T00:40:17.550+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-07T00:40:19.900+05:30  INFO 10312 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 10.813 seconds (process running for 12.209)
-2025-12-07T00:40:20.887+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-07T00:40:29.506+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-07T00:40:29.508+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-07T00:40:29.556+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-07T00:40:29.557+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-07T00:40:29.560+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-07T00:40:29.594+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-07T00:40:29.609+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
-2025-12-07T00:40:29.610+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
-2025-12-07T00:40:29.611+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-07T00:40:29.613+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-07T00:40:29.614+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-07T00:40:29.615+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
-2025-12-07T00:40:29.616+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
-2025-12-07T00:40:29.617+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-07T00:40:29.790+05:30  WARN 10312 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-07T00:40:29.883+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-07T00:40:29.885+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
-2025-12-07T00:40:29.888+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-07T00:40:29.889+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:40:29.890+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
-2025-12-07T00:40:29.892+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-07T00:40:29.907+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-07T00:40:29.909+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:40:29.916+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
-2025-12-07T00:40:29.919+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-07T00:40:29.919+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-07T00:40:29.944+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-07T00:40:29.944+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-07T00:40:29.947+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:40:29.950+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-07T00:40:29.952+05:30 DEBUG 10312 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
-2025-12-07T00:40:29.954+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-07T00:40:29.954+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-07T00:40:30.560+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-07T00:40:30.576+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-07T00:40:30.586+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-07T00:40:30.597+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-07T00:40:30.607+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-07T00:40:30.619+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-07T00:40:30.629+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-07T00:40:30.641+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-07T00:40:30.651+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-07T00:40:30.663+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-07T00:40:30.671+05:30  INFO 10312 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:19:06.515+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:19:06.765+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:19:07.318+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:19:09.375+05:30  INFO 12620 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.104 seconds (process running for 10.455)
+2025-12-09T00:19:10.331+05:30 DEBUG 12620 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:26:37.101+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 8908 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:26:37.107+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:26:38.050+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:26:38.263+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 157 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:26:39.328+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:26:39.458+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:26:39.534+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:26:40.227+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:26:40.289+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:26:40.604+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7736c1e3
+2025-12-09T00:26:40.608+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:26:40.724+05:30  WARN 8908 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:26:40.769+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:26:42.342+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:26:42.595+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:26:43.069+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:26:45.124+05:30  INFO 8908 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 8.909 seconds (process running for 10.167)
+2025-12-09T00:26:46.042+05:30 DEBUG 8908 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:40:38.703+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 11016 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:40:38.711+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:40:39.933+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:40:40.139+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 159 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:40:41.359+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:40:41.517+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:40:41.613+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:40:42.513+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:40:42.599+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:40:43.090+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6ca5a44d
+2025-12-09T00:40:43.095+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:40:43.236+05:30  WARN 11016 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:40:43.287+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:40:45.715+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:40:46.118+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:40:47.045+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:40:49.952+05:30  INFO 11016 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 12.447 seconds (process running for 14.375)
+2025-12-09T00:40:51.427+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:41:05.106+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:41:05.108+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:41:05.154+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:41:05.157+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:41:05.162+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:41:05.207+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:41:05.225+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:41:05.226+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:41:05.227+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:41:05.228+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:41:05.230+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:41:05.231+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:41:05.233+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:41:05.234+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:41:05.418+05:30  WARN 11016 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:41:05.508+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:41:05.509+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:41:05.511+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:41:05.514+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:41:05.514+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:41:05.515+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:41:05.527+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:41:05.529+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:41:05.536+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:41:05.539+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:41:05.540+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:41:05.564+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:41:05.565+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:41:05.568+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:41:05.572+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:41:05.573+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:41:05.578+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:41:05.579+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:41:06.194+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:41:06.212+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:41:06.228+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:41:06.239+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:41:06.249+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:41:06.264+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:41:06.277+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:41:06.293+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:41:06.310+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:41:06.322+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:41:06.332+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:41:18.407+05:30  WARN 11016 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:41:33.330+05:30 DEBUG 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: caayainaja ra[-sa
+2025-12-09T00:41:33.340+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: caayainaja ra[-sa
+2025-12-09T00:41:33.342+05:30  INFO 11016 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 11
+2025-12-09T00:42:12.715+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 12556 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:42:12.722+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:42:13.833+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:42:14.050+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 192 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:42:15.236+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:42:15.378+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:42:15.464+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:42:16.208+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:42:16.281+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:42:16.677+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4e18de81
+2025-12-09T00:42:16.681+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:42:16.784+05:30  WARN 12556 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:42:16.838+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:42:19.125+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:42:19.462+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:42:20.201+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:42:23.140+05:30  INFO 12556 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 11.517 seconds (process running for 13.011)
+2025-12-09T00:42:24.390+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:42:37.900+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:42:37.901+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:42:37.948+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:42:37.950+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:42:37.952+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:42:37.992+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:42:38.006+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:42:38.006+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:42:38.008+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:42:38.009+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:42:38.010+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:42:38.010+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:42:38.011+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:42:38.013+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:42:38.174+05:30  WARN 12556 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:42:38.241+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:42:38.243+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:42:38.246+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:42:38.247+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:42:38.248+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:42:38.248+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:42:38.260+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:42:38.261+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:42:38.270+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:42:38.272+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:42:38.273+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:42:38.296+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:42:38.297+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:42:38.299+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:42:38.304+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:42:38.305+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:42:38.308+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:42:38.309+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:42:38.905+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:42:38.926+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:42:38.941+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:42:38.951+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:42:38.960+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:42:38.972+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:42:38.983+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:42:38.998+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:42:39.009+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:42:39.021+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:42:39.028+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:43:08.648+05:30  WARN 12556 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:43:08.655+05:30  WARN 12556 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:43:51.440+05:30 DEBUG 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: caayainaja ra[-sa
+2025-12-09T00:43:51.451+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: caayainaja ra[-sa
+2025-12-09T00:43:51.452+05:30  INFO 12556 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 11
+2025-12-09T00:47:14.434+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 15868 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:47:14.439+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:47:15.525+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:47:15.764+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 213 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:47:16.973+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:47:17.176+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:47:17.278+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:47:18.097+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:47:18.175+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:47:18.591+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1d3264be
+2025-12-09T00:47:18.597+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:47:18.708+05:30  WARN 15868 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:47:18.758+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:47:21.190+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:47:21.533+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:47:22.374+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:47:25.566+05:30  INFO 15868 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 12.156 seconds (process running for 13.665)
+2025-12-09T00:47:27.064+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:47:37.352+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:47:37.353+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:47:37.403+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:47:37.404+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:47:37.406+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:47:37.441+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:47:37.455+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:47:37.456+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:47:37.458+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:47:37.459+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:47:37.459+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:47:37.460+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:47:37.461+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:47:37.463+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:47:37.659+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:47:37.744+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:47:37.746+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:47:37.750+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:47:37.751+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:47:37.752+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:47:37.753+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:47:37.767+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:47:37.768+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:47:37.778+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:47:37.780+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:47:37.782+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:47:37.805+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:47:37.806+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:47:37.809+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:47:37.815+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:47:37.816+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:47:37.820+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:47:37.821+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:47:38.407+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:47:38.426+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:47:38.441+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:47:38.450+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:47:38.456+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:47:38.465+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:47:38.473+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:47:38.482+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:47:38.494+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:47:38.503+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:47:38.509+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:47:47.130+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:47:47.134+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:48:01.177+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:48:11.158+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: paMjaabakamajaa
+2025-12-09T00:48:11.169+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: paMjaabakamajaa
+2025-12-09T00:48:11.169+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item by category ID and item code: 2
+2025-12-09T00:48:11.212+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item by code: 4
+2025-12-09T00:48:11.225+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: paMjaabakamajaa
+2025-12-09T00:48:11.232+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: paMjaabakamajaa
+2025-12-09T00:48:11.233+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 2
+2025-12-09T00:49:06.414+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:49:20.481+05:30 DEBUG 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 11.0
+2025-12-09T00:49:20.485+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selected: AMkuSa saa. saupanar (ID: 1) - 9960855742
+2025-12-09T00:49:23.878+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:49:23.880+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:49:45.429+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:49:45.432+05:30  WARN 15868 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-09T00:49:47.795+05:30  INFO 15868 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item by code: 4
+2025-12-09T00:50:34.563+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 16700 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:50:34.571+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:50:35.834+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:50:36.092+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 216 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:50:37.361+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:50:37.508+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:50:37.600+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:50:38.379+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:50:38.461+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:50:38.865+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2ec313fc
+2025-12-09T00:50:38.870+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:50:38.988+05:30  WARN 16700 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:50:39.049+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:50:41.395+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:50:41.727+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:50:42.500+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:50:45.813+05:30  INFO 16700 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 12.408 seconds (process running for 13.938)
+2025-12-09T00:50:47.133+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:51:21.142+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:51:21.144+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:51:21.182+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:51:21.183+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:51:21.187+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:51:21.225+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:51:21.240+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:51:21.240+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:51:21.242+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:51:21.242+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:51:21.244+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:51:21.244+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:51:21.246+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:51:21.246+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:51:21.422+05:30  WARN 16700 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:51:21.511+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:51:21.513+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:51:21.516+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:51:21.517+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:51:21.519+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:51:21.519+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:51:21.531+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:51:21.533+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:51:21.540+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:51:21.545+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:51:21.546+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:51:21.572+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:51:21.574+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:51:21.577+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:51:21.582+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:51:21.584+05:30 DEBUG 16700 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:51:21.586+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:51:21.587+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:51:22.190+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:51:22.208+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:51:22.220+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:51:22.231+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:51:22.241+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:51:22.254+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:51:22.267+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:51:22.281+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:51:22.293+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:51:22.306+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:51:22.316+05:30  INFO 16700 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:53:34.676+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 2688 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-09T00:53:34.684+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-09T00:53:35.893+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-09T00:53:36.089+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 151 ms. Found 13 JPA repository interfaces.
+2025-12-09T00:53:37.300+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-09T00:53:37.484+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-09T00:53:37.585+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-09T00:53:38.402+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-09T00:53:38.498+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-09T00:53:38.901+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1b42fe72
+2025-12-09T00:53:38.906+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-09T00:53:39.023+05:30  WARN 2688 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-09T00:53:39.084+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-09T00:53:41.465+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-09T00:53:41.794+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-09T00:53:42.468+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-09T00:53:45.584+05:30  INFO 2688 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 12.028 seconds (process running for 13.684)
+2025-12-09T00:53:46.868+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-09T00:53:55.756+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-09T00:53:55.757+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-09T00:53:55.808+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-09T00:53:55.809+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-09T00:53:55.814+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-09T00:53:55.852+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-09T00:53:55.868+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Custom font loaded successfully:
+2025-12-09T00:53:55.871+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Path: D:\Hotel Software\kiran.ttf
+2025-12-09T00:53:55.874+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-09T00:53:55.875+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-09T00:53:55.877+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-09T00:53:55.877+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Size: 25.0
+2025-12-09T00:53:55.879+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family registered in JavaFX: true
+2025-12-09T00:53:55.880+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-09T00:53:56.054+05:30  WARN 2688 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-09T00:53:56.138+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-09T00:53:56.139+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:53:56.142+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 25.0
+2025-12-09T00:53:56.144+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-09T00:53:56.145+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:53:56.146+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font applied to all billing text fields
+2025-12-09T00:53:56.147+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-09T00:53:56.158+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-09T00:53:56.160+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' with BOLD weight, size: 20.0
+2025-12-09T00:53:56.167+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font
+2025-12-09T00:53:56.170+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-09T00:53:56.172+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-09T00:53:56.198+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-09T00:53:56.199+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-09T00:53:56.204+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-09T00:53:56.208+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-09T00:53:56.209+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-09T00:53:56.810+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-09T00:53:56.832+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-09T00:53:56.848+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-09T00:53:56.856+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-09T00:53:56.867+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-09T00:53:56.877+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-09T00:53:56.889+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-09T00:53:56.903+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-09T00:53:56.918+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-09T00:53:56.936+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-09T00:53:56.945+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-09T00:54:02.856+05:30 DEBUG 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: BaajaI paalaa
+2025-12-09T00:54:02.867+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: BaajaI paalaa
+2025-12-09T00:54:02.868+05:30  INFO 2688 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 21

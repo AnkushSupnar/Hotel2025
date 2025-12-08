@@ -87,7 +87,10 @@ public class SessionService {
     /**
      * Check if user is logged in
      */
-    public boolean isLoggedIn() {
+    /**
+     * Check if user is logged in
+     */
+    public static boolean isLoggedIn() {
         boolean loggedIn = currentUser != null;
         LOG.debug("Checking isLoggedIn: {}", loggedIn);
         return loggedIn;

@@ -4,7 +4,6 @@ import com.frontend.service.SessionService;
 import com.frontend.view.FxmlView;
 import com.frontend.view.StageManager;
 import io.github.palexdev.materialfx.controls.*;
-import io.github.palexdev.materialfx.enums.FloatMode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -113,9 +112,8 @@ public class MaterialFXDemoController implements Initializable {
 
                 // Apply Kiran font to text fields with inline style for persistence
                 String textFieldStyle = String.format(
-                    "-fx-font-family: '%s'; -fx-font-size: 20px;",
-                    fontFamily
-                );
+                        "-fx-font-family: '%s'; -fx-font-size: 20px;",
+                        fontFamily);
 
                 txtName.setStyle(textFieldStyle);
                 txtEmail.setStyle(textFieldStyle);
@@ -123,9 +121,8 @@ public class MaterialFXDemoController implements Initializable {
 
                 // Apply to ComboBoxes
                 String comboBoxStyle = String.format(
-                    "-fx-font-family: '%s'; -fx-font-size: 18px;",
-                    fontFamily
-                );
+                        "-fx-font-family: '%s'; -fx-font-size: 18px;",
+                        fontFamily);
 
                 cmbCategory.setStyle(comboBoxStyle);
                 cmbFilterCategory.setStyle(comboBoxStyle);
@@ -134,15 +131,15 @@ public class MaterialFXDemoController implements Initializable {
                 lblStatusMessage.setFont(kiranFont16);
 
                 // Update floating text prompts to Marathi
-                txtName.setFloatingText("तुमचे नाव");  // Your name
-                txtEmail.setFloatingText("ईमेल");      // Email
+                txtName.setFloatingText("तुमचे नाव"); // Your name
+                txtEmail.setFloatingText("ईमेल"); // Email
                 txtPassword.setFloatingText("पासवर्ड"); // Password
-                cmbCategory.setFloatingText("श्रेणी निवडा");  // Select category
+                cmbCategory.setFloatingText("श्रेणी निवडा"); // Select category
                 cmbFilterCategory.setFloatingText("वस्तू शोधा..."); // Search items
 
                 // Update checkbox and radio button text
                 chkAgree.setText("मी अटी व शर्तींशी सहमत आहे"); // I agree to terms and conditions
-                radioMale.setText("पुरुष");   // Male
+                radioMale.setText("पुरुष"); // Male
                 radioFemale.setText("स्त्री"); // Female
 
                 // Update labels
@@ -216,12 +213,11 @@ public class MaterialFXDemoController implements Initializable {
     private void setupComboBoxes() {
         // Regular ComboBox with Marathi categories
         cmbCategory.getItems().addAll(
-            "स्टार्टर (Starter)",
-            "मुख्य पदार्थ (Main Course)",
-            "मिठाई (Dessert)",
-            "पेय पदार्थ (Beverages)",
-            "स्नॅक्स (Snacks)"
-        );
+                "स्टार्टर (Starter)",
+                "मुख्य पदार्थ (Main Course)",
+                "मिठाई (Dessert)",
+                "पेय पदार्थ (Beverages)",
+                "स्नॅक्स (Snacks)");
         cmbCategory.setOnAction(e -> {
             String selected = cmbCategory.getSelectedItem();
             if (selected != null) {
@@ -232,22 +228,21 @@ public class MaterialFXDemoController implements Initializable {
 
         // FilterComboBox with search functionality - Marathi dish names
         cmbFilterCategory.getItems().addAll(
-            "पनीर टिक्का (Paneer Tikka)",
-            "बटर चिकन (Butter Chicken)",
-            "दाल मखनी (Dal Makhani)",
-            "नान (Naan)",
-            "तांदूळ (Rice)",
-            "बिर्याणी (Biryani)",
-            "तंदूरी चिकन (Tandoori Chicken)",
-            "गुलाब जामुन (Gulab Jamun)",
-            "रसमलाई (Rasmalai)",
-            "लस्सी (Lassi)",
-            "मसाला चहा (Masala Chai)",
-            "कॉफी (Coffee)",
-            "कोल्ड ड्रिंक (Cold Drink)",
-            "पाण्याची बाटली (Water Bottle)",
-            "सॅलड (Salad)"
-        );
+                "पनीर टिक्का (Paneer Tikka)",
+                "बटर चिकन (Butter Chicken)",
+                "दाल मखनी (Dal Makhani)",
+                "नान (Naan)",
+                "तांदूळ (Rice)",
+                "बिर्याणी (Biryani)",
+                "तंदूरी चिकन (Tandoori Chicken)",
+                "गुलाब जामुन (Gulab Jamun)",
+                "रसमलाई (Rasmalai)",
+                "लस्सी (Lassi)",
+                "मसाला चहा (Masala Chai)",
+                "कॉफी (Coffee)",
+                "कोल्ड ड्रिंक (Cold Drink)",
+                "पाण्याची बाटली (Water Bottle)",
+                "सॅलड (Salad)");
         cmbFilterCategory.setOnAction(e -> {
             String selected = cmbFilterCategory.getSelectedItem();
             if (selected != null) {

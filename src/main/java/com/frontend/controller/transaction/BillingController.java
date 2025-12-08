@@ -5,6 +5,7 @@ import com.frontend.config.SpringFXMLLoader;
 import com.frontend.customUI.AutoCompleteTextField;
 import com.frontend.customUI.AutoCompleteTextField_old;
 import com.frontend.dto.CategoryMasterDto;
+import com.frontend.entity.CategoryMaster;
 import com.frontend.entity.Customer;
 import com.frontend.entity.Item;
 import com.frontend.entity.TableMaster;
@@ -144,10 +145,12 @@ public class BillingController implements Initializable {
     private CategoryMasterDto selectedCategory;
 
     private VBox draggedBox = null;
+    Font kiranFont;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Billing screen initialized");
+        kiranFont = SessionService.getCustomFont(25.0);
         setupRefreshButton();
         setupCustomFont(); // Re-enabled to fix font issue
         setupKiranFontPersistence();
@@ -451,21 +454,7 @@ public class BillingController implements Initializable {
                 allCategoryNames.add(category.getCategory());
             }
 
-            // Create popup menu to show suggestions
-            categoryPopup = new ContextMenu();
-            categoryPopup.setAutoHide(true);
-
-            // Create ListView to display filtered categories
-            categoryListView = new ListView<>();
-            categoryListView.setPrefHeight(300);
-            categoryListView.setPrefWidth(txtCategoryName.getWidth());
-            categoryListView.setPrefWidth(200);
-
             // Get custom Kiran font for list
-            Font kiranFont = SessionService.getCustomFont(20.0);
-            if (kiranFont != null) {
-                categoryListView.setStyle("-fx-font-family: '" + kiranFont.getFamily() + "'; -fx-font-size: 20px;");
-            }
 
             new AutoCompleteTextField(txtCategoryName, allCategoryNames, kiranFont, txtCode);
 
@@ -477,10 +466,6 @@ public class BillingController implements Initializable {
     }
 
     private void setUpItemSearch() {
-        Font kiranFont = SessionService.getCustomFont(20.0);
-        if (kiranFont != null) {
-            categoryListView.setStyle("-fx-font-family: '" + kiranFont.getFamily() + "'; -fx-font-size: 20px;");
-        }
         txtItemName.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable,
@@ -495,7 +480,8 @@ public class BillingController implements Initializable {
                         }
                     }
                     if (!txtCategoryName.getText().isEmpty()) {
-                        CategoryMasterDto category = categoryApiService.getCategoryByName(txtCategoryName.getText());
+                        CategoryMaster category = categoryApiService.getCategoryByName(txtCategoryName.getText())
+                                .orElse(null);
 
                         if (category != null) {
                             allItemNames = itemService.getItemNameByCategoryId(category.getId());
@@ -509,6 +495,36 @@ public class BillingController implements Initializable {
             }
         });
 
+        txtCode.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                if (!txtCategoryName.getText().isEmpty()) {
+                    int code = commonMethod.checkStringIsInteger(txtCode.getText());
+                    String category = txtCategoryName.getText();
+                    int catId = categoryApiService.getCategoryByName(category).orElse(null).getId();
+                    Item item = itemService.findByCategoryIdAndItemCode(catId, code);
+                    if (item != null) {
+                        setItem(item);
+                    }
+                }
+
+                System.out.println("ENter pressed on CODE");
+                txtItemName.requestFocus();
+            }
+        });
+        txtItemName.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                if (!txtItemName.getText().isEmpty()) {
+                    String itemName = txtItemName.getText();
+                    Item item = itemService.getItemByName(itemName).orElse(null);
+                    if (item != null) {
+                        setItem(item);
+                    }
+                }
+
+                System.out.println("ENter pressed on ITEM");
+                txtQuantity.requestFocus();
+            }
+        });
     }
 
     public void setItem(Item item) {

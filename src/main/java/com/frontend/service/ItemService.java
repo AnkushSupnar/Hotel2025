@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +79,18 @@ public class ItemService {
             return item;
         } catch (Exception e) {
             LOG.error("Error fetching item by code: {}", code, e);
+            throw new RuntimeException("Error fetching item: " + e.getMessage(), e);
+        }
+    }
+
+    public Item findByCategoryIdAndItemCode(Integer categoryId, Integer itemCode) {
+        try {
+            LOG.info("Fetching item by category ID and item code: {}", categoryId, itemCode);
+            Item item = itemRepository.findByCategoryIdAndItemCode(categoryId, itemCode)
+                    .orElse(null);
+            return item;
+        } catch (Exception e) {
+            LOG.error("Error fetching item by category ID and item code: {}", categoryId, itemCode, e);
             throw new RuntimeException("Error fetching item: " + e.getMessage(), e);
         }
     }
@@ -239,5 +252,9 @@ public class ItemService {
 
     public List<String> getAllItemNames() {
         return itemRepository.findAllItemNames();
+    }
+
+    public Optional<Item> getItemByName(String name) {
+        return itemRepository.findByItemName(name);
     }
 }

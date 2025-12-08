@@ -85,4 +85,11 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("SELECT i.itemName FROM Item i")
     List<String> findAllItemNames();
 
+    /**
+     * Find item by category id and item code
+     */
+    @Query("SELECT i FROM Item i WHERE i.categoryId = :categoryId AND i.itemCode = :itemCode")
+    Optional<Item> findByCategoryIdAndItemCode(@Param("categoryId") Integer categoryId,
+            @Param("itemCode") Integer itemCode);
+
 }
