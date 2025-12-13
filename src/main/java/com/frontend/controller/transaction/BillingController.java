@@ -9,24 +9,33 @@ import com.frontend.entity.CategoryMaster;
 import com.frontend.entity.Customer;
 import com.frontend.entity.Item;
 import com.frontend.entity.TableMaster;
+import com.frontend.entity.TempTransaction;
 import com.frontend.service.CategoryApiService;
 import com.frontend.service.CustomerService;
+import com.frontend.service.EmployeeService;
 import com.frontend.service.ItemService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
+import com.frontend.view.AlertNotification;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import lombok.extern.java.Log;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +68,12 @@ public class BillingController implements Initializable {
 
     @Autowired
     private CommonMethod commonMethod;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    AlertNotification alert;
 
     @FXML
     private VBox sectionsContainer;
@@ -131,18 +146,35 @@ public class BillingController implements Initializable {
     @FXML
     private Button btnClear;
 
+    @FXML
+    private TableView<TempTransaction> tblTransaction;
+
+    @FXML
+    private TableColumn<TempTransaction, Float> colAmount;
+
+    @FXML
+    private TableColumn<TempTransaction, String> colItemName;
+
+    @FXML
+    private TableColumn<TempTransaction, Float> colQuantity;
+
+    @FXML
+    private TableColumn<TempTransaction, Float> colRate;
+
+    @FXML
+    private TableColumn<TempTransaction, Integer> colSrNo;
+
     // Autocomplete and customer tracking
     private AutoCompleteTextField_old customerAutoComplete;
     private List<Customer> allCustomers;
     private Customer selectedCustomer;
 
-    // Category search components (Swing-style implementation)
-    private ContextMenu categoryPopup;
-    private ListView<String> categoryListView;
     private List<String> allCategoryNames;
     private List<String> allItemNames;
     private List<CategoryMasterDto> allCategories;
     private CategoryMasterDto selectedCategory;
+    private List<String> allWaitorNames;
+    private ObservableList<TempTransaction> tempTransactionList = FXCollections.observableArrayList();
 
     private VBox draggedBox = null;
     Font kiranFont;
@@ -158,26 +190,19 @@ public class BillingController implements Initializable {
         setupCategorySearch();
         setUpItemSearch();
         loadSections();
+        setUpTempTransactionTable();
+        btnAdd.setOnAction(e -> add());
     }
 
-    /**
-     * Setup refresh button action
-     */
     private void setupRefreshButton() {
         btnRefreshTables.setOnAction(e -> refreshTables());
     }
 
-    /**
-     * Refresh all table sections
-     */
     private void refreshTables() {
         LOG.info("Refreshing tables...");
         loadSections();
     }
 
-    /**
-     * Setup customer search functionality with autocomplete
-     */
     private void setupCustomerSearch() {
         try {
             // Load all customers from database
@@ -223,10 +248,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Setup Kiran font persistence for all text fields
-     * Applies Kiran font for Marathi text support
-     */
     private void setupKiranFontPersistence() {
         try {
             Font kiranFont20 = SessionService.getCustomFont(20.0);
@@ -254,9 +275,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Helper method to apply custom font to text field
-     */
     private void applyFontToTextField(TextField field, Font font, String style) {
         if (field != null) {
             field.setFont(font);
@@ -312,9 +330,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Find and select customer from the entered text
-     */
     private void findAndSelectCustomer(String searchText) {
         try {
             // Format is: "FirstName MiddleName LastName Mobile"
@@ -340,9 +355,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Display selected customer information
-     */
     private void displaySelectedCustomer(Customer customer) {
         if (customer != null) {
             lblCustomerName.setText(customer.getFullName());
@@ -374,9 +386,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Clear selected customer
-     */
     private void clearSelectedCustomer() {
         selectedCustomer = null;
         lblCustomerName.setText("-");
@@ -402,25 +411,16 @@ public class BillingController implements Initializable {
         LOG.info("Customer selection cleared");
     }
 
-    /**
-     * Get currently selected customer
-     */
     public Customer getSelectedCustomer() {
         return selectedCustomer;
     }
 
-    /**
-     * Add new customer
-     */
     private void addNewCustomer() {
         LOG.info("Add new customer button clicked");
         // TODO: Open customer registration dialog/window to add new customer
         // After adding, reload customers: reloadCustomers()
     }
 
-    /**
-     * Reload customers after adding new customer
-     */
     public void reloadCustomers() {
         try {
             allCustomers = customerService.getAllCustomers();
@@ -438,10 +438,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Setup category search functionality (Swing-style implementation)
-     * Matches the behavior from BillingFrame3.java generateCategorySearchBox()
-     */
     private void setupCategorySearch() {
         try {
             // Load all categories from database
@@ -458,6 +454,22 @@ public class BillingController implements Initializable {
 
             new AutoCompleteTextField(txtCategoryName, allCategoryNames, kiranFont, txtCode);
 
+            txtCategoryName.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) { // On focus gained
+                    if (!txtCategoryName.getText().isEmpty()) {
+                        loadItemsByCategory(txtCategoryName.getText());
+                    } else {
+                        txtCategoryName.requestFocus();
+                    }
+                } else {
+                    if (!txtCategoryName.getText().isEmpty()) {
+                        loadItemsByCategory(txtCategoryName.getText());
+                    } else {
+                        txtCategoryName.requestFocus();
+                    }
+                }
+            });
+
             LOG.info("Category search initialized successfully (Swing-style)");
 
         } catch (Exception e) {
@@ -466,71 +478,328 @@ public class BillingController implements Initializable {
     }
 
     private void setUpItemSearch() {
-        txtItemName.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable,
-                    Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    System.out.println("Focused!" + txtCategoryName.getText());
-                    if (!txtCode.getText().isEmpty()) {
-                        int code = commonMethod.checkStringIsInteger(txtCode.getText());
-                        Item item = itemService.getItemByCode(code);
-                        if (item != null) {
-                            setItem(item);
-                        }
-                    }
-                    if (!txtCategoryName.getText().isEmpty()) {
-                        CategoryMaster category = categoryApiService.getCategoryByName(txtCategoryName.getText())
-                                .orElse(null);
+        // Setup numeric-only validation
+        setupNumericValidation();
 
-                        if (category != null) {
-                            allItemNames = itemService.getItemNameByCategoryId(category.getId());
-                            new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
-                        }
-                    }
+        // Setup field listeners
+        setupItemNameFocusListener();
+        setupQuantityListeners();
 
-                } else {
-                    System.out.println("Focus lost!");
-                }
+        // Setup Enter key handlers
+        setupEnterKeyHandlers();
+    }
+
+    private void setupNumericValidation() {
+        // Prevent non-numeric input in code field
+        txtCode.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtCode.setText(oldValue);
             }
         });
 
-        txtCode.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                if (!txtCategoryName.getText().isEmpty()) {
-                    int code = commonMethod.checkStringIsInteger(txtCode.getText());
-                    String category = txtCategoryName.getText();
-                    int catId = categoryApiService.getCategoryByName(category).orElse(null).getId();
-                    Item item = itemService.findByCategoryIdAndItemCode(catId, code);
-                    if (item != null) {
-                        setItem(item);
-                    }
-                }
-
-                System.out.println("ENter pressed on CODE");
-                txtItemName.requestFocus();
-            }
-        });
-        txtItemName.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                if (!txtItemName.getText().isEmpty()) {
-                    String itemName = txtItemName.getText();
-                    Item item = itemService.getItemByName(itemName).orElse(null);
-                    if (item != null) {
-                        setItem(item);
-                    }
-                }
-
-                System.out.println("ENter pressed on ITEM");
-                txtQuantity.requestFocus();
+        // Prevent non-numeric input in quantity field
+        txtQuantity.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtQuantity.setText(oldValue);
             }
         });
     }
 
-    public void setItem(Item item) {
-        txtItemName.setText(item.getItemName());
-        txtPrice.setText(item.getRate().toString());
+    private void setupItemNameFocusListener() {
+        txtItemName.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) { // On focus gained
+                handleItemNameFocus();
+            } else {
+                System.out.println("Focus lost on Item Name");
+                handleItemNameFocus();
+            }
+        });
 
+    }
+
+    private void handleItemNameFocus() {
+
+        if (!txtItemName.getText().isEmpty()) {
+            Item item = itemService.getItemByName(txtItemName.getText().trim()).orElse(null);
+            if (item != null) {
+                setItem(item);
+            }
+        }
+    }
+
+    private void setupQuantityListeners() {
+        // Calculate amount when quantity loses focus
+        txtQuantity.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue && !txtQuantity.getText().trim().isEmpty()) { // On focus lost
+                calculateAndSetAmount();
+            }
+        });
+    }
+
+    private void setUpTempTransactionTable() {
+        allWaitorNames = employeeService.getWaitorNames();
+        new AutoCompleteTextField(txtWaitorName, allWaitorNames, kiranFont, txtCode);
+
+        Font systemFont14 = Font.font(14);
+
+        setupColumnWithFont(colSrNo, "id", systemFont14);
+        setupColumnWithFont(colItemName, "itemName", kiranFont);
+        setupColumnWithFont(colQuantity, "qty", systemFont14);
+        setupColumnWithFont(colRate, "rate", systemFont14);
+        setupColumnWithFont(colAmount, "amt", systemFont14);
+
+        tblTransaction.setItems(tempTransactionList);
+    }
+
+    private <S, T> void setupColumnWithFont(TableColumn<TempTransaction, T> column,
+            String propertyName, Font font) {
+        column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+        column.setCellFactory(col -> new TableCell<TempTransaction, T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.toString());
+                setFont(font);
+            }
+        });
+    }
+
+    // ============= Enter Key Handlers =============
+    private void setupEnterKeyHandlers() {
+        // Code field - Enter key handler
+        txtCode.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleCodeEnter();
+            }
+        });
+
+        // Item name field - Enter key handler
+        txtItemName.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                System.out.println("Enter pressed on Item Name");
+                handleItemNameEnter();
+            }
+        });
+
+        // Quantity field - Enter key handler
+        txtQuantity.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleQuantityEnter();
+            }
+        });
+        txtPrice.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handlePriceEnter();
+                btnAdd.fire();
+            }
+        });
+    }
+
+    private void handlePriceEnter() {
+        calculateAndSetAmount();
+    }
+
+    private void handleCodeEnter() {
+        String code = txtCode.getText().trim();
+        String categoryName = txtCategoryName.getText().trim();
+
+        if (!code.isEmpty() && !categoryName.isEmpty()) {
+            searchItemByCode(code, categoryName);
+        } else if (!code.isEmpty()) {
+            // Search by code only
+            try {
+                int itemCode = Integer.parseInt(code);
+                Item item = itemService.getItemByCode(itemCode);
+                if (item != null) {
+                    setItem(item);
+                } else {
+                    showAlert("Item not found with code: " + code);
+                }
+            } catch (NumberFormatException e) {
+                showAlert("Invalid code format");
+            }
+        }
+
+        txtItemName.requestFocus();
+    }
+
+    private void handleItemNameEnter() {
+        System.out.println("Handeling Item Name Enter");
+        String itemName = txtItemName.getText().trim();
+
+        if (!itemName.isEmpty()) {
+            Item item = itemService.getItemByName(itemName).orElse(null);
+            if (item != null) {
+                setItem(item);
+                txtQuantity.requestFocus();
+            } else {
+                showAlert("Item not found: " + itemName);
+                txtItemName.clear();
+                txtItemName.requestFocus();
+            }
+        } else {
+            showAlert("Please enter item name");
+        }
+    }
+
+    private void handleQuantityEnter() {
+        String itemName = txtItemName.getText().trim();
+        String quantity = txtQuantity.getText().trim();
+
+        if (itemName.isEmpty()) {
+            showAlert("Please select an item first");
+            txtItemName.requestFocus();
+            return;
+        }
+
+        if (quantity.isEmpty()) {
+            showAlert("Please enter quantity");
+            return;
+        }
+
+        calculateAndSetAmount();
+
+        // Move to next field or add to bill
+        txtPrice.requestFocus(); // or wherever you want to go next
+    }
+
+    // ============= Helper Methods =============
+    private void searchItemByCode(String code, String categoryName) {
+        try {
+            int itemCode = Integer.parseInt(code);
+
+            if (!categoryName.isEmpty()) {
+                // Search by category and code
+                CategoryMaster category = categoryApiService.getCategoryByName(categoryName).orElse(null);
+
+                if (category != null) {
+                    Item item = itemService.findByCategoryIdAndItemCode(category.getId(), itemCode);
+                    if (item != null) {
+                        setItem(item);
+                    } else {
+                        showAlert("Item not found for code " + itemCode + " in category " + categoryName);
+                    }
+                } else {
+                    showAlert("Category not found: " + categoryName);
+                }
+            } else {
+                // Search by code only
+                Item item = itemService.getItemByCode(itemCode);
+                if (item != null) {
+                    setItem(item);
+                } else {
+                    showAlert("Item not found with code: " + itemCode);
+                }
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid code format: " + code);
+        }
+    }
+
+    private void loadItemsByCategory(String categoryName) {
+        CategoryMaster category = categoryApiService.getCategoryByName(categoryName).orElse(null);
+
+        if (category != null) {
+            allItemNames = itemService.getItemNameByCategoryId(category.getId());
+            if (allItemNames != null && !allItemNames.isEmpty()) {
+                new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
+            }
+        } else {
+            showAlert("Category not found: " + categoryName);
+        }
+    }
+
+    private void calculateAndSetAmount() {
+        String itemName = txtItemName.getText().trim();
+        String quantityText = txtQuantity.getText().trim();
+        String priceText = txtPrice.getText().trim();
+
+        if (itemName.isEmpty() || quantityText.isEmpty()) {
+            return;
+        }
+
+        try {
+            int quantity = Integer.parseInt(quantityText);
+
+            // Use price from field if user modified it, otherwise fetch from item
+            float rate;
+            if (!priceText.isEmpty()) {
+                rate = Float.parseFloat(priceText);
+            } else {
+                Item item = itemService.getItemByName(itemName).orElse(null);
+                if (item == null) {
+                    showAlert("Item not found: " + itemName);
+                    return;
+                }
+                rate = item.getRate();
+                txtPrice.setText(String.valueOf(rate));
+            }
+
+            if (quantity <= 0) {
+                showAlert("Quantity must be greater than zero");
+                txtQuantity.clear();
+                return;
+            }
+
+            if (rate <= 0) {
+                showAlert("Rate must be greater than zero");
+                return;
+            }
+
+            float total = quantity * rate;
+            txtAmount.setText(String.format("%.2f", total));
+
+        } catch (NumberFormatException e) {
+            showAlert("Invalid quantity or price format");
+        }
+    }
+
+    public void setItem(Item item) {
+        if (item == null) {
+            return;
+        }
+        if (!allItemNames.contains(item.getItemName())) {
+            txtCode.setText("");
+            txtItemName.setText("");
+            txtQuantity.setText("");
+            txtPrice.setText("");
+            txtAmount.setText("");
+        }
+
+        txtItemName.setText(item.getItemName());
+        txtCode.setText(String.valueOf(item.getItemCode()));
+        txtPrice.setText(String.valueOf(item.getRate()));
+
+        // Auto-calculate amount if quantity is already entered
+        String quantityText = txtQuantity.getText().trim();
+        if (!quantityText.isEmpty()) {
+            try {
+                int quantity = Integer.parseInt(quantityText);
+                float total = quantity * item.getRate();
+                txtAmount.setText(String.format("%.2f", total));
+            } catch (NumberFormatException e) {
+                // Ignore if quantity is invalid
+            }
+        }
+    }
+
+    // ============= Utility Methods =============
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Validation Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Optional: Clear all fields
+    private void clearFields() {
+        txtCode.clear();
+        txtCategoryName.clear();
+        txtItemName.clear();
+        txtQuantity.clear();
+        txtPrice.clear();
+        txtAmount.clear();
     }
 
     public CategoryMasterDto getSelectedCategory() {
@@ -625,6 +894,9 @@ public class BillingController implements Initializable {
                 for (TableMaster table : tables) {
                     Button tableButton = createTableButton(table);
                     flowPane.getChildren().add(tableButton);
+                    tableButton.setOnAction(e -> {
+                        txtTableNumber.setText(table.getTableName());
+                    });
                 }
             }
         } catch (Exception e) {
@@ -785,6 +1057,91 @@ public class BillingController implements Initializable {
             }
             event.consume();
         });
+    }
+
+    private void add() {
+        if (!validate()) {
+            return;
+        }
+        TempTransaction tempTransaction = createTempTransactionFromForm();
+        addTempTransactionInTableView(tempTransaction);
+
+    }
+
+    private TempTransaction createTempTransactionFromForm() {
+        TempTransaction tempTransaction = new TempTransaction();
+        tempTransaction.setItemName(txtItemName.getText());
+        tempTransaction.setQty(Float.parseFloat(txtQuantity.getText()));
+        tempTransaction.setRate(Float.parseFloat(txtPrice.getText()));
+        tempTransaction.setAmt(Float.parseFloat(txtAmount.getText()));
+        tempTransaction.setTableNo(tableMasterService.getTableByName(txtTableNumber.getText()).getId());
+        tempTransaction.setWaitorId(employeeService.searchByFirstName(txtWaitorName.getText()).get(0).getId());
+        tempTransaction.setPrintQty(Float.parseFloat(txtQuantity.getText()));
+
+        return tempTransaction;
+    }
+
+    private void addTempTransactionInTableView(TempTransaction tempTransaction) {
+        if (tblTransaction.getItems().isEmpty()) {
+            tempTransaction.setId(1);
+            tempTransactionList.add(tempTransaction);
+            LOG.info("1st TempTransaction added: {}", tempTransaction);
+        } else {
+            LOG.info("Checking existing transactions: {}", tempTransaction);
+            boolean foundMatch = false;
+
+            for (int i = 0; i < tempTransactionList.size(); i++) {
+                TempTransaction oldTransaction = tempTransactionList.get(i);
+                if (oldTransaction.getItemName().equals(tempTransaction.getItemName())
+                        && Float.compare(oldTransaction.getRate(), tempTransaction.getRate()) == 0) {
+                    System.out.println("Match found at index " + i);
+
+                    oldTransaction.setQty(oldTransaction.getQty() + tempTransaction.getQty());
+                    oldTransaction.setAmt(oldTransaction.getAmt() + tempTransaction.getAmt());
+
+                    // Trigger TableView update (if using properties) or refresh
+                    tblTransaction.refresh();
+                    foundMatch = true;
+                    break; // Use break instead of return to stay in method
+                }
+            }
+
+            if (!foundMatch) {
+                tempTransaction.setId(tempTransactionList.size() + 1);
+                tempTransactionList.add(tempTransaction);
+                LOG.info("New item added: {}", tempTransaction);
+                tblTransaction.refresh();
+            }
+        }
+    }
+
+    private boolean validate() {
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Select Table First");
+            return false;
+        }
+        if (txtWaitorName.getText().isEmpty()) {
+            alert.showError("Select Waitor First");
+            txtWaitorName.requestFocus();
+            return false;
+        }
+        if (txtItemName.getText().isEmpty()) {
+            txtItemName.requestFocus();
+            alert.showError("Enter Item Name");
+            return false;
+        }
+        if (txtQuantity.getText().isEmpty()) {
+            alert.showError("Enter Quantity");
+            txtQuantity.requestFocus();
+            return false;
+        }
+        if (txtPrice.getText().isEmpty()) {
+            alert.showError("Enter Rate");
+            txtPrice.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 
 }

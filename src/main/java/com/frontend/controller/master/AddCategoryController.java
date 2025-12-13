@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
@@ -30,9 +29,9 @@ import java.util.ResourceBundle;
 
 @Component
 public class AddCategoryController implements Initializable {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AddCategoryController.class);
-    
+
     @Autowired
     private CategoryApiService categoryApiService;
 
@@ -41,7 +40,7 @@ public class AddCategoryController implements Initializable {
 
     @Autowired
     private SpringFXMLLoader loader;
-    
+
     @FXML
     private TextField txtCategoryName;
 
@@ -53,10 +52,10 @@ public class AddCategoryController implements Initializable {
 
     @FXML
     private Button btnSave;
-    
+
     @FXML
     private Button btnClear;
-    
+
     @FXML
     private Button btnRefresh;
 
@@ -74,13 +73,13 @@ public class AddCategoryController implements Initializable {
 
     @FXML
     private TableView<CategoryTableData> tblCategories;
-    
+
     @FXML
     private TableColumn<CategoryTableData, Integer> colId;
-    
+
     @FXML
     private TableColumn<CategoryTableData, String> colCategory;
-    
+
     @FXML
     private TableColumn<CategoryTableData, String> colStock;
 
@@ -88,7 +87,7 @@ public class AddCategoryController implements Initializable {
     private FilteredList<CategoryTableData> filteredData;
     private CategoryTableData selectedCategory = null;
     private ToggleGroup stockToggleGroup;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupUI();
@@ -99,7 +98,7 @@ public class AddCategoryController implements Initializable {
         applyCustomFont();
         loadCategories();
     }
-    
+
     private void setupUI() {
         // Setup RadioButton ToggleGroup for stock status
         stockToggleGroup = new ToggleGroup();
@@ -117,7 +116,7 @@ public class AddCategoryController implements Initializable {
         // Setup table with filtered data
         tblCategories.setItems(filteredData);
     }
-    
+
     private void setupTableColumns() {
         // Setup table columns
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -137,7 +136,7 @@ public class AddCategoryController implements Initializable {
             }
         });
     }
-    
+
     private void setupEventHandlers() {
         btnSave.setOnAction(e -> saveCategory());
         btnClear.setOnAction(e -> clearForm());
@@ -296,9 +295,8 @@ public class AddCategoryController implements Initializable {
 
         // Set inline style to override CSS and ensure font persists
         textField.setStyle(
-            "-fx-font-family: '" + font.getFamily() + "';" +
-            "-fx-font-size: " + fontSize + "px;"
-        );
+                "-fx-font-family: '" + font.getFamily() + "';" +
+                        "-fx-font-size: " + fontSize + "px;");
 
         // Add focus listener to ensure font persists through focus changes
         textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
@@ -306,7 +304,7 @@ public class AddCategoryController implements Initializable {
             textField.setFont(font);
         });
     }
-    
+
     private void saveCategory() {
         if (!validateInput()) {
             return;
@@ -341,7 +339,7 @@ public class AddCategoryController implements Initializable {
     private String getSelectedStockValue() {
         return rbYes.isSelected() ? "Y" : "N";
     }
-    
+
     private void editCategory(CategoryTableData category) {
         selectedCategory = category;
         txtCategoryName.setText(category.getCategory());
@@ -359,13 +357,13 @@ public class AddCategoryController implements Initializable {
         btnUpdate.setVisible(true);
         btnUpdate.setManaged(true);
     }
-    
+
     private void deleteCategory(CategoryTableData category) {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Delete Category");
         confirmAlert.setHeaderText("Are you sure?");
         confirmAlert.setContentText("Do you want to delete the category: " + category.getCategory() + "?");
-        
+
         confirmAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
@@ -379,7 +377,7 @@ public class AddCategoryController implements Initializable {
             }
         });
     }
-    
+
     private void clearForm() {
         txtCategoryName.clear();
         rbYes.setSelected(true); // Default to YES
@@ -391,7 +389,7 @@ public class AddCategoryController implements Initializable {
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
     }
-    
+
     private boolean validateInput() {
         if (txtCategoryName.getText().trim().isEmpty()) {
             alertNotification.showError("Please enter category name");
@@ -408,7 +406,7 @@ public class AddCategoryController implements Initializable {
         // No need to validate radio buttons as one is always selected
         return true;
     }
-    
+
     private void loadCategories() {
         try {
             List<CategoryMasterDto> categories = categoryApiService.getAllCategories();
@@ -435,39 +433,39 @@ public class AddCategoryController implements Initializable {
             }
         }
     }
-    
+
     // Inner class for table data
     public static class CategoryTableData {
         private final SimpleIntegerProperty id;
         private final SimpleStringProperty category;
         private final SimpleStringProperty stock;
-        
+
         public CategoryTableData(Integer id, String category, String stock) {
             this.id = new SimpleIntegerProperty(id);
             this.category = new SimpleStringProperty(category);
             this.stock = new SimpleStringProperty(stock);
         }
-        
+
         public Integer getId() {
             return id.get();
         }
-        
+
         public SimpleIntegerProperty idProperty() {
             return id;
         }
-        
+
         public String getCategory() {
             return category.get();
         }
-        
+
         public SimpleStringProperty categoryProperty() {
             return category;
         }
-        
+
         public String getStock() {
             return stock.get();
         }
-        
+
         public SimpleStringProperty stockProperty() {
             return stock;
         }

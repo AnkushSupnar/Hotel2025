@@ -54,14 +54,14 @@ public class AuthApiService {
         // Log employee information if linked
         if (user.getEmployee() != null) {
             LOG.info("User linked to employee: {} - {} (ID: {})",
-                     user.getEmployee().getFullName(),
-                     user.getEmployee().getDesignation(),
-                     user.getEmployee().getEmployeeId());
+                    user.getEmployee().getFullName(),
+                    user.getEmployee().getDesignation(),
+                    user.getEmployee().getEmployeeId());
         }
 
         return user;
     }
-    
+
     /**
      * Register new user in database (plain text password)
      */
@@ -91,7 +91,7 @@ public class AuthApiService {
      */
     public boolean registerWithEmployee(String username, String password, String role, Employee employee) {
         LOG.debug("Attempting registration for user: {} with role: {} and employee: {}",
-                  username, role, employee != null ? employee.getEmployeeId() : null);
+                username, role, employee != null ? employee.getEmployeeId() : null);
 
         // Check if username already exists
         if (userRepository.existsByUsername(username)) {
@@ -100,7 +100,7 @@ public class AuthApiService {
         }
 
         // Validate employee
-        if (employee == null || employee.getEmployeeId() == null) {
+        if (employee == null) {
             LOG.error("Registration failed: Invalid employee");
             throw new RuntimeException("Valid employee is required for user registration");
         }
@@ -117,7 +117,7 @@ public class AuthApiService {
         LOG.info("Registration successful for user: {} linked to employee: {}", username, employee.getEmployeeId());
         return true;
     }
-    
+
     /**
      * Get list of all usernames from database
      */

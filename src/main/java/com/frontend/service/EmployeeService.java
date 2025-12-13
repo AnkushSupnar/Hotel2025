@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service for Employee operations
@@ -37,7 +39,7 @@ public class EmployeeService {
     /**
      * Get employee by ID
      */
-    public Employee getEmployeeById(Long id) {
+    public Employee getEmployeeById(int id) {
         try {
             LOG.info("Fetching employee by ID: {}", id);
             return employeeRepository.findById(id)
@@ -114,6 +116,30 @@ public class EmployeeService {
         }
     }
 
+    public List<String> getWaitorNames() {
+        try {
+            LOG.info("Fetching all employee names");
+            return employeeRepository.findByDesignation("Waitor").stream().map(Employee::getFirstName)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.error("Error fetching all employee names", e);
+            return new ArrayList<String>();
+        }
+    }
+
+    /**
+     * Get all employee names
+     */
+    public List<String> getAllEmployeeNames() {
+        try {
+            LOG.info("Fetching all employee names");
+            return employeeRepository.findAll().stream().map(Employee::getFirstName).collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.error("Error fetching all employee names", e);
+            throw new RuntimeException("Error fetching employee names: " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Get employees by status
      */
@@ -133,11 +159,12 @@ public class EmployeeService {
     @Transactional
     public Employee createEmployee(Employee employee) {
         try {
-            LOG.info("Creating new employee: {} {} {}", employee.getFirstName(), employee.getMiddleName(), employee.getLastName());
+            LOG.info("Creating new employee: {} {} {}", employee.getFirstName(), employee.getMiddleName(),
+                    employee.getLastName());
 
             // Validate contact is unique
             if (employeeRepository.existsByContact(employee.getContact())) {
-                throw new RuntimeException("Employee with contact '"+employee.getContact() + "' already exists");
+                throw new RuntimeException("Employee with contact '" + employee.getContact() + "' already exists");
             }
 
             Employee savedEmployee = employeeRepository.save(employee);
@@ -155,7 +182,7 @@ public class EmployeeService {
      * Update existing employee
      */
     @Transactional
-    public Employee updateEmployee(Long id, Employee employee) {
+    public Employee updateEmployee(int id, Employee employee) {
         try {
             LOG.info("Updating employee with ID: {}", id);
 
@@ -195,7 +222,7 @@ public class EmployeeService {
      * Delete employee by ID
      */
     @Transactional
-    public void deleteEmployee(Long id) {
+    public void deleteEmployee(int id) {
         try {
             LOG.info("Deleting employee with ID: {}", id);
 
@@ -215,7 +242,7 @@ public class EmployeeService {
     /**
      * Check if employee exists by ID
      */
-    public boolean existsById(Long id) {
+    public boolean existsById(Integer id) {
         return employeeRepository.existsById(id);
     }
 

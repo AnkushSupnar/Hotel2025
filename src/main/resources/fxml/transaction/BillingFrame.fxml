@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -95,12 +97,12 @@
                     <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom, #1976D2, #1565C0); -fx-background-radius: 6; -fx-padding: 12 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2); -fx-min-width: 140; -fx-max-width: 140;">
                         <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 9px; -fx-font-weight: bold; -fx-letter-spacing: 1px;" text="TABLE NO">
                             <font>
-                                <Font name="Kiran" size="9.0" />
+                                <Font name="Arial Bold" size="10.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="txtTableNumber" alignment="CENTER" editable="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-insets: 0; -fx-padding: 0; -fx-cursor: default;" text="HB12">
+                        <TextField fx:id="txtTableNumber" alignment="CENTER" editable="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-insets: 0; -fx-padding: 0; -fx-cursor: default;">
                             <font>
-                                <Font name="Kiran" size="28.0" />
+                                <Font name="Arial Bold" size="24.0" />
                             </font>
                         </TextField>
                     </VBox>
@@ -233,7 +235,7 @@
                                           <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtAmount" prefHeight="32.0" promptText="r@kma" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtAmount" editable="false" prefHeight="32.0" promptText="r@kma" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
                                        <font>
                                           <Font name="Kiran" size="16.0" />
                                        </font>
@@ -299,6 +301,19 @@
                                     </Button>
                                  </children>
                               </HBox>
+                           </children>
+                        </VBox>
+                        <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);">
+                           <children>
+                              <TableView fx:id="tblTransaction" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="colSrNo" prefWidth="75.0" text="Sr.No" />
+                                  <TableColumn fx:id="colItemName" prefWidth="229.59993743896484" text="Item Name" />
+                                    <TableColumn fx:id="colQuantity" prefWidth="63.2000732421875" text="Quantity" />
+                                    <TableColumn fx:id="colRate" prefWidth="96.00006103515625" text="Rate" />
+                                    <TableColumn fx:id="colAmount" prefWidth="102.39999389648438" text="Amount" />
+                                </columns>
+                              </TableView>
                            </children>
                         </VBox>
                      </children>

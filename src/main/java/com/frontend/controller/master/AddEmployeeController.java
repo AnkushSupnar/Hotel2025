@@ -7,7 +7,6 @@ import com.frontend.service.SessionService;
 import com.frontend.view.AlertNotification;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -90,7 +89,7 @@ public class AddEmployeeController implements Initializable {
     private TableView<EmployeeData> tblEmployees;
 
     @FXML
-    private TableColumn<EmployeeData, Long> colId;
+    private TableColumn<EmployeeData, Integer> colId;
 
     @FXML
     private TableColumn<EmployeeData, String> colFullName;
@@ -131,13 +130,11 @@ public class AddEmployeeController implements Initializable {
 
         // Setup salary type combo box
         cmbSalaryType.setItems(FXCollections.observableArrayList(
-            "Monthly", "Daily", "Hourly", "Fixed"
-        ));
+                "Monthly", "Daily", "Hourly", "Fixed"));
 
         // Setup status combo box
         cmbStatus.setItems(FXCollections.observableArrayList(
-            "Active", "Inactive", "On Leave", "Terminated"
-        ));
+                "Active", "Inactive", "On Leave", "Terminated"));
     }
 
     private void setupTableColumns() {
@@ -219,8 +216,8 @@ public class AddEmployeeController implements Initializable {
             if (searchText != null && !searchText.trim().isEmpty()) {
                 String lowerCaseFilter = searchText.toLowerCase();
                 return employee.getFullName().toLowerCase().contains(lowerCaseFilter) ||
-                       employee.getContact().toLowerCase().contains(lowerCaseFilter) ||
-                       employee.getDesignation().toLowerCase().contains(lowerCaseFilter);
+                        employee.getContact().toLowerCase().contains(lowerCaseFilter) ||
+                        employee.getDesignation().toLowerCase().contains(lowerCaseFilter);
             }
 
             return true;
@@ -353,8 +350,7 @@ public class AddEmployeeController implements Initializable {
         // Set inline style to override CSS and ensure font persists
         textField.setStyle(
                 "-fx-font-family: '" + font.getFamily() + "';" +
-                        "-fx-font-size: " + fontSize + "px;"
-        );
+                        "-fx-font-size: " + fontSize + "px;");
 
         // Add focus listener to ensure font persists through focus changes
         textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
@@ -530,8 +526,7 @@ public class AddEmployeeController implements Initializable {
                         employee.getDesignation(),
                         employee.getSalary(),
                         employee.getSalaryType(),
-                        employee.getStatus()
-                ));
+                        employee.getStatus()));
             }
 
             // Refresh the table view
@@ -547,7 +542,7 @@ public class AddEmployeeController implements Initializable {
 
     // Inner class for table data
     public static class EmployeeData {
-        private final SimpleLongProperty id;
+        private final SimpleIntegerProperty id;
         private final SimpleStringProperty firstName;
         private final SimpleStringProperty middleName;
         private final SimpleStringProperty lastName;
@@ -559,10 +554,10 @@ public class AddEmployeeController implements Initializable {
         private final SimpleStringProperty salaryType;
         private final SimpleStringProperty status;
 
-        public EmployeeData(Long id, String firstName, String middleName, String lastName,
-                           String address, String contact, String designation, Float salary,
-                           String salaryType, String status) {
-            this.id = new SimpleLongProperty(id);
+        public EmployeeData(int id, String firstName, String middleName, String lastName,
+                String address, String contact, String designation, Float salary,
+                String salaryType, String status) {
+            this.id = new SimpleIntegerProperty(id);
             this.firstName = new SimpleStringProperty(firstName);
             this.middleName = new SimpleStringProperty(middleName);
             this.lastName = new SimpleStringProperty(lastName);
@@ -575,11 +570,11 @@ public class AddEmployeeController implements Initializable {
             this.status = new SimpleStringProperty(status);
         }
 
-        public Long getId() {
+        public int getId() {
             return id.get();
         }
 
-        public SimpleLongProperty idProperty() {
+        public SimpleIntegerProperty idProperty() {
             return id;
         }
 
