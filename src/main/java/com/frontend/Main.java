@@ -6,12 +6,14 @@ import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @SpringBootApplication(scanBasePackages = {
 		"com.frontend.config",
@@ -23,18 +25,50 @@ import java.io.IOException;
 		"com.frontend.service",
 		"com.frontend.util",
 		"com.frontend.repository",
-		"com.frontend.entity"
+		"com.frontend.entity",
+		"com.frontend.print"
 })
 public class Main extends Application {
 	private ConfigurableApplicationContext springContext;
 	protected StageManager stageManager;
 
 	public static void main(String[] args) {
+		// Set font rendering properties BEFORE launching JavaFX
+		configureFontRendering();
 		Application.launch(args);
+	}
+
+	/**
+	 * Configure system properties for better font rendering in JavaFX
+	 * These must be set before JavaFX initialization
+	 */
+	private static void configureFontRendering() {
+		// Enable LCD text rendering for sharper fonts (like Swing)
+		System.setProperty("prism.lcdtext", "true");
+
+		// Enable font smoothing
+		System.setProperty("prism.text", "t2k");
+
+		// Use DirectWrite on Windows for better font rendering
+		System.setProperty("prism.fontcache", "true");
+
+		// Enable subpixel positioning for smoother text
+		System.setProperty("prism.subpixeltext", "true");
+
+		// Set DPI awareness
+		System.setProperty("prism.allowhidpi", "true");
+
+		// Use hardware acceleration
+		System.setProperty("prism.order", "d3d,sw");
+
+		System.out.println("Font rendering properties configured for better quality");
 	}
 
 	@Override
 	public void init() throws IOException {
+		// Preload bundled Kiran font from resources BEFORE Spring context
+		preloadBundledFont();
+
 		springContext = bootstrapSpringApplicationContext();
 	}
 
@@ -45,6 +79,37 @@ public class Main extends Application {
 
 		stageManager = springContext.getBean(StageManager.class, stage);
 		displayInitialScene();
+	}
+
+	/**
+	 * Preload bundled Kiran font from resources
+	 * This ensures the font is registered with JavaFX before any UI is created
+	 */
+	private void preloadBundledFont() {
+		try {
+			// Load font from classpath resources
+			InputStream fontStream = getClass().getResourceAsStream("/fonts/kiran.ttf");
+			if (fontStream != null) {
+				Font loadedFont = Font.loadFont(fontStream, 12);
+				fontStream.close();
+
+				if (loadedFont != null) {
+					System.out.println("Bundled Kiran font preloaded successfully:");
+					System.out.println("  Family: " + loadedFont.getFamily());
+					System.out.println("  Name: " + loadedFont.getName());
+
+					// Verify font is registered
+					boolean registered = Font.getFamilies().contains(loadedFont.getFamily());
+					System.out.println("  Registered in JavaFX: " + registered);
+				} else {
+					System.err.println("Failed to load bundled Kiran font");
+				}
+			} else {
+				System.out.println("Bundled font not found at /fonts/kiran.ttf");
+			}
+		} catch (Exception e) {
+			System.err.println("Error preloading bundled font: " + e.getMessage());
+		}
 	}
 
 	/**

@@ -208,59 +208,98 @@ public class SessionService {
 
     /**
      * Load custom font from settings (called once during application lifecycle)
+     * Priority: 1) External path from settings, 2) Bundled resource font
      */
     private void loadCustomFont() {
         try {
+            // First, try loading from external path in settings
             String fontPath = getApplicationSetting("input_font_path");
+            boolean loadedFromExternal = false;
 
-            if (fontPath == null || fontPath.trim().isEmpty()) {
-                LOG.debug("No custom font configured");
-                customFont = null;
-                cachedFontFamily = null;
-                return;
-            }
-
-            File fontFile = new File(fontPath);
-
-            if (!fontFile.exists()) {
-                LOG.warn("Custom font file does not exist: {}", fontPath);
-                customFont = null;
-                cachedFontFamily = null;
-                return;
-            }
-
-            // Try loading font using file URI first (sometimes works better)
-            String fontUri = fontFile.toURI().toString();
-            customFont = Font.loadFont(fontUri, 25);
-
-            // If URI method fails, try FileInputStream with try-with-resources
-            if (customFont == null) {
-                try (FileInputStream fontStream = new FileInputStream(fontFile)) {
-                    customFont = Font.loadFont(fontStream, 25);
+            if (fontPath != null && !fontPath.trim().isEmpty()) {
+                File fontFile = new File(fontPath);
+                if (fontFile.exists()) {
+                    loadedFromExternal = loadFontFromFile(fontFile);
+                } else {
+                    LOG.warn("External font file does not exist: {}", fontPath);
                 }
             }
 
+            // If external loading failed, try bundled resource font
+            if (!loadedFromExternal) {
+                LOG.info("Trying to load bundled Kiran font from resources...");
+                loadFontFromResources();
+            }
+
+            // Log final status
             if (customFont != null) {
-                cachedFontFamily = customFont.getFamily();
-                LOG.info("Custom font loaded successfully:");
-                LOG.info("  Path: {}", fontPath);
+                LOG.info("=== Custom Font Loaded ===");
                 LOG.info("  Family: {}", customFont.getFamily());
                 LOG.info("  Name: {}", customFont.getName());
                 LOG.info("  Style: {}", customFont.getStyle());
-                LOG.info("  Size: {}", customFont.getSize());
-
-                // Debug: Check if font family is registered in JavaFX
-                boolean familyExists = Font.getFamilies().contains(customFont.getFamily());
-                LOG.info("  Family registered in JavaFX: {}", familyExists);
+                LOG.info("  Registered in JavaFX: {}", Font.getFamilies().contains(cachedFontFamily));
+                LOG.info("==========================");
             } else {
-                LOG.warn("Failed to load custom font from: {}", fontPath);
-                cachedFontFamily = null;
+                LOG.warn("No custom font available - using system defaults");
             }
 
         } catch (Exception e) {
             LOG.error("Error loading custom font: ", e);
             customFont = null;
             cachedFontFamily = null;
+        }
+    }
+
+    /**
+     * Load font from external file
+     */
+    private boolean loadFontFromFile(File fontFile) {
+        try {
+            // Method 1: Load via FileInputStream (most reliable for custom fonts)
+            try (FileInputStream fontStream = new FileInputStream(fontFile)) {
+                customFont = Font.loadFont(fontStream, 20);
+            }
+
+            // Method 2: If stream method fails, try URI method
+            if (customFont == null) {
+                String fontUri = fontFile.toURI().toString();
+                customFont = Font.loadFont(fontUri, 20);
+            }
+
+            if (customFont != null) {
+                cachedFontFamily = customFont.getFamily();
+                LOG.info("Font loaded from external file: {}", fontFile.getAbsolutePath());
+                return true;
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to load font from file: {}", fontFile.getAbsolutePath(), e);
+        }
+        return false;
+    }
+
+    /**
+     * Load font from bundled resources (classpath)
+     */
+    private void loadFontFromResources() {
+        try {
+            // Load from classpath resources
+            java.io.InputStream fontStream = getClass().getResourceAsStream("/fonts/kiran.ttf");
+
+            if (fontStream != null) {
+                customFont = Font.loadFont(fontStream, 20);
+                fontStream.close();
+
+                if (customFont != null) {
+                    cachedFontFamily = customFont.getFamily();
+                    LOG.info("Font loaded from bundled resources: /fonts/kiran.ttf");
+                } else {
+                    LOG.warn("Failed to parse bundled font file");
+                }
+            } else {
+                LOG.warn("Bundled font not found at /fonts/kiran.ttf");
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to load font from resources", e);
         }
     }
 
@@ -303,7 +342,9 @@ public class SessionService {
 
     /**
      * Get custom font with specific size
-     * 
+     * Note: Custom fonts like Kiran typically don't support FontWeight variants,
+     * so we use the font as-is without attempting weight modification.
+     *
      * @param size the font size
      * @return Font object with specified size or null
      */
@@ -312,17 +353,18 @@ public class SessionService {
             return null;
         }
 
-        // Try to use system-installed font with BOLD weight
-        Font boldFont = Font.font(cachedFontFamily, FontWeight.BOLD, size);
+        // Use the font family directly without weight modification
+        // Custom fonts often render poorly when JavaFX tries to synthesize bold
+        Font font = Font.font(cachedFontFamily, size);
 
-        if (boldFont != null && boldFont.getFamily().equalsIgnoreCase(cachedFontFamily)) {
-            LOG.debug("Using font '{}' with BOLD weight, size: {}", cachedFontFamily, size);
-            return boldFont;
+        if (font != null && font.getFamily().equalsIgnoreCase(cachedFontFamily)) {
+            LOG.debug("Using font '{}' at size: {}", cachedFontFamily, size);
+            return font;
         }
 
-        // Fall back to regular font
-        LOG.debug("Using font '{}' with regular weight, size: {}", cachedFontFamily, size);
-        return Font.font(cachedFontFamily, size);
+        // If font family lookup fails, return null
+        LOG.warn("Font family '{}' not found in JavaFX, font may not render correctly", cachedFontFamily);
+        return null;
     }
 
     /**

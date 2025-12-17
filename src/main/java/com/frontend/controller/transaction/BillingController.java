@@ -7,6 +7,7 @@ import com.frontend.customUI.AutoCompleteTextField_old;
 import com.frontend.dto.CategoryMasterDto;
 import com.frontend.entity.CategoryMaster;
 import com.frontend.entity.Customer;
+import com.frontend.entity.Employee;
 import com.frontend.entity.Item;
 import com.frontend.entity.TableMaster;
 import com.frontend.entity.TempTransaction;
@@ -16,6 +17,8 @@ import com.frontend.service.EmployeeService;
 import com.frontend.service.ItemService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
+import com.frontend.service.TempTransactionService;
+import com.frontend.print.KOTOrderPrint;
 import com.frontend.view.AlertNotification;
 
 import javafx.application.Platform;
@@ -28,6 +31,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
@@ -73,6 +78,12 @@ public class BillingController implements Initializable {
     private EmployeeService employeeService;
 
     @Autowired
+    private TempTransactionService tempTransactionService;
+
+    @Autowired
+    private KOTOrderPrint kotOrderPrint;
+
+    @Autowired
     AlertNotification alert;
 
     @FXML
@@ -113,7 +124,10 @@ public class BillingController implements Initializable {
     private TextField txtCategoryName;
 
     @FXML
-    private TextField txtWaitorName;
+    private CheckBox chkAllItems;
+
+    @FXML
+    private ComboBox<String> cmbWaitorName;
 
     @FXML
     private TextField txtCode;
@@ -164,6 +178,14 @@ public class BillingController implements Initializable {
     @FXML
     private TableColumn<TempTransaction, Integer> colSrNo;
 
+    // Total Labels
+   
+    @FXML
+    private Label lblTotalQuantity;
+
+    @FXML
+    private Label lblTotalAmount;
+
     // Autocomplete and customer tracking
     private AutoCompleteTextField_old customerAutoComplete;
     private List<Customer> allCustomers;
@@ -175,6 +197,11 @@ public class BillingController implements Initializable {
     private CategoryMasterDto selectedCategory;
     private List<String> allWaitorNames;
     private ObservableList<TempTransaction> tempTransactionList = FXCollections.observableArrayList();
+    private TempTransaction selectedTransaction = null;
+    private boolean isEditMode = false;
+
+    // Map to store table button references by tableId for status updates
+    private java.util.Map<Integer, Button> tableButtonMap = new java.util.HashMap<>();
 
     private VBox draggedBox = null;
     Font kiranFont;
@@ -191,7 +218,22 @@ public class BillingController implements Initializable {
         setUpItemSearch();
         loadSections();
         setUpTempTransactionTable();
+        setupActionButtons();
+    }
+
+    private void setupActionButtons() {
         btnAdd.setOnAction(e -> add());
+        btnEdit.setOnAction(e -> editSelectedItem());
+        btnRemove.setOnAction(e -> removeSelectedItem());
+        btnClear.setOnAction(e -> clearItemForm());
+        btnOrder.setOnAction(e -> processOrder());
+
+        // Enable row selection for edit/remove
+        tblTransaction.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                populateFormFromSelection(newSelection);
+            }
+        });
     }
 
     private void setupRefreshButton() {
@@ -217,13 +259,13 @@ public class BillingController implements Initializable {
                 suggestions.add(suggestion);
             }
 
-            // Get custom Kiran font for suggestions dropdown (size 20 for readability)
-            Font kiranFont = SessionService.getCustomFont(20.0);
+            // Get custom Kiran font for suggestions dropdown (size 25 for consistency)
+            Font kiranFont25 = SessionService.getCustomFont(25.0);
 
             // Initialize autocomplete with custom suggestions and custom font
-            if (kiranFont != null) {
-                customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions, kiranFont);
-                LOG.info("Customer autocomplete initialized with Kiran font");
+            if (kiranFont25 != null) {
+                customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions, kiranFont25);
+                LOG.info("Customer autocomplete initialized with Kiran font (size 25)");
             } else {
                 customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions);
                 LOG.warn("Kiran font not available, using default font for customer suggestions");
@@ -250,25 +292,25 @@ public class BillingController implements Initializable {
 
     private void setupKiranFontPersistence() {
         try {
-            Font kiranFont20 = SessionService.getCustomFont(20.0);
+            // Use size 25 for Kiran font (same as txtCustomerSearch for consistency)
+            Font kiranFont25 = SessionService.getCustomFont(25.0);
 
-            if (kiranFont20 != null) {
-                String fontFamily = kiranFont20.getFamily();
-                String fontStyle = String.format("-fx-font-family: '%s'; -fx-font-size: 20px;", fontFamily);
+            if (kiranFont25 != null) {
+                String fontFamily = kiranFont25.getFamily();
+                String fontStyle = String.format("-fx-font-family: '%s'; -fx-font-size: 25px;", fontFamily);
 
                 // Apply to Category field (regular TextField with autocomplete)
-                txtCategoryName.setFont(kiranFont20);
+                txtCategoryName.setFont(kiranFont25);
                 txtCategoryName.setStyle(fontStyle);
 
                 // Apply to all text fields
-                applyFontToTextField(txtWaitorName, kiranFont20, fontStyle);
-                applyFontToTextField(txtCode, kiranFont20, fontStyle);
-                applyFontToTextField(txtItemName, kiranFont20, fontStyle);
-                applyFontToTextField(txtQuantity, kiranFont20, fontStyle);
-                applyFontToTextField(txtPrice, kiranFont20, fontStyle);
-                applyFontToTextField(txtAmount, kiranFont20, fontStyle);
+                applyFontToTextField(txtCode, kiranFont25, fontStyle);
+                applyFontToTextField(txtItemName, kiranFont25, fontStyle);
+                applyFontToTextField(txtQuantity, kiranFont25, fontStyle);
+                applyFontToTextField(txtPrice, kiranFont25, fontStyle);
+                applyFontToTextField(txtAmount, kiranFont25, fontStyle);
 
-                LOG.info("Kiran font applied to all billing text fields");
+                LOG.info("Kiran font (size 25) applied to all billing text fields");
             }
         } catch (Exception e) {
             LOG.error("Error setting up Kiran font: ", e);
@@ -360,8 +402,8 @@ public class BillingController implements Initializable {
             lblCustomerName.setText(customer.getFullName());
             lblCustomerMobile.setText(customer.getMobileNo());
 
-            // Apply custom Kiran font to selected customer labels
-            Font customFont = SessionService.getCustomFont(11.0);
+            // Apply custom Kiran font to selected customer labels (size 25 for consistency)
+            Font customFont = SessionService.getCustomFont(25.0);
             if (customFont != null) {
                 lblCustomerName.setFont(customFont);
                 lblCustomerMobile.setFont(customFont);
@@ -369,11 +411,11 @@ public class BillingController implements Initializable {
                 // Apply inline style with custom font to ensure persistence
                 String fontFamily = customFont.getFamily();
                 lblCustomerName.setStyle(String.format(
-                        "-fx-font-size: 20px; " +
+                        "-fx-font-size: 25px; " +
                                 "-fx-font-family: '%s';",
                         fontFamily));
                 lblCustomerMobile.setStyle(String.format(
-                        "-fx-font-size: 20px; " +
+                        "-fx-font-size: 25px; " +
                                 "-fx-font-family: '%s';",
                         fontFamily));
             }
@@ -391,16 +433,16 @@ public class BillingController implements Initializable {
         lblCustomerName.setText("-");
         lblCustomerMobile.setText("-");
 
-        // Reset label styles
-        Font customFont = SessionService.getCustomFont(11.0);
+        // Reset label styles with size 25 for consistency
+        Font customFont = SessionService.getCustomFont(25.0);
         if (customFont != null) {
             String fontFamily = customFont.getFamily();
             lblCustomerName.setStyle(String.format(
-                    "-fx-font-size: 11px; " +
+                    "-fx-font-size: 25px; " +
                             "-fx-font-family: '%s';",
                     fontFamily));
             lblCustomerMobile.setStyle(String.format(
-                    "-fx-font-size: 10px; " +
+                    "-fx-font-size: 25px; " +
                             "-fx-font-family: '%s';",
                     fontFamily));
         }
@@ -451,21 +493,26 @@ public class BillingController implements Initializable {
             }
 
             // Get custom Kiran font for list
-
             new AutoCompleteTextField(txtCategoryName, allCategoryNames, kiranFont, txtCode);
 
+            // Setup "All Items" checkbox listener
+            setupAllItemsCheckbox();
+
             txtCategoryName.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) { // On focus gained
-                    if (!txtCategoryName.getText().isEmpty()) {
-                        loadItemsByCategory(txtCategoryName.getText());
+                // Only handle category selection if "All Items" is not checked
+                if (!chkAllItems.isSelected()) {
+                    if (newValue) { // On focus gained
+                        if (!txtCategoryName.getText().isEmpty()) {
+                            loadItemsByCategory(txtCategoryName.getText());
+                        } else {
+                            txtCategoryName.requestFocus();
+                        }
                     } else {
-                        txtCategoryName.requestFocus();
-                    }
-                } else {
-                    if (!txtCategoryName.getText().isEmpty()) {
-                        loadItemsByCategory(txtCategoryName.getText());
-                    } else {
-                        txtCategoryName.requestFocus();
+                        if (!txtCategoryName.getText().isEmpty()) {
+                            loadItemsByCategory(txtCategoryName.getText());
+                        } else {
+                            txtCategoryName.requestFocus();
+                        }
                     }
                 }
             });
@@ -474,6 +521,102 @@ public class BillingController implements Initializable {
 
         } catch (Exception e) {
             LOG.error("Error setting up category search", e);
+        }
+    }
+
+    /**
+     * Setup checkbox to toggle between category-wise and all items mode
+     */
+    private void setupAllItemsCheckbox() {
+        chkAllItems.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Checkbox checked - disable category, load all items
+                txtCategoryName.setDisable(true);
+                txtCategoryName.clear();
+                txtCategoryName.setStyle("-fx-background-color: #E0E0E0; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;");
+                loadAllItems();
+                LOG.info("All Items mode enabled - showing all items");
+            } else {
+                // Checkbox unchecked - enable category, clear items
+                txtCategoryName.setDisable(false);
+                txtCategoryName.setStyle("-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;");
+                allItemNames = new ArrayList<>();
+                txtItemName.clear();
+                LOG.info("Category mode enabled - select category to load items");
+            }
+        });
+    }
+
+    /**
+     * Setup waiter ComboBox with all waiter names
+     */
+    private void setupWaitorComboBox() {
+        if (allWaitorNames != null && !allWaitorNames.isEmpty()) {
+            cmbWaitorName.getItems().clear();
+            cmbWaitorName.getItems().addAll(allWaitorNames);
+
+            // Apply Kiran font to ComboBox using custom cell factory
+            if (kiranFont != null) {
+                String fontFamily = kiranFont.getFamily();
+
+                // Custom cell factory for dropdown list items
+                cmbWaitorName.setCellFactory(listView -> new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item);
+                            setFont(kiranFont);
+                            setStyle(String.format("-fx-font-family: '%s'; -fx-font-size: 20px;", fontFamily));
+                        }
+                    }
+                });
+
+                // Custom button cell for selected item display
+                cmbWaitorName.setButtonCell(new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item);
+                            setFont(kiranFont);
+                            setStyle(String.format("-fx-font-family: '%s'; -fx-font-size: 20px;", fontFamily));
+                        }
+                    }
+                });
+
+                // Apply base styling to ComboBox
+                cmbWaitorName.setStyle(String.format(
+                    "-fx-font-family: '%s'; -fx-font-size: 20px; " +
+                    "-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; " +
+                    "-fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3;",
+                    fontFamily));
+            }
+
+            LOG.info("Loaded {} waiters into ComboBox with Kiran font", allWaitorNames.size());
+        } else {
+            LOG.warn("No waiters found to load into ComboBox");
+        }
+    }
+
+    /**
+     * Load all items from database (when "All Items" checkbox is checked)
+     */
+    private void loadAllItems() {
+        try {
+            allItemNames = itemService.getAllItemNames();
+            if (allItemNames != null && !allItemNames.isEmpty()) {
+                new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
+                LOG.info("Loaded {} items for all items mode", allItemNames.size());
+            } else {
+                LOG.warn("No items found in database");
+            }
+        } catch (Exception e) {
+            LOG.error("Error loading all items", e);
         }
     }
 
@@ -537,29 +680,77 @@ public class BillingController implements Initializable {
     }
 
     private void setUpTempTransactionTable() {
+        // Load waiter names into ComboBox
         allWaitorNames = employeeService.getWaitorNames();
-        new AutoCompleteTextField(txtWaitorName, allWaitorNames, kiranFont, txtCode);
+        setupWaitorComboBox();
 
         Font systemFont14 = Font.font(14);
 
-        setupColumnWithFont(colSrNo, "id", systemFont14);
-        setupColumnWithFont(colItemName, "itemName", kiranFont);
-        setupColumnWithFont(colQuantity, "qty", systemFont14);
-        setupColumnWithFont(colRate, "rate", systemFont14);
-        setupColumnWithFont(colAmount, "amt", systemFont14);
+        // Get Kiran font with size 25 (consistent with all other Kiran font usage)
+        Font kiranFontForTable = SessionService.getCustomFont(25.0);
+        if (kiranFontForTable == null) {
+            kiranFontForTable = Font.font(25);
+            LOG.warn("Kiran font not available for table, using system font");
+        }
+
+        // Setup Sr.No column to show row number (not database ID)
+        setupSrNoColumn(colSrNo, systemFont14);
+        setupColumnWithFont(colItemName, "itemName", kiranFontForTable, true);
+        setupColumnWithFont(colQuantity, "qty", systemFont14, false);
+        setupColumnWithFont(colRate, "rate", systemFont14, false);
+        setupColumnWithFont(colAmount, "amt", systemFont14, false);
 
         tblTransaction.setItems(tempTransactionList);
+
+        LOG.info("Transaction table setup complete with Kiran font (size 25) for ItemName column");
+    }
+
+    /**
+     * Setup Sr.No column to display row number instead of database ID
+     */
+    private void setupSrNoColumn(TableColumn<TempTransaction, Integer> column, Font font) {
+        column.setCellFactory(col -> new TableCell<TempTransaction, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                } else {
+                    // Display row number (1-based index)
+                    setText(String.valueOf(getTableRow().getIndex() + 1));
+                    setFont(font);
+                    setStyle("-fx-alignment: CENTER;");
+                }
+            }
+        });
     }
 
     private <S, T> void setupColumnWithFont(TableColumn<TempTransaction, T> column,
-            String propertyName, Font font) {
+            String propertyName, Font font, boolean isKiranFont) {
         column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+
+        final Font cellFont = font;
+        final String fontFamily = isKiranFont && cellFont != null ? cellFont.getFamily() : null;
+
         column.setCellFactory(col -> new TableCell<TempTransaction, T>() {
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.toString());
-                setFont(font);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.toString());
+                    setFont(cellFont);
+
+                    // Apply inline style for Kiran font to ensure persistence (size 25)
+                    if (isKiranFont && fontFamily != null) {
+                        setStyle(String.format(
+                            "-fx-font-family: '%s'; -fx-font-size: 25px;",
+                            fontFamily
+                        ));
+                    }
+                }
             }
         });
     }
@@ -792,14 +983,18 @@ public class BillingController implements Initializable {
         alert.showAndWait();
     }
 
-    // Optional: Clear all fields
-    private void clearFields() {
+    // Clear item entry form fields
+    private void clearItemForm() {
         txtCode.clear();
-        txtCategoryName.clear();
         txtItemName.clear();
         txtQuantity.clear();
         txtPrice.clear();
         txtAmount.clear();
+
+        // Reset edit mode if active
+        if (isEditMode) {
+            resetEditMode();
+        }
     }
 
     public CategoryMasterDto getSelectedCategory() {
@@ -896,6 +1091,9 @@ public class BillingController implements Initializable {
                     flowPane.getChildren().add(tableButton);
                     tableButton.setOnAction(e -> {
                         txtTableNumber.setText(table.getTableName());
+                        // Load existing transactions for this table from database
+                        loadTransactionsForTable(table.getId());
+                        LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
                     });
                 }
             }
@@ -952,13 +1150,36 @@ public class BillingController implements Initializable {
     private Button createTableButton(TableMaster table) {
         Button button = new Button(table.getTableName());
 
-        // TODO: Determine table status from database (Available, Occupied, Selected)
-        // For now, all tables are "Available" - you'll need to add status logic
-        String status = "Available"; // This should come from table status in database
+        // Check if table has ongoing transactions
+        boolean hasTransactions = tempTransactionService.hasTransactions(table.getId());
+        String status = hasTransactions ? "Ongoing" : "Available";
 
         // Apply CSS classes based on status
         button.getStyleClass().add("table-button");
+        applyTableButtonStatus(button, status);
 
+        // Store button in map for later status updates
+        tableButtonMap.put(table.getId(), button);
+
+        // Store status in user data
+        button.setUserData(status);
+
+        return button;
+    }
+
+    /**
+     * Apply CSS style class to table button based on status
+     */
+    private void applyTableButtonStatus(Button button, String status) {
+        // Remove all status classes first
+        button.getStyleClass().removeAll(
+            "table-button-available",
+            "table-button-occupied",
+            "table-button-selected",
+            "table-button-ongoing"
+        );
+
+        // Apply new status class
         switch (status) {
             case "Available":
                 button.getStyleClass().add("table-button-available");
@@ -969,20 +1190,28 @@ public class BillingController implements Initializable {
             case "Selected":
                 button.getStyleClass().add("table-button-selected");
                 break;
+            case "Ongoing":
+                button.getStyleClass().add("table-button-ongoing");
+                break;
             default:
                 button.getStyleClass().add("table-button-available");
         }
 
-        // Store status in user data
+        // Update user data
         button.setUserData(status);
+    }
 
-        // Click handler
-        button.setOnAction(e -> {
-            LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
-            handleTableSelection(table);
-        });
-
-        return button;
+    /**
+     * Update table button status based on whether it has transactions
+     */
+    private void updateTableButtonStatus(Integer tableId) {
+        Button button = tableButtonMap.get(tableId);
+        if (button != null) {
+            boolean hasTransactions = tempTransactionService.hasTransactions(tableId);
+            String newStatus = hasTransactions ? "Ongoing" : "Available";
+            applyTableButtonStatus(button, newStatus);
+            LOG.info("Table {} button status updated to: {}", tableId, newStatus);
+        }
     }
 
     /**
@@ -1063,22 +1292,329 @@ public class BillingController implements Initializable {
         if (!validate()) {
             return;
         }
-        TempTransaction tempTransaction = createTempTransactionFromForm();
-        addTempTransactionInTableView(tempTransaction);
 
+        if (isEditMode && selectedTransaction != null) {
+            // Update existing transaction in database
+            updateSelectedTransaction();
+        } else {
+            // Add new transaction to database and TableView
+            TempTransaction tempTransaction = createTempTransactionFromForm();
+            addTempTransactionToDatabase(tempTransaction);
+        }
+
+        // Clear form and update totals
+        clearItemForm();
+        updateTotals();
+        txtCategoryName.requestFocus();
+    }
+
+    /**
+     * Add transaction to database and sync with TableView
+     * If item exists with same name and rate, updates quantity instead
+     */
+    private void addTempTransactionToDatabase(TempTransaction transaction) {
+        try {
+            Integer tableNo = transaction.getTableNo();
+
+            // Save to database - service handles add/update logic
+            TempTransaction savedTransaction = tempTransactionService.addOrUpdateTransaction(transaction);
+
+            // Reload all transactions for this table to sync TableView with database
+            loadTransactionsForTable(tableNo);
+
+            // Update table button status to "Ongoing" (green)
+            updateTableButtonStatus(tableNo);
+
+            LOG.info("Transaction saved to database: {}", savedTransaction);
+        } catch (Exception e) {
+            LOG.error("Error saving transaction to database", e);
+            alert.showError("Error saving transaction: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Load all transactions for a table from database into TableView
+     */
+    private void loadTransactionsForTable(Integer tableNo) {
+        try {
+            List<TempTransaction> transactions = tempTransactionService.getTransactionsByTableNo(tableNo);
+
+            // Clear and reload TableView - keep original database IDs
+            tempTransactionList.clear();
+            tempTransactionList.addAll(transactions);
+
+            // Set waiter name from the first transaction (all items on a table have same waiter)
+            if (!transactions.isEmpty()) {
+                Integer waitorId = transactions.get(0).getWaitorId();
+                if (waitorId != null) {
+                    try {
+                        Employee waitor = employeeService.getEmployeeById(waitorId);
+                        if (waitor != null) {
+                            // Select waiter in ComboBox
+                            cmbWaitorName.getSelectionModel().select(waitor.getFirstName());
+                            LOG.info("Waiter selected in dropdown: {} (ID: {})", waitor.getFirstName(), waitorId);
+                        }
+                    } catch (Exception e) {
+                        LOG.warn("Could not load waiter with ID: {}", waitorId);
+                    }
+                }
+            } else {
+                // Clear waiter selection if no transactions
+                cmbWaitorName.getSelectionModel().clearSelection();
+            }
+
+            tblTransaction.refresh();
+            updateTotals();
+
+            LOG.info("Loaded {} transactions for table {}", transactions.size(), tableNo);
+        } catch (Exception e) {
+            LOG.error("Error loading transactions for table {}", tableNo, e);
+        }
+    }
+
+    private void editSelectedItem() {
+        TempTransaction selected = tblTransaction.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alert.showError("Please select an item to edit");
+            return;
+        }
+
+        selectedTransaction = selected;
+        isEditMode = true;
+        populateFormFromSelection(selected);
+
+        // Change Add button text to indicate edit mode
+        btnAdd.setText("UPDATE");
+        btnAdd.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;");
+
+        txtQuantity.requestFocus();
+        LOG.info("Edit mode enabled for item: {}", selected.getItemName());
+    }
+
+    private void updateSelectedTransaction() {
+        if (selectedTransaction == null) {
+            return;
+        }
+
+        try {
+            float newQty = Float.parseFloat(txtQuantity.getText().trim());
+            float newRate = Float.parseFloat(txtPrice.getText().trim());
+            float newAmt = newQty * newRate;
+
+            selectedTransaction.setQty(newQty);
+            selectedTransaction.setRate(newRate);
+            selectedTransaction.setAmt(newAmt);
+            selectedTransaction.setPrintQty(newQty);
+
+            // Save updated transaction to database
+            tempTransactionService.updateTransaction(selectedTransaction);
+
+            // Reload transactions to sync
+            loadTransactionsForTable(selectedTransaction.getTableNo());
+
+            LOG.info("Transaction updated in database: {}", selectedTransaction);
+
+            // Reset edit mode
+            resetEditMode();
+        } catch (NumberFormatException e) {
+            alert.showError("Invalid quantity or price");
+        } catch (Exception e) {
+            LOG.error("Error updating transaction", e);
+            alert.showError("Error updating transaction: " + e.getMessage());
+        }
+    }
+
+    private void resetEditMode() {
+        isEditMode = false;
+        selectedTransaction = null;
+        btnAdd.setText("ADD");
+        btnAdd.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;");
+        tblTransaction.getSelectionModel().clearSelection();
+    }
+
+    private void removeSelectedItem() {
+        TempTransaction selected = tblTransaction.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alert.showError("Please select an item to remove");
+            return;
+        }
+
+        // Confirm removal
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirm Removal");
+        confirmAlert.setHeaderText("Remove Item");
+        confirmAlert.setContentText("Are you sure you want to remove '" + selected.getItemName() + "'?");
+
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    // Delete from database
+                    tempTransactionService.deleteTransaction(selected.getId());
+
+                    // Reload transactions for this table to sync
+                    Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
+                    loadTransactionsForTable(tableNo);
+
+                    // Update table button status (may change to "Available" if last item removed)
+                    updateTableButtonStatus(tableNo);
+
+                    clearItemForm();
+                    LOG.info("Item removed from database: {}", selected.getItemName());
+                } catch (Exception e) {
+                    LOG.error("Error removing item from database", e);
+                    alert.showError("Error removing item: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void renumberTransactions() {
+        for (int i = 0; i < tempTransactionList.size(); i++) {
+            tempTransactionList.get(i).setId(i + 1);
+        }
+        tblTransaction.refresh();
+    }
+
+    private void populateFormFromSelection(TempTransaction transaction) {
+        if (transaction == null) {
+            return;
+        }
+
+        txtItemName.setText(transaction.getItemName());
+        txtQuantity.setText(String.valueOf(transaction.getQty().intValue()));
+        txtPrice.setText(String.valueOf(transaction.getRate()));
+        txtAmount.setText(String.format("%.2f", transaction.getAmt()));
+    }
+
+    private void processOrder() {
+        if (tempTransactionList.isEmpty()) {
+            alert.showError("No items to order. Please add items first.");
+            return;
+        }
+
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Please select a table first");
+            return;
+        }
+
+        try {
+            String tableName = txtTableNumber.getText();
+            Integer tableId = tableMasterService.getTableByName(tableName).getId();
+
+            // Get items with printQty > 0 (items that need kitchen printing)
+            List<TempTransaction> printableItems = tempTransactionService.getPrintableItemsByTableNo(tableId);
+
+            if (printableItems.isEmpty()) {
+                alert.showInfo("No new items to print. All items have already been sent to kitchen.");
+                return;
+            }
+
+            // Get waiter ID from first transaction
+            Integer waitorId = printableItems.get(0).getWaitorId();
+
+            LOG.info("Processing order for table: {} with {} printable items",
+                    tableName, printableItems.size());
+
+            // Print KOT to thermal printer (with dialog for printer selection)
+            boolean printSuccess = kotOrderPrint.printKOTWithDialog(tableName, tableId, printableItems, waitorId);
+
+            if (printSuccess) {
+                // Reset printQty to 0 after successful print
+                tempTransactionService.resetPrintQtyForTable(tableId);
+
+                // Reload transactions to reflect updated printQty
+                loadTransactionsForTable(tableId);
+
+                alert.showInfo("KOT printed successfully! " + printableItems.size() + " items sent to kitchen.");
+                LOG.info("KOT printed and printQty reset for table {}", tableName);
+            } else {
+                LOG.warn("KOT print cancelled or failed for table {}", tableName);
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error processing order", e);
+            alert.showError("Error processing order: " + e.getMessage());
+        }
+    }
+
+    private void updateTotals() {
+       
+        float totalQty = 0;
+        float totalAmt = 0;
+
+        for (TempTransaction t : tempTransactionList) {
+            totalQty += t.getQty();
+            totalAmt += t.getAmt();
+        }
+
+       
+        if (lblTotalQuantity != null) {
+            lblTotalQuantity.setText(String.format("%.0f", totalQty));
+        }
+        if (lblTotalAmount != null) {
+            lblTotalAmount.setText(String.format("%.2f", totalAmt));
+        }
     }
 
     private TempTransaction createTempTransactionFromForm() {
         TempTransaction tempTransaction = new TempTransaction();
-        tempTransaction.setItemName(txtItemName.getText());
-        tempTransaction.setQty(Float.parseFloat(txtQuantity.getText()));
+        String itemName = txtItemName.getText();
+        Float qty = Float.parseFloat(txtQuantity.getText());
+
+        tempTransaction.setItemName(itemName);
+        tempTransaction.setQty(qty);
         tempTransaction.setRate(Float.parseFloat(txtPrice.getText()));
         tempTransaction.setAmt(Float.parseFloat(txtAmount.getText()));
         tempTransaction.setTableNo(tableMasterService.getTableByName(txtTableNumber.getText()).getId());
-        tempTransaction.setWaitorId(employeeService.searchByFirstName(txtWaitorName.getText()).get(0).getId());
-        tempTransaction.setPrintQty(Float.parseFloat(txtQuantity.getText()));
+        String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
+        tempTransaction.setWaitorId(employeeService.searchByFirstName(selectedWaitor).get(0).getId());
 
+        // Set printQty based on category stock
+        // If category stock = 'N' (no stock tracking), set printQty = qty (needs to be printed for kitchen)
+        // If category stock = 'Y' (has stock), set printQty = 0 (doesn't need kitchen print)
+        Float printQty = calculatePrintQty(itemName, qty);
+        tempTransaction.setPrintQty(printQty);
+
+        LOG.info("Created transaction: item={}, qty={}, printQty={}", itemName, qty, printQty);
         return tempTransaction;
+    }
+
+    /**
+     * Calculate printQty based on item's category stock setting
+     * If category stock = 'N', item needs to be printed (printQty = qty)
+     * If category stock = 'Y', item doesn't need printing (printQty = 0)
+     */
+    private Float calculatePrintQty(String itemName, Float qty) {
+        try {
+            // Get the item with its category
+            Item item = itemService.getItemByName(itemName).orElse(null);
+            if (item == null) {
+                LOG.warn("Item not found: {}, defaulting printQty to qty", itemName);
+                return qty;
+            }
+
+            // Get category to check stock setting
+            Integer categoryId = item.getCategoryId();
+            if (categoryId != null) {
+                CategoryMasterDto category = categoryApiService.getCategoryById(categoryId);
+                if (category != null && "N".equalsIgnoreCase(category.getStock())) {
+                    // Stock = 'N' means no stock tracking, needs to be printed for kitchen
+                    LOG.debug("Category '{}' has stock='N', setting printQty={}", category.getCategory(), qty);
+                    return qty;
+                } else {
+                    // Stock = 'Y' or other means has stock, doesn't need kitchen print
+                    LOG.debug("Category '{}' has stock='{}', setting printQty=0",
+                            category != null ? category.getCategory() : "unknown",
+                            category != null ? category.getStock() : "null");
+                    return 0f;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error calculating printQty for item: {}", itemName, e);
+        }
+
+        // Default to qty if unable to determine
+        return qty;
     }
 
     private void addTempTransactionInTableView(TempTransaction tempTransaction) {
@@ -1120,9 +1656,9 @@ public class BillingController implements Initializable {
             alert.showError("Select Table First");
             return false;
         }
-        if (txtWaitorName.getText().isEmpty()) {
+        if (cmbWaitorName.getSelectionModel().isEmpty()) {
             alert.showError("Select Waitor First");
-            txtWaitorName.requestFocus();
+            cmbWaitorName.requestFocus();
             return false;
         }
         if (txtItemName.getText().isEmpty()) {

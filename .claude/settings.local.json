@@ -6,7 +6,8 @@
       "Bash(mvn clean:*)",
       "Bash(dir /b \"C:\\Claude_workspace\\Hotel2025\\hotel-frontend\\src\\main\\resources\\fonts\")",
       "WebSearch",
-      "WebFetch(domain:marathifonts.net)"
+      "WebFetch(domain:marathifonts.net)",
+      "Bash(mvn compile:*)"
     ],
     "deny": []
   }
