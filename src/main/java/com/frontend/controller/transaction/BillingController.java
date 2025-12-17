@@ -160,6 +160,22 @@ public class BillingController implements Initializable {
     @FXML
     private Button btnClear;
 
+    // Bill Action Buttons
+    @FXML
+    private Button btnClose;
+
+    @FXML
+    private Button btnPaid;
+
+    @FXML
+    private Button btnCredit;
+
+    @FXML
+    private Button btnOldBill;
+
+    @FXML
+    private Button btnEditBill;
+
     @FXML
     private TableView<TempTransaction> tblTransaction;
 
@@ -178,13 +194,29 @@ public class BillingController implements Initializable {
     @FXML
     private TableColumn<TempTransaction, Integer> colSrNo;
 
-    // Total Labels
-   
+    // Payment/Cash Counter Fields
     @FXML
     private Label lblTotalQuantity;
+    @FXML
+    private Label lblBillAmount;
 
     @FXML
-    private Label lblTotalAmount;
+    private TextField txtCashReceived;
+
+    @FXML
+    private TextField txtReturnToCustomer;
+
+    @FXML
+    private Label lblChange;
+
+    @FXML
+    private Label lblBalance;
+
+    @FXML
+    private Label lblDiscount;
+
+    @FXML
+    private Label lblNetAmount;
 
     // Autocomplete and customer tracking
     private AutoCompleteTextField_old customerAutoComplete;
@@ -219,6 +251,7 @@ public class BillingController implements Initializable {
         loadSections();
         setUpTempTransactionTable();
         setupActionButtons();
+        setupCashCounter();
     }
 
     private void setupActionButtons() {
@@ -227,6 +260,13 @@ public class BillingController implements Initializable {
         btnRemove.setOnAction(e -> removeSelectedItem());
         btnClear.setOnAction(e -> clearItemForm());
         btnOrder.setOnAction(e -> processOrder());
+
+        // Bill Action Buttons
+        btnClose.setOnAction(e -> closeTable());
+        btnPaid.setOnAction(e -> markAsPaid());
+        btnCredit.setOnAction(e -> markAsCredit());
+        btnOldBill.setOnAction(e -> showOldBills());
+        btnEditBill.setOnAction(e -> editBill());
 
         // Enable row selection for edit/remove
         tblTransaction.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -1083,7 +1123,7 @@ public class BillingController implements Initializable {
 
             if (tables.isEmpty()) {
                 Label noTablesLabel = new Label("No tables in this section");
-                noTablesLabel.setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 12px;");
+                noTablesLabel.setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 14px;");
                 flowPane.getChildren().add(noTablesLabel);
             } else {
                 for (TableMaster table : tables) {
@@ -1538,7 +1578,7 @@ public class BillingController implements Initializable {
     }
 
     private void updateTotals() {
-       
+
         float totalQty = 0;
         float totalAmt = 0;
 
@@ -1547,13 +1587,160 @@ public class BillingController implements Initializable {
             totalAmt += t.getAmt();
         }
 
-       
         if (lblTotalQuantity != null) {
             lblTotalQuantity.setText(String.format("%.0f", totalQty));
         }
-        if (lblTotalAmount != null) {
-            lblTotalAmount.setText(String.format("%.2f", totalAmt));
+        if (lblBillAmount != null) {
+            lblBillAmount.setText(String.format("₹ %.2f", totalAmt));
         }
+
+        // Recalculate payment values
+        calculatePayment();
+    }
+
+    /**
+     * Setup cash counter listeners for real-time calculation
+     */
+    private void setupCashCounter() {
+        // Add listener for Cash Received field
+        if (txtCashReceived != null) {
+            txtCashReceived.textProperty().addListener((obs, oldVal, newVal) -> {
+                // Allow only numbers and decimal point
+                if (!newVal.matches("\\d*\\.?\\d*")) {
+                    txtCashReceived.setText(oldVal);
+                } else {
+                    calculatePayment();
+                }
+            });
+        }
+
+        // Add listener for Return to Customer field
+        if (txtReturnToCustomer != null) {
+            txtReturnToCustomer.textProperty().addListener((obs, oldVal, newVal) -> {
+                // Allow only numbers and decimal point
+                if (!newVal.matches("\\d*\\.?\\d*")) {
+                    txtReturnToCustomer.setText(oldVal);
+                } else {
+                    calculatePayment();
+                }
+            });
+        }
+    }
+
+    /**
+     * Calculate payment values based on bill amount, cash received, and return to customer
+     *
+     * Practical Logic:
+     * - Change = What we SHOULD return to customer (Cash Received - Bill Amount, if positive)
+     * - Balance = What customer still OWES (Bill Amount - Cash Received, if positive)
+     * - Discount = Only when we return MORE than the calculated change
+     *              OR when we accept less than bill (Balance forgiven at payment time)
+     * - Net Amount = Actual amount we're keeping (Cash Received - Return to Customer)
+     *
+     * Examples:
+     * 1. Bill=400, Cash=500 → Change=100, Balance=0, if Return=100 → Discount=0, Net=400
+     * 2. Bill=400, Cash=500, Return=150 → Change=100, Discount=50, Net=350
+     * 3. Bill=20, Cash=10 → Change=0, Balance=10, Discount=0 (customer still owes)
+     * 4. Bill=500, Cash=500, Return=100 → Change=0, Discount=100, Net=400
+     */
+    private void calculatePayment() {
+        try {
+            // Get bill amount from total
+            float billAmount = 0;
+            for (TempTransaction t : tempTransactionList) {
+                billAmount += t.getAmt();
+            }
+
+            // Get cash received
+            float cashReceived = 0;
+            if (txtCashReceived != null && !txtCashReceived.getText().isEmpty()) {
+                cashReceived = Float.parseFloat(txtCashReceived.getText());
+            }
+
+            // Get return to customer (manual entry)
+            float returnToCustomer = 0;
+            if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
+                returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText());
+            }
+
+            // Calculate change (what we SHOULD return based on cash received)
+            float change = Math.max(0, cashReceived - billAmount);
+
+            // Calculate balance (what customer still OWES)
+            float balance = Math.max(0, billAmount - cashReceived);
+
+            // Calculate discount
+            // Discount only applies when customer has paid enough (no balance)
+            // and we return more than the calculated change
+            float discount = 0;
+            if (balance == 0 && returnToCustomer > change) {
+                // Customer paid full or more, but we're returning extra
+                discount = returnToCustomer - change;
+            }
+
+            // Net amount = what we're actually keeping
+            // Net = Cash Received - Return to Customer
+            // But cannot be more than Bill Amount (we don't keep extra)
+            float netAmount = cashReceived - returnToCustomer;
+            if (netAmount > billAmount) {
+                netAmount = billAmount;
+            }
+            if (netAmount < 0) {
+                netAmount = 0;
+            }
+
+            // If there's still a balance, show it; Net should reflect actual collection
+            // Net Pay shows what we're collecting, Balance shows what's pending
+
+            // Update labels
+            if (lblChange != null) {
+                lblChange.setText(String.format("₹ %.2f", change));
+                if (change > 0) {
+                    lblChange.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #9C27B0;");
+                } else {
+                    lblChange.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #757575;");
+                }
+            }
+
+            if (lblBalance != null) {
+                lblBalance.setText(String.format("₹ %.2f", balance));
+                if (balance > 0) {
+                    lblBalance.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #F44336;");
+                } else {
+                    lblBalance.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;");
+                }
+            }
+
+            if (lblDiscount != null) {
+                lblDiscount.setText(String.format("₹ %.2f", discount));
+                if (discount > 0) {
+                    lblDiscount.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E91E63;");
+                } else {
+                    lblDiscount.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #757575;");
+                }
+            }
+
+            if (lblNetAmount != null) {
+                lblNetAmount.setText(String.format("₹ %.2f", netAmount));
+            }
+
+        } catch (NumberFormatException e) {
+            // Invalid number input - ignore
+            LOG.debug("Invalid number in payment calculation: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Clear payment/cash counter fields
+     */
+    private void clearPaymentFields() {
+        if (txtCashReceived != null) txtCashReceived.clear();
+        if (txtReturnToCustomer != null) txtReturnToCustomer.clear();
+        if (lblBillAmount != null) lblBillAmount.setText("₹ 0.00");
+        if (lblChange != null) lblChange.setText("₹ 0.00");
+        if (lblBalance != null) lblBalance.setText("₹ 0.00");
+        if (lblDiscount != null) lblDiscount.setText("₹ 0.00");
+        if (lblNetAmount != null) lblNetAmount.setText("₹ 0.00");
     }
 
     private TempTransaction createTempTransactionFromForm() {
@@ -1678,6 +1865,146 @@ public class BillingController implements Initializable {
         }
 
         return true;
+    }
+
+    // ============= Bill Action Button Methods =============
+
+    /**
+     * Close/Cancel the current table order
+     * Clears all items from temp_transaction for this table
+     */
+    private void closeTable() {
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Please select a table first");
+            return;
+        }
+
+        if (tempTransactionList.isEmpty()) {
+            alert.showInfo("No items to close");
+            return;
+        }
+
+        // Confirm close
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirm Close");
+        confirmAlert.setHeaderText("Close Table");
+        confirmAlert.setContentText("Are you sure you want to close this table and clear all items?");
+
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    String tableName = txtTableNumber.getText();
+                    Integer tableId = tableMasterService.getTableByName(tableName).getId();
+
+                    // Clear all transactions for this table
+                    tempTransactionService.clearTransactionsForTable(tableId);
+
+                    // Clear TableView
+                    tempTransactionList.clear();
+                    updateTotals();
+
+                    // Update table button status
+                    updateTableButtonStatus(tableId);
+
+                    // Clear form
+                    clearItemForm();
+                    clearPaymentFields();
+                    cmbWaitorName.getSelectionModel().clearSelection();
+
+                    alert.showInfo("Table closed successfully");
+                    LOG.info("Table {} closed and cleared", tableName);
+
+                } catch (Exception e) {
+                    LOG.error("Error closing table", e);
+                    alert.showError("Error closing table: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * Mark the current order as PAID
+     * TODO: Generate bill, save to transaction history, clear temp_transaction
+     */
+    private void markAsPaid() {
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Please select a table first");
+            return;
+        }
+
+        if (tempTransactionList.isEmpty()) {
+            alert.showError("No items to bill");
+            return;
+        }
+
+        LOG.info("PAID button clicked for table: {}", txtTableNumber.getText());
+        // TODO: Implement full payment processing
+        // 1. Generate bill number
+        // 2. Save to transaction/bill table
+        // 3. Print bill
+        // 4. Clear temp_transaction
+        // 5. Update table status
+        alert.showInfo("Payment processing - TODO: Implement bill generation");
+    }
+
+    /**
+     * Mark the current order as CREDIT
+     * TODO: Save as credit bill for selected customer
+     */
+    private void markAsCredit() {
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Please select a table first");
+            return;
+        }
+
+        if (tempTransactionList.isEmpty()) {
+            alert.showError("No items to bill");
+            return;
+        }
+
+        if (selectedCustomer == null) {
+            alert.showError("Please select a customer for credit billing");
+            txtCustomerSearch.requestFocus();
+            return;
+        }
+
+        LOG.info("CREDIT button clicked for table: {}, customer: {}",
+                txtTableNumber.getText(), selectedCustomer.getFullName());
+        // TODO: Implement credit billing
+        // 1. Generate bill number
+        // 2. Save to transaction/bill table with credit flag
+        // 3. Update customer credit balance
+        // 4. Print bill
+        // 5. Clear temp_transaction
+        alert.showInfo("Credit billing - TODO: Implement credit processing for " + selectedCustomer.getFullName());
+    }
+
+    /**
+     * Show old/previous bills
+     * TODO: Open dialog to search and view old bills
+     */
+    private void showOldBills() {
+        LOG.info("OLD BILL button clicked");
+        // TODO: Implement old bill viewer
+        // 1. Open dialog/window
+        // 2. Search by date, bill number, customer
+        // 3. Display bill details
+        // 4. Option to reprint
+        alert.showInfo("Old Bills - TODO: Implement bill history viewer");
+    }
+
+    /**
+     * Edit an existing bill
+     * TODO: Load bill for editing
+     */
+    private void editBill() {
+        LOG.info("EDIT BILL button clicked");
+        // TODO: Implement bill editing
+        // 1. Search and select bill to edit
+        // 2. Load bill items
+        // 3. Allow modifications
+        // 4. Save changes
+        alert.showInfo("Edit Bill - TODO: Implement bill editing");
     }
 
 }

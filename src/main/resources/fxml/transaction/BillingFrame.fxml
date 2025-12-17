@@ -306,11 +306,11 @@
                            </children>
                         </VBox>
                         <!-- Transaction Table Section -->
-                        <VBox spacing="0" styleClass="transaction-table-container" VBox.vgrow="ALWAYS">
+                        <VBox spacing="0" styleClass="transaction-table-container">
                            <children>
 
-                              <!-- Table View - Fixed height for 10 rows (30px each + 28px header = 328px) -->
-                              <TableView fx:id="tblTransaction" fixedCellSize="30" minHeight="300.0" prefHeight="300.0" styleClass="transaction-table">
+                              <!-- Table View - Fixed height for 7 rows (30px each + 28px header = 238px) -->
+                              <TableView fx:id="tblTransaction" fixedCellSize="30" minHeight="238.0" prefHeight="238.0" maxHeight="238.0" styleClass="transaction-table">
                                 <columns>
                                   <TableColumn fx:id="colSrNo" minWidth="45.0" prefWidth="50.0" styleClass="col-srno" text="Sr.No" />
                                   <TableColumn fx:id="colItemName" minWidth="150.0" prefWidth="200.0" styleClass="col-item-name" text="Item Name" />
@@ -323,20 +323,123 @@
                                  </columnResizePolicy>
                               </TableView>
 
-                              <!-- Totals Row -->
-                              <HBox alignment="CENTER_RIGHT" spacing="0" styleClass="totals-row">
+                              <!-- Payment/Cash Counter Section -->
+                              <VBox spacing="8" style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-width: 1 0; -fx-padding: 10;">
                                  <children>
-                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #424242;" text="TOTAL:" />
-                                    <Region prefWidth="20.0" />
-                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #757575; -fx-min-width: 50;" text="Qty:" />
-                                    <Label fx:id="lblTotalQuantity" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1976D2; -fx-min-width: 60;" text="0" />
-                                    <Region prefWidth="20.0" />
-                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #757575; -fx-min-width: 50;" text="Amount:" />
-                                    <Label fx:id="lblTotalAmount" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4CAF50; -fx-min-width: 100;" text="0.00" />
+                                    <!-- Row 1: Total Qty, Bill Amount, Cash Received, Return -->
+                                    <HBox alignment="CENTER" spacing="12">
+                                       <children>
+                                          <!-- Total Items/Qty Display -->
+                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #1976D2; -fx-border-width: 2; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #757575;" text="Total Qty" />
+                                                <Label fx:id="lblTotalQuantity" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1976D2;" text="0" />
+                                             </children>
+                                          </VBox>
+
+                                          <!-- Bill Amount Display -->
+                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #4CAF50; -fx-border-width: 2; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #757575;" text="Bill Amount" />
+                                                <Label fx:id="lblBillAmount" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="₹ 0.00" />
+                                             </children>
+                                          </VBox>
+
+                                          <!-- Cash Received Input -->
+                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #2196F3; -fx-border-width: 2; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 8;">
+                                             <children>
+                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #757575;" text="Cash Received" />
+                                                <TextField fx:id="txtCashReceived" alignment="CENTER" prefWidth="90" promptText="0.00" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2196F3; -fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: #2196F3;" />
+                                             </children>
+                                          </VBox>
+
+                                          <!-- Return to Customer Input -->
+                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #FF9800; -fx-border-width: 2; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 8;">
+                                             <children>
+                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #757575;" text="Return Cash" />
+                                                <TextField fx:id="txtReturnToCustomer" alignment="CENTER" prefWidth="90" promptText="0.00" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #FF9800; -fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: #FF9800;" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+
+                                    <!-- Row 2: Calculated Values -->
+                                    <HBox alignment="CENTER" spacing="15">
+                                       <children>
+                                          <!-- Change to Return -->
+                                          <HBox alignment="CENTER" spacing="5" style="-fx-background-color: white; -fx-border-color: #9C27B0; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #757575;" text="Change:" />
+                                                <Label fx:id="lblChange" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #9C27B0;" text="₹ 0.00" />
+                                             </children>
+                                          </HBox>
+
+                                          <!-- Balance/Due -->
+                                          <HBox alignment="CENTER" spacing="5" style="-fx-background-color: white; -fx-border-color: #F44336; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #757575;" text="Balance:" />
+                                                <Label fx:id="lblBalance" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #F44336;" text="₹ 0.00" />
+                                             </children>
+                                          </HBox>
+
+                                          <!-- Discount -->
+                                          <HBox alignment="CENTER" spacing="5" style="-fx-background-color: white; -fx-border-color: #E91E63; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #757575;" text="Discount:" />
+                                                <Label fx:id="lblDiscount" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E91E63;" text="₹ 0.00" />
+                                             </children>
+                                          </HBox>
+
+                                          <!-- Net Amount -->
+                                          <HBox alignment="CENTER" spacing="5" style="-fx-background-color: #4CAF50; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 12;">
+                                             <children>
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: white;" text="Net Pay:" />
+                                                <Label fx:id="lblNetAmount" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" text="₹ 0.00" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
                                  </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="12.0" right="12.0" top="10.0" />
-                                 </padding>
+                              </VBox>
+
+                              <!-- Bill Action Buttons Row -->
+                              <HBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 1 0 0 0; -fx-padding: 12;">
+                                 <children>
+                                    <!-- CLOSE Button -->
+                                    <Button fx:id="btnClose" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="CLOSE">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="TIMES" size="1em" />
+                                       </graphic>
+                                    </Button>
+
+                                    <!-- PAID Button -->
+                                    <Button fx:id="btnPaid" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="PAID">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="CHECK" size="1em" />
+                                       </graphic>
+                                    </Button>
+
+                                    <!-- CREDIT Button -->
+                                    <Button fx:id="btnCredit" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="CREDIT">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="CREDIT_CARD" size="1em" />
+                                       </graphic>
+                                    </Button>
+
+                                    <!-- OLD BILL Button -->
+                                    <Button fx:id="btnOldBill" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="OLD BILL">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="HISTORY" size="1em" />
+                                       </graphic>
+                                    </Button>
+
+                                    <!-- EDIT Button -->
+                                    <Button fx:id="btnEditBill" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="EDIT">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="PENCIL" size="1em" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
                               </HBox>
                            </children>
                         </VBox>
