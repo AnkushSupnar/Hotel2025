@@ -254,8 +254,8 @@ public class LoginController {
                 // Navigate to MaterialFX Demo (temporary for demo purposes)
                 // stageManager.switchScene(FxmlView.MATERIALFX_DEMO);
                 // Navigate to dashboard
-                // stageManager.switchScene(FxmlView.DASHBOARD);
-                stageManager.switchScene(FxmlView.BILLING);
+                 stageManager.switchScene(FxmlView.DASHBOARD);
+               // stageManager.switchScene(FxmlView.BILLING);
             } else {
                 alertNotification.showError("Login failed. Please try again.");
             }

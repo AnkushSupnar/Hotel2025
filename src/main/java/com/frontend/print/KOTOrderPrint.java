@@ -4,36 +4,48 @@ import com.frontend.entity.TempTransaction;
 import com.frontend.service.EmployeeService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.Orientation;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.awt.print.*;
+import java.awt.print.PrinterJob;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * KOT (Kitchen Order Ticket) Print class for thermal printer
- * Prints order items to kitchen for food preparation
+ * KOT (Kitchen Order Ticket) Print class for thermal printer using iTextPDF
+ * Generates PDF KOT and prints to thermal printer
  */
 @Component
 public class KOTOrderPrint {
 
     private static final Logger LOG = LoggerFactory.getLogger(KOTOrderPrint.class);
 
-    // Thermal printer paper width in cm (58mm = 5.8cm, 80mm = 8cm)
-    private static final double PAPER_WIDTH_CM = 8.0;
+    // PDF output path
+    private static final String KOT_PDF_PATH = System.getProperty("user.home") + File.separator + "kot.pdf";
 
-    // Font sizes
-    private static final int HOTEL_NAME_FONT_SIZE = 30;
-    private static final int HEADER_FONT_SIZE = 14;
-    private static final int ITEM_FONT_SIZE = 24;
-    private static final int LABEL_FONT_SIZE = 24;
-    private static final int ENGLISH_FONT_SIZE = 14;
+    // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm = 3.15 inches)
+    private static final float PAPER_WIDTH = 226f;
 
     @Autowired
     private EmployeeService employeeService;
@@ -41,12 +53,18 @@ public class KOTOrderPrint {
     @Autowired
     private TableMasterService tableMasterService;
 
-    private Font marathiFontLarge;      // For hotel name
-    private Font marathiFontMedium;     // For items
-    private Font marathiFontLabel;      // For labels
-    private Font englishFont;           // For values (table no, date, qty)
-    private Font englishFontBold;       // For bold values
-    private Font monospacedFont;        // For separators
+    // Font path - will be loaded from settings
+    private String fontPath;
+    private BaseFont baseFont;
+    private Font fontLarge;
+    private Font fontMedium;
+    private Font fontSmall;
+    private Font fontEnglishSmall;
+    private Font fontEnglishMedium;
+    private Font fontEnglishBold;
+
+    // Store last print error for displaying to user
+    private String lastPrintError = null;
 
     /**
      * Print KOT to thermal printer
@@ -58,25 +76,30 @@ public class KOTOrderPrint {
         }
 
         try {
-            LOG.info("Starting KOT print for table {} with {} items", tableName, items.size());
+            LOG.info("Starting KOT PDF generation for table {}", tableName);
 
+            // Load fonts
             loadFonts();
+
+            // Generate PDF
             String waitorName = getWaitorName(waitorId);
+            String pdfPath = generateKOTPdf(tableName, items, waitorName);
+            if (pdfPath == null) {
+                LOG.error("Failed to generate KOT PDF");
+                return false;
+            }
 
-            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            // Print PDF
+            boolean printed = printPdf(pdfPath);
+            if (printed) {
+                LOG.info("KOT printed successfully for table {}", tableName);
+            }
 
-            // Calculate dynamic height based on items
-            int totalLines = calculateTotalLines(items);
-            PageFormat pageFormat = getPageFormat(printerJob, totalLines);
+            return printed;
 
-            printerJob.setPrintable(new KOTPrintable(tableName, items, waitorName), pageFormat);
-            printerJob.print();
-
-            LOG.info("KOT printed successfully for table {}", tableName);
-            return true;
-
-        } catch (PrinterException e) {
+        } catch (Exception e) {
             LOG.error("Error printing KOT for table {}: {}", tableName, e.getMessage(), e);
+            lastPrintError = e.getMessage();
             return false;
         }
     }
@@ -91,84 +114,313 @@ public class KOTOrderPrint {
         }
 
         try {
-            LOG.info("Starting KOT print (with dialog) for table {} with {} items", tableName, items.size());
+            LOG.info("Starting KOT PDF generation (with dialog) for table {} with {} items", tableName, items.size());
 
+            // Load fonts
             loadFonts();
+
+            // Generate PDF
             String waitorName = getWaitorName(waitorId);
-
-            PrinterJob printerJob = PrinterJob.getPrinterJob();
-
-            int totalLines = calculateTotalLines(items);
-            PageFormat pageFormat = getPageFormat(printerJob, totalLines);
-
-            printerJob.setPrintable(new KOTPrintable(tableName, items, waitorName), pageFormat);
-
-            if (printerJob.printDialog()) {
-                printerJob.print();
-                LOG.info("KOT printed successfully for table {}", tableName);
-                return true;
-            } else {
-                LOG.info("Print cancelled by user for table {}", tableName);
+            String pdfPath = generateKOTPdf(tableName, items, waitorName);
+            if (pdfPath == null) {
+                LOG.error("Failed to generate KOT PDF");
+                lastPrintError = "Failed to generate KOT PDF";
                 return false;
             }
 
-        } catch (PrinterException e) {
+            // Print PDF with dialog
+            boolean printed = printPdfWithDialog(pdfPath);
+            if (printed) {
+                LOG.info("KOT printed successfully for table {}", tableName);
+            }
+
+            return printed;
+
+        } catch (Exception e) {
             LOG.error("Error printing KOT for table {}: {}", tableName, e.getMessage(), e);
+            lastPrintError = e.getMessage();
             return false;
         }
     }
 
     /**
-     * Calculate total lines needed including wrapped text
+     * Get the last print error message
      */
-    private int calculateTotalLines(List<TempTransaction> items) {
-        int lines = 0;
-        for (TempTransaction item : items) {
-            // Estimate lines needed for each item (max chars per line ~15 for Marathi)
-            String itemName = item.getItemName();
-            int itemLines = (int) Math.ceil(itemName.length() / 12.0);
-            lines += Math.max(1, itemLines);
-        }
-        return lines + 8; // Add extra for header and footer
+    public String getLastPrintError() {
+        return lastPrintError;
     }
 
     /**
-     * Load custom fonts for printing
-     * Uses SessionService to get the custom font family name (same as BillingController)
+     * Clear the last print error
+     */
+    public void clearLastPrintError() {
+        lastPrintError = null;
+    }
+
+    /**
+     * Load fonts for PDF generation
      */
     private void loadFonts() {
         try {
-            // Get custom font family from SessionService (same as used in BillingController)
-            String customFontFamily = SessionService.getCustomFontFamily();
+            // Get font path from settings
+            fontPath = SessionService.getApplicationSetting("input_font_path");
 
-            if (customFontFamily != null && SessionService.isCustomFontLoaded()) {
-                // Create AWT fonts using the font family from SessionService
-                marathiFontLarge = new Font(customFontFamily, Font.BOLD, HOTEL_NAME_FONT_SIZE);
-                marathiFontMedium = new Font(customFontFamily, Font.PLAIN, ITEM_FONT_SIZE);
-                marathiFontLabel = new Font(customFontFamily, Font.PLAIN, LABEL_FONT_SIZE);
-                LOG.info("Custom font '{}' loaded from SessionService for printing", customFontFamily);
+            if (fontPath != null && !fontPath.trim().isEmpty() && new File(fontPath).exists()) {
+                baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                LOG.info("Custom font loaded from: {}", fontPath);
             } else {
-                // Fallback to system font
-                marathiFontLarge = new Font("SansSerif", Font.BOLD, HOTEL_NAME_FONT_SIZE);
-                marathiFontMedium = new Font("SansSerif", Font.PLAIN, ITEM_FONT_SIZE);
-                marathiFontLabel = new Font("SansSerif", Font.PLAIN, LABEL_FONT_SIZE);
-                LOG.warn("Custom font not available from SessionService, using fallback font");
+                // Try bundled font
+                String bundledFontPath = getClass().getResource("/fonts/kiran.ttf") != null
+                        ? getClass().getResource("/fonts/kiran.ttf").getPath()
+                        : null;
+
+                if (bundledFontPath != null) {
+                    // Load from classpath
+                    baseFont = BaseFont.createFont("/fonts/kiran.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    LOG.info("Bundled font loaded from resources");
+                } else {
+                    // Fallback to system font
+                    baseFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+                    LOG.warn("Using fallback font - custom font not available");
+                }
             }
 
-            // English fonts
-            englishFont = new Font("Arial", Font.PLAIN, ENGLISH_FONT_SIZE);
-            englishFontBold = new Font("Arial", Font.BOLD, ENGLISH_FONT_SIZE);
-            monospacedFont = new Font("Monospaced", Font.PLAIN, 10);
+            // Create font instances
+            fontLarge = new Font(baseFont, 22f, Font.BOLD, BaseColor.BLACK);
+            fontMedium = new Font(baseFont, 14f, Font.NORMAL, BaseColor.BLACK);
+            fontSmall = new Font(baseFont, 12f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishSmall = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishMedium = new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishBold = new Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD, BaseColor.BLACK);
 
         } catch (Exception e) {
-            LOG.error("Error loading fonts: {}", e.getMessage());
-            marathiFontLarge = new Font("SansSerif", Font.BOLD, HOTEL_NAME_FONT_SIZE);
-            marathiFontMedium = new Font("SansSerif", Font.PLAIN, ITEM_FONT_SIZE);
-            marathiFontLabel = new Font("SansSerif", Font.PLAIN, LABEL_FONT_SIZE);
-            englishFont = new Font("Arial", Font.PLAIN, ENGLISH_FONT_SIZE);
-            englishFontBold = new Font("Arial", Font.BOLD, ENGLISH_FONT_SIZE);
-            monospacedFont = new Font("Monospaced", Font.PLAIN, 10);
+            LOG.error("Error loading fonts: {}", e.getMessage(), e);
+            // Create fallback fonts
+            fontLarge = new Font(Font.FontFamily.HELVETICA, 22f, Font.BOLD, BaseColor.BLACK);
+            fontMedium = new Font(Font.FontFamily.HELVETICA, 14f, Font.NORMAL, BaseColor.BLACK);
+            fontSmall = new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishSmall = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishMedium = new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.BLACK);
+            fontEnglishBold = new Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD, BaseColor.BLACK);
         }
+    }
+
+    /**
+     * Generate KOT PDF
+     */
+    private String generateKOTPdf(String tableName, List<TempTransaction> items, String waitorName) {
+        try {
+            // Calculate dynamic height based on content
+            // Header: Hotel name (30) + Order text (20) + Table/Date row (20) = 70
+            // Items header row: 20
+            // Each item row: ~22 (with padding for text wrap)
+            // Footer: Waiter + Total row (25)
+            // Margins and padding: 30
+            float headerHeight = 70f;
+            float itemsHeaderHeight = 20f;
+            float itemRowHeight = 22f;
+            float footerHeight = 25f;
+            float margins = 30f;
+
+            float height = headerHeight + itemsHeaderHeight + (items.size() * itemRowHeight) + footerHeight + margins;
+
+            // Ensure minimum height for proper display
+            if (height < 250f) height = 250f;
+
+            // Create document with default page size first
+            Document document = new Document();
+
+            // Create PDF file
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(KOT_PDF_PATH));
+
+            // Set custom page size before opening - this is the correct way
+            Rectangle pageSize = new Rectangle(PAPER_WIDTH, height);
+            document.setPageSize(pageSize);
+            document.setMargins(3f, 3f, 5f, 5f);
+
+            document.open();
+
+            // Create items table
+            PdfPTable itemsTable = createItemsTable(items);
+
+            // Create header table
+            PdfPTable headerTable = createHeaderTable(tableName, waitorName, items, itemsTable);
+
+            // Add header table (which includes items table)
+            document.add(headerTable);
+
+            document.close();
+
+            LOG.info("KOT PDF generated at: {} with height: {}", KOT_PDF_PATH, height);
+            return KOT_PDF_PATH;
+
+        } catch (Exception e) {
+            LOG.error("Error generating KOT PDF: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Create header table with hotel info and KOT details
+     */
+    private PdfPTable createHeaderTable(String tableName, String waitorName, List<TempTransaction> items, PdfPTable itemsTable) throws Exception {
+        PdfPTable headerTable = new PdfPTable(1);
+        headerTable.setTotalWidth(new float[]{210});
+        headerTable.setLockedWidth(true);
+
+        // Hotel name - "ha^Tola AMjanaI"
+        PdfPCell cellHead = new PdfPCell(new Phrase("ha^Tola AMjanaI", fontLarge));
+        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(2f);
+        cellHead.setPaddingBottom(0f);
+        headerTable.addCell(cellHead);
+
+        // "Aa^Dr" (Order) text
+        cellHead = new PdfPCell(new Phrase("Aa^Dr", fontMedium));
+        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellHead.setBorder(Rectangle.BOTTOM);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(4f);
+        headerTable.addCell(cellHead);
+
+        // Table No and DateTime in nested table
+        PdfPTable infoTable = new PdfPTable(2);
+        infoTable.setWidths(new float[]{50, 50});
+
+        // Table number: Marathi label + English value
+        Phrase tablePhrase = new Phrase();
+        tablePhrase.add(new Chunk("TobalanaM. ", fontSmall));
+        tablePhrase.add(new Chunk(tableName, fontEnglishBold));
+        PdfPCell cellTable = new PdfPCell(tablePhrase);
+        cellTable.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cellTable.setBorder(Rectangle.NO_BORDER);
+        cellTable.setPaddingTop(4f);
+        cellTable.setPaddingBottom(2f);
+        infoTable.addCell(cellTable);
+
+        // Date Time in English
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
+        PdfPCell cellDateTime = new PdfPCell(new Phrase(dateTime, fontEnglishSmall));
+        cellDateTime.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cellDateTime.setBorder(Rectangle.NO_BORDER);
+        cellDateTime.setPaddingTop(4f);
+        cellDateTime.setPaddingBottom(2f);
+        infoTable.addCell(cellDateTime);
+
+        cellHead = new PdfPCell(infoTable);
+        cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
+        headerTable.addCell(cellHead);
+
+        // Add items table
+        cellHead = new PdfPCell(itemsTable);
+        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(2f);
+        headerTable.addCell(cellHead);
+
+        // Footer with Waiter and Total items
+        PdfPTable footerTable = new PdfPTable(2);
+        footerTable.setWidths(new float[]{60, 40});
+
+        // Waiter: Marathi label + Marathi value
+        Phrase waiterPhrase = new Phrase();
+        waiterPhrase.add(new Chunk("vaoTr : ", fontSmall));
+        waiterPhrase.add(new Chunk(waitorName, fontMedium));
+        PdfPCell cellWaiter = new PdfPCell(waiterPhrase);
+        cellWaiter.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cellWaiter.setBorder(Rectangle.TOP);
+        cellWaiter.setPaddingTop(4f);
+        cellWaiter.setPaddingBottom(2f);
+        footerTable.addCell(cellWaiter);
+
+        // Total items: Marathi label + English value
+        Phrase totalPhrase = new Phrase();
+        totalPhrase.add(new Chunk("ekUNa Aa[Tma : ", fontSmall));
+        totalPhrase.add(new Chunk(String.valueOf(items.size()), fontEnglishBold));
+        PdfPCell cellTotal = new PdfPCell(totalPhrase);
+        cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cellTotal.setBorder(Rectangle.TOP);
+        cellTotal.setPaddingTop(4f);
+        cellTotal.setPaddingBottom(2f);
+        footerTable.addCell(cellTotal);
+
+        cellHead = new PdfPCell(footerTable);
+        cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
+        headerTable.addCell(cellHead);
+
+        return headerTable;
+    }
+
+    /**
+     * Create items table for KOT - Sr.No, Item Name, Qty
+     */
+    private PdfPTable createItemsTable(List<TempTransaction> items) throws Exception {
+        // Items table with 3 columns: Sr.No, Item, Qty
+        PdfPTable table = new PdfPTable(3);
+        table.setTotalWidth(new float[]{25, 145, 40});
+        table.setLockedWidth(true);
+
+        float rowHeight = 18f;
+
+        // Table header
+        PdfPCell cell = new PdfPCell(new Phrase("k`.", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("tapaSaIla", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("naga", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        // Add items
+        int srNo = 1;
+        for (TempTransaction item : items) {
+            // Sr. No in English font
+            PdfPCell c1 = new PdfPCell(new Phrase(String.valueOf(srNo++), fontEnglishBold));
+            c1.setBorder(Rectangle.NO_BORDER);
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setPaddingTop(2f);
+            c1.setPaddingBottom(3f);
+            table.addCell(c1);
+
+            // Item name in Marathi font
+            PdfPCell c2 = new PdfPCell(new Phrase(item.getItemName(), fontMedium));
+            c2.setBorder(Rectangle.NO_BORDER);
+            c2.setNoWrap(false);
+            c2.setPaddingTop(2f);
+            c2.setPaddingBottom(3f);
+            table.addCell(c2);
+
+            // Qty in English font (using printQty)
+            PdfPCell c3 = new PdfPCell(new Phrase(String.valueOf(item.getPrintQty().intValue()), fontEnglishBold));
+            c3.setBorder(Rectangle.NO_BORDER);
+            c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c3.setPaddingTop(2f);
+            c3.setPaddingBottom(3f);
+            table.addCell(c3);
+        }
+
+        return table;
     }
 
     /**
@@ -188,261 +440,144 @@ public class KOTOrderPrint {
     }
 
     /**
-     * Create page format for thermal printer
+     * Print PDF using PDFBox
      */
-    private PageFormat getPageFormat(PrinterJob printerJob, int totalLines) {
-        PageFormat pageFormat = printerJob.defaultPage();
-        Paper paper = pageFormat.getPaper();
-
-        // Calculate height based on content
-        double headerHeight = 3.5;  // cm for header
-        double lineHeight = 0.55;   // cm per line (increased for larger font)
-        double footerHeight = 2.0;  // cm for footer
-        double totalHeight = headerHeight + (totalLines * lineHeight) + footerHeight;
-
-        if (totalHeight < 8.0) {
-            totalHeight = 8.0;
+    private boolean printPdf(String pdfPath) {
+        File pdfFile = new File(pdfPath);
+        if (!pdfFile.exists()) {
+            LOG.error("PDF file not found: {}", pdfPath);
+            lastPrintError = "PDF not found";
+            return false;
         }
 
-        double width = convertCmToPPI(PAPER_WIDTH_CM);
-        double height = convertCmToPPI(totalHeight);
+        // Try printing with retry logic - reload document each attempt
+        int maxRetries = 3;
+        int retryCount = 0;
 
-        paper.setSize(width, height);
-        paper.setImageableArea(
-            3,
-            8,
-            width - 6,
-            height - convertCmToPPI(0.3)
-        );
+        while (retryCount < maxRetries) {
+            PDDocument document = null;
+            try {
+                // Small delay before loading to ensure file is released
+                if (retryCount > 0) {
+                    Thread.sleep(2000);
+                }
 
-        pageFormat.setOrientation(PageFormat.PORTRAIT);
-        pageFormat.setPaper(paper);
+                document = PDDocument.load(pdfFile);
+                PrinterJob job = PrinterJob.getPrinterJob();
+                // Use PORTRAIT orientation to prevent auto-rotation
+                job.setPageable(new PDFPageable(document, Orientation.PORTRAIT));
 
-        return pageFormat;
-    }
+                job.print();
+                document.close();
+                LOG.info("PDF printed successfully");
+                return true;
 
-    private static double convertCmToPPI(double cm) {
-        return cm * 0.393700787 * 72;
+            } catch (Exception pe) {
+                retryCount++;
+                String errorMsg = pe.getMessage() != null ? pe.getMessage().toLowerCase() : "";
+
+                // Close document before retry
+                if (document != null) {
+                    try { document.close(); } catch (Exception ignored) {}
+                }
+
+                if ((errorMsg.contains("access") || errorMsg.contains("denied") || errorMsg.contains("busy"))
+                        && retryCount < maxRetries) {
+                    LOG.warn("Printer access issue (attempt {}/{}): {}. Retrying in 2 seconds...",
+                            retryCount, maxRetries, pe.getMessage());
+                } else {
+                    LOG.error("Error printing PDF: {}", pe.getMessage(), pe);
+                    lastPrintError = retryCount >= maxRetries
+                            ? "Printer access denied after " + maxRetries + " attempts. Please check printer."
+                            : pe.getMessage();
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     /**
-     * Inner class implementing Printable for KOT content
+     * Print PDF with dialog
      */
-    private class KOTPrintable implements Printable {
-
-        private final String tableName;
-        private final List<TempTransaction> items;
-        private final String waitorName;
-
-        public KOTPrintable(String tableName, List<TempTransaction> items, String waitorName) {
-            this.tableName = tableName;
-            this.items = items;
-            this.waitorName = waitorName;
+    private boolean printPdfWithDialog(String pdfPath) {
+        File pdfFile = new File(pdfPath);
+        if (!pdfFile.exists()) {
+            LOG.error("PDF file not found: {}", pdfPath);
+            lastPrintError = "PDF file not found";
+            return false;
         }
 
-        @Override
-        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            if (pageIndex > 0) {
-                return NO_SUCH_PAGE;
+        PDDocument document = null;
+        try {
+            document = PDDocument.load(pdfFile);
+            PrinterJob job = PrinterJob.getPrinterJob();
+            // Use PORTRAIT orientation to prevent auto-rotation
+            job.setPageable(new PDFPageable(document, Orientation.PORTRAIT));
+
+            if (!job.printDialog()) {
+                document.close();
+                LOG.info("Print cancelled by user");
+                return false;
             }
 
-            Graphics2D g2d = (Graphics2D) graphics;
-            g2d.translate((int) pageFormat.getImageableX(), (int) pageFormat.getImageableY());
+            // User selected printer, now close document and use retry logic
+            document.close();
+            document = null;
 
-            // Enable antialiasing for better text rendering
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            // Retry logic with document reload for each attempt
+            int maxRetries = 3;
+            int retryCount = 0;
 
-            int y = 18;
-            int lineHeight = 16;
-            int itemLineHeight = 18;
-            double width = pageFormat.getImageableWidth();
-            int pageWidth = (int) width;
-
-            // ========== HEADER - HOTEL NAME (Large, Bold, Dark) ==========
-            g2d.setFont(marathiFontLarge);
-            g2d.setColor(Color.BLACK);
-
-            String hotelName = "ha^Tola AMjanaI";  // Hotel Anjani in Marathi
-            FontMetrics fm = g2d.getFontMetrics();
-            int textWidth = fm.stringWidth(hotelName);
-            g2d.drawString(hotelName, (pageWidth - textWidth) / 2, y);
-            y += 22;
-
-            // "Order" text (centered)
-            g2d.setFont(marathiFontMedium);
-            String orderText = "Aa^Dr";  // Order in Marathi
-            fm = g2d.getFontMetrics();
-            textWidth = fm.stringWidth(orderText);
-            g2d.drawString(orderText, (pageWidth - textWidth) / 2, y);
-            y += 20;
-
-            // ========== TABLE NO (Label in Marathi, Value in English) ==========
-            g2d.setFont(marathiFontLabel);
-            String tableLabel = "TobalanaM. : ";  // Table No. in Marathi
-            g2d.drawString(tableLabel, 5, y);
-
-            // Table number in English font (bold)
-            int labelWidth = g2d.getFontMetrics().stringWidth(tableLabel);
-            g2d.setFont(englishFontBold);
-            g2d.drawString(tableName, 5 + labelWidth, y);
-            y += lineHeight;
-
-            // ========== DATE TIME (English font) ==========
-            g2d.setFont(englishFont);
-            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm"));
-            g2d.drawString(dateTime, 5, y);
-            y += lineHeight + 4;
-
-            // ========== SEPARATOR LINE ==========
-            g2d.setFont(monospacedFont);
-            g2d.drawString("================================", 0, y);
-            y += lineHeight;
-
-            // ========== TABLE HEADER (Marathi labels) ==========
-            g2d.setFont(marathiFontMedium);
-
-            // Column positions
-            int srNoCol = 5;
-            int itemCol = 30;
-            int qtyCol = pageWidth - 35;
-
-            g2d.drawString("k`.", srNoCol, y);        // Sr. in Marathi
-            g2d.drawString("tapaSaIla", itemCol, y);    // Item in Marathi
-            g2d.drawString("naga", qtyCol, y);        // Qty in Marathi
-            y += lineHeight;
-
-            // Separator
-            g2d.setFont(monospacedFont);
-            g2d.drawString("--------------------------------", 0, y);
-            y += lineHeight;
-
-            // ========== ITEMS TABLE ==========
-            int srNo = 1;
-            int itemColWidth = qtyCol - itemCol - 10;  // Available width for item name
-
-            for (TempTransaction item : items) {
-                // Serial number (English font)
-                g2d.setFont(englishFontBold);
-                g2d.drawString(String.valueOf(srNo++), srNoCol, y);
-
-                // Item name (Marathi font with word wrap)
-                g2d.setFont(marathiFontMedium);
-                String itemName = item.getItemName();
-                List<String> wrappedLines = wrapText(itemName, g2d.getFontMetrics(), itemColWidth);
-
-                // Draw first line of item name
-                if (!wrappedLines.isEmpty()) {
-                    g2d.drawString(wrappedLines.get(0), itemCol, y);
-                }
-
-                // Quantity (English font) - aligned with first line
-                g2d.setFont(englishFontBold);
-                String qty = String.valueOf(item.getPrintQty().intValue());
-                g2d.drawString(qty, qtyCol, y);
-
-                y += itemLineHeight;
-
-                // Draw remaining wrapped lines (if any)
-                g2d.setFont(marathiFontMedium);
-                for (int i = 1; i < wrappedLines.size(); i++) {
-                    g2d.drawString(wrappedLines.get(i), itemCol, y);
-                    y += itemLineHeight;
-                }
-            }
-
-            // ========== FOOTER ==========
-            y += 4;
-
-            // Separator
-            g2d.setFont(monospacedFont);
-            g2d.drawString("================================", 0, y);
-            y += lineHeight;
-
-            // Waiter name (Label in Marathi, Value in English/Marathi)
-            g2d.setFont(marathiFontLabel);
-            String waiterLabel = "vaoTr : ";  // Waiter in Marathi
-            g2d.drawString(waiterLabel, 5, y);
-
-            labelWidth = g2d.getFontMetrics().stringWidth(waiterLabel);
-            g2d.setFont(marathiFontMedium);
-            g2d.drawString(waitorName, 5 + labelWidth, y);
-            y += lineHeight;
-
-            // Total items (Label in Marathi, Value in English)
-            g2d.setFont(marathiFontLabel);
-            String totalLabel = "ekUNa Aa[Tma : ";  // Total Items in Marathi
-            g2d.drawString(totalLabel, 5, y);
-
-            labelWidth = g2d.getFontMetrics().stringWidth(totalLabel);
-            g2d.setFont(englishFontBold);
-            g2d.drawString(String.valueOf(items.size()), 5 + labelWidth, y);
-
-            return PAGE_EXISTS;
-        }
-
-        /**
-         * Wrap text to fit within specified width
-         */
-        private List<String> wrapText(String text, FontMetrics fm, int maxWidth) {
-            List<String> lines = new ArrayList<>();
-
-            if (text == null || text.isEmpty()) {
-                lines.add("");
-                return lines;
-            }
-
-            // If text fits in one line, return as is
-            if (fm.stringWidth(text) <= maxWidth) {
-                lines.add(text);
-                return lines;
-            }
-
-            // Word wrap
-            StringBuilder currentLine = new StringBuilder();
-            String[] words = text.split(" ");
-
-            for (String word : words) {
-                String testLine = currentLine.length() == 0 ? word : currentLine + " " + word;
-
-                if (fm.stringWidth(testLine) <= maxWidth) {
-                    if (currentLine.length() > 0) {
-                        currentLine.append(" ");
+            while (retryCount < maxRetries) {
+                PDDocument retryDoc = null;
+                try {
+                    // Delay before retry
+                    if (retryCount > 0) {
+                        Thread.sleep(2000);
                     }
-                    currentLine.append(word);
-                } else {
-                    // Current line is full
-                    if (currentLine.length() > 0) {
-                        lines.add(currentLine.toString());
-                        currentLine = new StringBuilder(word);
+
+                    retryDoc = PDDocument.load(pdfFile);
+                    PrinterJob retryJob = PrinterJob.getPrinterJob();
+                    retryJob.setPrintService(job.getPrintService()); // Use selected printer
+                    retryJob.setPageable(new PDFPageable(retryDoc, Orientation.PORTRAIT));
+
+                    retryJob.print();
+                    retryDoc.close();
+                    LOG.info("PDF printed successfully");
+                    return true;
+
+                } catch (Exception pe) {
+                    retryCount++;
+                    String errorMsg = pe.getMessage() != null ? pe.getMessage().toLowerCase() : "";
+
+                    // Close document before retry
+                    if (retryDoc != null) {
+                        try { retryDoc.close(); } catch (Exception ignored) {}
+                    }
+
+                    if ((errorMsg.contains("access") || errorMsg.contains("denied") || errorMsg.contains("busy"))
+                            && retryCount < maxRetries) {
+                        LOG.warn("Printer access issue (attempt {}/{}): {}. Retrying in 2 seconds...",
+                                retryCount, maxRetries, pe.getMessage());
                     } else {
-                        // Word itself is too long, need to break it
-                        String remaining = word;
-                        while (fm.stringWidth(remaining) > maxWidth) {
-                            // Find how many characters fit
-                            int charsFit = 0;
-                            for (int i = 1; i <= remaining.length(); i++) {
-                                if (fm.stringWidth(remaining.substring(0, i)) > maxWidth) {
-                                    charsFit = i - 1;
-                                    break;
-                                }
-                                charsFit = i;
-                            }
-                            if (charsFit == 0) charsFit = 1; // At least one character
-                            lines.add(remaining.substring(0, charsFit));
-                            remaining = remaining.substring(charsFit);
-                        }
-                        currentLine = new StringBuilder(remaining);
+                        LOG.error("Error printing PDF: {}", pe.getMessage(), pe);
+                        lastPrintError = retryCount >= maxRetries
+                                ? "Printer access denied after " + maxRetries + " attempts. Please check printer."
+                                : pe.getMessage();
+                        return false;
                     }
                 }
             }
+            return false;
 
-            // Add remaining text
-            if (currentLine.length() > 0) {
-                lines.add(currentLine.toString());
+        } catch (Exception e) {
+            LOG.error("Error printing PDF: {}", e.getMessage(), e);
+            lastPrintError = e.getMessage();
+            if (document != null) {
+                try { document.close(); } catch (Exception ignored) {}
             }
-
-            return lines;
+            return false;
         }
     }
 }

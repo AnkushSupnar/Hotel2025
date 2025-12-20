@@ -4,12 +4,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,22 +20,19 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1443.0" style="-fx-background-color: #ECEFF1;" stylesheets="@../css/billing-material.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
 
     <left>
-        <!-- Left Panel - TABLE SECTIONS (35%) -->
-        <VBox prefHeight="700.0" prefWidth="510.0" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
+        <!-- Left Panel - TABLE SECTIONS (Compact) -->
+        <VBox prefHeight="700.0" prefWidth="461.0" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0; -fx-padding: 2;">
 
-            <!-- Refresh Tables Button -->
-            <Button fx:id="btnRefreshTables" maxWidth="Infinity" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="🔄 REFRESH TABLES">
+            <!-- Refresh Tables Button - Compact -->
+            <Button fx:id="btnRefreshTables" maxWidth="Infinity" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 3; -fx-cursor: hand; -fx-padding: 4 8;" text="🔄 REFRESH">
                 <VBox.margin>
-                    <Insets bottom="12.0" />
+                    <Insets bottom="4.0" />
                 </VBox.margin>
-                <font>
-                    <Font name="Kiran" size="14.0" />
-                </font>
             </Button>
 
-            <!-- ScrollPane for sections list -->
-            <ScrollPane fitToWidth="true" prefHeight="589.0" prefWidth="531.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-                <VBox fx:id="sectionsContainer" spacing="12.0" style="-fx-background-color: transparent; -fx-padding: 8;" />
+            <!-- ScrollPane for sections list - Compact -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox fx:id="sectionsContainer" spacing="4.0" style="-fx-background-color: transparent; -fx-padding: 2;" />
             </ScrollPane>
         </VBox>
     </left>
@@ -310,7 +307,7 @@
                            <children>
 
                               <!-- Table View - Fixed height for 7 rows (30px each + 28px header = 238px) -->
-                              <TableView fx:id="tblTransaction" fixedCellSize="30" minHeight="238.0" prefHeight="238.0" maxHeight="238.0" styleClass="transaction-table">
+                              <TableView fx:id="tblTransaction" fixedCellSize="30" maxHeight="238.0" minHeight="238.0" prefHeight="238.0" styleClass="transaction-table">
                                 <columns>
                                   <TableColumn fx:id="colSrNo" minWidth="45.0" prefWidth="50.0" styleClass="col-srno" text="Sr.No" />
                                   <TableColumn fx:id="colItemName" minWidth="150.0" prefWidth="200.0" styleClass="col-item-name" text="Item Name" />

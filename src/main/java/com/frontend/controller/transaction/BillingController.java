@@ -292,9 +292,29 @@ public class BillingController implements Initializable {
         btnRefreshTables.setOnAction(e -> refreshTables());
     }
 
+    /**
+     * Refresh all table buttons - reloads sections and updates table statuses
+     * Called when user clicks the Refresh button
+     */
     private void refreshTables() {
         LOG.info("Refreshing tables...");
+
+        // Disable button during refresh to prevent multiple clicks
+        btnRefreshTables.setDisable(true);
+        btnRefreshTables.setText("⏳");
+
+        // Clear the table button map (will be repopulated in loadSections)
+        tableButtonMap.clear();
+
+        // Reload sections with table buttons
         loadSections();
+
+        // Re-enable button after a short delay
+        Platform.runLater(() -> {
+            btnRefreshTables.setDisable(false);
+            btnRefreshTables.setText("🔄 REFRESH");
+            LOG.info("Tables refreshed successfully");
+        });
     }
 
     private void setupCustomerSearch() {
@@ -1033,6 +1053,7 @@ public class BillingController implements Initializable {
 
     // Clear item entry form fields
     private void clearItemForm() {
+        txtCategoryName.clear();
         txtCode.clear();
         txtItemName.clear();
         txtQuantity.clear();
@@ -1102,7 +1123,7 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Create a styled box for a section with drag and drop support
+     * Create a styled box for a section with drag and drop support - Compact layout
      */
     private VBox createSectionBox(String sectionName) {
         // Main container box with Material Design elevation and colored border
@@ -1120,8 +1141,8 @@ public class BillingController implements Initializable {
 
         // FlowPane for table buttons
         FlowPane flowPane = new FlowPane();
-        flowPane.setHgap(8);
-        flowPane.setVgap(8);
+        flowPane.setHgap(6);
+        flowPane.setVgap(6);
         flowPane.getStyleClass().add("section-content");
         flowPane.setAlignment(Pos.CENTER_LEFT);
 
@@ -1130,8 +1151,8 @@ public class BillingController implements Initializable {
             List<TableMaster> tables = tableMasterService.getTablesByDescription(sectionName);
 
             if (tables.isEmpty()) {
-                Label noTablesLabel = new Label("No tables in this section");
-                noTablesLabel.setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 14px;");
+                Label noTablesLabel = new Label("No tables");
+                noTablesLabel.setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 10px;");
                 flowPane.getChildren().add(noTablesLabel);
             } else {
                 for (TableMaster table : tables) {
@@ -1147,8 +1168,8 @@ public class BillingController implements Initializable {
             }
         } catch (Exception e) {
             LOG.error("Error loading tables for section: {}", sectionName, e);
-            Label errorLabel = new Label("Error loading tables");
-            errorLabel.setStyle("-fx-text-fill: #F44336; -fx-font-size: 12px;");
+            Label errorLabel = new Label("Error");
+            errorLabel.setStyle("-fx-text-fill: #F44336; -fx-font-size: 10px;");
             flowPane.getChildren().add(errorLabel);
         }
 
@@ -1226,34 +1247,25 @@ public class BillingController implements Initializable {
 
     /**
      * Apply CSS style class to table button based on status
+     * States: Open (Available), Running (Ongoing), Closed
      */
     private void applyTableButtonStatus(Button button, String status) {
         // Remove all status classes first
         button.getStyleClass().removeAll(
             "table-button-available",
-            "table-button-occupied",
-            "table-button-selected",
             "table-button-ongoing",
             "table-button-closed"
         );
 
         // Apply new status class
         switch (status) {
-            case "Available":
-                button.getStyleClass().add("table-button-available");
-                break;
-            case "Occupied":
-                button.getStyleClass().add("table-button-occupied");
-                break;
-            case "Selected":
-                button.getStyleClass().add("table-button-selected");
-                break;
-            case "Ongoing":
+            case "Ongoing":  // Running - has items in temp_transaction (Green)
                 button.getStyleClass().add("table-button-ongoing");
                 break;
-            case "Closed":
+            case "Closed":   // Closed - has closed bill (Red)
                 button.getStyleClass().add("table-button-closed");
                 break;
+            case "Available": // Open - no items (White/No color)
             default:
                 button.getStyleClass().add("table-button-available");
         }
@@ -1501,12 +1513,32 @@ public class BillingController implements Initializable {
             tblTransaction.refresh();
             updateTotals();
 
+            // Update Close button state
+            // Disable if there's a closed bill but no new temp_transactions
+            updateCloseButtonState(currentClosedBill != null, tempTransactions.isEmpty());
+
             LOG.info("Total {} items loaded for table {} (closed bill: {}, new: {})",
                     tempTransactionList.size(), tableNo,
                     currentClosedBill != null ? currentClosedBill.getBillNo() : "none",
                     tempTransactions.size());
         } catch (Exception e) {
             LOG.error("Error loading transactions for table {}", tableNo, e);
+        }
+    }
+
+    /**
+     * Update Close button state based on table status
+     * Disable if table has closed bill but no new items to add
+     */
+    private void updateCloseButtonState(boolean hasClosedBill, boolean noNewItems) {
+        if (hasClosedBill && noNewItems) {
+            // Table already closed with no new items - disable Close button
+            btnClose.setDisable(true);
+            btnClose.setStyle("-fx-background-color: #BDBDBD; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: default;");
+        } else {
+            // Enable Close button
+            btnClose.setDisable(false);
+            btnClose.setStyle("-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
         }
     }
 
@@ -1647,6 +1679,7 @@ public class BillingController implements Initializable {
                     tableName, printableItems.size());
 
             // Print KOT to thermal printer (with dialog for printer selection)
+            kotOrderPrint.clearLastPrintError();
             boolean printSuccess = kotOrderPrint.printKOTWithDialog(tableName, tableId, printableItems, waitorId);
 
             if (printSuccess) {
@@ -1659,7 +1692,14 @@ public class BillingController implements Initializable {
                 alert.showInfo("KOT printed successfully! " + printableItems.size() + " items sent to kitchen.");
                 LOG.info("KOT printed and printQty reset for table {}", tableName);
             } else {
-                LOG.warn("KOT print cancelled or failed for table {}", tableName);
+                // Check if there was an error (not just user cancellation)
+                String printError = kotOrderPrint.getLastPrintError();
+                if (printError != null && !printError.isEmpty()) {
+                    alert.showError("Print failed: " + printError);
+                    LOG.error("KOT print failed for table {}: {}", tableName, printError);
+                } else {
+                    LOG.info("KOT print cancelled by user for table {}", tableName);
+                }
             }
 
         } catch (Exception e) {

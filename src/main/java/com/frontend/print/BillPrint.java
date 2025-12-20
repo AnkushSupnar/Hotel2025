@@ -195,12 +195,16 @@ public class BillPrint {
             float height = headerTable.getTotalHeight() + 20f;
             if (height < 200f) height = 200f;
 
-            // Create document with dynamic height
-            Rectangle pageSize = new Rectangle(PAPER_WIDTH, height);
+            // Create page size for thermal printer - portrait orientation
+            // For iText, we need to ensure width < height for portrait
+            // Use lower-left corner at (0,0) and upper-right at (width, height)
+            Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
+            pageSize.setRotation(0); // Ensure no rotation
+
             Document document = new Document(pageSize, 3f, 3f, 5f, 5f);
 
             // Create PDF file
-            PdfWriter.getInstance(document, new FileOutputStream(BILL_PDF_PATH));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(BILL_PDF_PATH));
             document.open();
 
             // Add header table (which includes items table)
@@ -225,39 +229,47 @@ public class BillPrint {
         headerTable.setTotalWidth(new float[]{210});
         headerTable.setLockedWidth(true);
 
-        // Hotel name - "AMjanaI k^fo" or "ha^Tola AMjanaI"
+        // Hotel name - "AMjanaI k^fo"
         PdfPCell cellHead = new PdfPCell(new Phrase("AMjanaI k^fo", fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setVerticalAlignment(Element.ALIGN_TOP);
         cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(2f);
+        cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
         // Sub-title - "f^imalaI rosTa^rMT"
         cellHead = new PdfPCell(new Phrase("f^imalaI rosTa^rMT", fontMedium));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setVerticalAlignment(Element.ALIGN_TOP);
-        cellHead.setPaddingTop(-2f);
         cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
         // Address
         cellHead = new PdfPCell(new Phrase("mau.paosT.saaonaJ-.ta.naovaasaa.ija.Ahmadnagar", fontSmall));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(-2f);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
-        // Phone numbers
-        cellHead = new PdfPCell(new Phrase("maaobaa[la naM.9860419230   8552803030", fontSmall));
+        // Phone numbers - Marathi label + English numbers
+        Phrase phonePhrase = new Phrase();
+        phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
+        phonePhrase.add(new Chunk("9860419230   8552803030", fontEnglishSmall));
+        cellHead = new PdfPCell(phonePhrase);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setPaddingTop(-2f);
         cellHead.setBorder(Rectangle.NO_BORDER);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
         // GSTIN
         cellHead = new PdfPCell(new Phrase("GSTIN:- 27AGKPL2419AIZR", fontEnglishSmall));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.BOTTOM);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(2f);
         headerTable.addCell(cellHead);
 
         // Bill type (Cash/Credit)
@@ -273,7 +285,8 @@ public class BillPrint {
         cellHead = new PdfPCell(new Phrase(mode, fontMedium));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.BOTTOM);
-        cellHead.setPaddingTop(-2f);
+        cellHead.setPaddingTop(2f);
+        cellHead.setPaddingBottom(2f);
         headerTable.addCell(cellHead);
 
         // Bill number and date in nested table
@@ -287,7 +300,8 @@ public class BillPrint {
         PdfPCell cellBill = new PdfPCell(billPhrase);
         cellBill.setHorizontalAlignment(Element.ALIGN_LEFT);
         cellBill.setBorder(Rectangle.NO_BORDER);
-        cellBill.setPaddingTop(-2f);
+        cellBill.setPaddingTop(2f);
+        cellBill.setPaddingBottom(2f);
         nestedTable.addCell(cellBill);
 
         // Date: Marathi label + English value
@@ -295,29 +309,32 @@ public class BillPrint {
         datePhrase.add(new Chunk("idnaaMk ", fontMedium));
         datePhrase.add(new Chunk(bill.getBillDate(), fontEnglishMedium));
         PdfPCell cellDate = new PdfPCell(datePhrase);
-        cellDate.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cellDate.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellDate.setBorder(Rectangle.NO_BORDER);
-        cellDate.setPaddingTop(-2f);
+        cellDate.setPaddingTop(2f);
+        cellDate.setPaddingBottom(2f);
         nestedTable.addCell(cellDate);
 
         cellHead = new PdfPCell(nestedTable);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(-2f);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
         // Add items table
         cellHead = new PdfPCell(itemsTable);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingBottom(10f);
+        cellHead.setPaddingTop(0f);
+        cellHead.setPaddingBottom(5f);
         headerTable.addCell(cellHead);
 
         return headerTable;
     }
 
     /**
-     * Create items table
+     * Create items table - Compact and professional layout
      */
     private PdfPTable createItemsTable(List<Transaction> transactions, String tableName, String waitorName) throws Exception {
         // Items table with 4 columns: Item, Qty, Rate, Amount
@@ -325,124 +342,132 @@ public class BillPrint {
         table.setTotalWidth(new float[]{100, 30, 30, 50});
         table.setLockedWidth(true);
 
+        // Row height for proper text display
+        float rowHeight = 16f;
+
         // Table header
         PdfPCell cell = new PdfPCell(new Phrase("tapiSala", fontMedium));
-        cell.setFixedHeight(20);
+        cell.setFixedHeight(rowHeight);
         cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
         table.addCell(cell);
 
         cell = new PdfPCell(new Phrase("naga", fontMedium));
-        cell.setFixedHeight(20);
-        cell.setVerticalAlignment(Element.ALIGN_RIGHT);
+        cell.setFixedHeight(rowHeight);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
         table.addCell(cell);
 
         cell = new PdfPCell(new Phrase("dr", fontMedium));
-        cell.setFixedHeight(20);
+        cell.setFixedHeight(rowHeight);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
         table.addCell(cell);
 
         cell = new PdfPCell(new Phrase("r@kma", fontMedium));
-        cell.setVerticalAlignment(Element.ALIGN_LEFT);
-        cell.setFixedHeight(20);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setFixedHeight(rowHeight);
         cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
         table.addCell(cell);
 
-        // Add items
+        // Add items with English font for numbers
         if (transactions != null) {
             for (Transaction trans : transactions) {
+                // Item name in Marathi font
                 PdfPCell c1 = new PdfPCell(new Phrase(trans.getItemName(), fontMedium));
                 c1.setBorder(Rectangle.NO_BORDER);
                 c1.setNoWrap(false);
+                c1.setPaddingTop(1f);
+                c1.setPaddingBottom(2f);
                 table.addCell(c1);
 
-                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontMedium));
-                c2.setFixedHeight(20);
+                // Qty in English font
+                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontEnglishMedium));
                 c2.setBorder(Rectangle.NO_BORDER);
+                c2.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c2.setPaddingTop(1f);
+                c2.setPaddingBottom(2f);
                 table.addCell(c2);
 
-                PdfPCell c3 = new PdfPCell(new Phrase(String.format("%.0f", trans.getRate()), fontMedium));
-                c3.setFixedHeight(20);
+                // Rate in English font
+                PdfPCell c3 = new PdfPCell(new Phrase(String.format("%.0f", trans.getRate()), fontEnglishMedium));
                 c3.setBorder(Rectangle.NO_BORDER);
+                c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c3.setPaddingTop(1f);
+                c3.setPaddingBottom(2f);
                 table.addCell(c3);
 
-                PdfPCell c4 = new PdfPCell(new Phrase(String.format("%.0f", trans.getAmt()), fontMedium));
-                c4.setFixedHeight(20);
+                // Amount in English font
+                PdfPCell c4 = new PdfPCell(new Phrase(String.format("%.0f", trans.getAmt()), fontEnglishMedium));
                 c4.setBorder(Rectangle.NO_BORDER);
+                c4.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c4.setPaddingTop(1f);
+                c4.setPaddingBottom(2f);
                 table.addCell(c4);
             }
         }
 
-        // Table number row: Marathi label + English value
-        PdfPTable nestedTable1 = new PdfPTable(2);
-        nestedTable1.setWidths(new float[]{50, 50});
+        // Table number and Total row combined
+        // Table number: Marathi label + English value
+        Phrase tablePhrase = new Phrase();
+        tablePhrase.add(new Chunk("To naM. ", fontMedium));
+        tablePhrase.add(new Chunk(tableName, fontEnglishMedium));
+        PdfPCell cellTableNo = new PdfPCell(tablePhrase);
+        cellTableNo.setFixedHeight(rowHeight);
+        cellTableNo.setBorder(Rectangle.TOP);
+        cellTableNo.setPaddingTop(1f);
+        cellTableNo.setPaddingBottom(1f);
+        cellTableNo.setColspan(2);
+        table.addCell(cellTableNo);
 
-        PdfPCell c1 = new PdfPCell(new Phrase("To naM.", fontMedium));
-        c1.setFixedHeight(20);
-        c1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        c1.setBorder(Rectangle.NO_BORDER);
-        nestedTable1.addCell(c1);
+        // Total label
+        PdfPCell cellTotalLabel = new PdfPCell(new Phrase("ekuNa", fontMedium));
+        cellTotalLabel.setFixedHeight(rowHeight);
+        cellTotalLabel.setBorder(Rectangle.TOP);
+        cellTotalLabel.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellTotalLabel.setPaddingTop(1f);
+        cellTotalLabel.setPaddingBottom(1f);
+        table.addCell(cellTotalLabel);
 
-        // Table name in English font
-        PdfPCell cellTable = new PdfPCell(new Phrase(tableName, fontEnglishMedium));
-        cellTable.setFixedHeight(20);
-        cellTable.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cellTable.setBorder(Rectangle.NO_BORDER);
-        nestedTable1.addCell(cellTable);
-
-        PdfPCell cellHead1 = new PdfPCell(nestedTable1);
-        cellHead1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead1.setBorder(Rectangle.TOP);
-        cellHead1.setPaddingTop(-2f);
-        table.addCell(cellHead1);
-
-        PdfPCell empty = new PdfPCell();
-        empty.setHorizontalAlignment(Element.ALIGN_CENTER);
-        empty.setBorder(Rectangle.TOP);
-        empty.setPaddingTop(-2f);
-        table.addCell(empty);
-
-        // Total label and amount
-        PdfPCell c3 = new PdfPCell(new Phrase("ekuNa", fontMedium));
-        c3.setFixedHeight(20);
-        c3.setBorder(Rectangle.TOP);
-        c3.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table.addCell(c3);
-
+        // Total amount in English font
         float totalAmt = transactions != null ?
                 (float) transactions.stream().mapToDouble(t -> t.getAmt()).sum() : 0f;
-        PdfPCell c4 = new PdfPCell(new Phrase(String.format("%.0f", totalAmt), fontMedium));
-        c4.setFixedHeight(20);
-        c4.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        c4.setBorder(Rectangle.TOP);
-        table.addCell(c4);
+        PdfPCell cellTotalAmt = new PdfPCell(new Phrase(String.format("%.0f", totalAmt), fontEnglishMedium));
+        cellTotalAmt.setFixedHeight(rowHeight);
+        cellTotalAmt.setBorder(Rectangle.TOP);
+        cellTotalAmt.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellTotalAmt.setPaddingTop(1f);
+        cellTotalAmt.setPaddingBottom(1f);
+        table.addCell(cellTotalAmt);
 
-        // Waiter row
-        PdfPCell c5 = new PdfPCell(new Phrase("vaoTr :" + waitorName, fontMedium));
-        c5.setFixedHeight(20);
-        c5.setVerticalAlignment(Element.ALIGN_RIGHT);
-        c5.setBorder(Rectangle.NO_BORDER);
-        table.addCell(c5);
+        // Waiter row - spans all columns
+        PdfPCell cellWaiter = new PdfPCell(new Phrase("vaoTr :" + waitorName, fontMedium));
+        cellWaiter.setFixedHeight(rowHeight);
+        cellWaiter.setBorder(Rectangle.NO_BORDER);
+        cellWaiter.setPaddingTop(1f);
+        cellWaiter.setPaddingBottom(1f);
+        cellWaiter.setColspan(4);
+        table.addCell(cellWaiter);
 
-        // Empty cells
-        for (int i = 0; i < 3; i++) {
-            PdfPCell emptyCell = new PdfPCell(new Phrase(""));
-            emptyCell.setFixedHeight(20);
-            emptyCell.setBorder(Rectangle.NO_BORDER);
-            table.addCell(emptyCell);
-        }
-
-        // Thank you footer
+        // Thank you footer - compact
         Font smallFont = new Font(Font.FontFamily.HELVETICA, 7);
-        PdfPCell c9 = new PdfPCell(new Phrase(
-                "Thanks for visit.....HAVE A NICE DAY\n___________________________________________________\nDeveloped by Ankush(8329394603)",
+        PdfPCell cellFooter = new PdfPCell(new Phrase(
+                "Thanks for visit.....HAVE A NICE DAY\n________________________________________\nDeveloped by Ankush(8329394603)",
                 smallFont));
-        c9.setFixedHeight(50);
-        c9.setVerticalAlignment(Element.ALIGN_TOP);
-        c9.setHorizontalAlignment(Element.ALIGN_CENTER);
-        c9.setBorder(Rectangle.NO_BORDER);
-        c9.setColspan(4);
-        table.addCell(c9);
+        cellFooter.setFixedHeight(32f);
+        cellFooter.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cellFooter.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellFooter.setBorder(Rectangle.NO_BORDER);
+        cellFooter.setColspan(4);
+        cellFooter.setPaddingTop(3f);
+        table.addCell(cellFooter);
 
         return table;
     }
