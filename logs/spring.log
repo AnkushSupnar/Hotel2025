@@ -1,16 +1,16 @@
-2025-12-18T00:00:13.337+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 12300 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
-2025-12-18T00:00:13.356+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
-2025-12-18T00:00:14.320+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-18T00:00:14.501+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 155 ms. Found 14 JPA repository interfaces.
-2025-12-18T00:00:15.509+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-18T00:00:15.631+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-12-18T00:00:15.699+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-18T00:00:16.234+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-18T00:00:16.286+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-18T00:00:16.566+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31679cd
-2025-12-18T00:00:16.570+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-18T00:00:16.650+05:30  WARN 12300 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-18T00:00:16.688+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-21T00:07:51.258+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 1196 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-21T00:07:51.275+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-21T00:07:52.292+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-21T00:07:52.470+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 157 ms. Found 13 JPA repository interfaces.
+2025-12-21T00:07:53.513+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-21T00:07:53.650+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-21T00:07:53.727+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-21T00:07:54.329+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-21T00:07:54.384+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-21T00:07:54.730+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1c2fbb81
+2025-12-21T00:07:54.733+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-21T00:07:54.824+05:30  WARN 1196 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-21T00:07:54.859+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.37
@@ -18,55 +18,761 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-18T00:00:18.326+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-18T00:00:18.519+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-18T00:00:18.975+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-18T00:00:20.928+05:30  INFO 12300 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 8.528 seconds (process running for 10.014)
-2025-12-18T00:00:21.759+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
-2025-12-18T00:00:28.109+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
-2025-12-18T00:00:28.110+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
-2025-12-18T00:00:28.147+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
-2025-12-18T00:00:28.148+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
-2025-12-18T00:00:28.151+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
-2025-12-18T00:00:28.176+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
-2025-12-18T00:00:28.188+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
-2025-12-18T00:00:28.189+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
-2025-12-18T00:00:28.189+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
-2025-12-18T00:00:28.190+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
-2025-12-18T00:00:28.191+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
-2025-12-18T00:00:28.192+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
-2025-12-18T00:00:28.192+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
-2025-12-18T00:00:28.194+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
-2025-12-18T00:00:28.330+05:30  WARN 12300 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
-2025-12-18T00:00:28.461+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
-2025-12-18T00:00:28.463+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
-2025-12-18T00:00:28.464+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
-2025-12-18T00:00:28.465+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
-2025-12-18T00:00:28.467+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
-2025-12-18T00:00:28.468+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
-2025-12-18T00:00:28.469+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
-2025-12-18T00:00:28.480+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
-2025-12-18T00:00:28.481+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
-2025-12-18T00:00:28.486+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
-2025-12-18T00:00:28.488+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
-2025-12-18T00:00:28.489+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
-2025-12-18T00:00:28.513+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
-2025-12-18T00:00:28.514+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
-2025-12-18T00:00:28.521+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
-2025-12-18T00:00:28.524+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
-2025-12-18T00:00:28.526+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
-2025-12-18T00:00:28.534+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
-2025-12-18T00:00:28.544+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
-2025-12-18T00:00:28.545+05:30 DEBUG 12300 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
-2025-12-18T00:00:28.549+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
-2025-12-18T00:00:29.408+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
-2025-12-18T00:00:29.489+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
-2025-12-18T00:00:29.543+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
-2025-12-18T00:00:29.569+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
-2025-12-18T00:00:29.599+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
-2025-12-18T00:00:29.633+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
-2025-12-18T00:00:29.684+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
-2025-12-18T00:00:29.762+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
-2025-12-18T00:00:29.835+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
-2025-12-18T00:00:29.888+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
-2025-12-18T00:00:29.895+05:30  INFO 12300 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:07:56.435+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-21T00:07:56.803+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-21T00:07:57.388+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-21T00:07:59.661+05:30  INFO 1196 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.449 seconds (process running for 13.283)
+2025-12-21T00:08:00.548+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-21T00:08:33.360+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-21T00:08:33.361+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-21T00:08:33.401+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-21T00:08:33.402+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-21T00:08:33.406+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-21T00:08:33.444+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-21T00:08:33.451+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
+2025-12-21T00:08:33.454+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
+2025-12-21T00:08:33.456+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-21T00:08:33.457+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-21T00:08:33.457+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-21T00:08:33.458+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
+2025-12-21T00:08:33.458+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
+2025-12-21T00:08:33.459+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-21T00:08:33.619+05:30  WARN 1196 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-21T00:08:33.771+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-21T00:08:33.772+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:33.774+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:33.776+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-21T00:08:33.776+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:33.777+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
+2025-12-21T00:08:33.777+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-21T00:08:33.786+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-21T00:08:33.787+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:33.792+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
+2025-12-21T00:08:33.794+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-21T00:08:33.795+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-21T00:08:33.811+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-21T00:08:33.813+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-21T00:08:33.817+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-21T00:08:33.820+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-21T00:08:33.821+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-21T00:08:33.828+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
+2025-12-21T00:08:33.840+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
+2025-12-21T00:08:33.840+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:33.843+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
+2025-12-21T00:08:34.693+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-21T00:08:34.838+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-21T00:08:34.914+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-21T00:08:34.954+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-21T00:08:34.993+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-21T00:08:35.043+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-21T00:08:35.125+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-21T00:08:35.250+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-21T00:08:35.364+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-21T00:08:35.431+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-21T00:08:35.441+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:08:41.011+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : No closed bill found for table 1
+2025-12-21T00:08:41.012+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:08:41.020+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 1
+2025-12-21T00:08:41.025+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 0 items loaded for table 1 (closed bill: none, new: 0)
+2025-12-21T00:08:41.026+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A1 (ID: 1)
+2025-12-21T00:08:43.552+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:08:43.560+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:08:43.561+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:08:51.011+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A1
+2025-12-21T00:08:51.017+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:08:51.033+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:08:51.034+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:08:51.049+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:08:51.049+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:08:51.050+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=caknaa 10, qty=1.0, printQty=1.0
+2025-12-21T00:08:51.052+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 1: 1.0 x caknaa 10 @ 10.0
+2025-12-21T00:08:51.114+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 1: 1.0 x caknaa 10 @ 10.0 = 10.0
+2025-12-21T00:08:51.124+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : No closed bill found for table 1
+2025-12-21T00:08:51.124+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:08:51.130+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 1
+2025-12-21T00:08:51.131+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:08:51.139+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from temp transactions: AMkuSa (ID: 1)
+2025-12-21T00:08:51.141+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 1 items loaded for table 1 (closed bill: none, new: 1)
+2025-12-21T00:08:51.150+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 1 button status updated to: Ongoing (temp: true, closed: false)
+2025-12-21T00:08:51.150+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=1, itemName='caknaa 10', qty=1.0, rate=10.0, amt=10.0, tableNo=1, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:08:51.064700500, updatedAt=2025-12-21T00:08:51.064700500}
+2025-12-21T00:08:51.163+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:08:51.169+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:08:51.169+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:08:55.708+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:08:55.715+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:08:55.716+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:08:55.929+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A1
+2025-12-21T00:08:55.934+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:08:58.379+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:08:58.389+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Creating CLOSE bill for table 1
+2025-12-21T00:08:58.420+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Bill created with number: 1
+2025-12-21T00:08:58.451+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Bill 1 saved with 1 transactions
+2025-12-21T00:08:58.452+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 1
+2025-12-21T00:08:58.477+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 1
+2025-12-21T00:08:58.478+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Temp transactions cleared for table 1
+2025-12-21T00:08:58.490+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created new closed bill #1 with 1 items
+2025-12-21T00:08:58.508+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 1 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:08:58.513+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:08:58.516+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:08:58.547+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A1 closed. Bill #1 saved as CLOSED with amount 10.0
+2025-12-21T00:09:07.803+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #1 for table 1
+2025-12-21T00:09:07.817+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:09:07.829+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:09:07.837+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:09:07.851+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 1
+2025-12-21T00:09:07.857+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 1 items loaded for table 1 (closed bill: 1, new: 0)
+2025-12-21T00:09:07.858+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A1 (ID: 1)
+2025-12-21T00:09:10.159+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:09:10.169+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:09:10.172+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:09:10.505+05:30  WARN 1196 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:09:10.510+05:30  WARN 1196 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:09:10.567+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:09:10.577+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:09:10.577+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:09:12.294+05:30  WARN 1196 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:09:12.297+05:30  WARN 1196 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:09:13.929+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A1
+2025-12-21T00:09:13.937+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:09:13.951+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:09:13.952+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:09:13.961+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:09:13.962+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:09:13.962+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=caknaa 10, qty=1.0, printQty=1.0
+2025-12-21T00:09:13.964+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 1: 1.0 x caknaa 10 @ 10.0
+2025-12-21T00:09:13.973+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 2: 1.0 x caknaa 10 @ 10.0 = 10.0
+2025-12-21T00:09:13.995+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #1 for table 1
+2025-12-21T00:09:13.996+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:09:14.004+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:09:14.005+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:09:14.010+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 1
+2025-12-21T00:09:14.013+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 1 (closed bill: 1, new: 1)
+2025-12-21T00:09:14.026+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 1 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:09:14.027+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=2, itemName='caknaa 10', qty=1.0, rate=10.0, amt=10.0, tableNo=1, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:09:13.969869100, updatedAt=2025-12-21T00:09:13.969869100}
+2025-12-21T00:09:14.030+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:09:14.036+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:09:14.037+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:09:14.208+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:09:14.216+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:09:14.217+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:09:19.003+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A1
+2025-12-21T00:09:19.008+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:09:20.960+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Adding 1 new transactions to closed bill #1
+2025-12-21T00:09:20.974+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Closed bill #1 updated with 1 new transactions. New total: 20.0
+2025-12-21T00:09:20.975+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 1
+2025-12-21T00:09:20.984+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 1
+2025-12-21T00:09:21.006+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Added 1 new items to closed bill #1
+2025-12-21T00:09:21.015+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 1 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:09:21.016+05:30 DEBUG 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:09:21.017+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:09:21.033+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A1 closed. Bill #1 saved as CLOSED with amount 20.0
+2025-12-21T00:09:22.890+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 transactions from closed bill #1 for table 1
+2025-12-21T00:09:22.891+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:09:22.900+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:09:22.901+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 1
+2025-12-21T00:09:22.908+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 1
+2025-12-21T00:09:22.909+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 1 (closed bill: 1, new: 0)
+2025-12-21T00:09:22.911+05:30  INFO 1196 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A1 (ID: 1)
+2025-12-21T00:15:16.806+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 2792 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-21T00:15:16.813+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-21T00:15:17.815+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-21T00:15:17.984+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 146 ms. Found 13 JPA repository interfaces.
+2025-12-21T00:15:18.998+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-21T00:15:19.119+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-21T00:15:19.190+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-21T00:15:19.744+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-21T00:15:19.809+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-21T00:15:20.159+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@661046a2
+2025-12-21T00:15:20.164+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-21T00:15:20.280+05:30  WARN 2792 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-21T00:15:20.327+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-21T00:15:22.288+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-21T00:15:22.469+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-21T00:15:23.024+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-21T00:15:25.590+05:30  INFO 2792 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.712 seconds (process running for 11.435)
+2025-12-21T00:15:26.497+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-21T00:15:41.502+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-21T00:15:41.503+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-21T00:15:41.534+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-21T00:15:41.535+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-21T00:15:41.538+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-21T00:15:41.567+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-21T00:15:41.572+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
+2025-12-21T00:15:41.573+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
+2025-12-21T00:15:41.574+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-21T00:15:41.574+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-21T00:15:41.575+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-21T00:15:41.575+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
+2025-12-21T00:15:41.577+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
+2025-12-21T00:15:41.577+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-21T00:15:41.731+05:30  WARN 2792 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-21T00:15:41.873+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-21T00:15:41.874+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:15:41.876+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:15:41.878+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-21T00:15:41.878+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:15:41.879+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
+2025-12-21T00:15:41.879+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-21T00:15:41.896+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-21T00:15:41.898+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:15:41.902+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
+2025-12-21T00:15:41.905+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-21T00:15:41.906+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-21T00:15:41.925+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-21T00:15:41.926+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-21T00:15:41.930+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-21T00:15:41.935+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-21T00:15:41.936+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-21T00:15:41.942+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
+2025-12-21T00:15:41.951+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
+2025-12-21T00:15:41.952+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:15:41.954+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
+2025-12-21T00:15:42.689+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-21T00:15:42.806+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-21T00:15:42.888+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-21T00:15:42.930+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-21T00:15:42.970+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-21T00:15:43.017+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-21T00:15:43.094+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-21T00:15:43.232+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-21T00:15:43.330+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-21T00:15:43.400+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-21T00:15:43.412+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:15:48.744+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : No closed bill found for table 2
+2025-12-21T00:15:48.745+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:15:48.750+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 2
+2025-12-21T00:15:48.754+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 0 items loaded for table 2 (closed bill: none, new: 0)
+2025-12-21T00:15:48.755+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:15:50.836+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:15:50.848+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:15:50.849+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:16:02.525+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:16:02.534+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:16:02.560+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:16:02.561+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:16:02.588+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:16:02.590+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=2.0
+2025-12-21T00:16:02.591+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=ibaskIT 10, qty=2.0, printQty=2.0
+2025-12-21T00:16:02.593+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 2.0 x ibaskIT 10 @ 10.0
+2025-12-21T00:16:02.675+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 3: 2.0 x ibaskIT 10 @ 10.0 = 20.0
+2025-12-21T00:16:02.686+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : No closed bill found for table 2
+2025-12-21T00:16:02.687+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:16:02.693+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:16:02.695+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:16:02.704+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from temp transactions: AMkuSa (ID: 1)
+2025-12-21T00:16:02.707+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 1 items loaded for table 2 (closed bill: none, new: 1)
+2025-12-21T00:16:02.720+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Ongoing (temp: true, closed: false)
+2025-12-21T00:16:02.720+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=3, itemName='ibaskIT 10', qty=2.0, rate=10.0, amt=20.0, tableNo=2, waitorId=1, printQty=2.0, createdAt=2025-12-21T00:16:02.612186500, updatedAt=2025-12-21T00:16:02.612186500}
+2025-12-21T00:16:02.737+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:16:02.742+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:16:02.743+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:16:06.471+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:16:06.477+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:16:06.478+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:16:06.687+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:16:06.694+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:16:15.780+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:16:15.793+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Creating CLOSE bill for table 2
+2025-12-21T00:16:15.821+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Bill created with number: 2
+2025-12-21T00:16:15.857+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Bill 2 saved with 1 transactions
+2025-12-21T00:16:15.859+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 2
+2025-12-21T00:16:15.890+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 2
+2025-12-21T00:16:15.891+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Temp transactions cleared for table 2
+2025-12-21T00:16:15.904+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created new closed bill #2 with 1 items
+2025-12-21T00:16:15.924+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:16:15.929+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:16:15.931+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:16:15.961+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A2 closed. Bill #2 saved as CLOSED with amount 20.0
+2025-12-21T00:16:46.856+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:16:46.858+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:16:46.867+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:16:46.868+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:16:46.875+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 2
+2025-12-21T00:16:46.878+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 1 items loaded for table 2 (closed bill: 2, new: 0)
+2025-12-21T00:16:46.878+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:16:51.656+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:16:51.661+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:16:51.662+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:16:52.306+05:30  WARN 2792 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:16:52.310+05:30  WARN 2792 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:16:57.000+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: caayainaja ra[-sa
+2025-12-21T00:16:57.008+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: caayainaja ra[-sa
+2025-12-21T00:16:57.009+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 11
+2025-12-21T00:17:09.447+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:17:09.453+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:17:09.464+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 11
+2025-12-21T00:17:09.464+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:17:09.473+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 11
+2025-12-21T00:17:09.474+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category 'caayainaja ra[-sa' has stock='N', setting printQty=1.0
+2025-12-21T00:17:09.474+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=h@ka f`aya ra[-sa, qty=1.0, printQty=1.0
+2025-12-21T00:17:09.476+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x h@ka f`aya ra[-sa @ 140.0
+2025-12-21T00:17:09.488+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 4: 1.0 x h@ka f`aya ra[-sa @ 140.0 = 140.0
+2025-12-21T00:17:09.504+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:17:09.505+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:17:09.513+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:17:09.514+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:17:09.521+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:17:09.525+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 2 (closed bill: 2, new: 1)
+2025-12-21T00:17:09.536+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:17:09.536+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=4, itemName='h@ka f`aya ra[-sa', qty=1.0, rate=140.0, amt=140.0, tableNo=2, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:17:09.482384600, updatedAt=2025-12-21T00:17:09.482384600}
+2025-12-21T00:17:09.540+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: caayainaja ra[-sa
+2025-12-21T00:17:09.546+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: caayainaja ra[-sa
+2025-12-21T00:17:09.547+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 11
+2025-12-21T00:17:14.022+05:30 DEBUG 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: caayainaja ra[-sa
+2025-12-21T00:17:14.028+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: caayainaja ra[-sa
+2025-12-21T00:17:14.028+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 11
+2025-12-21T00:17:21.563+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:17:21.569+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching printable items for table 2
+2025-12-21T00:17:21.576+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Found 1 printable items for table 2
+2025-12-21T00:17:21.577+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Processing order for table: A2 with 1 printable items
+2025-12-21T00:17:21.579+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.print.KOTOrderPrint         : Starting KOT print (with dialog) for table A2 with 1 items
+2025-12-21T00:17:21.614+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.print.KOTOrderPrint         : Custom font 'Kiran' loaded from SessionService for printing
+2025-12-21T00:17:21.615+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:18:00.775+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.print.KOTOrderPrint         : KOT printed successfully for table A2
+2025-12-21T00:18:00.776+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Resetting printQty for table 2
+2025-12-21T00:18:00.783+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Reset printQty for 1 items on table 2
+2025-12-21T00:18:00.810+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:18:00.810+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:18:00.818+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:18:00.818+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:18:00.826+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:18:00.828+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 2 (closed bill: 2, new: 1)
+2025-12-21T00:18:00.850+05:30  INFO 2792 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : KOT printed and printQty reset for table A2
+2025-12-21T00:20:06.803+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 3020 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-21T00:20:06.809+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-21T00:20:07.767+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-21T00:20:07.909+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 125 ms. Found 13 JPA repository interfaces.
+2025-12-21T00:20:08.927+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-21T00:20:09.058+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-21T00:20:09.118+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-21T00:20:09.616+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-21T00:20:09.680+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-21T00:20:09.985+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@366f5db9
+2025-12-21T00:20:09.989+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-21T00:20:10.087+05:30  WARN 3020 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-21T00:20:10.134+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-21T00:20:11.988+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-21T00:20:12.128+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-21T00:20:12.607+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-21T00:20:14.912+05:30  INFO 3020 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.055 seconds (process running for 10.548)
+2025-12-21T00:20:15.722+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-21T00:20:23.200+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-21T00:20:23.201+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-21T00:20:23.241+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-21T00:20:23.243+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-21T00:20:23.247+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-21T00:20:23.284+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-21T00:20:23.289+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
+2025-12-21T00:20:23.289+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
+2025-12-21T00:20:23.290+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-21T00:20:23.291+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-21T00:20:23.292+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-21T00:20:23.294+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
+2025-12-21T00:20:23.295+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
+2025-12-21T00:20:23.296+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-21T00:20:23.446+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-21T00:20:23.596+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-21T00:20:23.597+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:20:23.598+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:20:23.601+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-21T00:20:23.602+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:20:23.603+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
+2025-12-21T00:20:23.605+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-21T00:20:23.627+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-21T00:20:23.630+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:20:23.637+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
+2025-12-21T00:20:23.640+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-21T00:20:23.641+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-21T00:20:23.661+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-21T00:20:23.663+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-21T00:20:23.668+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-21T00:20:23.671+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-21T00:20:23.671+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-21T00:20:23.679+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
+2025-12-21T00:20:23.689+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
+2025-12-21T00:20:23.690+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:20:23.693+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
+2025-12-21T00:20:24.459+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-21T00:20:24.665+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-21T00:20:24.785+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-21T00:20:24.840+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-21T00:20:24.901+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-21T00:20:24.973+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-21T00:20:25.080+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-21T00:20:25.248+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-21T00:20:25.348+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-21T00:20:25.420+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-21T00:20:25.430+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:20:29.845+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:20:29.846+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:20:29.863+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:20:29.864+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:20:29.870+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:20:29.878+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 2 (closed bill: 2, new: 1)
+2025-12-21T00:20:29.879+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:20:35.342+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:20:35.355+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:20:35.357+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:20:39.857+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:20:39.865+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:20:39.887+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:20:39.889+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:20:39.898+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:20:39.899+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:20:39.900+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=ibaskIT 10, qty=1.0, printQty=1.0
+2025-12-21T00:20:39.903+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x ibaskIT 10 @ 10.0
+2025-12-21T00:20:39.990+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 5: 1.0 x ibaskIT 10 @ 10.0 = 10.0
+2025-12-21T00:20:40.008+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:20:40.009+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:20:40.017+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:20:40.018+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:20:40.024+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 temp transactions for table 2
+2025-12-21T00:20:40.027+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 3 items loaded for table 2 (closed bill: 2, new: 2)
+2025-12-21T00:20:40.037+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:20:40.038+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=5, itemName='ibaskIT 10', qty=1.0, rate=10.0, amt=10.0, tableNo=2, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:20:39.925265400, updatedAt=2025-12-21T00:20:39.925265400}
+2025-12-21T00:20:40.055+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:20:40.062+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:20:40.062+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:20:50.906+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:20:50.918+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:20:50.923+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:10.147+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:10.156+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:10.157+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:13.006+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:13.011+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:13.055+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:13.066+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:13.067+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:16.233+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:16.237+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:18.288+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:21:18.294+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:21:18.306+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:21:18.307+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:21:18.315+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:21:18.316+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:21:18.316+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=ibaskIT 10, qty=1.0, printQty=1.0
+2025-12-21T00:21:18.318+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x ibaskIT 10 @ 10.0
+2025-12-21T00:21:18.329+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Updated existing transaction ID 5: qty=2.0, amt=20.0, printQty=2.0
+2025-12-21T00:21:18.370+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:21:18.371+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:21:18.382+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:21:18.383+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:21:18.389+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 temp transactions for table 2
+2025-12-21T00:21:18.391+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 3 items loaded for table 2 (closed bill: 2, new: 2)
+2025-12-21T00:21:18.403+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:21:18.404+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=5, itemName='ibaskIT 10', qty=2.0, rate=10.0, amt=20.0, tableNo=2, waitorId=1, printQty=2.0, createdAt=2025-12-21T00:20:39.925265, updatedAt=2025-12-21T00:21:18.331356800}
+2025-12-21T00:21:18.408+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:18.415+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:18.416+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:20.662+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:20.671+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:20.672+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:23.842+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:23.845+05:30  WARN 3020 --- [hotel-frontend] [JavaFX Application Thread] javafx.css                               : Caught 'java.lang.ClassCastException: class java.lang.String cannot be cast to class javafx.scene.paint.Paint (java.lang.String is in module java.base of loader 'bootstrap'; javafx.scene.paint.Paint is in unnamed module of loader 'app')' while converting value for '-fx-background-color'
+2025-12-21T00:21:25.002+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:21:25.009+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:21:25.021+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:21:25.021+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:21:25.031+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:21:25.032+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:21:25.032+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=ibaskIT 10, qty=1.0, printQty=1.0
+2025-12-21T00:21:25.034+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x ibaskIT 10 @ 10.0
+2025-12-21T00:21:25.041+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Updated existing transaction ID 5: qty=3.0, amt=30.0, printQty=3.0
+2025-12-21T00:21:25.060+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 transactions from closed bill #2 for table 2
+2025-12-21T00:21:25.061+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:21:25.069+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:21:25.070+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:21:25.077+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 temp transactions for table 2
+2025-12-21T00:21:25.079+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 3 items loaded for table 2 (closed bill: 2, new: 2)
+2025-12-21T00:21:25.091+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:21:25.092+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=5, itemName='ibaskIT 10', qty=3.0, rate=10.0, amt=30.0, tableNo=2, waitorId=1, printQty=3.0, createdAt=2025-12-21T00:20:39.925265, updatedAt=2025-12-21T00:21:25.044122400}
+2025-12-21T00:21:25.098+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:25.103+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:25.104+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:35.494+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:21:35.500+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:21:35.500+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:21:35.713+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:21:35.718+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:21:40.084+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Adding 2 new transactions to closed bill #2
+2025-12-21T00:21:40.087+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Consolidated to 2 unique items
+2025-12-21T00:21:40.115+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Updated existing transaction: ibaskIT 10 qty=5.0, amt=50.0
+2025-12-21T00:21:40.129+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Closed bill #2 updated: 1 items updated, 1 new items added. New total: 190.0
+2025-12-21T00:21:40.129+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 2
+2025-12-21T00:21:40.155+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 2
+2025-12-21T00:21:40.175+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Added 2 new items to closed bill #2
+2025-12-21T00:21:40.190+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:21:40.192+05:30 DEBUG 3020 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:21:40.195+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:21:40.221+05:30  INFO 3020 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A2 closed. Bill #2 saved as CLOSED with amount 190.0
+2025-12-21T00:34:23.623+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 11664 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-21T00:34:23.628+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-21T00:34:24.627+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-21T00:34:24.795+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 142 ms. Found 13 JPA repository interfaces.
+2025-12-21T00:34:25.869+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-21T00:34:25.988+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-21T00:34:26.060+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-21T00:34:26.635+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-21T00:34:26.697+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-21T00:34:27.058+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31679cd
+2025-12-21T00:34:27.062+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-21T00:34:27.188+05:30  WARN 11664 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-21T00:34:27.237+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-21T00:34:28.850+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-21T00:34:29.015+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-21T00:34:29.577+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-21T00:34:31.957+05:30  INFO 11664 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.257 seconds (process running for 10.853)
+2025-12-21T00:34:32.837+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-21T00:34:43.320+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-21T00:34:43.322+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-21T00:34:43.360+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-21T00:34:43.361+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-21T00:34:43.365+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-21T00:34:43.403+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-21T00:34:43.412+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
+2025-12-21T00:34:43.413+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
+2025-12-21T00:34:43.415+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-21T00:34:43.416+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-21T00:34:43.416+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-21T00:34:43.417+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
+2025-12-21T00:34:43.417+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
+2025-12-21T00:34:43.418+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-21T00:34:43.577+05:30  WARN 11664 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-21T00:34:43.729+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-21T00:34:43.730+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:34:43.731+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:34:43.733+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-21T00:34:43.733+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:34:43.734+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
+2025-12-21T00:34:43.734+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-21T00:34:43.746+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-21T00:34:43.748+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:34:43.752+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
+2025-12-21T00:34:43.755+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-21T00:34:43.755+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-21T00:34:43.778+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-21T00:34:43.779+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-21T00:34:43.783+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-21T00:34:43.788+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-21T00:34:43.789+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-21T00:34:43.797+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
+2025-12-21T00:34:43.810+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
+2025-12-21T00:34:43.811+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:34:43.813+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
+2025-12-21T00:34:44.613+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-21T00:34:44.765+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-21T00:34:44.864+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-21T00:34:44.934+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-21T00:34:45.006+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-21T00:34:45.081+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-21T00:34:45.195+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-21T00:34:45.366+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-21T00:34:45.473+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-21T00:34:45.542+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-21T00:34:45.553+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:34:48.870+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 transactions from closed bill #2 for table 2
+2025-12-21T00:34:48.873+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:34:48.893+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:34:48.894+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:34:48.900+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 2
+2025-12-21T00:34:48.908+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 2 (closed bill: 2, new: 0)
+2025-12-21T00:34:48.909+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:34:51.369+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:34:51.377+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:35:01.094+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 transactions from closed bill #2 for table 2
+2025-12-21T00:35:01.095+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:35:01.104+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:35:01.104+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:35:01.111+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 2
+2025-12-21T00:35:01.113+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 2 items loaded for table 2 (closed bill: 2, new: 0)
+2025-12-21T00:35:01.114+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:35:03.321+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:35:03.341+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:35:03.342+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:35:06.385+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:35:06.391+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:35:06.411+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:35:06.412+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:35:06.421+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:35:06.421+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:35:06.422+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=caknaa 5, qty=1.0, printQty=1.0
+2025-12-21T00:35:06.425+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x caknaa 5 @ 5.0
+2025-12-21T00:35:06.504+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 6: 1.0 x caknaa 5 @ 5.0 = 5.0
+2025-12-21T00:35:06.525+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 2 transactions from closed bill #2 for table 2
+2025-12-21T00:35:06.526+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:35:06.535+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:35:06.535+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:35:06.541+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:35:06.543+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 3 items loaded for table 2 (closed bill: 2, new: 1)
+2025-12-21T00:35:06.556+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:35:06.556+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=6, itemName='caknaa 5', qty=1.0, rate=5.0, amt=5.0, tableNo=2, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:35:06.440217500, updatedAt=2025-12-21T00:35:06.440217500}
+2025-12-21T00:35:06.574+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:35:06.579+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:35:06.581+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:35:08.883+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:35:08.888+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:35:08.889+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:35:09.107+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:35:09.112+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:35:11.927+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Adding 1 new transactions to closed bill #2
+2025-12-21T00:35:11.929+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Consolidated to 1 unique items
+2025-12-21T00:35:11.988+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Closed bill #2 updated: 0 items updated, 1 new items added. New total: 195.0
+2025-12-21T00:35:11.990+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 2
+2025-12-21T00:35:12.022+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 2
+2025-12-21T00:35:12.050+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Added 1 new items to closed bill #2
+2025-12-21T00:35:12.052+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Starting Bill PDF generation for Bill #2
+2025-12-21T00:35:12.068+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:35:12.071+05:30 DEBUG 11664 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:35:12.074+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:35:12.104+05:30  INFO 11664 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A2 closed. Bill #2 saved as CLOSED with amount 195.0
+2025-12-21T00:35:12.168+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Custom font loaded from: D:\Hotel Software\kiran.ttf
+2025-12-21T00:35:12.171+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:35:12.543+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Bill PDF generated at: C:\Users\Ankush\bill.pdf
+2025-12-21T00:35:21.639+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : PDF printed successfully
+2025-12-21T00:35:21.639+05:30  INFO 11664 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Bill #2 printed successfully
+2025-12-21T00:39:20.643+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Starting application using Java 17.0.7 with PID 21536 (started by Ankush in C:\Claude_workspace\Hotel2025\hotel-frontend)
+2025-12-21T00:39:20.651+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-12-21T00:39:21.641+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-21T00:39:21.784+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 124 ms. Found 13 JPA repository interfaces.
+2025-12-21T00:39:22.842+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-21T00:39:22.986+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-12-21T00:39:23.060+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-21T00:39:23.613+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-21T00:39:23.680+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-21T00:39:23.988+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31679cd
+2025-12-21T00:39:23.993+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-21T00:39:24.092+05:30  WARN 21536 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-21T00:39:24.139+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-21T00:39:25.849+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-21T00:39:25.988+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-21T00:39:26.478+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-21T00:39:28.901+05:30  INFO 21536 --- [hotel-frontend] [JavaFX-Launcher] o.s.boot.SpringApplication               : Started application in 9.16 seconds (process running for 10.797)
+2025-12-21T00:39:29.740+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ShopService         : Fetching all shops
+2025-12-21T00:39:37.991+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Database connection test successful
+2025-12-21T00:39:37.992+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Attempting login for user: Kundalik Lande
+2025-12-21T00:39:38.041+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.AuthApiService      : Login successful for user: Kundalik Lande (Role: ADMIN)
+2025-12-21T00:39:38.043+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Setting user session for: Kundalik Lande
+2025-12-21T00:39:38.046+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.ApplicationSettingService    : Fetching all application settings
+2025-12-21T00:39:38.080+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Loaded 2 application settings into session
+2025-12-21T00:39:38.087+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Font loaded from external file: D:\Hotel Software\kiran.ttf
+2025-12-21T00:39:38.088+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : === Custom Font Loaded ===
+2025-12-21T00:39:38.090+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Family: Kiran
+2025-12-21T00:39:38.091+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Name: Kiran
+2025-12-21T00:39:38.092+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Style: Normal
+2025-12-21T00:39:38.093+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      :   Registered in JavaFX: true
+2025-12-21T00:39:38.093+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : ==========================
+2025-12-21T00:39:38.094+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Session established - User: Kundalik Lande, Employee: Not linked, Shop: Hotel Anjani
+2025-12-21T00:39:38.273+05:30  WARN 21536 --- [hotel-frontend] [JavaFX Application Thread] javafx                                   : Loading FXML document with JavaFX API of version 23.0.1 by JavaFX runtime of version 19.0.2.1
+2025-12-21T00:39:38.448+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Billing screen initialized
+2025-12-21T00:39:38.449+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:38.452+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:38.454+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Custom Kiran font (size 25) applied to customer search field with persistence
+2025-12-21T00:39:38.454+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:38.455+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Kiran font (size 25) applied to all billing text fields
+2025-12-21T00:39:38.457+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.CustomerService     : Fetching all customers
+2025-12-21T00:39:38.468+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 customers for search
+2025-12-21T00:39:38.470+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:38.478+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer autocomplete initialized with Kiran font (size 25)
+2025-12-21T00:39:38.482+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer search with autocomplete initialized successfully
+2025-12-21T00:39:38.483+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching all categories from database
+2025-12-21T00:39:38.508+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Successfully fetched 25 categories
+2025-12-21T00:39:38.509+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 25 categories for search
+2025-12-21T00:39:38.514+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category search initialized successfully (Swing-style)
+2025-12-21T00:39:38.520+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loading sections from tablemaster
+2025-12-21T00:39:38.521+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching unique descriptions from tablemaster
+2025-12-21T00:39:38.528+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching all employee names
+2025-12-21T00:39:38.540+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 1 waiters into ComboBox with Kiran font
+2025-12-21T00:39:38.541+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:38.544+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction table setup complete with Kiran font (size 25) for ItemName column
+2025-12-21T00:39:39.317+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: A
+2025-12-21T00:39:39.472+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: B
+2025-12-21T00:39:39.573+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: C
+2025-12-21T00:39:39.632+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: D
+2025-12-21T00:39:39.694+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: E
+2025-12-21T00:39:39.757+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: G
+2025-12-21T00:39:39.867+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: HP
+2025-12-21T00:39:40.023+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: P
+2025-12-21T00:39:40.167+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: V
+2025-12-21T00:39:40.249+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching tables for description: W
+2025-12-21T00:39:40.264+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Loaded 10 sections successfully
+2025-12-21T00:39:43.735+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 3 transactions from closed bill #2 for table 2
+2025-12-21T00:39:43.739+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:39:43.757+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:39:43.758+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:39:43.764+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 0 temp transactions for table 2
+2025-12-21T00:39:43.771+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 3 items loaded for table 2 (closed bill: 2, new: 0)
+2025-12-21T00:39:43.772+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table selected: A2 (ID: 2)
+2025-12-21T00:39:50.198+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:39:50.210+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:39:50.212+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:39:53.651+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:39:53.659+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Searching employees by first name: AMkuSa
+2025-12-21T00:39:53.680+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Fetching category with ID: 18
+2025-12-21T00:39:53.682+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Checking isLoggedIn: true
+2025-12-21T00:39:53.693+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with ID: 18
+2025-12-21T00:39:53.694+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Category '[-tar' has stock='N', setting printQty=1.0
+2025-12-21T00:39:53.695+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Created transaction: item=ibaskIT 25, qty=1.0, printQty=1.0
+2025-12-21T00:39:53.698+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Adding/updating transaction for table 2: 1.0 x ibaskIT 25 @ 25.0
+2025-12-21T00:39:53.778+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Created new transaction ID 7: 1.0 x ibaskIT 25 @ 25.0 = 25.0
+2025-12-21T00:39:53.795+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 3 transactions from closed bill #2 for table 2
+2025-12-21T00:39:53.797+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:39:53.807+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Waiter from closed bill: AMkuSa (ID: 1)
+2025-12-21T00:39:53.809+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:39:53.814+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Found 1 temp transactions for table 2
+2025-12-21T00:39:53.817+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Total 4 items loaded for table 2 (closed bill: 2, new: 1)
+2025-12-21T00:39:53.831+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: true, closed: true)
+2025-12-21T00:39:53.833+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Transaction saved to database: TempTransaction{id=7, itemName='ibaskIT 25', qty=1.0, rate=25.0, amt=25.0, tableNo=2, waitorId=1, printQty=1.0, createdAt=2025-12-21T00:39:53.718687100, updatedAt=2025-12-21T00:39:53.718687100}
+2025-12-21T00:39:53.850+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:39:53.857+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:39:53.858+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:39:56.336+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Searching category by name: [-tar
+2025-12-21T00:39:56.342+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.CategoryApiService    : Category found with name: [-tar
+2025-12-21T00:39:56.343+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.ItemService         : Fetching item name by category ID: 18
+2025-12-21T00:39:56.550+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.frontend.service.TableMasterService    : Fetching table by name: A2
+2025-12-21T00:39:56.580+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Fetching transactions for table 2
+2025-12-21T00:39:58.839+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Adding 1 new transactions to closed bill #2
+2025-12-21T00:39:58.840+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Consolidated to 1 unique items
+2025-12-21T00:39:58.890+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.BillService         : Closed bill #2 updated: 0 items updated, 1 new items added. New total: 220.0
+2025-12-21T00:39:58.891+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : Clearing all transactions for table 2
+2025-12-21T00:39:58.924+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.service.TempTransactionService       : All transactions cleared for table 2
+2025-12-21T00:39:58.956+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Added 1 new items to closed bill #2
+2025-12-21T00:39:58.959+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Starting Bill PDF generation for Bill #2
+2025-12-21T00:39:58.972+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table 2 button status updated to: Closed (temp: false, closed: true)
+2025-12-21T00:39:58.976+05:30 DEBUG 21536 --- [hotel-frontend] [JavaFX Application Thread] com.frontend.service.SessionService      : Using font 'Kiran' at size: 25.0
+2025-12-21T00:39:58.977+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Customer selection cleared
+2025-12-21T00:39:59.002+05:30  INFO 21536 --- [hotel-frontend] [JavaFX Application Thread] c.f.c.transaction.BillingController      : Table A2 closed. Bill #2 saved as CLOSED with amount 220.0
+2025-12-21T00:39:59.075+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Custom font loaded from: D:\Hotel Software\kiran.ttf
+2025-12-21T00:39:59.078+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.service.EmployeeService     : Fetching employee by ID: 1
+2025-12-21T00:39:59.419+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Bill PDF generated at: C:\Users\Ankush\bill.pdf
+2025-12-21T00:40:07.701+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : PDF printed successfully
+2025-12-21T00:40:07.701+05:30  INFO 21536 --- [hotel-frontend] [Thread-5] com.frontend.print.BillPrint             : Bill #2 printed successfully

@@ -11,6 +11,7 @@ import com.frontend.entity.Employee;
 import com.frontend.entity.Item;
 import com.frontend.entity.TableMaster;
 import com.frontend.entity.TempTransaction;
+import com.frontend.service.BillService;
 import com.frontend.service.CategoryApiService;
 import com.frontend.service.CustomerService;
 import com.frontend.service.EmployeeService;
@@ -18,6 +19,9 @@ import com.frontend.service.ItemService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
 import com.frontend.service.TempTransactionService;
+import com.frontend.entity.Bill;
+import com.frontend.entity.Transaction;
+import com.frontend.print.BillPrint;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.view.AlertNotification;
 
@@ -31,7 +35,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
@@ -81,7 +84,13 @@ public class BillingController implements Initializable {
     private TempTransactionService tempTransactionService;
 
     @Autowired
+    private BillService billService;
+
+    @Autowired
     private KOTOrderPrint kotOrderPrint;
+
+    @Autowired
+    private BillPrint billPrint;
 
     @Autowired
     AlertNotification alert;
@@ -231,6 +240,9 @@ public class BillingController implements Initializable {
     private ObservableList<TempTransaction> tempTransactionList = FXCollections.observableArrayList();
     private TempTransaction selectedTransaction = null;
     private boolean isEditMode = false;
+
+    // Track current closed bill for selected table (null if no closed bill exists)
+    private Bill currentClosedBill = null;
 
     // Map to store table button references by tableId for status updates
     private java.util.Map<Integer, Button> tableButtonMap = new java.util.HashMap<>();
@@ -1016,11 +1028,7 @@ public class BillingController implements Initializable {
 
     // ============= Utility Methods =============
     private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validation Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        alert.showWarning(message);
     }
 
     // Clear item entry form fields
@@ -1190,9 +1198,18 @@ public class BillingController implements Initializable {
     private Button createTableButton(TableMaster table) {
         Button button = new Button(table.getTableName());
 
-        // Check if table has ongoing transactions
-        boolean hasTransactions = tempTransactionService.hasTransactions(table.getId());
-        String status = hasTransactions ? "Ongoing" : "Available";
+        // Check if table has ongoing transactions or closed bills
+        boolean hasTempTransactions = tempTransactionService.hasTransactions(table.getId());
+        boolean hasClosedBill = billService.hasClosedBill(table.getId());
+
+        String status;
+        if (hasClosedBill) {
+            status = "Closed";
+        } else if (hasTempTransactions) {
+            status = "Ongoing";
+        } else {
+            status = "Available";
+        }
 
         // Apply CSS classes based on status
         button.getStyleClass().add("table-button");
@@ -1216,7 +1233,8 @@ public class BillingController implements Initializable {
             "table-button-available",
             "table-button-occupied",
             "table-button-selected",
-            "table-button-ongoing"
+            "table-button-ongoing",
+            "table-button-closed"
         );
 
         // Apply new status class
@@ -1233,6 +1251,9 @@ public class BillingController implements Initializable {
             case "Ongoing":
                 button.getStyleClass().add("table-button-ongoing");
                 break;
+            case "Closed":
+                button.getStyleClass().add("table-button-closed");
+                break;
             default:
                 button.getStyleClass().add("table-button-available");
         }
@@ -1242,15 +1263,25 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Update table button status based on whether it has transactions
+     * Update table button status based on whether it has transactions or closed bills
      */
     private void updateTableButtonStatus(Integer tableId) {
         Button button = tableButtonMap.get(tableId);
         if (button != null) {
-            boolean hasTransactions = tempTransactionService.hasTransactions(tableId);
-            String newStatus = hasTransactions ? "Ongoing" : "Available";
+            boolean hasTempTransactions = tempTransactionService.hasTransactions(tableId);
+            boolean hasClosedBill = billService.hasClosedBill(tableId);
+
+            String newStatus;
+            if (hasClosedBill) {
+                newStatus = "Closed";
+            } else if (hasTempTransactions) {
+                newStatus = "Ongoing";
+            } else {
+                newStatus = "Available";
+            }
             applyTableButtonStatus(button, newStatus);
-            LOG.info("Table {} button status updated to: {}", tableId, newStatus);
+            LOG.info("Table {} button status updated to: {} (temp: {}, closed: {})",
+                    tableId, newStatus, hasTempTransactions, hasClosedBill);
         }
     }
 
@@ -1374,39 +1405,106 @@ public class BillingController implements Initializable {
 
     /**
      * Load all transactions for a table from database into TableView
+     * This includes both:
+     * 1. Transactions from closed bill (if exists) - shown with negative IDs to distinguish
+     * 2. New temp_transactions for this table
      */
     private void loadTransactionsForTable(Integer tableNo) {
         try {
-            List<TempTransaction> transactions = tempTransactionService.getTransactionsByTableNo(tableNo);
-
-            // Clear and reload TableView - keep original database IDs
+            // Clear TableView first
             tempTransactionList.clear();
-            tempTransactionList.addAll(transactions);
 
-            // Set waiter name from the first transaction (all items on a table have same waiter)
-            if (!transactions.isEmpty()) {
-                Integer waitorId = transactions.get(0).getWaitorId();
+            // 1. Check for closed bill and load its transactions
+            currentClosedBill = billService.getClosedBillForTable(tableNo);
+            if (currentClosedBill != null) {
+                List<Transaction> closedBillTransactions = billService.getTransactionsForBill(currentClosedBill.getBillNo());
+                LOG.info("Found {} transactions from closed bill #{} for table {}",
+                        closedBillTransactions.size(), currentClosedBill.getBillNo(), tableNo);
+
+                // Convert Transaction to TempTransaction for display
+                // Use negative IDs to distinguish from temp_transaction items
+                int negativeId = -1;
+                for (Transaction trans : closedBillTransactions) {
+                    TempTransaction displayTrans = new TempTransaction();
+                    displayTrans.setId(negativeId--); // Negative ID indicates closed bill item
+                    displayTrans.setItemName(trans.getItemName());
+                    displayTrans.setQty(trans.getQty());
+                    displayTrans.setRate(trans.getRate());
+                    displayTrans.setAmt(trans.getAmt());
+                    displayTrans.setTableNo(tableNo);
+                    displayTrans.setWaitorId(currentClosedBill.getWaitorId());
+                    displayTrans.setPrintQty(0f); // Already printed items from closed bill
+
+                    tempTransactionList.add(displayTrans);
+                }
+
+                // Set waiter from closed bill
+                if (currentClosedBill.getWaitorId() != null) {
+                    try {
+                        Employee waitor = employeeService.getEmployeeById(currentClosedBill.getWaitorId());
+                        if (waitor != null) {
+                            cmbWaitorName.getSelectionModel().select(waitor.getFirstName());
+                            LOG.info("Waiter from closed bill: {} (ID: {})", waitor.getFirstName(), currentClosedBill.getWaitorId());
+                        }
+                    } catch (Exception e) {
+                        LOG.warn("Could not load waiter with ID: {}", currentClosedBill.getWaitorId());
+                    }
+                }
+
+                // Set customer from closed bill if available
+                if (currentClosedBill.getCustomerId() != null) {
+                    try {
+                        for (Customer customer : allCustomers) {
+                            if (customer.getId().equals(currentClosedBill.getCustomerId())) {
+                                selectedCustomer = customer;
+                                displaySelectedCustomer(customer);
+                                LOG.info("Customer from closed bill: {} (ID: {})", customer.getFullName(), customer.getId());
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.warn("Could not load customer with ID: {}", currentClosedBill.getCustomerId());
+                    }
+                }
+            } else {
+                LOG.info("No closed bill found for table {}", tableNo);
+            }
+
+            // 2. Load new temp_transactions for this table
+            List<TempTransaction> tempTransactions = tempTransactionService.getTransactionsByTableNo(tableNo);
+            LOG.info("Found {} temp transactions for table {}", tempTransactions.size(), tableNo);
+
+            // Add temp transactions (these have positive IDs from database)
+            tempTransactionList.addAll(tempTransactions);
+
+            // Set waiter from temp transactions if no closed bill waiter was set
+            if (currentClosedBill == null && !tempTransactions.isEmpty()) {
+                Integer waitorId = tempTransactions.get(0).getWaitorId();
                 if (waitorId != null) {
                     try {
                         Employee waitor = employeeService.getEmployeeById(waitorId);
                         if (waitor != null) {
-                            // Select waiter in ComboBox
                             cmbWaitorName.getSelectionModel().select(waitor.getFirstName());
-                            LOG.info("Waiter selected in dropdown: {} (ID: {})", waitor.getFirstName(), waitorId);
+                            LOG.info("Waiter from temp transactions: {} (ID: {})", waitor.getFirstName(), waitorId);
                         }
                     } catch (Exception e) {
                         LOG.warn("Could not load waiter with ID: {}", waitorId);
                     }
                 }
-            } else {
-                // Clear waiter selection if no transactions
+            }
+
+            // Clear waiter selection only if no items at all
+            if (tempTransactionList.isEmpty()) {
                 cmbWaitorName.getSelectionModel().clearSelection();
             }
 
             tblTransaction.refresh();
             updateTotals();
 
-            LOG.info("Loaded {} transactions for table {}", transactions.size(), tableNo);
+            LOG.info("Total {} items loaded for table {} (closed bill: {}, new: {})",
+                    tempTransactionList.size(), tableNo,
+                    currentClosedBill != null ? currentClosedBill.getBillNo() : "none",
+                    tempTransactions.size());
         } catch (Exception e) {
             LOG.error("Error loading transactions for table {}", tableNo, e);
         }
@@ -1480,32 +1578,25 @@ public class BillingController implements Initializable {
         }
 
         // Confirm removal
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Confirm Removal");
-        confirmAlert.setHeaderText("Remove Item");
-        confirmAlert.setContentText("Are you sure you want to remove '" + selected.getItemName() + "'?");
+        if (alert.showConfirmation("Remove Item", "Are you sure you want to remove '" + selected.getItemName() + "'?")) {
+            try {
+                // Delete from database
+                tempTransactionService.deleteTransaction(selected.getId());
 
-        confirmAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    // Delete from database
-                    tempTransactionService.deleteTransaction(selected.getId());
+                // Reload transactions for this table to sync
+                Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
+                loadTransactionsForTable(tableNo);
 
-                    // Reload transactions for this table to sync
-                    Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
-                    loadTransactionsForTable(tableNo);
+                // Update table button status (may change to "Available" if last item removed)
+                updateTableButtonStatus(tableNo);
 
-                    // Update table button status (may change to "Available" if last item removed)
-                    updateTableButtonStatus(tableNo);
-
-                    clearItemForm();
-                    LOG.info("Item removed from database: {}", selected.getItemName());
-                } catch (Exception e) {
-                    LOG.error("Error removing item from database", e);
-                    alert.showError("Error removing item: " + e.getMessage());
-                }
+                clearItemForm();
+                LOG.info("Item removed from database: {}", selected.getItemName());
+            } catch (Exception e) {
+                LOG.error("Error removing item from database", e);
+                alert.showError("Error removing item: " + e.getMessage());
             }
-        });
+        }
     }
 
     private void renumberTransactions() {
@@ -1870,8 +1961,9 @@ public class BillingController implements Initializable {
     // ============= Bill Action Button Methods =============
 
     /**
-     * Close/Cancel the current table order
-     * Clears all items from temp_transaction for this table
+     * Close the current table order
+     * - If closed bill exists and new temp_transactions: add new items to existing bill
+     * - If no closed bill: create new bill with CLOSE status
      */
     private void closeTable() {
         if (txtTableNumber.getText().isEmpty()) {
@@ -1884,23 +1976,84 @@ public class BillingController implements Initializable {
             return;
         }
 
-        // Confirm close
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Confirm Close");
-        confirmAlert.setHeaderText("Close Table");
-        confirmAlert.setContentText("Are you sure you want to close this table and clear all items?");
+        try {
+            String tableName = txtTableNumber.getText();
+            Integer tableId = tableMasterService.getTableByName(tableName).getId();
 
-        confirmAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
+            // Get new temp transactions (items with positive IDs are from temp_transaction table)
+            List<TempTransaction> newTempTransactions = tempTransactionService.getTransactionsByTableNo(tableId);
+
+            // Check if we have an existing closed bill
+            boolean hasClosedBill = currentClosedBill != null;
+            boolean hasNewItems = !newTempTransactions.isEmpty();
+
+            // If only closed bill items and no new items, nothing to add
+            if (hasClosedBill && !hasNewItems) {
+                alert.showInfo("No new items to add.\nClosed Bill #" + currentClosedBill.getBillNo() + " already exists for this table.");
+                return;
+            }
+
+            // Build confirmation message
+            String confirmMessage;
+            if (hasClosedBill && hasNewItems) {
+                confirmMessage = "This will ADD " + newTempTransactions.size() + " new item(s) to existing CLOSED Bill #" +
+                        currentClosedBill.getBillNo() + "\n\nExisting Bill: ₹" + String.format("%.2f", currentClosedBill.getBillAmt()) +
+                        "\nNew Items: ₹" + String.format("%.2f", calculateTempTransactionsTotal(newTempTransactions)) +
+                        "\n\nProceed?";
+            } else {
+                confirmMessage = "This will save the bill as CLOSED and clear the table.\nBill Amount: " + lblBillAmount.getText() + "\n\nProceed?";
+            }
+
+            // Confirm close
+            String confirmTitle = hasClosedBill ? "Add Items to Existing CLOSED Bill" : "Close Table - Save Bill";
+            if (alert.showConfirmation(confirmTitle, confirmMessage)) {
                 try {
-                    String tableName = txtTableNumber.getText();
-                    Integer tableId = tableMasterService.getTableByName(tableName).getId();
+                    Bill savedBill;
 
-                    // Clear all transactions for this table
-                    tempTransactionService.clearTransactionsForTable(tableId);
+                    if (hasClosedBill && hasNewItems) {
+                        // Add new items to existing closed bill
+                        savedBill = billService.addTransactionsToClosedBill(tableId, newTempTransactions);
+                        LOG.info("Added {} new items to closed bill #{}", newTempTransactions.size(), savedBill.getBillNo());
+                    } else {
+                        // Create new closed bill
+                        // Get waiter ID from combo box
+                        Integer waitorId = null;
+                        String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
+                        if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
+                            List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
+                            if (!waiters.isEmpty()) {
+                                waitorId = waiters.get(0).getId();
+                            }
+                        }
 
-                    // Clear TableView
+                        // Get customer ID if selected
+                        Integer customerId = null;
+                        if (selectedCustomer != null) {
+                            customerId = selectedCustomer.getId();
+                        }
+
+                        // Get current user ID from session
+                        Long userIdLong = SessionService.getCurrentUserId();
+                        Integer userId = userIdLong != null ? userIdLong.intValue() : null;
+
+                        savedBill = billService.createClosedBill(tableId, customerId, waitorId, userId, newTempTransactions);
+                        LOG.info("Created new closed bill #{} with {} items", savedBill.getBillNo(), newTempTransactions.size());
+                    }
+
+                    // Print the bill
+                    final Bill billToPrint = savedBill;
+                    final String tableNameForPrint = tableName;
+                    new Thread(() -> {
+                        try {
+                            billPrint.printBill(billToPrint, tableNameForPrint);
+                        } catch (Exception e) {
+                            LOG.error("Error printing bill: {}", e.getMessage(), e);
+                        }
+                    }).start();
+
+                    // Clear TableView and reset
                     tempTransactionList.clear();
+                    currentClosedBill = null;
                     updateTotals();
 
                     // Update table button status
@@ -1909,17 +2062,33 @@ public class BillingController implements Initializable {
                     // Clear form
                     clearItemForm();
                     clearPaymentFields();
+                    clearSelectedCustomer();
                     cmbWaitorName.getSelectionModel().clearSelection();
+                    txtTableNumber.clear();
 
-                    alert.showInfo("Table closed successfully");
-                    LOG.info("Table {} closed and cleared", tableName);
+                    alert.showInfo("Bill #" + savedBill.getBillNo() + " saved as CLOSED\nTotal Amount: ₹" + String.format("%.2f", savedBill.getBillAmt()));
+                    LOG.info("Table {} closed. Bill #{} saved as CLOSED with amount {}", tableName, savedBill.getBillNo(), savedBill.getBillAmt());
 
                 } catch (Exception e) {
                     LOG.error("Error closing table", e);
                     alert.showError("Error closing table: " + e.getMessage());
                 }
             }
-        });
+        } catch (Exception e) {
+            LOG.error("Error preparing to close table", e);
+            alert.showError("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Calculate total amount of temp transactions
+     */
+    private float calculateTempTransactionsTotal(List<TempTransaction> transactions) {
+        float total = 0f;
+        for (TempTransaction t : transactions) {
+            total += t.getAmt();
+        }
+        return total;
     }
 
     /**

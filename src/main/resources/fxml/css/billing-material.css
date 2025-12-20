@@ -138,6 +138,20 @@
     -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.5), 6, 0, 0, 3);
 }
 
+/* Closed Table - Has closed bill (Material Orange/Amber) */
+.table-button-closed {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-border-color: #F57C00;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.3), 4, 0, 0, 2);
+}
+
+.table-button-closed:hover {
+    -fx-background-color: #FB8C00;
+    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.5), 6, 0, 0, 3);
+}
+
 /* All Items Checkbox */
 #chkAllItems {
     -fx-cursor: hand;
