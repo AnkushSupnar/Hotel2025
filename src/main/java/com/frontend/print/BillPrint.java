@@ -1,7 +1,9 @@
 package com.frontend.print;
 
 import com.frontend.entity.Bill;
+import com.frontend.entity.Customer;
 import com.frontend.entity.Transaction;
+import com.frontend.service.CustomerService;
 import com.frontend.service.EmployeeService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
@@ -50,6 +52,9 @@ public class BillPrint {
 
     @Autowired
     private TableMasterService tableMasterService;
+
+    @Autowired
+    private CustomerService customerService;
 
     // Font path - will be loaded from settings
     private String fontPath;
@@ -322,6 +327,24 @@ public class BillPrint {
         cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
+        // Add customer name for CREDIT bills
+        if ("CREDIT".equalsIgnoreCase(bill.getStatus()) || "CREDIT".equalsIgnoreCase(bill.getPaymode())) {
+            String customerName = getCustomerName(bill.getCustomerId());
+            if (customerName != null && !customerName.isEmpty()) {
+                // Customer name row: "ga`ahk : CustomerName" (left aligned)
+                Phrase customerPhrase = new Phrase();
+                customerPhrase.add(new Chunk("ga`ahk : ", fontMedium));
+                customerPhrase.add(new Chunk(customerName, fontMedium));
+                PdfPCell cellCustomer = new PdfPCell(customerPhrase);
+                cellCustomer.setHorizontalAlignment(Element.ALIGN_LEFT);
+                cellCustomer.setBorder(Rectangle.NO_BORDER);
+                cellCustomer.setPaddingTop(2f);
+                cellCustomer.setPaddingBottom(2f);
+                cellCustomer.setPaddingLeft(5f);
+                headerTable.addCell(cellCustomer);
+            }
+        }
+
         // Add items table
         cellHead = new PdfPCell(itemsTable);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -485,6 +508,22 @@ public class BillPrint {
         } catch (Exception e) {
             LOG.warn("Could not get waiter name for ID {}", waitorId);
             return "-";
+        }
+    }
+
+    /**
+     * Get customer name by ID (for credit bills)
+     */
+    private String getCustomerName(Integer customerId) {
+        if (customerId == null) {
+            return null;
+        }
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            return customer != null ? customer.getFullName() : null;
+        } catch (Exception e) {
+            LOG.warn("Could not get customer name for ID {}", customerId);
+            return null;
         }
     }
 

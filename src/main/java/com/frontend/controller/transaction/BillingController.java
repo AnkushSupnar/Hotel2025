@@ -227,6 +227,55 @@ public class BillingController implements Initializable {
     @FXML
     private Label lblNetAmount;
 
+    // Bill History Search Fields
+    @FXML
+    private TextField txtSearchDate;
+
+    @FXML
+    private TextField txtSearchBillNo;
+
+    @FXML
+    private TextField txtSearchCustomer;
+
+    @FXML
+    private Button btnSearchBills;
+
+    @FXML
+    private Button btnClearSearch;
+
+    @FXML
+    private Button btnRefreshBills;
+
+    @FXML
+    private TableView<Bill> tblBillHistory;
+
+    @FXML
+    private TableColumn<Bill, Integer> colBillNo;
+
+    @FXML
+    private TableColumn<Bill, String> colBillDate;
+
+    @FXML
+    private TableColumn<Bill, Integer> colBillCustomer;
+
+    @FXML
+    private TableColumn<Bill, Float> colBillAmount;
+
+    @FXML
+    private TableColumn<Bill, String> colBillStatus;
+
+    @FXML
+    private Label lblTotalCash;
+
+    @FXML
+    private Label lblTotalCredit;
+
+    @FXML
+    private Label lblTotalBills;
+
+    // Bill history data
+    private ObservableList<Bill> billHistoryList = FXCollections.observableArrayList();
+
     // Autocomplete and customer tracking
     private AutoCompleteTextField_old customerAutoComplete;
     private List<Customer> allCustomers;
@@ -264,6 +313,7 @@ public class BillingController implements Initializable {
         setUpTempTransactionTable();
         setupActionButtons();
         setupCashCounter();
+        setupBillHistory();
     }
 
     private void setupActionButtons() {
@@ -573,18 +623,9 @@ public class BillingController implements Initializable {
             txtCategoryName.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 // Only handle category selection if "All Items" is not checked
                 if (!chkAllItems.isSelected()) {
-                    if (newValue) { // On focus gained
-                        if (!txtCategoryName.getText().isEmpty()) {
-                            loadItemsByCategory(txtCategoryName.getText());
-                        } else {
-                            txtCategoryName.requestFocus();
-                        }
-                    } else {
-                        if (!txtCategoryName.getText().isEmpty()) {
-                            loadItemsByCategory(txtCategoryName.getText());
-                        } else {
-                            txtCategoryName.requestFocus();
-                        }
+                    // On focus lost, load items if category is selected
+                    if (!newValue && !txtCategoryName.getText().isEmpty()) {
+                        loadItemsByCategory(txtCategoryName.getText());
                     }
                 }
             });
@@ -668,6 +709,14 @@ public class BillingController implements Initializable {
                     "-fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3;",
                     fontFamily));
             }
+
+            // Add selection listener to move focus to category field after waiter selection
+            cmbWaitorName.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && !newVal.isEmpty()) {
+                    // Move focus to category name field after waiter is selected
+                    Platform.runLater(() -> txtCategoryName.requestFocus());
+                }
+            });
 
             LOG.info("Loaded {} waiters into ComboBox with Kiran font", allWaitorNames.size());
         } else {
@@ -1160,9 +1209,22 @@ public class BillingController implements Initializable {
                     flowPane.getChildren().add(tableButton);
                     tableButton.setOnAction(e -> {
                         txtTableNumber.setText(table.getTableName());
+
+                        // Check if table has any existing transactions before loading
+                        boolean hasExistingTransactions = tempTransactionService.hasTransactions(table.getId())
+                                || billService.hasClosedBill(table.getId());
+
                         // Load existing transactions for this table from database
                         loadTransactionsForTable(table.getId());
                         LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
+
+                        // If table is fresh (no transactions), focus on waiter dropdown
+                        if (!hasExistingTransactions) {
+                            Platform.runLater(() -> {
+                                cmbWaitorName.requestFocus();
+                                cmbWaitorName.show();
+                            });
+                        }
                     });
                 }
             }
@@ -1758,21 +1820,336 @@ public class BillingController implements Initializable {
         }
     }
 
+    // ============= Bill History Methods =============
+
+    /**
+     * Setup bill history table and search functionality
+     */
+    private void setupBillHistory() {
+        try {
+            // Get custom font for bill history table (size 18 for compact display)
+            Font customFont = SessionService.getCustomFont(18.0);
+            final String fontFamily = customFont != null ? customFont.getFamily() : null;
+
+            // Setup table columns
+            if (colBillNo != null) {
+                colBillNo.setCellValueFactory(new PropertyValueFactory<>("billNo"));
+            }
+            if (colBillDate != null) {
+                colBillDate.setCellValueFactory(new PropertyValueFactory<>("billDate"));
+            }
+            if (colBillAmount != null) {
+                colBillAmount.setCellValueFactory(new PropertyValueFactory<>("billAmt"));
+                // Format amount with ₹ symbol
+                colBillAmount.setCellFactory(column -> new TableCell<Bill, Float>() {
+                    @Override
+                    protected void updateItem(Float item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(String.format("₹%.0f", item));
+                        }
+                    }
+                });
+            }
+            if (colBillStatus != null) {
+                colBillStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+                // Color code status
+                colBillStatus.setCellFactory(column -> new TableCell<Bill, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item);
+                            if ("PAID".equalsIgnoreCase(item)) {
+                                setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+                            } else if ("CREDIT".equalsIgnoreCase(item)) {
+                                setStyle("-fx-text-fill: #FF9800; -fx-font-weight: bold;");
+                            } else {
+                                setStyle("-fx-text-fill: #757575;");
+                            }
+                        }
+                    }
+                });
+            }
+            if (colBillCustomer != null) {
+                // Custom cell factory to show customer name with custom font
+                colBillCustomer.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                colBillCustomer.setCellFactory(column -> new TableCell<Bill, Integer>() {
+                    @Override
+                    protected void updateItem(Integer customerId, boolean empty) {
+                        super.updateItem(customerId, empty);
+                        if (empty) {
+                            setText(null);
+                            setStyle("");
+                        } else if (customerId != null) {
+                            Customer customer = customerService.getCustomerById(customerId);
+                            String customerName = customer != null ? customer.getFullName() : "";
+                            setText(customerName);
+                            // Apply custom font for customer name
+                            if (fontFamily != null && !customerName.isEmpty()) {
+                                setFont(customFont);
+                                setStyle(String.format("-fx-font-family: '%s'; -fx-font-size: 18px;", fontFamily));
+                            }
+                        } else {
+                            // Cash payment - no customer, show empty
+                            setText("");
+                            setStyle("");
+                        }
+                    }
+                });
+            }
+
+            // Bind table to data
+            if (tblBillHistory != null) {
+                tblBillHistory.setItems(billHistoryList);
+
+                // Double-click to view bill details
+                tblBillHistory.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2) {
+                        Bill selectedBill = tblBillHistory.getSelectionModel().getSelectedItem();
+                        if (selectedBill != null) {
+                            viewBillDetails(selectedBill);
+                        }
+                    }
+                });
+            }
+
+            // Setup search buttons
+            if (btnSearchBills != null) {
+                btnSearchBills.setOnAction(e -> searchBills());
+            }
+            if (btnClearSearch != null) {
+                btnClearSearch.setOnAction(e -> clearBillSearch());
+            }
+            if (btnRefreshBills != null) {
+                btnRefreshBills.setOnAction(e -> loadTodaysBills());
+            }
+
+            // Set today's date in search field
+            if (txtSearchDate != null) {
+                txtSearchDate.setText(java.time.LocalDate.now().format(
+                        java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            }
+
+            // Load today's bills
+            loadTodaysBills();
+
+            LOG.info("Bill history setup completed");
+
+        } catch (Exception e) {
+            LOG.error("Error setting up bill history", e);
+        }
+    }
+
+    /**
+     * Load today's bills (PAID and CREDIT)
+     */
+    private void loadTodaysBills() {
+        try {
+            String today = java.time.LocalDate.now().format(
+                    java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            // Get all bills for today with PAID or CREDIT status
+            List<Bill> paidBills = billService.getBillsByStatusAndDate("PAID", today);
+            List<Bill> creditBills = billService.getBillsByStatusAndDate("CREDIT", today);
+
+            billHistoryList.clear();
+            billHistoryList.addAll(paidBills);
+            billHistoryList.addAll(creditBills);
+
+            // Update summary totals
+            updateBillSummary(paidBills, creditBills);
+
+            LOG.info("Loaded {} PAID and {} CREDIT bills for today", paidBills.size(), creditBills.size());
+
+        } catch (Exception e) {
+            LOG.error("Error loading today's bills", e);
+        }
+    }
+
+    /**
+     * Search bills by date, bill no, or customer name
+     */
+    private void searchBills() {
+        try {
+            String searchDate = txtSearchDate != null ? txtSearchDate.getText().trim() : "";
+            String searchBillNo = txtSearchBillNo != null ? txtSearchBillNo.getText().trim() : "";
+            String searchCustomer = txtSearchCustomer != null ? txtSearchCustomer.getText().trim() : "";
+
+            List<Bill> results = new ArrayList<>();
+
+            // Search by bill number (highest priority)
+            if (!searchBillNo.isEmpty()) {
+                try {
+                    Integer billNo = Integer.parseInt(searchBillNo);
+                    billService.getBillByNo(billNo).ifPresent(results::add);
+                } catch (NumberFormatException e) {
+                    alert.showError("Invalid bill number");
+                    return;
+                }
+            }
+            // Search by date
+            else if (!searchDate.isEmpty()) {
+                List<Bill> paidBills = billService.getBillsByStatusAndDate("PAID", searchDate);
+                List<Bill> creditBills = billService.getBillsByStatusAndDate("CREDIT", searchDate);
+                results.addAll(paidBills);
+                results.addAll(creditBills);
+
+                // Filter by customer name if provided
+                if (!searchCustomer.isEmpty()) {
+                    final String customerSearch = searchCustomer.toLowerCase();
+                    results = results.stream()
+                            .filter(bill -> {
+                                if (bill.getCustomerId() != null) {
+                                    Customer customer = customerService.getCustomerById(bill.getCustomerId());
+                                    return customer != null &&
+                                            customer.getFullName().toLowerCase().contains(customerSearch);
+                                }
+                                return false;
+                            })
+                            .collect(java.util.stream.Collectors.toList());
+                }
+            }
+            // Search by customer name only
+            else if (!searchCustomer.isEmpty()) {
+                // Get all customers matching the search
+                List<Customer> matchingCustomers = customerService.getAllCustomers().stream()
+                        .filter(c -> c.getFullName().toLowerCase().contains(searchCustomer.toLowerCase()))
+                        .collect(java.util.stream.Collectors.toList());
+
+                for (Customer customer : matchingCustomers) {
+                    results.addAll(billService.getBillsByCustomerId(customer.getId()));
+                }
+
+                // Filter to only PAID and CREDIT
+                results = results.stream()
+                        .filter(b -> "PAID".equalsIgnoreCase(b.getStatus()) || "CREDIT".equalsIgnoreCase(b.getStatus()))
+                        .collect(java.util.stream.Collectors.toList());
+            }
+            // No search criteria - load today's bills
+            else {
+                loadTodaysBills();
+                return;
+            }
+
+            billHistoryList.clear();
+            billHistoryList.addAll(results);
+
+            // Update summary
+            List<Bill> paidBills = results.stream()
+                    .filter(b -> "PAID".equalsIgnoreCase(b.getStatus()))
+                    .collect(java.util.stream.Collectors.toList());
+            List<Bill> creditBills = results.stream()
+                    .filter(b -> "CREDIT".equalsIgnoreCase(b.getStatus()))
+                    .collect(java.util.stream.Collectors.toList());
+            updateBillSummary(paidBills, creditBills);
+
+            LOG.info("Search found {} bills", results.size());
+
+        } catch (Exception e) {
+            LOG.error("Error searching bills", e);
+            alert.showError("Error searching bills: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Clear bill search fields and reload today's bills
+     */
+    private void clearBillSearch() {
+        if (txtSearchDate != null) {
+            txtSearchDate.setText(java.time.LocalDate.now().format(
+                    java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        }
+        if (txtSearchBillNo != null) {
+            txtSearchBillNo.clear();
+        }
+        if (txtSearchCustomer != null) {
+            txtSearchCustomer.clear();
+        }
+        loadTodaysBills();
+    }
+
+    /**
+     * Update bill summary totals
+     */
+    private void updateBillSummary(List<Bill> paidBills, List<Bill> creditBills) {
+        float totalCash = 0f;
+        float totalCredit = 0f;
+
+        for (Bill bill : paidBills) {
+            totalCash += bill.getBillAmt();
+        }
+        for (Bill bill : creditBills) {
+            totalCredit += bill.getBillAmt();
+        }
+
+        if (lblTotalCash != null) {
+            lblTotalCash.setText(String.format("₹%.0f", totalCash));
+        }
+        if (lblTotalCredit != null) {
+            lblTotalCredit.setText(String.format("₹%.0f", totalCredit));
+        }
+        if (lblTotalBills != null) {
+            lblTotalBills.setText(String.format("₹%.0f", totalCash + totalCredit));
+        }
+    }
+
+    /**
+     * View bill details (load into transaction table)
+     */
+    private void viewBillDetails(Bill bill) {
+        try {
+            // Always fetch transactions from database to avoid LazyInitializationException
+            List<Transaction> transactions = billService.getTransactionsForBill(bill.getBillNo());
+
+            // Convert to TempTransaction for display
+            tempTransactionList.clear();
+            int idCounter = -1; // Negative IDs to indicate it's from a saved bill
+            for (Transaction trans : transactions) {
+                TempTransaction temp = new TempTransaction();
+                temp.setId(idCounter--);
+                temp.setItemName(trans.getItemName());
+                temp.setQty(trans.getQty());
+                temp.setRate(trans.getRate());
+                temp.setAmt(trans.getAmt());
+                temp.setTableNo(bill.getTableNo());
+                tempTransactionList.add(temp);
+            }
+
+            // Update totals
+            updateTotals();
+
+            // Fetch bill with transactions for printing
+            currentClosedBill = billService.getBillWithTransactions(bill.getBillNo());
+
+            LOG.info("Viewing bill #{} with {} items", bill.getBillNo(), transactions.size());
+
+        } catch (Exception e) {
+            LOG.error("Error viewing bill details", e);
+            alert.showError("Error loading bill details: " + e.getMessage());
+        }
+    }
+
     /**
      * Calculate payment values based on bill amount, cash received, and return to customer
      *
-     * Practical Logic:
-     * - Change = What we SHOULD return to customer (Cash Received - Bill Amount, if positive)
-     * - Balance = What customer still OWES (Bill Amount - Cash Received, if positive)
-     * - Discount = Only when we return MORE than the calculated change
-     *              OR when we accept less than bill (Balance forgiven at payment time)
-     * - Net Amount = Actual amount we're keeping (Cash Received - Return to Customer)
+     * New Discount Logic:
+     * - Net Received = Cash Received - Return to Customer (what we actually keep)
+     * - Discount = Bill Amount - Net Received (if positive, when accepting less than bill)
+     * - Change = Cash Received - Bill Amount (if positive, what we should return)
+     * - Balance = 0 (since any shortfall becomes discount when user confirms payment)
      *
      * Examples:
-     * 1. Bill=400, Cash=500 → Change=100, Balance=0, if Return=100 → Discount=0, Net=400
-     * 2. Bill=400, Cash=500, Return=150 → Change=100, Discount=50, Net=350
-     * 3. Bill=20, Cash=10 → Change=0, Balance=10, Discount=0 (customer still owes)
-     * 4. Bill=500, Cash=500, Return=100 → Change=0, Discount=100, Net=400
+     * 1. Bill=30, Cash=20, Return=0 → NetReceived=20, Discount=10, Change=0, Net=20
+     * 2. Bill=30, Cash=50, Return=20 → NetReceived=30, Discount=0, Change=20, Net=30
+     * 3. Bill=30, Cash=50, Return=30 → NetReceived=20, Discount=10, Change=20, Net=20
+     * 4. Bill=30, Cash=30, Return=0 → NetReceived=30, Discount=0, Change=0, Net=30
+     * 5. Bill=400, Cash=500, Return=100 → NetReceived=400, Discount=0, Change=100, Net=400
      */
     private void calculatePayment() {
         try {
@@ -1794,34 +2171,31 @@ public class BillingController implements Initializable {
                 returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText());
             }
 
+            // Calculate net received (what we actually keep)
+            float netReceived = cashReceived - returnToCustomer;
+            if (netReceived < 0) {
+                netReceived = 0;
+            }
+
             // Calculate change (what we SHOULD return based on cash received)
             float change = Math.max(0, cashReceived - billAmount);
 
-            // Calculate balance (what customer still OWES)
-            float balance = Math.max(0, billAmount - cashReceived);
-
-            // Calculate discount
-            // Discount only applies when customer has paid enough (no balance)
-            // and we return more than the calculated change
+            // Calculate discount - NEW LOGIC
+            // Discount = Bill Amount - Net Received (when we accept less than bill amount)
+            // This happens when:
+            // 1. Cash received is less than bill (e.g., Bill=30, Cash=20 → Discount=10)
+            // 2. Return more than the change (e.g., Bill=30, Cash=50, Return=30 → Discount=10)
             float discount = 0;
-            if (balance == 0 && returnToCustomer > change) {
-                // Customer paid full or more, but we're returning extra
-                discount = returnToCustomer - change;
+            if (netReceived < billAmount) {
+                discount = billAmount - netReceived;
             }
 
-            // Net amount = what we're actually keeping
-            // Net = Cash Received - Return to Customer
-            // But cannot be more than Bill Amount (we don't keep extra)
-            float netAmount = cashReceived - returnToCustomer;
-            if (netAmount > billAmount) {
-                netAmount = billAmount;
-            }
-            if (netAmount < 0) {
-                netAmount = 0;
-            }
+            // Balance is now always 0 since any shortfall becomes discount
+            // (User agreeing to accept less means they're giving discount)
+            float balance = 0;
 
-            // If there's still a balance, show it; Net should reflect actual collection
-            // Net Pay shows what we're collecting, Balance shows what's pending
+            // Net amount = what we're actually keeping (same as netReceived, capped at billAmount)
+            float netAmount = Math.min(netReceived, billAmount);
 
             // Update labels
             if (lblChange != null) {
@@ -1835,11 +2209,7 @@ public class BillingController implements Initializable {
 
             if (lblBalance != null) {
                 lblBalance.setText(String.format("₹ %.2f", balance));
-                if (balance > 0) {
-                    lblBalance.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #F44336;");
-                } else {
-                    lblBalance.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;");
-                }
+                lblBalance.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;");
             }
 
             if (lblDiscount != null) {
@@ -2004,6 +2374,8 @@ public class BillingController implements Initializable {
      * Close the current table order
      * - If closed bill exists and new temp_transactions: add new items to existing bill
      * - If no closed bill: create new bill with CLOSE status
+     * - Table stays selected after closing, showing the closed bill items
+     * - No confirmation alerts - just save silently
      */
     private void closeTable() {
         if (txtTableNumber.getText().isEmpty()) {
@@ -2012,7 +2384,7 @@ public class BillingController implements Initializable {
         }
 
         if (tempTransactionList.isEmpty()) {
-            alert.showInfo("No items to close");
+            alert.showWarning("No items to close");
             return;
         }
 
@@ -2029,94 +2401,62 @@ public class BillingController implements Initializable {
 
             // If only closed bill items and no new items, nothing to add
             if (hasClosedBill && !hasNewItems) {
-                alert.showInfo("No new items to add.\nClosed Bill #" + currentClosedBill.getBillNo() + " already exists for this table.");
+                alert.showWarning("Table already closed. No new items to add.");
                 return;
             }
 
-            // Build confirmation message
-            String confirmMessage;
+            Bill savedBill;
+
             if (hasClosedBill && hasNewItems) {
-                confirmMessage = "This will ADD " + newTempTransactions.size() + " new item(s) to existing CLOSED Bill #" +
-                        currentClosedBill.getBillNo() + "\n\nExisting Bill: ₹" + String.format("%.2f", currentClosedBill.getBillAmt()) +
-                        "\nNew Items: ₹" + String.format("%.2f", calculateTempTransactionsTotal(newTempTransactions)) +
-                        "\n\nProceed?";
+                // Add new items to existing closed bill
+                savedBill = billService.addTransactionsToClosedBill(tableId, newTempTransactions);
+                LOG.info("Added {} new items to closed bill #{}", newTempTransactions.size(), savedBill.getBillNo());
             } else {
-                confirmMessage = "This will save the bill as CLOSED and clear the table.\nBill Amount: " + lblBillAmount.getText() + "\n\nProceed?";
-            }
-
-            // Confirm close
-            String confirmTitle = hasClosedBill ? "Add Items to Existing CLOSED Bill" : "Close Table - Save Bill";
-            if (alert.showConfirmation(confirmTitle, confirmMessage)) {
-                try {
-                    Bill savedBill;
-
-                    if (hasClosedBill && hasNewItems) {
-                        // Add new items to existing closed bill
-                        savedBill = billService.addTransactionsToClosedBill(tableId, newTempTransactions);
-                        LOG.info("Added {} new items to closed bill #{}", newTempTransactions.size(), savedBill.getBillNo());
-                    } else {
-                        // Create new closed bill
-                        // Get waiter ID from combo box
-                        Integer waitorId = null;
-                        String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
-                        if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
-                            List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
-                            if (!waiters.isEmpty()) {
-                                waitorId = waiters.get(0).getId();
-                            }
-                        }
-
-                        // Get customer ID if selected
-                        Integer customerId = null;
-                        if (selectedCustomer != null) {
-                            customerId = selectedCustomer.getId();
-                        }
-
-                        // Get current user ID from session
-                        Long userIdLong = SessionService.getCurrentUserId();
-                        Integer userId = userIdLong != null ? userIdLong.intValue() : null;
-
-                        savedBill = billService.createClosedBill(tableId, customerId, waitorId, userId, newTempTransactions);
-                        LOG.info("Created new closed bill #{} with {} items", savedBill.getBillNo(), newTempTransactions.size());
+                // Create new closed bill
+                // Get waiter ID from combo box
+                Integer waitorId = null;
+                String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
+                if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
+                    List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
+                    if (!waiters.isEmpty()) {
+                        waitorId = waiters.get(0).getId();
                     }
-
-                    // Print the bill
-                    final Bill billToPrint = savedBill;
-                    final String tableNameForPrint = tableName;
-                    new Thread(() -> {
-                        try {
-                            billPrint.printBill(billToPrint, tableNameForPrint);
-                        } catch (Exception e) {
-                            LOG.error("Error printing bill: {}", e.getMessage(), e);
-                        }
-                    }).start();
-
-                    // Clear TableView and reset
-                    tempTransactionList.clear();
-                    currentClosedBill = null;
-                    updateTotals();
-
-                    // Update table button status
-                    updateTableButtonStatus(tableId);
-
-                    // Clear form
-                    clearItemForm();
-                    clearPaymentFields();
-                    clearSelectedCustomer();
-                    cmbWaitorName.getSelectionModel().clearSelection();
-                    txtTableNumber.clear();
-
-                    alert.showInfo("Bill #" + savedBill.getBillNo() + " saved as CLOSED\nTotal Amount: ₹" + String.format("%.2f", savedBill.getBillAmt()));
-                    LOG.info("Table {} closed. Bill #{} saved as CLOSED with amount {}", tableName, savedBill.getBillNo(), savedBill.getBillAmt());
-
-                } catch (Exception e) {
-                    LOG.error("Error closing table", e);
-                    alert.showError("Error closing table: " + e.getMessage());
                 }
+
+                // Get customer ID if selected
+                Integer customerId = null;
+                if (selectedCustomer != null) {
+                    customerId = selectedCustomer.getId();
+                }
+
+                // Get current user ID from session
+                Long userIdLong = SessionService.getCurrentUserId();
+                Integer userId = userIdLong != null ? userIdLong.intValue() : null;
+
+                savedBill = billService.createClosedBill(tableId, customerId, waitorId, userId, newTempTransactions);
+                LOG.info("Created new closed bill #{} with {} items", savedBill.getBillNo(), newTempTransactions.size());
             }
+
+            // Update table button status to Closed (red)
+            updateTableButtonStatus(tableId);
+
+            // Reload transactions for this table to show closed bill items
+            // Table stays selected, user can now pay the bill
+            loadTransactionsForTable(tableId);
+
+            // Clear item form only (keep table selected)
+            clearItemForm();
+
+            // Set focus to cash received field so user can enter payment
+            if (txtCashReceived != null) {
+                txtCashReceived.requestFocus();
+            }
+
+            LOG.info("Table {} closed. Bill #{} saved as CLOSED with amount ₹{}", tableName, savedBill.getBillNo(), savedBill.getBillAmt());
+
         } catch (Exception e) {
-            LOG.error("Error preparing to close table", e);
-            alert.showError("Error: " + e.getMessage());
+            LOG.error("Error closing table", e);
+            alert.showError("Error closing table: " + e.getMessage());
         }
     }
 
@@ -2132,28 +2472,213 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Mark the current order as PAID
-     * TODO: Generate bill, save to transaction history, clear temp_transaction
+     * Mark the current order as PAID or CREDIT
+     * - If customer is selected → CREDIT bill (customer pays later)
+     * - If no customer selected → CASH bill (must enter cash received)
      */
     private void markAsPaid() {
+        // Validation 1: Table must be selected
         if (txtTableNumber.getText().isEmpty()) {
             alert.showError("Please select a table first");
             return;
         }
 
+        // Validation 2: Must have items to bill
         if (tempTransactionList.isEmpty()) {
             alert.showError("No items to bill");
             return;
         }
 
-        LOG.info("PAID button clicked for table: {}", txtTableNumber.getText());
-        // TODO: Implement full payment processing
-        // 1. Generate bill number
-        // 2. Save to transaction/bill table
-        // 3. Print bill
-        // 4. Clear temp_transaction
-        // 5. Update table status
-        alert.showInfo("Payment processing - TODO: Implement bill generation");
+        try {
+            String tableName = txtTableNumber.getText();
+            Integer tableId = tableMasterService.getTableByName(tableName).getId();
+
+            // Check if there are new temp transactions for this table
+            List<TempTransaction> newTempTransactions = tempTransactionService.getTransactionsByTableNo(tableId);
+            boolean hasNewTempTransactions = !newTempTransactions.isEmpty();
+
+            // Validation 3: Check if this is a closed bill
+            if (currentClosedBill == null) {
+                if (hasNewTempTransactions) {
+                    alert.showWarning("Please close the table first");
+                    return;
+                } else {
+                    alert.showError("No bill found. Close the table first.");
+                    return;
+                }
+            }
+
+            // Validation 4: If there are new temp transactions, table should be closed first
+            if (hasNewTempTransactions) {
+                alert.showWarning("Close the table first to save new items");
+                return;
+            }
+
+            // Validation 5: Check if bill is already PAID or CREDIT
+            if ("PAID".equalsIgnoreCase(currentClosedBill.getStatus())) {
+                alert.showInfo("Bill already PAID");
+                return;
+            }
+            if ("CREDIT".equalsIgnoreCase(currentClosedBill.getStatus())) {
+                alert.showInfo("Bill already marked as CREDIT");
+                return;
+            }
+
+            // Validation 6: Bill must be in CLOSE status
+            if (!"CLOSE".equalsIgnoreCase(currentClosedBill.getStatus())) {
+                alert.showError("Only closed bills can be processed");
+                return;
+            }
+
+            // Get payment values from UI
+            float billAmount = currentClosedBill.getBillAmt();
+            float cashReceived = 0f;
+            float returnToCustomer = 0f;
+            float discount = 0f;
+            Bill processedBill;
+
+            // Check if customer is selected → CREDIT bill
+            if (selectedCustomer != null) {
+                // CREDIT BILL - Customer selected
+                // Cash received is optional for credit bills
+                if (txtCashReceived != null && !txtCashReceived.getText().trim().isEmpty()) {
+                    try {
+                        cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
+                    } catch (NumberFormatException e) {
+                        alert.showError("Invalid cash received amount");
+                        txtCashReceived.requestFocus();
+                        return;
+                    }
+                }
+
+                // Parse return to customer (optional)
+                if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
+                    try {
+                        returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText().trim());
+                    } catch (NumberFormatException e) {
+                        alert.showError("Invalid return amount");
+                        txtReturnToCustomer.requestFocus();
+                        return;
+                    }
+                }
+
+                // Calculate net received and discount
+                float netReceived = cashReceived - returnToCustomer;
+                if (netReceived < 0) netReceived = 0;
+                if (netReceived < billAmount) {
+                    discount = billAmount - netReceived;
+                }
+
+                // Mark as CREDIT bill
+                processedBill = billService.markBillAsCredit(
+                        currentClosedBill.getBillNo(),
+                        selectedCustomer.getId(),
+                        cashReceived,
+                        returnToCustomer,
+                        discount
+                );
+
+                LOG.info("Bill #{} marked as CREDIT for customer {}. Amount: ₹{}",
+                        processedBill.getBillNo(), selectedCustomer.getFullName(), processedBill.getNetAmount());
+
+            } else {
+                // CASH BILL - No customer selected
+                // Cash received is required for cash bills
+                if (txtCashReceived == null || txtCashReceived.getText().trim().isEmpty()) {
+                    alert.showError("Please enter cash received amount");
+                    if (txtCashReceived != null) {
+                        txtCashReceived.requestFocus();
+                    }
+                    return;
+                }
+
+                try {
+                    cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
+                } catch (NumberFormatException e) {
+                    alert.showError("Invalid cash received amount");
+                    txtCashReceived.requestFocus();
+                    return;
+                }
+
+                // Parse return to customer (optional)
+                if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
+                    try {
+                        returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText().trim());
+                    } catch (NumberFormatException e) {
+                        alert.showError("Invalid return amount");
+                        txtReturnToCustomer.requestFocus();
+                        return;
+                    }
+                }
+
+                // Calculate net received and discount
+                float netReceived = cashReceived - returnToCustomer;
+                if (netReceived < 0) netReceived = 0;
+                if (netReceived < billAmount) {
+                    discount = billAmount - netReceived;
+                }
+
+                // Confirm discount if applicable
+                if (discount > 0) {
+                    if (!alert.showConfirmation("Confirm Discount",
+                            "Accepting ₹" + String.format("%.0f", netReceived) + " for bill ₹" + String.format("%.0f", billAmount) + "\n" +
+                            "Discount: ₹" + String.format("%.0f", discount) + "\n\nProceed?")) {
+                        return;
+                    }
+                }
+
+                // Mark as PAID (CASH) bill
+                processedBill = billService.markBillAsPaid(
+                        currentClosedBill.getBillNo(),
+                        cashReceived,
+                        returnToCustomer,
+                        discount,
+                        "CASH"
+                );
+
+                LOG.info("Bill #{} marked as PAID (CASH). Net: ₹{}, Discount: ₹{}",
+                        processedBill.getBillNo(), processedBill.getNetAmount(), discount);
+            }
+
+            // Ask user if they want to print the bill
+            boolean wantToPrint = alert.showConfirmation("Print Bill", "Print the bill?");
+
+            if (wantToPrint) {
+                final Bill billToPrint = processedBill;
+                final String tableNameForPrint = tableName;
+
+                // Run printing in background thread
+                new Thread(() -> {
+                    try {
+                        billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                    } catch (Exception e) {
+                        LOG.error("Error printing bill #{}: {}", billToPrint.getBillNo(), e.getMessage(), e);
+                    }
+                }).start();
+            }
+
+            // Clear UI and reset state
+            tempTransactionList.clear();
+            currentClosedBill = null;
+            updateTotals();
+
+            // Update table button status to Available
+            updateTableButtonStatus(tableId);
+
+            // Clear form fields
+            clearItemForm();
+            clearPaymentFields();
+            clearSelectedCustomer();
+            cmbWaitorName.getSelectionModel().clearSelection();
+            txtTableNumber.clear();
+
+            // Refresh bill history to show the new bill
+            loadTodaysBills();
+
+        } catch (Exception e) {
+            LOG.error("Error processing payment", e);
+            alert.showError("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -2189,17 +2714,62 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Show old/previous bills
-     * TODO: Open dialog to search and view old bills
+     * Print old/previous bill
+     * If a bill is selected in history table, print that bill
+     * Otherwise, print the last paid bill
      */
     private void showOldBills() {
         LOG.info("OLD BILL button clicked");
-        // TODO: Implement old bill viewer
-        // 1. Open dialog/window
-        // 2. Search by date, bill number, customer
-        // 3. Display bill details
-        // 4. Option to reprint
-        alert.showInfo("Old Bills - TODO: Implement bill history viewer");
+
+        try {
+            Bill billToPrint = null;
+
+            // Check if a bill is selected in the history table
+            if (tblBillHistory != null) {
+                billToPrint = tblBillHistory.getSelectionModel().getSelectedItem();
+            }
+
+            // If no bill selected, get the last paid bill
+            if (billToPrint == null) {
+                billToPrint = billService.getLastPaidBill();
+                if (billToPrint == null) {
+                    alert.showError("No paid bills found to print");
+                    return;
+                }
+                LOG.info("No bill selected, printing last paid bill #{}", billToPrint.getBillNo());
+            } else {
+                // Reload bill with transactions
+                billToPrint = billService.getBillWithTransactions(billToPrint.getBillNo());
+                LOG.info("Printing selected bill #{}", billToPrint.getBillNo());
+            }
+
+            // Get table name for the bill
+            String tableName = "Table";
+            if (billToPrint.getTableNo() != null) {
+                try {
+                    TableMaster table = tableMasterService.getTableById(billToPrint.getTableNo());
+                    tableName = table.getTableName();
+                } catch (Exception e) {
+                    LOG.warn("Could not get table name for tableNo: {}", billToPrint.getTableNo());
+                }
+            }
+
+            // Print the bill
+            final Bill finalBill = billToPrint;
+            final String finalTableName = tableName;
+
+            new Thread(() -> {
+                try {
+                    billPrint.printBillWithDialog(finalBill, finalTableName);
+                } catch (Exception e) {
+                    LOG.error("Error printing bill #{}: {}", finalBill.getBillNo(), e.getMessage(), e);
+                }
+            }).start();
+
+        } catch (Exception e) {
+            LOG.error("Error in showOldBills", e);
+            alert.showError("Error: " + e.getMessage());
+        }
     }
 
     /**

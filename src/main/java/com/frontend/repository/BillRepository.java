@@ -106,4 +106,10 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
      * Find bill by table number and status
      */
     Optional<Bill> findFirstByTableNoAndStatusOrderByBillNoDesc(Integer tableNo, String status);
+
+    /**
+     * Find the last paid or credit bill (most recent by bill number)
+     */
+    @Query("SELECT b FROM Bill b WHERE b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo DESC")
+    List<Bill> findLastPaidOrCreditBills();
 }

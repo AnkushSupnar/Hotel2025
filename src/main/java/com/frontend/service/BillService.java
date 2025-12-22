@@ -290,6 +290,7 @@ public class BillService {
 
     /**
      * Update bill status to PAID
+     * Note: Eagerly fetches transactions to avoid LazyInitializationException when printing
      */
     @Transactional
     public Bill markBillAsPaid(Integer billNo, Float cashReceived, Float returnAmount,
@@ -309,7 +310,12 @@ public class BillService {
             bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
 
             Bill updatedBill = billRepository.save(bill);
-            LOG.info("Bill {} marked as PAID", billNo);
+
+            // Eagerly fetch transactions to avoid LazyInitializationException
+            // when printing the bill in a background thread
+            updatedBill.getTransactions().size();
+
+            LOG.info("Bill {} marked as PAID with {} transactions", billNo, updatedBill.getTransactions().size());
 
             return updatedBill;
 
@@ -320,10 +326,69 @@ public class BillService {
     }
 
     /**
+     * Update bill status to CREDIT for a customer
+     * Credit bill means customer will pay later
+     * Note: Eagerly fetches transactions to avoid LazyInitializationException when printing
+     */
+    @Transactional
+    public Bill markBillAsCredit(Integer billNo, Integer customerId, Float cashReceived,
+                                  Float returnAmount, Float discount) {
+        try {
+            if (customerId == null) {
+                throw new RuntimeException("Customer is required for credit billing");
+            }
+
+            Optional<Bill> optBill = billRepository.findById(billNo);
+            if (optBill.isEmpty()) {
+                throw new RuntimeException("Bill not found: " + billNo);
+            }
+
+            Bill bill = optBill.get();
+            bill.setStatus("CREDIT");
+            bill.setPaymode("CREDIT");
+            bill.setCustomerId(customerId);
+            bill.setCashReceived(cashReceived != null ? cashReceived : 0f);
+            bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
+            bill.setDiscount(discount != null ? discount : 0f);
+            bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
+
+            Bill updatedBill = billRepository.save(bill);
+
+            // Eagerly fetch transactions to avoid LazyInitializationException
+            // when printing the bill in a background thread
+            updatedBill.getTransactions().size();
+
+            LOG.info("Bill {} marked as CREDIT for customer {} with {} transactions",
+                    billNo, customerId, updatedBill.getTransactions().size());
+
+            return updatedBill;
+
+        } catch (Exception e) {
+            LOG.error("Error marking bill {} as CREDIT", billNo, e);
+            throw new RuntimeException("Error updating bill: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Get bill by bill number
      */
     public Optional<Bill> getBillByNo(Integer billNo) {
         return billRepository.findById(billNo);
+    }
+
+    /**
+     * Get bill with transactions eagerly loaded (for printing)
+     */
+    @Transactional
+    public Bill getBillWithTransactions(Integer billNo) {
+        Optional<Bill> optBill = billRepository.findById(billNo);
+        if (optBill.isPresent()) {
+            Bill bill = optBill.get();
+            // Eagerly load transactions
+            bill.getTransactions().size();
+            return bill;
+        }
+        return null;
     }
 
     /**
@@ -341,9 +406,23 @@ public class BillService {
     }
 
     /**
+     * Get all bills by status and date
+     */
+    public List<Bill> getBillsByStatusAndDate(String status, String billDate) {
+        return billRepository.findByStatusAndBillDate(status, billDate);
+    }
+
+    /**
      * Get all bills by customer
      */
     public List<Bill> getBillsByCustomer(Integer customerId) {
+        return billRepository.findByCustomerId(customerId);
+    }
+
+    /**
+     * Get all bills by customer ID (alias)
+     */
+    public List<Bill> getBillsByCustomerId(Integer customerId) {
         return billRepository.findByCustomerId(customerId);
     }
 
@@ -570,5 +649,20 @@ public class BillService {
         }
 
         return new ArrayList<>(consolidated.values());
+    }
+
+    /**
+     * Get the last paid or credit bill (most recent)
+     */
+    @Transactional(readOnly = true)
+    public Bill getLastPaidBill() {
+        List<Bill> bills = billRepository.findLastPaidOrCreditBills();
+        if (!bills.isEmpty()) {
+            Bill bill = bills.get(0);
+            // Eagerly load transactions
+            bill.getTransactions().size();
+            return bill;
+        }
+        return null;
     }
 }
