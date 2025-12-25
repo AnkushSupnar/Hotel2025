@@ -38,93 +38,136 @@
     -fx-background-color: #0D47A1;
 }
 
-/* Section Box Styles - Compact */
-.section-box {
-    -fx-background-color: #ffffff;
-    -fx-border-width: 0 0 0 3; /* Left border for color indicator */
-    -fx-border-radius: 0 3 3 0;
-    -fx-background-radius: 0 3 3 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 2, 0, 0, 1);
-    -fx-cursor: move;
-    -fx-padding: 0;
-}
+/* ==========================================
+   LEFT PANEL - MODERN COMPACT DESIGN
+   ========================================== */
 
-.section-box:hover {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 3, 0, 0, 1);
-    -fx-background-color: #FAFAFA;
-}
-
-.section-header {
-    -fx-padding: 4 6;
-    -fx-background-color: #F5F5F5;
+/* Left Panel Container */
+.table-panel-left {
+    -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
-    -fx-border-width: 0 0 1 0;
+    -fx-border-width: 0 1 0 0;
 }
 
-.section-title {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #212121;
+/* Panel Header */
+.table-panel-header {
+    -fx-background-color: linear-gradient(to right, #1976D2, #1565C0);
+    -fx-padding: 10 12;
 }
 
-.section-content {
-    -fx-padding: 4;
-    -fx-background-color: #ffffff;
-}
-
-/* Table Button Styles */
-.table-button {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
+/* Refresh Button Compact */
+.refresh-btn-compact {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-background-radius: 12;
     -fx-cursor: hand;
-    -fx-min-height: 38px;
-    -fx-pref-height: 38px;
     -fx-padding: 4 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 2, 0, 0, 1);
 }
 
-/* Open Table - No items, available (White/No color) */
+.refresh-btn-compact:hover {
+    -fx-background-color: rgba(255,255,255,0.35);
+}
+
+.refresh-btn-compact:pressed {
+    -fx-background-color: rgba(255,255,255,0.15);
+}
+
+/* Section Box Modern - Card Style */
+.section-box-modern {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
+    -fx-cursor: move;
+}
+
+.section-box-modern:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+/* Table Scroll Pane */
+.table-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ==========================================
+   TABLE BUTTON STYLES - COMPACT MODERN
+   ========================================== */
+
+/* Base Table Button - Modern Grid Style (fits 5 characters) */
+.table-button {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-cursor: hand;
+    -fx-min-width: 52px;
+    -fx-pref-width: 52px;
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-padding: 4 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+    -fx-border-width: 1.5;
+    -fx-alignment: center;
+    -fx-content-display: center;
+}
+
+/* Open Table - Available (White with subtle border) */
 .table-button-available {
     -fx-background-color: #FFFFFF;
-    -fx-text-fill: #424242;
-    -fx-border-color: #BDBDBD;
-    -fx-border-width: 2;
+    -fx-text-fill: #616161;
+    -fx-border-color: #E0E0E0;
 }
 
 .table-button-available:hover {
     -fx-background-color: #F5F5F5;
-    -fx-border-color: #9E9E9E;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+    -fx-border-color: #BDBDBD;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 3, 0, 0, 1);
 }
 
-/* Running Table - Has items in temp_transaction (Green) */
+.table-button-available:pressed {
+    -fx-background-color: #EEEEEE;
+    -fx-border-color: #9E9E9E;
+}
+
+/* Running Table - Ongoing orders (Green) */
 .table-button-ongoing {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
-    -fx-border-color: #388E3C;
-    -fx-border-width: 2;
-    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 4, 0, 0, 2);
+    -fx-border-color: #43A047;
 }
 
 .table-button-ongoing:hover {
     -fx-background-color: #43A047;
-    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.5), 6, 0, 0, 3);
+    -fx-border-color: #388E3C;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.35), 4, 0, 0, 1);
 }
 
-/* Closed Table - Has closed bill (Red) */
+.table-button-ongoing:pressed {
+    -fx-background-color: #388E3C;
+}
+
+/* Billed Table - Closed/Billed (Deep Orange) */
 .table-button-closed {
-    -fx-background-color: #F44336;
+    -fx-background-color: #FF5722;
     -fx-text-fill: white;
-    -fx-border-color: #D32F2F;
-    -fx-border-width: 2;
-    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.3), 4, 0, 0, 2);
+    -fx-border-color: #F4511E;
 }
 
 .table-button-closed:hover {
-    -fx-background-color: #E53935;
-    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.5), 6, 0, 0, 3);
+    -fx-background-color: #F4511E;
+    -fx-border-color: #E64A19;
+    -fx-effect: dropshadow(gaussian, rgba(255, 87, 34, 0.35), 4, 0, 0, 1);
+}
+
+.table-button-closed:pressed {
+    -fx-background-color: #E64A19;
 }
 
 /* All Items Checkbox */

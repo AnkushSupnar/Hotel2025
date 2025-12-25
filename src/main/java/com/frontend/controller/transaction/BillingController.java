@@ -36,11 +36,15 @@ import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import lombok.extern.java.Log;
 
@@ -229,13 +233,16 @@ public class BillingController implements Initializable {
 
     // Bill History Search Fields
     @FXML
-    private TextField txtSearchDate;
+    private DatePicker dpSearchDate;
 
     @FXML
     private TextField txtSearchBillNo;
 
     @FXML
     private TextField txtSearchCustomer;
+
+    @FXML
+    private HBox billHistoryCustomerSearchContainer;
 
     @FXML
     private Button btnSearchBills;
@@ -245,6 +252,9 @@ public class BillingController implements Initializable {
 
     @FXML
     private Button btnRefreshBills;
+
+    // AutoComplete for bill history customer search
+    private AutoCompleteTextField billHistoryCustomerAutoComplete;
 
     @FXML
     private TableView<Bill> tblBillHistory;
@@ -1148,65 +1158,41 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Load all unique sections from tablemaster and display as boxes
+     * Load all tables and display in a grid with section separators
      */
     private void loadSections() {
         try {
-            LOG.info("Loading sections from tablemaster");
+            LOG.info("Loading all tables into grid with section separators");
+
+            // Main container for all sections
+            VBox mainContainer = new VBox();
+            mainContainer.setSpacing(8);
+            mainContainer.setStyle("-fx-background-color: transparent;");
+
+            // Get all sections and their tables
             List<String> sections = tableMasterService.getUniqueDescriptions();
+            int totalTables = 0;
 
-            Platform.runLater(() -> {
-                sectionsContainer.getChildren().clear();
+            for (int i = 0; i < sections.size(); i++) {
+                String section = sections.get(i);
+                List<TableMaster> tables = tableMasterService.getTablesByDescription(section);
 
-                for (String section : sections) {
-                    VBox sectionBox = createSectionBox(section);
-                    sectionsContainer.getChildren().add(sectionBox);
-                }
+                if (tables.isEmpty()) continue;
 
-                LOG.info("Loaded {} sections successfully", sections.size());
-            });
+                // Create TilePane for this section's tables
+                TilePane tilePane = new TilePane();
+                tilePane.setHgap(5);
+                tilePane.setVgap(5);
+                tilePane.setPrefColumns(7); // 7 columns for wider buttons
+                tilePane.setTileAlignment(Pos.CENTER);
+                tilePane.setAlignment(Pos.TOP_LEFT);
+                tilePane.setStyle("-fx-background-color: transparent; -fx-padding: 2 0;");
 
-        } catch (Exception e) {
-            LOG.error("Error loading sections", e);
-        }
-    }
-
-    /**
-     * Create a styled box for a section with drag and drop support - Compact layout
-     */
-    private VBox createSectionBox(String sectionName) {
-        // Main container box with Material Design elevation and colored border
-        VBox box = new VBox();
-        String sectionColor = getMaterialColorForSection(sectionName);
-
-        // Use CSS class
-        box.getStyleClass().add("section-box");
-        // Apply dynamic border color
-        box.setStyle("-fx-border-color: " + sectionColor + ";");
-
-        // Enable caching for better scrolling performance
-        box.setCache(true);
-        box.setCacheHint(CacheHint.SPEED);
-
-        // FlowPane for table buttons
-        FlowPane flowPane = new FlowPane();
-        flowPane.setHgap(6);
-        flowPane.setVgap(6);
-        flowPane.getStyleClass().add("section-content");
-        flowPane.setAlignment(Pos.CENTER_LEFT);
-
-        // Get tables for this section
-        try {
-            List<TableMaster> tables = tableMasterService.getTablesByDescription(sectionName);
-
-            if (tables.isEmpty()) {
-                Label noTablesLabel = new Label("No tables");
-                noTablesLabel.setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 10px;");
-                flowPane.getChildren().add(noTablesLabel);
-            } else {
                 for (TableMaster table : tables) {
                     Button tableButton = createTableButton(table);
-                    flowPane.getChildren().add(tableButton);
+                    tilePane.getChildren().add(tableButton);
+
+                    // Set up click handler
                     tableButton.setOnAction(e -> {
                         txtTableNumber.setText(table.getTableName());
 
@@ -1226,21 +1212,39 @@ public class BillingController implements Initializable {
                             });
                         }
                     });
+                    totalTables++;
+                }
+
+                mainContainer.getChildren().add(tilePane);
+
+                // Add separator line between sections (not after the last one)
+                if (i < sections.size() - 1) {
+                    Region separator = new Region();
+                    separator.setMinHeight(1);
+                    separator.setMaxHeight(1);
+                    separator.setStyle("-fx-background-color: #E0E0E0;");
+                    mainContainer.getChildren().add(separator);
                 }
             }
+
+            final int count = totalTables;
+            Platform.runLater(() -> {
+                sectionsContainer.getChildren().clear();
+                sectionsContainer.getChildren().add(mainContainer);
+                LOG.info("Loaded {} tables in {} sections", count, sections.size());
+            });
+
         } catch (Exception e) {
-            LOG.error("Error loading tables for section: {}", sectionName, e);
-            Label errorLabel = new Label("Error");
-            errorLabel.setStyle("-fx-text-fill: #F44336; -fx-font-size: 10px;");
-            flowPane.getChildren().add(errorLabel);
+            LOG.error("Error loading tables", e);
         }
+    }
 
-        // Add only the flowPane to the box
-        box.getChildren().add(flowPane);
-
-        // Enable drag and drop
-        setupDragAndDrop(box, sectionName, sectionColor);
-
+    /**
+     * Create a styled box for a section with drag and drop support - Legacy method kept for compatibility
+     */
+    private VBox createSectionBox(String sectionName) {
+        // This method is now unused but kept for potential future use
+        VBox box = new VBox();
         return box;
     }
 
@@ -1372,6 +1376,12 @@ public class BillingController implements Initializable {
      * Setup drag and drop handlers for section reordering (optimized)
      */
     private void setupDragAndDrop(VBox box, String sectionName, String sectionColor) {
+        // Store original style for reset
+        String originalStyle = "-fx-background-color: #FFFFFF; -fx-background-radius: 6; " +
+                              "-fx-border-radius: 6; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);";
+        String dragOverStyle = "-fx-background-color: #E3F2FD; -fx-background-radius: 6; " +
+                              "-fx-border-radius: 6; -fx-effect: dropshadow(gaussian, rgba(25,118,210,0.2), 6, 0, 0, 2);";
+
         // Make the box draggable
         box.setOnDragDetected(event -> {
             draggedBox = box;
@@ -1392,13 +1402,13 @@ public class BillingController implements Initializable {
 
         box.setOnDragEntered(event -> {
             if (event.getGestureSource() != box && event.getDragboard().hasString()) {
-                box.setStyle("-fx-background-color: #E3F2FD; -fx-border-color: " + sectionColor + ";");
+                box.setStyle(dragOverStyle);
             }
             event.consume();
         });
 
         box.setOnDragExited(event -> {
-            box.setStyle("-fx-background-color: #ffffff; -fx-border-color: " + sectionColor + ";");
+            box.setStyle(originalStyle);
             event.consume();
         });
 
@@ -1427,6 +1437,7 @@ public class BillingController implements Initializable {
         box.setOnDragDone(event -> {
             if (draggedBox != null) {
                 draggedBox.setOpacity(1.0);
+                draggedBox.setStyle(originalStyle);
                 draggedBox = null;
             }
             event.consume();
@@ -1930,11 +1941,13 @@ public class BillingController implements Initializable {
                 btnRefreshBills.setOnAction(e -> loadTodaysBills());
             }
 
-            // Set today's date in search field
-            if (txtSearchDate != null) {
-                txtSearchDate.setText(java.time.LocalDate.now().format(
-                        java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            // Set today's date in DatePicker
+            if (dpSearchDate != null) {
+                dpSearchDate.setValue(java.time.LocalDate.now());
             }
+
+            // Setup AutoComplete for bill history customer search
+            setupBillHistoryCustomerAutoComplete();
 
             // Load today's bills
             loadTodaysBills();
@@ -1977,9 +1990,22 @@ public class BillingController implements Initializable {
      */
     private void searchBills() {
         try {
-            String searchDate = txtSearchDate != null ? txtSearchDate.getText().trim() : "";
+            // Get date from DatePicker
+            String searchDate = "";
+            if (dpSearchDate != null && dpSearchDate.getValue() != null) {
+                searchDate = dpSearchDate.getValue().format(
+                        java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            }
             String searchBillNo = txtSearchBillNo != null ? txtSearchBillNo.getText().trim() : "";
-            String searchCustomer = txtSearchCustomer != null ? txtSearchCustomer.getText().trim() : "";
+            // Get customer from AutoComplete if available, otherwise from TextField
+            final String searchCustomer;
+            if (billHistoryCustomerAutoComplete != null) {
+                searchCustomer = billHistoryCustomerAutoComplete.getTextField().getText().trim();
+            } else if (txtSearchCustomer != null) {
+                searchCustomer = txtSearchCustomer.getText().trim();
+            } else {
+                searchCustomer = "";
+            }
 
             List<Bill> results = new ArrayList<>();
 
@@ -2061,17 +2087,72 @@ public class BillingController implements Initializable {
      * Clear bill search fields and reload today's bills
      */
     private void clearBillSearch() {
-        if (txtSearchDate != null) {
-            txtSearchDate.setText(java.time.LocalDate.now().format(
-                    java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        if (dpSearchDate != null) {
+            dpSearchDate.setValue(java.time.LocalDate.now());
         }
         if (txtSearchBillNo != null) {
             txtSearchBillNo.clear();
         }
-        if (txtSearchCustomer != null) {
+        if (billHistoryCustomerAutoComplete != null) {
+            billHistoryCustomerAutoComplete.getTextField().clear();
+        } else if (txtSearchCustomer != null) {
             txtSearchCustomer.clear();
         }
         loadTodaysBills();
+    }
+
+    /**
+     * Setup AutoComplete for customer search in bill history panel
+     */
+    private void setupBillHistoryCustomerAutoComplete() {
+        try {
+            if (billHistoryCustomerSearchContainer == null) {
+                LOG.warn("Bill history customer search container is null");
+                return;
+            }
+
+            // Get all customers for autocomplete
+            List<Customer> allCustomers = customerService.getAllCustomers();
+            List<String> customerNames = new ArrayList<>();
+            for (Customer customer : allCustomers) {
+                String fullName = customer.getFullName();
+                if (fullName != null && !fullName.trim().isEmpty()) {
+                    customerNames.add(fullName);
+                }
+            }
+
+            // Create a TextField for AutoComplete
+            TextField customerTextField = new TextField();
+            customerTextField.setPromptText("Customer Name");
+            customerTextField.setPrefHeight(32);
+            HBox.setHgrow(customerTextField, javafx.scene.layout.Priority.ALWAYS);
+
+            // Get custom font from SessionService
+            Font customFont = SessionService.getCustomFont(18.0);
+            if (customFont != null) {
+                customerTextField.setFont(customFont);
+                String fontFamily = customFont.getFamily();
+                customerTextField.setStyle(String.format(
+                        "-fx-font-family: '%s'; -fx-font-size: 18px; -fx-background-color: transparent; -fx-border-color: transparent;",
+                        fontFamily));
+
+                // Create AutoComplete wrapper with custom font
+                billHistoryCustomerAutoComplete = new AutoCompleteTextField(customerTextField, customerNames, customFont);
+            } else {
+                customerTextField.setStyle("-fx-font-size: 12px; -fx-background-color: transparent; -fx-border-color: transparent;");
+                // Create AutoComplete wrapper without custom font
+                billHistoryCustomerAutoComplete = new AutoCompleteTextField(customerTextField, customerNames);
+            }
+
+            // Replace the existing TextField with the new one
+            billHistoryCustomerSearchContainer.getChildren().clear();
+            billHistoryCustomerSearchContainer.getChildren().add(customerTextField);
+
+            LOG.info("Bill history customer AutoComplete setup with {} customers", customerNames.size());
+
+        } catch (Exception e) {
+            LOG.error("Error setting up bill history customer AutoComplete", e);
+        }
     }
 
     /**
