@@ -61,4 +61,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
      * Find transactions by item code
      */
     List<Transaction> findByItemCode(Integer itemCode);
+
+    /**
+     * Delete all transactions for a specific bill
+     */
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("DELETE FROM Transaction t WHERE t.bill.billNo = :billNo")
+    void deleteByBillNo(@Param("billNo") Integer billNo);
 }

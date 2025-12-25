@@ -221,4 +221,41 @@ public class TempTransactionService {
             throw new RuntimeException("Error resetting printQty: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Shift all temp transactions from one table to another
+     * @param sourceTableNo the table to shift from
+     * @param targetTableNo the table to shift to
+     * @return the number of transactions shifted
+     */
+    @Transactional
+    public int shiftTransactionsToTable(Integer sourceTableNo, Integer targetTableNo) {
+        try {
+            LOG.info("Shifting temp transactions from table {} to table {}", sourceTableNo, targetTableNo);
+
+            List<TempTransaction> sourceTransactions = tempTransactionRepository.findByTableNo(sourceTableNo);
+
+            if (sourceTransactions.isEmpty()) {
+                LOG.info("No temp transactions to shift from table {}", sourceTableNo);
+                return 0;
+            }
+
+            int shiftedCount = 0;
+            for (TempTransaction trans : sourceTransactions) {
+                // Update table number to target table
+                trans.setTableNo(targetTableNo);
+                tempTransactionRepository.save(trans);
+                shiftedCount++;
+            }
+
+            LOG.info("Shifted {} temp transactions from table {} to table {}",
+                    shiftedCount, sourceTableNo, targetTableNo);
+            return shiftedCount;
+
+        } catch (Exception e) {
+            LOG.error("Error shifting temp transactions from table {} to table {}",
+                    sourceTableNo, targetTableNo, e);
+            throw new RuntimeException("Error shifting transactions: " + e.getMessage(), e);
+        }
+    }
 }

@@ -181,7 +181,7 @@ public class BillingController implements Initializable {
     private Button btnPaid;
 
     @FXML
-    private Button btnCredit;
+    private Button btnShiftTable;
 
     @FXML
     private Button btnOldBill;
@@ -309,6 +309,15 @@ public class BillingController implements Initializable {
     private VBox draggedBox = null;
     Font kiranFont;
 
+    // Shift table mode tracking
+    private boolean isShiftTableMode = false;
+    private Integer shiftSourceTableId = null;
+    private String shiftSourceTableName = null;
+
+    // Edit bill mode tracking
+    private boolean isEditBillMode = false;
+    private Bill billBeingEdited = null;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Billing screen initialized");
@@ -334,11 +343,29 @@ public class BillingController implements Initializable {
         btnOrder.setOnAction(e -> processOrder());
 
         // Bill Action Buttons
-        btnClose.setOnAction(e -> closeTable());
+        btnClose.setOnAction(e -> {
+            if (isEditBillMode) {
+                saveEditedBill();
+            } else {
+                closeTable();
+            }
+        });
         btnPaid.setOnAction(e -> markAsPaid());
-        btnCredit.setOnAction(e -> markAsCredit());
+        btnShiftTable.setOnAction(e -> {
+            if (isShiftTableMode) {
+                cancelShiftTableMode();
+            } else {
+                startShiftTableMode();
+            }
+        });
         btnOldBill.setOnAction(e -> showOldBills());
-        btnEditBill.setOnAction(e -> editBill());
+        btnEditBill.setOnAction(e -> {
+            if (isEditBillMode) {
+                cancelEditBillMode();
+            } else {
+                editBill();
+            }
+        });
 
         // Enable row selection for edit/remove
         tblTransaction.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -1194,6 +1221,18 @@ public class BillingController implements Initializable {
 
                     // Set up click handler
                     tableButton.setOnAction(e -> {
+                        // Block table selection during edit bill mode
+                        if (isEditBillMode) {
+                            alert.showWarning("Cannot change table while editing a bill. Save or cancel first.");
+                            return;
+                        }
+
+                        // Check if we are in shift table mode
+                        if (isShiftTableMode) {
+                            handleShiftTableTarget(table.getId(), table.getTableName());
+                            return;
+                        }
+
                         txtTableNumber.setText(table.getTableName());
 
                         // Check if table has any existing transactions before loading
@@ -1350,10 +1389,11 @@ public class BillingController implements Initializable {
             boolean hasClosedBill = billService.hasClosedBill(tableId);
 
             String newStatus;
-            if (hasClosedBill) {
-                newStatus = "Closed";
-            } else if (hasTempTransactions) {
+            if (hasTempTransactions) {
+                // Temp transactions mean table is active/open (even if it has a closed bill)
                 newStatus = "Ongoing";
+            } else if (hasClosedBill) {
+                newStatus = "Closed";
             } else {
                 newStatus = "Available";
             }
@@ -1449,11 +1489,20 @@ public class BillingController implements Initializable {
             return;
         }
 
-        if (isEditMode && selectedTransaction != null) {
-            // Update existing transaction in database
+        if (isEditBillMode) {
+            // Edit bill mode - work with observable list only, no database operations
+            if (isEditMode && selectedTransaction != null) {
+                // Update existing item in observable list
+                updateSelectedTransactionInList();
+            } else {
+                // Add new item to observable list
+                addItemToListOnly();
+            }
+        } else if (isEditMode && selectedTransaction != null) {
+            // Normal mode - Update existing transaction in database
             updateSelectedTransaction();
         } else {
-            // Add new transaction to database and TableView
+            // Normal mode - Add new transaction to database and TableView
             TempTransaction tempTransaction = createTempTransactionFromForm();
             addTempTransactionToDatabase(tempTransaction);
         }
@@ -1462,6 +1511,80 @@ public class BillingController implements Initializable {
         clearItemForm();
         updateTotals();
         txtCategoryName.requestFocus();
+    }
+
+    /**
+     * Add item to observable list only (for edit bill mode)
+     * Does not save to database - that happens on SAVE
+     */
+    private void addItemToListOnly() {
+        try {
+            String itemName = txtItemName.getText().trim();
+            float qty = Float.parseFloat(txtQuantity.getText().trim());
+            float rate = Float.parseFloat(txtPrice.getText().trim());
+            float amt = qty * rate;
+
+            // Check if item with same name and rate already exists in the list
+            TempTransaction existing = null;
+            for (TempTransaction t : tempTransactionList) {
+                if (t.getItemName().equals(itemName) && t.getRate().equals(rate)) {
+                    existing = t;
+                    break;
+                }
+            }
+
+            if (existing != null) {
+                // Update existing item - add quantity
+                existing.setQty(existing.getQty() + qty);
+                existing.setAmt(existing.getQty() * existing.getRate());
+                tblTransaction.refresh();
+                LOG.info("Updated existing item in list: {} qty={}", itemName, existing.getQty());
+            } else {
+                // Add new item to list
+                TempTransaction newTrans = new TempTransaction();
+                newTrans.setId(tempTransactionList.size() + 1); // Temporary ID for display
+                newTrans.setItemName(itemName);
+                newTrans.setQty(qty);
+                newTrans.setRate(rate);
+                newTrans.setAmt(amt);
+                newTrans.setTableNo(billBeingEdited != null ? billBeingEdited.getTableNo() : 0);
+                newTrans.setPrintQty(0f);
+
+                tempTransactionList.add(newTrans);
+                LOG.info("Added new item to list: {} x {} @ {} = {}", qty, itemName, rate, amt);
+            }
+        } catch (NumberFormatException e) {
+            alert.showError("Invalid quantity or price");
+        }
+    }
+
+    /**
+     * Update selected transaction in observable list only (for edit bill mode)
+     * Does not save to database - that happens on SAVE
+     */
+    private void updateSelectedTransactionInList() {
+        if (selectedTransaction == null) {
+            return;
+        }
+
+        try {
+            float newQty = Float.parseFloat(txtQuantity.getText().trim());
+            float newRate = Float.parseFloat(txtPrice.getText().trim());
+            float newAmt = newQty * newRate;
+
+            selectedTransaction.setQty(newQty);
+            selectedTransaction.setRate(newRate);
+            selectedTransaction.setAmt(newAmt);
+
+            tblTransaction.refresh();
+            LOG.info("Updated item in list: {} qty={}, rate={}, amt={}",
+                    selectedTransaction.getItemName(), newQty, newRate, newAmt);
+
+            // Reset edit mode
+            resetEditMode();
+        } catch (NumberFormatException e) {
+            alert.showError("Invalid quantity or price");
+        }
     }
 
     /**
@@ -1685,20 +1808,28 @@ public class BillingController implements Initializable {
         // Confirm removal
         if (alert.showConfirmation("Remove Item", "Are you sure you want to remove '" + selected.getItemName() + "'?")) {
             try {
-                // Delete from database
-                tempTransactionService.deleteTransaction(selected.getId());
+                if (isEditBillMode) {
+                    // Edit bill mode - just remove from observable list
+                    tempTransactionList.remove(selected);
+                    updateTotals();
+                    clearItemForm();
+                    LOG.info("Item removed from list (edit bill mode): {}", selected.getItemName());
+                } else {
+                    // Normal mode - delete from database
+                    tempTransactionService.deleteTransaction(selected.getId());
 
-                // Reload transactions for this table to sync
-                Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
-                loadTransactionsForTable(tableNo);
+                    // Reload transactions for this table to sync
+                    Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
+                    loadTransactionsForTable(tableNo);
 
-                // Update table button status (may change to "Available" if last item removed)
-                updateTableButtonStatus(tableNo);
+                    // Update table button status (may change to "Available" if last item removed)
+                    updateTableButtonStatus(tableNo);
 
-                clearItemForm();
-                LOG.info("Item removed from database: {}", selected.getItemName());
+                    clearItemForm();
+                    LOG.info("Item removed from database: {}", selected.getItemName());
+                }
             } catch (Exception e) {
-                LOG.error("Error removing item from database", e);
+                LOG.error("Error removing item", e);
                 alert.showError("Error removing item: " + e.getMessage());
             }
         }
@@ -2240,43 +2371,48 @@ public class BillingController implements Initializable {
                 billAmount += t.getAmt();
             }
 
+            // Check if cash received field has a value
+            boolean cashEntered = txtCashReceived != null && !txtCashReceived.getText().trim().isEmpty();
+            boolean returnEntered = txtReturnToCustomer != null && !txtReturnToCustomer.getText().trim().isEmpty();
+
             // Get cash received
             float cashReceived = 0;
-            if (txtCashReceived != null && !txtCashReceived.getText().isEmpty()) {
-                cashReceived = Float.parseFloat(txtCashReceived.getText());
+            if (cashEntered) {
+                cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
             }
 
             // Get return to customer (manual entry)
             float returnToCustomer = 0;
-            if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
-                returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText());
+            if (returnEntered) {
+                returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText().trim());
             }
 
-            // Calculate net received (what we actually keep)
-            float netReceived = cashReceived - returnToCustomer;
-            if (netReceived < 0) {
-                netReceived = 0;
-            }
-
-            // Calculate change (what we SHOULD return based on cash received)
-            float change = Math.max(0, cashReceived - billAmount);
-
-            // Calculate discount - NEW LOGIC
-            // Discount = Bill Amount - Net Received (when we accept less than bill amount)
-            // This happens when:
-            // 1. Cash received is less than bill (e.g., Bill=30, Cash=20 → Discount=10)
-            // 2. Return more than the change (e.g., Bill=30, Cash=50, Return=30 → Discount=10)
+            // Default values when no payment info entered
+            float change = 0;
             float discount = 0;
-            if (netReceived < billAmount) {
-                discount = billAmount - netReceived;
-            }
-
-            // Balance is now always 0 since any shortfall becomes discount
-            // (User agreeing to accept less means they're giving discount)
             float balance = 0;
+            float netAmount = billAmount;
 
-            // Net amount = what we're actually keeping (same as netReceived, capped at billAmount)
-            float netAmount = Math.min(netReceived, billAmount);
+            // Only calculate payment values if cash is entered
+            if (cashEntered) {
+                // Calculate net received (what we actually keep)
+                float netReceived = cashReceived - returnToCustomer;
+                if (netReceived < 0) {
+                    netReceived = 0;
+                }
+
+                // Calculate change (what we SHOULD return based on cash received)
+                change = Math.max(0, cashReceived - billAmount);
+
+                // Calculate discount only when net received is less than bill amount
+                // Discount = Bill Amount - Net Received
+                if (netReceived < billAmount) {
+                    discount = billAmount - netReceived;
+                }
+
+                // Net amount = what we're actually keeping (capped at billAmount)
+                netAmount = Math.min(netReceived, billAmount);
+            }
 
             // Update labels
             if (lblChange != null) {
@@ -2535,10 +2671,136 @@ public class BillingController implements Initializable {
 
             LOG.info("Table {} closed. Bill #{} saved as CLOSED with amount ₹{}", tableName, savedBill.getBillNo(), savedBill.getBillAmt());
 
+            // Print the bill as PDF
+            final Bill billToPrint = savedBill;
+            final String tableNameForPrint = tableName;
+
+            // Run printing in background thread to avoid blocking UI
+            new Thread(() -> {
+                try {
+                    billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                } catch (Exception e) {
+                    LOG.error("Error printing bill #{}: {}", billToPrint.getBillNo(), e.getMessage(), e);
+                }
+            }).start();
+
         } catch (Exception e) {
             LOG.error("Error closing table", e);
             alert.showError("Error closing table: " + e.getMessage());
         }
+    }
+
+    /**
+     * Start shift table mode
+     * Validates that a table is selected and has items (ongoing or closed)
+     */
+    private void startShiftTableMode() {
+        // Validate table is selected
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showError("Please select a table first");
+            return;
+        }
+
+        String tableName = txtTableNumber.getText();
+        Integer tableId = tableMasterService.getTableByName(tableName).getId();
+
+        // Check if table has temp transactions or closed bill
+        boolean hasTempTransactions = tempTransactionService.hasTransactions(tableId);
+        boolean hasClosedBill = billService.hasClosedBill(tableId);
+
+        if (!hasTempTransactions && !hasClosedBill) {
+            alert.showError("Selected table has no items to shift");
+            return;
+        }
+
+        // Enable shift mode
+        isShiftTableMode = true;
+        shiftSourceTableId = tableId;
+        shiftSourceTableName = tableName;
+
+        // Update button appearance to indicate shift mode is active
+        btnShiftTable.setStyle("-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+        btnShiftTable.setText("CANCEL");
+
+        alert.showInfo("Shift mode enabled. Select the target table to shift items from " + tableName);
+        LOG.info("Shift table mode started for table: {} (ID: {})", tableName, tableId);
+    }
+
+    /**
+     * Handle target table selection in shift mode
+     */
+    private void handleShiftTableTarget(Integer targetTableId, String targetTableName) {
+        // Check if same table is selected
+        if (targetTableId.equals(shiftSourceTableId)) {
+            alert.showWarning("Cannot shift to the same table. Select a different table.");
+            return;
+        }
+
+        // Show confirmation dialog
+        boolean confirmed = alert.showConfirmation("Shift Table",
+                "Are you sure you want to shift all items from " + shiftSourceTableName + " to " + targetTableName + "?");
+
+        if (confirmed) {
+            performTableShift(targetTableId, targetTableName);
+        } else {
+            // User cancelled, exit shift mode
+            cancelShiftTableMode();
+        }
+    }
+
+    /**
+     * Perform the actual table shift operation
+     */
+    private void performTableShift(Integer targetTableId, String targetTableName) {
+        try {
+            LOG.info("Shifting items from table {} to table {}", shiftSourceTableName, targetTableName);
+
+            // 1. Shift temp_transactions
+            int tempShifted = tempTransactionService.shiftTransactionsToTable(shiftSourceTableId, targetTableId);
+            LOG.info("Shifted {} temp transactions", tempShifted);
+
+            // 2. Shift closed bill transactions (if exists)
+            Bill closedBill = billService.getClosedBillForTable(shiftSourceTableId);
+            if (closedBill != null) {
+                billService.shiftBillToTable(closedBill.getBillNo(), targetTableId);
+                LOG.info("Shifted closed bill #{} to table {}", closedBill.getBillNo(), targetTableName);
+            }
+
+            // 3. Update source table button status
+            updateTableButtonStatus(shiftSourceTableId);
+
+            // 4. Update target table button status
+            updateTableButtonStatus(targetTableId);
+
+            // 5. Select and load the target table
+            txtTableNumber.setText(targetTableName);
+            loadTransactionsForTable(targetTableId);
+
+            alert.showInfo("Successfully shifted items from " + shiftSourceTableName + " to " + targetTableName);
+            LOG.info("Table shift completed successfully");
+
+        } catch (Exception e) {
+            LOG.error("Error shifting table", e);
+            alert.showError("Error shifting table: " + e.getMessage());
+        } finally {
+            // Exit shift mode
+            cancelShiftTableMode();
+        }
+    }
+
+    /**
+     * Cancel shift table mode and reset UI
+     */
+    private void cancelShiftTableMode() {
+        isShiftTableMode = false;
+        shiftSourceTableId = null;
+        shiftSourceTableName = null;
+
+        // Reset button appearance
+        btnShiftTable.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+        btnShiftTable.setText("SHIFT");
+
+        LOG.info("Shift table mode cancelled");
     }
 
     /**
@@ -2618,11 +2880,24 @@ public class BillingController implements Initializable {
             float discount = 0f;
             Bill processedBill;
 
+            // Check if cash received is empty
+            boolean cashEmpty = (txtCashReceived == null || txtCashReceived.getText().trim().isEmpty());
+            boolean returnEmpty = (txtReturnToCustomer == null || txtReturnToCustomer.getText().trim().isEmpty());
+
+            // If no cash entered and no customer selected, show prompt
+            if (cashEmpty && selectedCustomer == null) {
+                alert.showWarning("Please enter Cash Received amount for PAID bill,\nor select a Customer for CREDIT bill.");
+                if (txtCashReceived != null) {
+                    txtCashReceived.requestFocus();
+                }
+                return;
+            }
+
             // Check if customer is selected → CREDIT bill
             if (selectedCustomer != null) {
                 // CREDIT BILL - Customer selected
-                // Cash received is optional for credit bills
-                if (txtCashReceived != null && !txtCashReceived.getText().trim().isEmpty()) {
+                // Cash received is optional for credit bills (partial payment allowed)
+                if (!cashEmpty) {
                     try {
                         cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
                     } catch (NumberFormatException e) {
@@ -2633,7 +2908,7 @@ public class BillingController implements Initializable {
                 }
 
                 // Parse return to customer (optional)
-                if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
+                if (!returnEmpty) {
                     try {
                         returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText().trim());
                     } catch (NumberFormatException e) {
@@ -2663,16 +2938,8 @@ public class BillingController implements Initializable {
                         processedBill.getBillNo(), selectedCustomer.getFullName(), processedBill.getNetAmount());
 
             } else {
-                // CASH BILL - No customer selected
-                // Cash received is required for cash bills
-                if (txtCashReceived == null || txtCashReceived.getText().trim().isEmpty()) {
-                    alert.showError("Please enter cash received amount");
-                    if (txtCashReceived != null) {
-                        txtCashReceived.requestFocus();
-                    }
-                    return;
-                }
-
+                // CASH BILL - No customer selected, cash is required
+                // At this point, cash is not empty (validated above)
                 try {
                     cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
                 } catch (NumberFormatException e) {
@@ -2682,7 +2949,7 @@ public class BillingController implements Initializable {
                 }
 
                 // Parse return to customer (optional)
-                if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().isEmpty()) {
+                if (!returnEmpty) {
                     try {
                         returnToCustomer = Float.parseFloat(txtReturnToCustomer.getText().trim());
                     } catch (NumberFormatException e) {
@@ -2822,6 +3089,9 @@ public class BillingController implements Initializable {
                 // Reload bill with transactions
                 billToPrint = billService.getBillWithTransactions(billToPrint.getBillNo());
                 LOG.info("Printing selected bill #{}", billToPrint.getBillNo());
+
+                // Clear the selection after getting the bill
+                tblBillHistory.getSelectionModel().clearSelection();
             }
 
             // Get table name for the bill
@@ -2855,16 +3125,275 @@ public class BillingController implements Initializable {
 
     /**
      * Edit an existing bill
-     * TODO: Load bill for editing
+     * Loads selected bill from history table for editing
      */
     private void editBill() {
         LOG.info("EDIT BILL button clicked");
-        // TODO: Implement bill editing
-        // 1. Search and select bill to edit
-        // 2. Load bill items
-        // 3. Allow modifications
-        // 4. Save changes
-        alert.showInfo("Edit Bill - TODO: Implement bill editing");
+
+        try {
+            // Check if a bill is selected in the history table
+            if (tblBillHistory == null) {
+                alert.showError("Bill history table not available");
+                return;
+            }
+
+            Bill selectedBill = tblBillHistory.getSelectionModel().getSelectedItem();
+            if (selectedBill == null) {
+                alert.showError("Please select a bill from the history table to edit");
+                return;
+            }
+
+            // Load bill with transactions
+            billBeingEdited = billService.getBillWithTransactions(selectedBill.getBillNo());
+            if (billBeingEdited == null) {
+                alert.showError("Could not load bill data");
+                return;
+            }
+
+            // Check if bill can be edited (only PAID or CREDIT bills)
+            String status = billBeingEdited.getStatus();
+            if (!"PAID".equalsIgnoreCase(status) && !"CREDIT".equalsIgnoreCase(status)) {
+                alert.showError("Only PAID or CREDIT bills can be edited");
+                billBeingEdited = null;
+                return;
+            }
+
+            LOG.info("Loading bill #{} for editing. Status: {}, Items: {}",
+                    billBeingEdited.getBillNo(), status, billBeingEdited.getTransactions().size());
+
+            // Enable edit bill mode
+            isEditBillMode = true;
+
+            // Clear current transaction list
+            tempTransactionList.clear();
+            currentClosedBill = null;
+
+            // Load transactions into the table view (using TempTransaction for display)
+            for (Transaction trans : billBeingEdited.getTransactions()) {
+                TempTransaction displayTrans = new TempTransaction();
+                displayTrans.setId(trans.getId()); // Use actual transaction ID
+                displayTrans.setItemName(trans.getItemName());
+                displayTrans.setQty(trans.getQty());
+                displayTrans.setRate(trans.getRate());
+                displayTrans.setAmt(trans.getAmt());
+                displayTrans.setTableNo(billBeingEdited.getTableNo());
+                displayTrans.setPrintQty(0f);
+
+                tempTransactionList.add(displayTrans);
+            }
+
+            // Load table number
+            if (billBeingEdited.getTableNo() != null) {
+                try {
+                    TableMaster table = tableMasterService.getTableById(billBeingEdited.getTableNo());
+                    if (table != null) {
+                        txtTableNumber.setText(table.getTableName());
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Could not load table for bill: {}", e.getMessage());
+                }
+            }
+
+            // Load waiter
+            if (billBeingEdited.getWaitorId() != null) {
+                try {
+                    Employee waiter = employeeService.getEmployeeById(billBeingEdited.getWaitorId());
+                    if (waiter != null) {
+                        cmbWaitorName.getSelectionModel().select(waiter.getFirstName());
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Could not load waiter for bill: {}", e.getMessage());
+                }
+            }
+
+            // Load customer if available
+            if (billBeingEdited.getCustomerId() != null) {
+                try {
+                    for (Customer customer : allCustomers) {
+                        if (customer.getId().equals(billBeingEdited.getCustomerId())) {
+                            selectedCustomer = customer;
+                            displaySelectedCustomer(customer);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Could not load customer for bill: {}", e.getMessage());
+                }
+            } else {
+                selectedCustomer = null;
+                if (selectedCustomerDisplay != null) {
+                    selectedCustomerDisplay.setVisible(false);
+                }
+            }
+
+            // Load payment details
+            if (txtCashReceived != null && billBeingEdited.getCashReceived() != null) {
+                txtCashReceived.setText(String.format("%.0f", billBeingEdited.getCashReceived()));
+            }
+            if (txtReturnToCustomer != null && billBeingEdited.getReturnAmount() != null) {
+                txtReturnToCustomer.setText(String.format("%.0f", billBeingEdited.getReturnAmount()));
+            }
+
+            // Update UI to show edit mode
+            // Change CLOSE button to SAVE
+            btnClose.setText("SAVE");
+            btnClose.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+
+            // Change EDIT button to CANCEL
+            btnEditBill.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+            btnEditBill.setText("CANCEL");
+
+            // Disable other buttons during edit
+            btnPaid.setDisable(true);
+            btnShiftTable.setDisable(true);
+            btnOldBill.setDisable(true);
+
+            // Clear history table selection
+            tblBillHistory.getSelectionModel().clearSelection();
+
+            // Refresh table and totals
+            tblTransaction.refresh();
+            updateTotals();
+
+            alert.showInfo("Editing Bill #" + billBeingEdited.getBillNo() + ". Make changes and click SAVE.");
+            LOG.info("Bill #{} loaded for editing", billBeingEdited.getBillNo());
+
+        } catch (Exception e) {
+            LOG.error("Error loading bill for editing", e);
+            alert.showError("Error loading bill: " + e.getMessage());
+            cancelEditBillMode();
+        }
+    }
+
+    /**
+     * Cancel edit bill mode and reset UI
+     */
+    private void cancelEditBillMode() {
+        isEditBillMode = false;
+        billBeingEdited = null;
+
+        // Reset CLOSE button
+        btnClose.setText("CLOSE");
+        btnClose.setStyle("-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+
+        // Reset EDIT button
+        btnEditBill.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
+        btnEditBill.setText("EDIT");
+
+        // Re-enable buttons
+        btnPaid.setDisable(false);
+        btnShiftTable.setDisable(false);
+        btnOldBill.setDisable(false);
+
+        // Clear form
+        tempTransactionList.clear();
+        txtTableNumber.clear();
+        cmbWaitorName.getSelectionModel().clearSelection();
+        selectedCustomer = null;
+        if (selectedCustomerDisplay != null) {
+            selectedCustomerDisplay.setVisible(false);
+        }
+        currentClosedBill = null;
+
+        if (txtCashReceived != null) txtCashReceived.clear();
+        if (txtReturnToCustomer != null) txtReturnToCustomer.clear();
+
+        clearItemForm();
+        updateTotals();
+        tblTransaction.refresh();
+
+        LOG.info("Edit bill mode cancelled");
+    }
+
+    /**
+     * Save the edited bill with modified transactions
+     */
+    private void saveEditedBill() {
+        if (!isEditBillMode || billBeingEdited == null) {
+            alert.showError("No bill is being edited");
+            return;
+        }
+
+        if (tempTransactionList.isEmpty()) {
+            alert.showError("Cannot save bill with no items");
+            return;
+        }
+
+        try {
+            LOG.info("Saving edited bill #{}", billBeingEdited.getBillNo());
+
+            // Get waiter ID
+            Integer waitorId = null;
+            String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
+            if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
+                List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
+                if (!waiters.isEmpty()) {
+                    waitorId = waiters.get(0).getId();
+                }
+            }
+
+            // Get customer ID (for credit bills)
+            Integer customerId = selectedCustomer != null ? selectedCustomer.getId() : null;
+
+            // Get payment values
+            float cashReceived = 0f;
+            float returnAmount = 0f;
+
+            if (txtCashReceived != null && !txtCashReceived.getText().trim().isEmpty()) {
+                try {
+                    cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
+                } catch (NumberFormatException e) {
+                    alert.showError("Invalid cash received amount");
+                    return;
+                }
+            }
+
+            if (txtReturnToCustomer != null && !txtReturnToCustomer.getText().trim().isEmpty()) {
+                try {
+                    returnAmount = Float.parseFloat(txtReturnToCustomer.getText().trim());
+                } catch (NumberFormatException e) {
+                    alert.showError("Invalid return amount");
+                    return;
+                }
+            }
+
+            // Calculate totals from current items
+            float totalAmt = 0f;
+            float totalQty = 0f;
+            for (TempTransaction temp : tempTransactionList) {
+                totalAmt += temp.getAmt();
+                totalQty += temp.getQty();
+            }
+
+            // Determine status based on customer selection
+            String newStatus = (selectedCustomer != null) ? "CREDIT" : "PAID";
+
+            // Update bill in database
+            Bill updatedBill = billService.updateBillWithTransactions(
+                    billBeingEdited.getBillNo(),
+                    tempTransactionList,
+                    waitorId,
+                    customerId,
+                    totalAmt,
+                    totalQty,
+                    cashReceived,
+                    returnAmount,
+                    newStatus
+            );
+
+            alert.showInfo("Bill #" + updatedBill.getBillNo() + " updated successfully!");
+            LOG.info("Bill #{} updated. New total: ₹{}, Status: {}", updatedBill.getBillNo(), totalAmt, newStatus);
+
+            // Reload today's bills to reflect changes
+            loadTodaysBills();
+
+            // Exit edit mode
+            cancelEditBillMode();
+
+        } catch (Exception e) {
+            LOG.error("Error saving bill", e);
+            alert.showError("Error saving bill: " + e.getMessage());
+        }
     }
 
 }

@@ -63,6 +63,9 @@ public class Bill {
     @Column(name = "remarks", length = 255)
     private String remarks;
 
+    @Column(name = "close_at")
+    private LocalDateTime closeAt;
+
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 
@@ -229,6 +232,14 @@ public class Bill {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public LocalDateTime getCloseAt() {
+        return closeAt;
+    }
+
+    public void setCloseAt(LocalDateTime closeAt) {
+        this.closeAt = closeAt;
     }
 
     public List<Transaction> getTransactions() {

@@ -81,7 +81,8 @@ public class BillService {
             bill.setTableNo(tableNo);
             bill.setUserId(userId);
             bill.setBillDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-            bill.setBillTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            bill.setBillTime(null); // Will be set when bill is PAID/CREDIT
+            bill.setCloseAt(java.time.LocalDateTime.now()); // Set close time
             bill.setPaymode("PENDING");
             bill.setStatus("CLOSE");
             bill.setCashReceived(0f);
@@ -308,6 +309,9 @@ public class BillService {
             bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
             bill.setDiscount(discount != null ? discount : 0f);
             bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
+            // Set payment date and time
+            bill.setBillDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            bill.setBillTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
             Bill updatedBill = billRepository.save(bill);
 
@@ -315,7 +319,7 @@ public class BillService {
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
 
-            LOG.info("Bill {} marked as PAID with {} transactions", billNo, updatedBill.getTransactions().size());
+            LOG.info("Bill {} marked as PAID at {} with {} transactions", billNo, bill.getBillTime(), updatedBill.getTransactions().size());
 
             return updatedBill;
 
@@ -351,6 +355,9 @@ public class BillService {
             bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
             bill.setDiscount(discount != null ? discount : 0f);
             bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
+            // Set payment date and time
+            bill.setBillDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            bill.setBillTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
             Bill updatedBill = billRepository.save(bill);
 
@@ -358,8 +365,8 @@ public class BillService {
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
 
-            LOG.info("Bill {} marked as CREDIT for customer {} with {} transactions",
-                    billNo, customerId, updatedBill.getTransactions().size());
+            LOG.info("Bill {} marked as CREDIT at {} for customer {} with {} transactions",
+                    billNo, bill.getBillTime(), customerId, updatedBill.getTransactions().size());
 
             return updatedBill;
 
@@ -527,6 +534,37 @@ public class BillService {
     }
 
     /**
+     * Shift a bill to a different table
+     * Updates the bill's tableNo to the target table
+     * @param billNo the bill number to shift
+     * @param targetTableNo the target table ID
+     */
+    @Transactional
+    public void shiftBillToTable(Integer billNo, Integer targetTableNo) {
+        try {
+            LOG.info("Shifting bill #{} to table {}", billNo, targetTableNo);
+
+            Optional<Bill> billOpt = billRepository.findById(billNo);
+            if (billOpt.isEmpty()) {
+                throw new RuntimeException("Bill not found: " + billNo);
+            }
+
+            Bill bill = billOpt.get();
+            Integer sourceTableNo = bill.getTableNo();
+
+            // Update bill's table number
+            bill.setTableNo(targetTableNo);
+            billRepository.save(bill);
+
+            LOG.info("Bill #{} shifted from table {} to table {}", billNo, sourceTableNo, targetTableNo);
+
+        } catch (Exception e) {
+            LOG.error("Error shifting bill #{} to table {}", billNo, targetTableNo, e);
+            throw new RuntimeException("Error shifting bill: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Add new transactions to an existing closed bill
      * Used when closing a table that has both closed bill items and new temp transactions
      */
@@ -664,5 +702,99 @@ public class BillService {
             return bill;
         }
         return null;
+    }
+
+    /**
+     * Update an existing bill with new transactions
+     * Used when editing a paid/credit bill
+     *
+     * @param billNo the bill number to update
+     * @param tempTransactions the new list of transactions (as TempTransaction objects)
+     * @param waitorId the waiter ID
+     * @param customerId the customer ID (required for CREDIT status)
+     * @param totalAmt the total bill amount
+     * @param totalQty the total quantity
+     * @param cashReceived cash received from customer
+     * @param returnAmount return/change amount
+     * @param newStatus the new status (PAID or CREDIT)
+     * @return the updated bill
+     */
+    @Transactional
+    public Bill updateBillWithTransactions(Integer billNo, List<TempTransaction> tempTransactions,
+                                            Integer waitorId, Integer customerId,
+                                            Float totalAmt, Float totalQty,
+                                            Float cashReceived, Float returnAmount,
+                                            String newStatus) {
+        try {
+            LOG.info("Updating bill #{} with {} transactions, status={}",
+                    billNo, tempTransactions.size(), newStatus);
+
+            // Validate CREDIT status requires customer
+            if ("CREDIT".equals(newStatus) && customerId == null) {
+                throw new RuntimeException("Customer is required for credit billing");
+            }
+
+            // Find the existing bill
+            Optional<Bill> optBill = billRepository.findById(billNo);
+            if (optBill.isEmpty()) {
+                throw new RuntimeException("Bill not found: " + billNo);
+            }
+
+            Bill bill = optBill.get();
+
+            // Delete existing transactions for this bill
+            transactionRepository.deleteByBillNo(billNo);
+            bill.getTransactions().clear();
+            LOG.info("Deleted existing transactions for bill #{}", billNo);
+
+            // Consolidate temp transactions with same itemName and rate
+            List<TempTransaction> consolidatedTransactions = consolidateTempTransactions(tempTransactions);
+            LOG.info("Consolidated {} temp transactions to {} unique items",
+                    tempTransactions.size(), consolidatedTransactions.size());
+
+            // Create new transactions from temp transactions
+            for (TempTransaction temp : consolidatedTransactions) {
+                Transaction transaction = new Transaction();
+                transaction.setItemName(temp.getItemName());
+                transaction.setQty(temp.getQty());
+                transaction.setRate(temp.getRate());
+                transaction.setAmt(temp.getAmt());
+                transaction.setBill(bill);
+
+                // Get item_code from Item entity by item name
+                Optional<Item> itemOpt = itemService.getItemByName(temp.getItemName());
+                if (itemOpt.isPresent()) {
+                    transaction.setItemCode(itemOpt.get().getItemCode());
+                }
+
+                bill.addTransaction(transaction);
+            }
+
+            // Update bill properties
+            bill.setBillAmt(totalAmt);
+            bill.setTotalQty(totalQty);
+            bill.setWaitorId(waitorId);
+            bill.setCustomerId(customerId);
+            bill.setCashReceived(cashReceived != null ? cashReceived : 0f);
+            bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
+            bill.setNetAmount(totalAmt - (bill.getDiscount() != null ? bill.getDiscount() : 0f));
+            bill.setStatus(newStatus);
+            bill.setPaymode("CREDIT".equals(newStatus) ? "CREDIT" : "CASH");
+
+            // Save updated bill
+            Bill savedBill = billRepository.save(bill);
+
+            // Eagerly fetch transactions for printing
+            savedBill.getTransactions().size();
+
+            LOG.info("Bill #{} updated successfully with {} transactions, status={}",
+                    savedBill.getBillNo(), savedBill.getTransactions().size(), newStatus);
+
+            return savedBill;
+
+        } catch (Exception e) {
+            LOG.error("Error updating bill #{}", billNo, e);
+            throw new RuntimeException("Error updating bill: " + e.getMessage(), e);
+        }
     }
 }
