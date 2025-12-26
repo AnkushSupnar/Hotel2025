@@ -2091,20 +2091,23 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Load today's bills (PAID and CREDIT)
+     * Load today's bills (PAID and CREDIT) ordered by bill number ascending
      */
     private void loadTodaysBills() {
         try {
             String today = java.time.LocalDate.now().format(
                     java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-            // Get all bills for today with PAID or CREDIT status
-            List<Bill> paidBills = billService.getBillsByStatusAndDate("PAID", today);
-            List<Bill> creditBills = billService.getBillsByStatusAndDate("CREDIT", today);
+            // Get all bills for today with PAID or CREDIT status ordered by bill number ascending
+            List<Bill> paidBills = billService.getBillsByStatusAndDateOrderByBillNoAsc("PAID", today);
+            List<Bill> creditBills = billService.getBillsByStatusAndDateOrderByBillNoAsc("CREDIT", today);
 
             billHistoryList.clear();
             billHistoryList.addAll(paidBills);
             billHistoryList.addAll(creditBills);
+
+            // Sort combined list by bill number ascending
+            billHistoryList.sort((b1, b2) -> b1.getBillNo().compareTo(b2.getBillNo()));
 
             // Update summary totals
             updateBillSummary(paidBills, creditBills);
@@ -2196,6 +2199,9 @@ public class BillingController implements Initializable {
 
             billHistoryList.clear();
             billHistoryList.addAll(results);
+
+            // Sort by bill number ascending
+            billHistoryList.sort((b1, b2) -> b1.getBillNo().compareTo(b2.getBillNo()));
 
             // Update summary
             List<Bill> paidBills = results.stream()
@@ -3235,7 +3241,8 @@ public class BillingController implements Initializable {
             }
 
             // Update UI to show edit mode
-            // Change CLOSE button to SAVE
+            // Change CLOSE button to SAVE and enable it
+            btnClose.setDisable(false);
             btnClose.setText("SAVE");
             btnClose.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
 
@@ -3273,6 +3280,7 @@ public class BillingController implements Initializable {
         billBeingEdited = null;
 
         // Reset CLOSE button
+        btnClose.setDisable(false);
         btnClose.setText("CLOSE");
         btnClose.setStyle("-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;");
 

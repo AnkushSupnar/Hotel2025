@@ -141,12 +141,7 @@ public class MasterMenuController implements Initializable {
         // Supplier Management
         supplierCard.setOnMouseClicked(e -> {
             try {
-                // Navigate to existing supplier management
-                BorderPane mainPane = getMainPane();
-                if (mainPane != null) {
-                    Pane pane = loader.getPage("/fxml/create/AddPurchaseParty.fxml");
-                    mainPane.setCenter(pane);
-                }
+                loadSupplierManagement();
             } catch (Exception ex) {
                 LOG.error("Error loading supplier management: ", ex);
             }
@@ -203,6 +198,14 @@ public class MasterMenuController implements Initializable {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             Pane pane = loader.getPage("/fxml/master/AddEmployee.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadSupplierManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddSupplier.fxml");
             mainPane.setCenter(pane);
         }
     }

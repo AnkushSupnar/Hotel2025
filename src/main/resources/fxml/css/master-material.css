@@ -135,6 +135,19 @@
     -fx-background-color: rgba(0, 188, 212, 0.1);
 }
 
+.table-icon-bg {
+    -fx-background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* Report Card Icon Backgrounds */
+.sales-icon-bg {
+    -fx-background-color: rgba(76, 175, 80, 0.1);
+}
+
+.purchase-icon-bg {
+    -fx-background-color: rgba(33, 150, 243, 0.1);
+}
+
 /* Card Icon */
 .card-icon {
     -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.2), 3, 0, 0, 1);
@@ -192,6 +205,25 @@
 
 .user-card:hover {
     -fx-border-color: #00BCD4;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+}
+
+.table-card:hover {
+    -fx-border-color: #F44336;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+}
+
+/* Report Card Hover Effects */
+.sales-card:hover {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+}
+
+.purchase-card:hover {
+    -fx-border-color: #2196F3;
     -fx-border-width: 2;
     -fx-border-radius: 12;
 }

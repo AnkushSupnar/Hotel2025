@@ -410,11 +410,87 @@ public class SessionService {
 
     /**
      * Check if custom font is loaded and available
-     * 
+     *
      * @return true if custom font is loaded
      */
     public static boolean isCustomFontLoaded() {
         return customFont != null && cachedFontFamily != null;
+    }
+
+    /**
+     * Get custom font file path for external libraries (iText, POI, etc.)
+     * Returns the external path if available, otherwise tries to extract bundled font
+     *
+     * @return font file path or null if not available
+     */
+    public static String getCustomFontFilePath() {
+        // First try external path
+        String fontPath = getApplicationSetting("input_font_path");
+        if (fontPath != null && !fontPath.trim().isEmpty()) {
+            File fontFile = new File(fontPath);
+            if (fontFile.exists()) {
+                return fontFile.getAbsolutePath();
+            }
+        }
+
+        // Try to get bundled font path
+        try {
+            java.net.URL fontUrl = SessionService.class.getResource("/fonts/kiran.ttf");
+            if (fontUrl != null) {
+                // If running from JAR, extract to temp file
+                if (fontUrl.getProtocol().equals("jar")) {
+                    java.io.InputStream is = SessionService.class.getResourceAsStream("/fonts/kiran.ttf");
+                    if (is != null) {
+                        File tempFile = File.createTempFile("kiran_font_", ".ttf");
+                        tempFile.deleteOnExit();
+                        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(tempFile)) {
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+                            while ((bytesRead = is.read(buffer)) != -1) {
+                                fos.write(buffer, 0, bytesRead);
+                            }
+                        }
+                        is.close();
+                        return tempFile.getAbsolutePath();
+                    }
+                } else {
+                    // Running from IDE/file system
+                    return new File(fontUrl.toURI()).getAbsolutePath();
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error getting custom font file path", e);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get input stream for custom font (useful for libraries that accept streams)
+     *
+     * @return InputStream for font file or null if not available
+     */
+    public static java.io.InputStream getCustomFontInputStream() {
+        // First try external path
+        String fontPath = getApplicationSetting("input_font_path");
+        if (fontPath != null && !fontPath.trim().isEmpty()) {
+            File fontFile = new File(fontPath);
+            if (fontFile.exists()) {
+                try {
+                    return new FileInputStream(fontFile);
+                } catch (Exception e) {
+                    LOG.error("Error opening external font file", e);
+                }
+            }
+        }
+
+        // Try bundled font
+        java.io.InputStream is = SessionService.class.getResourceAsStream("/fonts/kiran.ttf");
+        if (is != null) {
+            return is;
+        }
+
+        return null;
     }
 
     /**

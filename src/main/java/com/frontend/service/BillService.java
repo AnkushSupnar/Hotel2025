@@ -420,6 +420,13 @@ public class BillService {
     }
 
     /**
+     * Get all bills by status and date ordered by bill number ascending
+     */
+    public List<Bill> getBillsByStatusAndDateOrderByBillNoAsc(String status, String billDate) {
+        return billRepository.findByStatusAndBillDateOrderByBillNoAsc(status, billDate);
+    }
+
+    /**
      * Get all bills by customer
      */
     public List<Bill> getBillsByCustomer(Integer customerId) {
@@ -702,6 +709,151 @@ public class BillService {
             return bill;
         }
         return null;
+    }
+
+    // ============= Sales Report Methods =============
+
+    /**
+     * Get all paid and credit bills (for reports)
+     */
+    public List<Bill> getAllSalesBills() {
+        return billRepository.findAllPaidAndCreditBills();
+    }
+
+    /**
+     * Get paid and credit bills by date
+     */
+    public List<Bill> getSalesBillsByDate(String billDate) {
+        return billRepository.findPaidAndCreditBillsByDate(billDate);
+    }
+
+    /**
+     * Get paid and credit bills by customer
+     */
+    public List<Bill> getSalesBillsByCustomer(Integer customerId) {
+        return billRepository.findPaidAndCreditBillsByCustomerId(customerId);
+    }
+
+    /**
+     * Get total sales amount
+     */
+    public Float getTotalSalesAmount() {
+        Float amount = billRepository.getTotalSalesAmount();
+        return amount != null ? amount : 0f;
+    }
+
+    /**
+     * Get total sales amount by date
+     */
+    public Float getTotalSalesAmountByDate(String billDate) {
+        Float amount = billRepository.getTotalSalesAmountByDate(billDate);
+        return amount != null ? amount : 0f;
+    }
+
+    /**
+     * Get total discount amount
+     */
+    public Float getTotalDiscountAmount() {
+        Float amount = billRepository.getTotalDiscount();
+        return amount != null ? amount : 0f;
+    }
+
+    /**
+     * Count all sales bills
+     */
+    public Long countAllSalesBills() {
+        Long count = billRepository.countPaidAndCreditBills();
+        return count != null ? count : 0L;
+    }
+
+    /**
+     * Count sales bills by date
+     */
+    public Long countSalesBillsByDate(String billDate) {
+        Long count = billRepository.countPaidAndCreditBillsByDate(billDate);
+        return count != null ? count : 0L;
+    }
+
+    /**
+     * Get sales bills filtered by date range
+     * Since billDate is stored as "dd-MM-yyyy" string, we filter in memory
+     */
+    public List<Bill> getSalesBillsByDateRange(LocalDate startDate, LocalDate endDate) {
+        List<Bill> allBills = billRepository.findAllPaidAndCreditBills();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        return allBills.stream()
+                .filter(bill -> {
+                    try {
+                        if (bill.getBillDate() == null) return false;
+                        LocalDate billDate = LocalDate.parse(bill.getBillDate(), formatter);
+                        return !billDate.isBefore(startDate) && !billDate.isAfter(endDate);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    /**
+     * Get sales bills filtered by date range and customer
+     */
+    public List<Bill> getSalesBillsByDateRangeAndCustomer(LocalDate startDate, LocalDate endDate, Integer customerId) {
+        List<Bill> allBills;
+        if (customerId != null) {
+            allBills = billRepository.findPaidAndCreditBillsByCustomerId(customerId);
+        } else {
+            allBills = billRepository.findAllPaidAndCreditBills();
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        return allBills.stream()
+                .filter(bill -> {
+                    try {
+                        if (bill.getBillDate() == null) return false;
+                        LocalDate billDate = LocalDate.parse(bill.getBillDate(), formatter);
+                        return !billDate.isBefore(startDate) && !billDate.isAfter(endDate);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    /**
+     * Calculate summary statistics for a list of bills
+     */
+    public Map<String, Object> calculateBillSummary(List<Bill> bills) {
+        Map<String, Object> summary = new HashMap<>();
+
+        float totalAmount = 0f;
+        float totalDiscount = 0f;
+        float totalNet = 0f;
+        int paidCount = 0;
+        int creditCount = 0;
+
+        for (Bill bill : bills) {
+            totalAmount += bill.getBillAmt() != null ? bill.getBillAmt() : 0f;
+            totalDiscount += bill.getDiscount() != null ? bill.getDiscount() : 0f;
+            totalNet += bill.getNetAmount() != null ? bill.getNetAmount() : 0f;
+
+            if ("PAID".equals(bill.getStatus())) {
+                paidCount++;
+            } else if ("CREDIT".equals(bill.getStatus())) {
+                creditCount++;
+            }
+        }
+
+        summary.put("totalBills", bills.size());
+        summary.put("totalAmount", totalAmount);
+        summary.put("totalDiscount", totalDiscount);
+        summary.put("totalNet", totalNet);
+        summary.put("averageAmount", bills.isEmpty() ? 0f : totalNet / bills.size());
+        summary.put("paidCount", paidCount);
+        summary.put("creditCount", creditCount);
+
+        return summary;
     }
 
     /**

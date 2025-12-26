@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.PurchaseReportController">
+   <stylesheets>
+      <URL value="@../css/master-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="master-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="master-title" text="Purchase Report" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Content Area -->
+      <VBox alignment="CENTER" spacing="20.0" styleClass="master-content" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+            <FontAwesomeIcon fill="#2196F3" glyphName="SHOPPING_CART" size="5em" />
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Purchase Report" />
+            <Label style="-fx-font-size: 16px; -fx-text-fill: #757575;" text="Purchase report functionality coming soon..." />
+         </children>
+      </VBox>
+   </children>
+</VBox>

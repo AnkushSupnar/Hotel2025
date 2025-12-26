@@ -51,6 +51,11 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     List<Bill> findByStatusAndBillDate(String status, String billDate);
 
     /**
+     * Find bills by status and date ordered by bill number ascending
+     */
+    List<Bill> findByStatusAndBillDateOrderByBillNoAsc(String status, String billDate);
+
+    /**
      * Find bills by customer ID and status
      */
     List<Bill> findByCustomerIdAndStatus(Integer customerId, String status);
@@ -112,4 +117,52 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
      */
     @Query("SELECT b FROM Bill b WHERE b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo DESC")
     List<Bill> findLastPaidOrCreditBills();
+
+    /**
+     * Find all paid and credit bills ordered by bill number
+     */
+    @Query("SELECT b FROM Bill b WHERE b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo ASC")
+    List<Bill> findAllPaidAndCreditBills();
+
+    /**
+     * Find paid and credit bills by customer ID
+     */
+    @Query("SELECT b FROM Bill b WHERE b.customerId = :customerId AND b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo DESC")
+    List<Bill> findPaidAndCreditBillsByCustomerId(@Param("customerId") Integer customerId);
+
+    /**
+     * Get total sales amount for paid and credit bills
+     */
+    @Query("SELECT COALESCE(SUM(b.netAmount), 0) FROM Bill b WHERE b.status IN ('PAID', 'CREDIT')")
+    Float getTotalSalesAmount();
+
+    /**
+     * Get total sales amount for paid and credit bills by date
+     */
+    @Query("SELECT COALESCE(SUM(b.netAmount), 0) FROM Bill b WHERE b.billDate = :billDate AND b.status IN ('PAID', 'CREDIT')")
+    Float getTotalSalesAmountByDate(@Param("billDate") String billDate);
+
+    /**
+     * Get total discount for paid and credit bills
+     */
+    @Query("SELECT COALESCE(SUM(b.discount), 0) FROM Bill b WHERE b.status IN ('PAID', 'CREDIT')")
+    Float getTotalDiscount();
+
+    /**
+     * Count paid and credit bills
+     */
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.status IN ('PAID', 'CREDIT')")
+    Long countPaidAndCreditBills();
+
+    /**
+     * Count paid and credit bills by date
+     */
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.billDate = :billDate AND b.status IN ('PAID', 'CREDIT')")
+    Long countPaidAndCreditBillsByDate(@Param("billDate") String billDate);
+
+    /**
+     * Find paid and credit bills by date ordered by bill number
+     */
+    @Query("SELECT b FROM Bill b WHERE b.billDate = :billDate AND b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo ASC")
+    List<Bill> findPaidAndCreditBillsByDate(@Param("billDate") String billDate);
 }
