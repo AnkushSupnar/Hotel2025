@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,12 @@ public class PurchaseBillController implements Initializable {
 
     @Autowired
     private SpringFXMLLoader loader;
+
+    @Autowired
+    private BankService bankService;
+
+    @Autowired
+    private BankTransactionService bankTransactionService;
 
     // ==================== LEFT SIDE: Bill Entry Form ====================
 
@@ -105,7 +112,7 @@ public class PurchaseBillController implements Initializable {
     @FXML private TextField txtGst;
     @FXML private TextField txtOtherTax;
     @FXML private Label lblGrandTotal;
-    @FXML private ComboBox<String> cmbPaymentMode;
+    @FXML private ComboBox<PaymentOption> cmbPaymentMode;
     @FXML private TextField txtRemarks;
 
     // Action Buttons
@@ -146,6 +153,7 @@ public class PurchaseBillController implements Initializable {
     private List<Supplier> allSuppliers = new ArrayList<>();
     private List<CategoryMasterDto> stockCategories = new ArrayList<>();
     private List<ItemDto> currentCategoryItems = new ArrayList<>();
+    private List<Bank> allBanks = new ArrayList<>();
 
     private Supplier selectedSupplier = null;
     private CategoryMasterDto selectedCategory = null;
@@ -154,7 +162,6 @@ public class PurchaseBillController implements Initializable {
     private PurchaseBill editingBill = null;
     private int serialNumber = 1;
 
-    private static final String[] PAYMENT_MODES = {"CASH", "CREDIT", "BANK", "UPI", "CHEQUE"};
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Override
@@ -190,6 +197,10 @@ public class PurchaseBillController implements Initializable {
             }
             LOG.info("Loaded {} stock categories", stockCategories.size());
 
+            // Load banks for payment mode
+            allBanks = bankService.getAllBanks();
+            LOG.info("Loaded {} banks", allBanks.size());
+
         } catch (Exception e) {
             LOG.error("Error loading data: ", e);
         }
@@ -197,13 +208,13 @@ public class PurchaseBillController implements Initializable {
 
     private void setupAutoCompleteFields() {
         Font customFont = SessionService.getCustomFont();
-        Font font25 = customFont != null ? Font.font(customFont.getFamily(), 25) : Font.font(25);
+        Font font20 = customFont != null ? Font.font(customFont.getFamily(), 20) : Font.font(20);
 
         // Supplier AutoComplete
         List<String> supplierNames = allSuppliers.stream()
                 .map(s -> s.getName() + (s.getCity() != null ? " (" + s.getCity() + ")" : ""))
                 .collect(Collectors.toList());
-        supplierAutoComplete = new AutoCompleteTextField(txtSupplier, supplierNames, font25);
+        supplierAutoComplete = new AutoCompleteTextField(txtSupplier, supplierNames, font20);
         supplierAutoComplete.setUseContainsFilter(true);
         supplierAutoComplete.setOnSelectionCallback(this::onSupplierSelected);
         supplierAutoComplete.setNextFocusField(txtCategory);
@@ -212,13 +223,13 @@ public class PurchaseBillController implements Initializable {
         List<String> categoryNames = stockCategories.stream()
                 .map(CategoryMasterDto::getCategory)
                 .collect(Collectors.toList());
-        categoryAutoComplete = new AutoCompleteTextField(txtCategory, categoryNames, font25);
+        categoryAutoComplete = new AutoCompleteTextField(txtCategory, categoryNames, font20);
         categoryAutoComplete.setUseContainsFilter(true);
         categoryAutoComplete.setOnSelectionCallback(this::onCategorySelected);
         categoryAutoComplete.setNextFocusField(txtItemName);
 
         // Item AutoComplete (initially empty, filled when category selected)
-        itemAutoComplete = new AutoCompleteTextField(txtItemName, new ArrayList<>(), font25);
+        itemAutoComplete = new AutoCompleteTextField(txtItemName, new ArrayList<>(), font20);
         itemAutoComplete.setUseContainsFilter(true);
         itemAutoComplete.setOnSelectionCallback(this::onItemSelected);
         itemAutoComplete.setNextFocusField(txtQty);
@@ -286,8 +297,86 @@ public class PurchaseBillController implements Initializable {
     }
 
     private void setupPaymentComboBox() {
-        cmbPaymentMode.setItems(FXCollections.observableArrayList(PAYMENT_MODES));
-        cmbPaymentMode.setValue("CASH");
+        ObservableList<PaymentOption> paymentOptions = FXCollections.observableArrayList();
+
+        // Add CASH option first
+        paymentOptions.add(new PaymentOption("CASH", null));
+
+        // Add CREDIT option
+        paymentOptions.add(new PaymentOption("CREDIT", null));
+
+        // Add all banks
+        for (Bank bank : allBanks) {
+            paymentOptions.add(new PaymentOption(bank.getBankName(), bank));
+        }
+
+        cmbPaymentMode.setItems(paymentOptions);
+
+        // Set custom font for dropdown
+        Font customFont = SessionService.getCustomFont();
+        String fontFamily = customFont != null ? customFont.getFamily() : "System";
+
+        // Custom cell factory for dropdown items
+        cmbPaymentMode.setCellFactory(listView -> new ListCell<PaymentOption>() {
+            @Override
+            protected void updateItem(PaymentOption item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getDisplayName());
+                    if (item.isCash()) {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-background-color: white;");
+                    } else if (item.isCredit()) {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-background-color: white;");
+                    } else {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0; -fx-background-color: white;");
+                    }
+                }
+            }
+        });
+
+        // Custom button cell for selected item display
+        cmbPaymentMode.setButtonCell(new ListCell<PaymentOption>() {
+            @Override
+            protected void updateItem(PaymentOption item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getDisplayName());
+                    if (item.isCash()) {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;");
+                    } else if (item.isCredit()) {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #FF9800; -fx-font-weight: bold;");
+                    } else {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0;");
+                    }
+                }
+            }
+        });
+
+        // String converter for ComboBox
+        cmbPaymentMode.setConverter(new StringConverter<PaymentOption>() {
+            @Override
+            public String toString(PaymentOption option) {
+                return option != null ? option.getDisplayName() : "";
+            }
+
+            @Override
+            public PaymentOption fromString(String string) {
+                return paymentOptions.stream()
+                        .filter(opt -> opt.getDisplayName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Select CASH by default
+        if (!paymentOptions.isEmpty()) {
+            cmbPaymentMode.setValue(paymentOptions.get(0));
+        }
     }
 
     private void setupItemsTable() {
@@ -552,15 +641,21 @@ public class PurchaseBillController implements Initializable {
         }
 
         try {
+            // Get selected payment option
+            PaymentOption selectedPayment = cmbPaymentMode.getValue();
+            String paymentMode = selectedPayment != null ? selectedPayment.getDisplayName() : "CASH";
+            Integer bankId = selectedPayment != null && selectedPayment.isBank() ? selectedPayment.getBank().getId() : null;
+
             PurchaseBill bill = new PurchaseBill();
             bill.setPartyId(selectedSupplier.getId());
             bill.setBillDate(dpBillDate.getValue());
             bill.setReffNo(txtReffNo.getText().trim());
-            bill.setPay(cmbPaymentMode.getValue());
+            bill.setPay(paymentMode);
             bill.setRemarks(txtRemarks.getText().trim());
-            bill.setStatus("CREDIT".equals(cmbPaymentMode.getValue()) ? "PENDING" : "PAID");
+            bill.setStatus(selectedPayment != null && selectedPayment.isCredit() ? "PENDING" : "PAID");
             bill.setGst(parseDouble(txtGst.getText()));
             bill.setOtherTax(parseDouble(txtOtherTax.getText()));
+            bill.setBankId(bankId);
 
             List<PurchaseTransaction> transactions = new ArrayList<>();
             for (PurchaseItemData itemData : purchaseItems) {
@@ -574,13 +669,34 @@ public class PurchaseBillController implements Initializable {
                 transactions.add(trans);
             }
 
+            PurchaseBill savedBill;
             if (editingBill != null) {
                 purchaseBillService.updatePurchaseBill(editingBill.getBillNo(), bill, transactions);
+                savedBill = bill;
+                savedBill.setBillNo(editingBill.getBillNo());
                 alertNotification.showSuccess("Purchase bill updated!");
             } else {
-                PurchaseBill savedBill = purchaseBillService.createPurchaseBill(bill, transactions);
+                savedBill = purchaseBillService.createPurchaseBill(bill, transactions);
                 alertNotification.showSuccess("Bill #" + savedBill.getBillNo() + " saved!");
             }
+
+            // Record bank transaction (withdrawal) if bank payment is selected
+            if (bankId != null && savedBill.getNetAmount() != null && savedBill.getNetAmount() > 0) {
+                try {
+                    String particulars = "Purchase Bill #" + savedBill.getBillNo();
+                    if (selectedSupplier != null && selectedSupplier.getName() != null) {
+                        particulars += " (" + selectedSupplier.getName() + ")";
+                    }
+                    String remarks = "Purchase-Bill-no-" + savedBill.getBillNo();
+                    bankTransactionService.recordWithdrawal(bankId, savedBill.getNetAmount(), particulars,
+                            "PURCHASE", savedBill.getBillNo(), remarks);
+                    LOG.info("Bank withdrawal recorded for purchase bill #{}: Amount={}", savedBill.getBillNo(), savedBill.getNetAmount());
+                } catch (Exception e) {
+                    LOG.error("Error recording bank transaction for purchase bill: ", e);
+                    alertNotification.showWarning("Bill saved but bank transaction failed: " + e.getMessage());
+                }
+            }
+
             newBill();
             loadExistingBills();
 
@@ -601,7 +717,10 @@ public class PurchaseBillController implements Initializable {
         txtGst.clear();
         txtOtherTax.clear();
         txtRemarks.clear();
-        cmbPaymentMode.setValue("CASH");
+        // Reset to first option (CASH)
+        if (!cmbPaymentMode.getItems().isEmpty()) {
+            cmbPaymentMode.setValue(cmbPaymentMode.getItems().get(0));
+        }
         clearAllItems();
     }
 
@@ -762,7 +881,22 @@ public class PurchaseBillController implements Initializable {
             dpBillDate.setValue(bill.getBillDate());
             txtReffNo.setText(bill.getReffNo() != null ? bill.getReffNo() : "");
             txtRemarks.setText(bill.getRemarks() != null ? bill.getRemarks() : "");
-            cmbPaymentMode.setValue(bill.getPay() != null ? bill.getPay() : "CASH");
+
+            // Set payment mode from saved bill
+            String savedPayMode = bill.getPay() != null ? bill.getPay() : "CASH";
+            PaymentOption matchedOption = null;
+            for (PaymentOption opt : cmbPaymentMode.getItems()) {
+                if (opt.getDisplayName().equals(savedPayMode)) {
+                    matchedOption = opt;
+                    break;
+                }
+            }
+            if (matchedOption != null) {
+                cmbPaymentMode.setValue(matchedOption);
+            } else if (!cmbPaymentMode.getItems().isEmpty()) {
+                cmbPaymentMode.setValue(cmbPaymentMode.getItems().get(0));
+            }
+
             txtGst.setText(bill.getGst() != null ? String.format("%.2f", bill.getGst()) : "");
             txtOtherTax.setText(bill.getOtherTax() != null ? String.format("%.2f", bill.getOtherTax()) : "");
 
@@ -798,12 +932,13 @@ public class PurchaseBillController implements Initializable {
         Font customFont = SessionService.getCustomFont();
         if (customFont != null) {
             Font font25 = Font.font(customFont.getFamily(), 25);
+            Font font20 = Font.font(customFont.getFamily(), 20);
 
-            // Apply to TextFields
-            txtSupplier.setFont(font25);
-            txtCategory.setFont(font25);
-            txtItemName.setFont(font25);
-            txtRemarks.setFont(font25);
+            // Apply to TextFields (20px)
+            txtSupplier.setFont(font20);
+            txtCategory.setFont(font20);
+            txtItemName.setFont(font20);
+            txtRemarks.setFont(font20);
 
             // Apply to Labels (25px)
             if (lblSupplier != null) lblSupplier.setFont(font25);
@@ -933,5 +1068,43 @@ public class PurchaseBillController implements Initializable {
 
         public String getStatus() { return status.get(); }
         public SimpleStringProperty statusProperty() { return status; }
+    }
+
+    /**
+     * Payment option for dropdown - can be CASH, CREDIT, or a Bank
+     */
+    public static class PaymentOption {
+        private final String displayName;
+        private final Bank bank; // null for CASH/CREDIT option
+
+        public PaymentOption(String displayName, Bank bank) {
+            this.displayName = displayName;
+            this.bank = bank;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public Bank getBank() {
+            return bank;
+        }
+
+        public boolean isCash() {
+            return bank == null && "CASH".equals(displayName);
+        }
+
+        public boolean isCredit() {
+            return bank == null && "CREDIT".equals(displayName);
+        }
+
+        public boolean isBank() {
+            return bank != null;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
     }
 }

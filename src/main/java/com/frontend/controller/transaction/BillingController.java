@@ -19,9 +19,12 @@ import com.frontend.service.ItemService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
 import com.frontend.service.TempTransactionService;
+import com.frontend.entity.Bank;
 import com.frontend.entity.Bill;
 import com.frontend.entity.Transaction;
 import com.frontend.print.BillPrint;
+import com.frontend.service.BankService;
+import com.frontend.service.BankTransactionService;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.view.AlertNotification;
 
@@ -95,6 +98,12 @@ public class BillingController implements Initializable {
 
     @Autowired
     private BillPrint billPrint;
+
+    @Autowired
+    private BankService bankService;
+
+    @Autowired
+    private BankTransactionService bankTransactionService;
 
     @Autowired
     AlertNotification alert;
@@ -231,6 +240,44 @@ public class BillingController implements Initializable {
     @FXML
     private Label lblNetAmount;
 
+    // Payment Mode ComboBox (CASH + Banks)
+    @FXML
+    private ComboBox<PaymentOption> cmbPaymentMode;
+
+    /**
+     * Inner class to represent payment options (CASH or Bank)
+     */
+    public static class PaymentOption {
+        private final String displayName;
+        private final Bank bank; // null for CASH option
+
+        public PaymentOption(String displayName, Bank bank) {
+            this.displayName = displayName;
+            this.bank = bank;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public Bank getBank() {
+            return bank;
+        }
+
+        public boolean isCash() {
+            return bank == null;
+        }
+
+        public boolean isBank() {
+            return bank != null;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
     // Bill History Search Fields
     @FXML
     private DatePicker dpSearchDate;
@@ -332,6 +379,7 @@ public class BillingController implements Initializable {
         setUpTempTransactionTable();
         setupActionButtons();
         setupCashCounter();
+        setupPaymentMode();
         setupBillHistory();
     }
 
@@ -1962,6 +2010,103 @@ public class BillingController implements Initializable {
         }
     }
 
+    /**
+     * Setup payment mode dropdown with CASH and Bank options
+     */
+    private void setupPaymentMode() {
+        if (cmbPaymentMode == null) {
+            LOG.warn("Payment mode combo box not initialized");
+            return;
+        }
+
+        try {
+            // Get custom font for bank names (18px to match other places)
+            Font customFont = SessionService.getCustomFont(18.0);
+            final String fontFamily = customFont != null ? customFont.getFamily() : null;
+
+            // Create payment options list
+            ObservableList<PaymentOption> paymentOptions = FXCollections.observableArrayList();
+
+            // Add CASH as first option
+            paymentOptions.add(new PaymentOption("CASH", null));
+
+            // Add all active banks
+            List<Bank> banks = bankService.getActiveBanks();
+            for (Bank bank : banks) {
+                paymentOptions.add(new PaymentOption(bank.getBankName(), bank));
+            }
+
+            cmbPaymentMode.setItems(paymentOptions);
+
+            // Custom cell factory for dropdown list with custom font and readable colors
+            cmbPaymentMode.setCellFactory(param -> new ListCell<PaymentOption>() {
+                @Override
+                protected void updateItem(PaymentOption item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                        setStyle("");
+                    } else {
+                        setText(item.getDisplayName());
+                        // Style with readable colors - white background, colored text
+                        if (item.isCash()) {
+                            setStyle("-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                        } else {
+                            // Apply custom font for bank names (18px) with dark text for readability
+                            if (fontFamily != null) {
+                                setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            } else {
+                                setStyle("-fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Button cell (what shows when dropdown is closed) with custom font
+            cmbPaymentMode.setButtonCell(new ListCell<PaymentOption>() {
+                @Override
+                protected void updateItem(PaymentOption item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText("CASH");
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+                    } else {
+                        setText(item.getDisplayName());
+                        // Apply custom font for bank names in button cell (18px)
+                        if (item.isBank() && fontFamily != null) {
+                            setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px; -fx-font-weight: bold;");
+                        } else {
+                            setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+                        }
+                    }
+                }
+            });
+
+            // Select CASH by default
+            if (!paymentOptions.isEmpty()) {
+                cmbPaymentMode.getSelectionModel().selectFirst();
+            }
+
+            LOG.info("Payment mode dropdown setup with CASH + {} banks (custom font: {})", banks.size(), fontFamily);
+
+        } catch (Exception e) {
+            LOG.error("Error setting up payment mode: ", e);
+        }
+    }
+
+    /**
+     * Get the currently selected payment option
+     */
+    private PaymentOption getSelectedPaymentOption() {
+        if (cmbPaymentMode != null && cmbPaymentMode.getValue() != null) {
+            return cmbPaymentMode.getValue();
+        }
+        // Default to CASH if nothing selected
+        return new PaymentOption("CASH", null);
+    }
+
     // ============= Bill History Methods =============
 
     /**
@@ -2356,18 +2501,19 @@ public class BillingController implements Initializable {
     /**
      * Calculate payment values based on bill amount, cash received, and return to customer
      *
-     * New Discount Logic:
+     * Payment Logic:
      * - Net Received = Cash Received - Return to Customer (what we actually keep)
-     * - Discount = Bill Amount - Net Received (if positive, when accepting less than bill)
+     * - For PAID bills (no customer): Discount = Bill Amount - Net Received (shortfall is discount)
+     * - For CREDIT bills (with customer): Discount = 0 (shortfall is credit balance, not discount)
      * - Change = Cash Received - Bill Amount (if positive, what we should return)
-     * - Balance = 0 (since any shortfall becomes discount when user confirms payment)
      *
-     * Examples:
+     * Examples for PAID bills:
      * 1. Bill=30, Cash=20, Return=0 → NetReceived=20, Discount=10, Change=0, Net=20
      * 2. Bill=30, Cash=50, Return=20 → NetReceived=30, Discount=0, Change=20, Net=30
-     * 3. Bill=30, Cash=50, Return=30 → NetReceived=20, Discount=10, Change=20, Net=20
-     * 4. Bill=30, Cash=30, Return=0 → NetReceived=30, Discount=0, Change=0, Net=30
-     * 5. Bill=400, Cash=500, Return=100 → NetReceived=400, Discount=0, Change=100, Net=400
+     *
+     * Examples for CREDIT bills (customer selected):
+     * 1. Bill=100, Cash=0, Return=0 → Discount=0, Net=100 (customer owes 100)
+     * 2. Bill=100, Cash=50, Return=0 → Discount=0, Net=100 (customer owes 50)
      */
     private void calculatePayment() {
         try {
@@ -2399,6 +2545,9 @@ public class BillingController implements Initializable {
             float balance = 0;
             float netAmount = billAmount;
 
+            // Check if this is a CREDIT bill (customer selected)
+            boolean isCreditBill = (selectedCustomer != null);
+
             // Only calculate payment values if cash is entered
             if (cashEntered) {
                 // Calculate net received (what we actually keep)
@@ -2410,14 +2559,20 @@ public class BillingController implements Initializable {
                 // Calculate change (what we SHOULD return based on cash received)
                 change = Math.max(0, cashReceived - billAmount);
 
-                // Calculate discount only when net received is less than bill amount
-                // Discount = Bill Amount - Net Received
-                if (netReceived < billAmount) {
+                // For PAID bills: shortfall is discount
+                // For CREDIT bills: shortfall is credit balance (NOT discount)
+                if (!isCreditBill && netReceived < billAmount) {
                     discount = billAmount - netReceived;
                 }
 
-                // Net amount = what we're actually keeping (capped at billAmount)
-                netAmount = Math.min(netReceived, billAmount);
+                // Net amount calculation:
+                // - For PAID bills: what we're actually keeping (capped at billAmount)
+                // - For CREDIT bills: full bill amount (customer owes the full amount)
+                if (isCreditBill) {
+                    netAmount = billAmount;  // Full amount owed
+                } else {
+                    netAmount = Math.min(netReceived, billAmount);
+                }
             }
 
             // Update labels
@@ -2465,6 +2620,10 @@ public class BillingController implements Initializable {
         if (lblBalance != null) lblBalance.setText("₹ 0.00");
         if (lblDiscount != null) lblDiscount.setText("₹ 0.00");
         if (lblNetAmount != null) lblNetAmount.setText("₹ 0.00");
+        // Reset payment mode to CASH (first item in dropdown)
+        if (cmbPaymentMode != null && !cmbPaymentMode.getItems().isEmpty()) {
+            cmbPaymentMode.getSelectionModel().selectFirst();
+        }
     }
 
     private TempTransaction createTempTransactionFromForm() {
@@ -2924,32 +3083,29 @@ public class BillingController implements Initializable {
                     }
                 }
 
-                // Calculate net received and discount
-                float netReceived = cashReceived - returnToCustomer;
-                if (netReceived < 0) netReceived = 0;
-                if (netReceived < billAmount) {
-                    discount = billAmount - netReceived;
-                }
+                // For CREDIT bills, the unpaid amount is NOT a discount
+                // It's the credit balance that customer owes
+                // discount remains 0 unless an actual discount was explicitly given
 
-                // Mark as CREDIT bill
+                // Mark as CREDIT bill (discount = 0, full bill amount is owed)
                 processedBill = billService.markBillAsCredit(
                         currentClosedBill.getBillNo(),
                         selectedCustomer.getId(),
                         cashReceived,
                         returnToCustomer,
-                        discount
+                        0f  // No discount for credit bills - unpaid amount is credit, not discount
                 );
 
                 LOG.info("Bill #{} marked as CREDIT for customer {}. Amount: ₹{}",
                         processedBill.getBillNo(), selectedCustomer.getFullName(), processedBill.getNetAmount());
 
             } else {
-                // CASH BILL - No customer selected, cash is required
-                // At this point, cash is not empty (validated above)
+                // PAID BILL - No customer selected, amount is required
+                // At this point, amount is not empty (validated above)
                 try {
                     cashReceived = Float.parseFloat(txtCashReceived.getText().trim());
                 } catch (NumberFormatException e) {
-                    alert.showError("Invalid cash received amount");
+                    alert.showError("Invalid amount received");
                     txtCashReceived.requestFocus();
                     return;
                 }
@@ -2963,6 +3119,15 @@ public class BillingController implements Initializable {
                         txtReturnToCustomer.requestFocus();
                         return;
                     }
+                }
+
+                // Get payment mode and bank ID from dropdown
+                PaymentOption selectedPayment = getSelectedPaymentOption();
+                Integer bankId = null;
+                String paymode = "CASH";
+                if (selectedPayment.isBank()) {
+                    bankId = selectedPayment.getBank().getId();
+                    paymode = "BANK";
                 }
 
                 // Calculate net received and discount
@@ -2981,17 +3146,36 @@ public class BillingController implements Initializable {
                     }
                 }
 
-                // Mark as PAID (CASH) bill
+                // Mark as PAID bill (CASH or BANK)
                 processedBill = billService.markBillAsPaid(
                         currentClosedBill.getBillNo(),
                         cashReceived,
                         returnToCustomer,
                         discount,
-                        "CASH"
+                        paymode,
+                        bankId
                 );
 
-                LOG.info("Bill #{} marked as PAID (CASH). Net: ₹{}, Discount: ₹{}",
-                        processedBill.getBillNo(), processedBill.getNetAmount(), discount);
+                // Record bank transaction if bank payment
+                if (bankId != null && netReceived > 0) {
+                    try {
+                        // Record bank transaction (this also updates bank balance)
+                        bankTransactionService.recordBillPayment(
+                                bankId,
+                                processedBill.getBillNo(),
+                                (double) netReceived,
+                                tableName
+                        );
+                        LOG.info("Bank transaction recorded: Bill #{}, Bank ID {}, Amount ₹{}",
+                                processedBill.getBillNo(), bankId, netReceived);
+                    } catch (Exception e) {
+                        LOG.error("Error recording bank transaction: ", e);
+                        alert.showWarning("Bill saved but bank transaction recording failed: " + e.getMessage());
+                    }
+                }
+
+                LOG.info("Bill #{} marked as PAID ({}). Net: ₹{}, Discount: ₹{}",
+                        processedBill.getBillNo(), paymode, processedBill.getNetAmount(), discount);
             }
 
             // Ask user if they want to print the bill

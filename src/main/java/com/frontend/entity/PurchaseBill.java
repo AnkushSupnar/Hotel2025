@@ -47,6 +47,9 @@ public class PurchaseBill {
     @Column(name = "pay_id")
     private Integer payId;
 
+    @Column(name = "bank_id")
+    private Integer bankId;
+
     @Column(name = "net_amount")
     private Double netAmount;
 
@@ -172,6 +175,14 @@ public class PurchaseBill {
         this.payId = payId;
     }
 
+    public Integer getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(Integer bankId) {
+        this.bankId = bankId;
+    }
+
     public Double getNetAmount() {
         return netAmount;
     }
@@ -257,6 +268,7 @@ public class PurchaseBill {
                 ", reffNo='" + reffNo + '\'' +
                 ", pay='" + pay + '\'' +
                 ", payId=" + payId +
+                ", bankId=" + bankId +
                 ", netAmount=" + netAmount +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +

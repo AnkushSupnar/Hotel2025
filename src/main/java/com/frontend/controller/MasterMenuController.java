@@ -46,7 +46,10 @@ public class MasterMenuController implements Initializable {
 
     @FXML
     private StackPane userCard;
-    
+
+    @FXML
+    private StackPane bankCard;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -155,6 +158,15 @@ public class MasterMenuController implements Initializable {
                 LOG.error("Error loading user management: ", ex);
             }
         });
+
+        // Bank Management
+        bankCard.setOnMouseClicked(e -> {
+            try {
+                loadBankManagement();
+            } catch (Exception ex) {
+                LOG.error("Error loading bank management: ", ex);
+            }
+        });
     }
     
     private void loadCategoryManagement() {
@@ -209,6 +221,14 @@ public class MasterMenuController implements Initializable {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             Pane pane = loader.getPage("/fxml/master/AddUser.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadBankManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddBank.fxml");
             mainPane.setCenter(pane);
         }
     }

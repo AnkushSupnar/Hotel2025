@@ -290,12 +290,22 @@ public class BillService {
     }
 
     /**
-     * Update bill status to PAID
+     * Update bill status to PAID (Cash payment)
      * Note: Eagerly fetches transactions to avoid LazyInitializationException when printing
      */
     @Transactional
     public Bill markBillAsPaid(Integer billNo, Float cashReceived, Float returnAmount,
                                 Float discount, String paymode) {
+        return markBillAsPaid(billNo, cashReceived, returnAmount, discount, paymode, null);
+    }
+
+    /**
+     * Update bill status to PAID with optional bank payment
+     * Note: Eagerly fetches transactions to avoid LazyInitializationException when printing
+     */
+    @Transactional
+    public Bill markBillAsPaid(Integer billNo, Float cashReceived, Float returnAmount,
+                                Float discount, String paymode, Integer bankId) {
         try {
             Optional<Bill> optBill = billRepository.findById(billNo);
             if (optBill.isEmpty()) {
@@ -309,6 +319,7 @@ public class BillService {
             bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
             bill.setDiscount(discount != null ? discount : 0f);
             bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
+            bill.setBankId(bankId);
             // Set payment date and time
             bill.setBillDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             bill.setBillTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
@@ -319,7 +330,7 @@ public class BillService {
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
 
-            LOG.info("Bill {} marked as PAID at {} with {} transactions", billNo, bill.getBillTime(), updatedBill.getTransactions().size());
+            LOG.info("Bill {} marked as PAID ({}) at {} with {} transactions", billNo, paymode, bill.getBillTime(), updatedBill.getTransactions().size());
 
             return updatedBill;
 
@@ -332,6 +343,12 @@ public class BillService {
     /**
      * Update bill status to CREDIT for a customer
      * Credit bill means customer will pay later
+     *
+     * For CREDIT bills:
+     * - netAmount = billAmt (full amount owed by customer)
+     * - Credit balance = netAmount - (cashReceived - returnAmount)
+     * - discount should typically be 0 (unpaid amount is NOT a discount)
+     *
      * Note: Eagerly fetches transactions to avoid LazyInitializationException when printing
      */
     @Transactional
@@ -354,6 +371,8 @@ public class BillService {
             bill.setCashReceived(cashReceived != null ? cashReceived : 0f);
             bill.setReturnAmount(returnAmount != null ? returnAmount : 0f);
             bill.setDiscount(discount != null ? discount : 0f);
+            // For credit bills, netAmount = billAmt (what customer owes)
+            // The credit balance is: netAmount - (cashReceived - returnAmount)
             bill.setNetAmount(bill.getBillAmt() - (discount != null ? discount : 0f));
             // Set payment date and time
             bill.setBillDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
@@ -365,8 +384,11 @@ public class BillService {
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
 
-            LOG.info("Bill {} marked as CREDIT at {} for customer {} with {} transactions",
-                    billNo, bill.getBillTime(), customerId, updatedBill.getTransactions().size());
+            // Calculate credit balance for logging
+            float creditBalance = bill.getNetAmount() - (bill.getCashReceived() - bill.getReturnAmount());
+            LOG.info("Bill {} marked as CREDIT at {} for customer {}. Amount: ₹{}, Paid: ₹{}, Credit Balance: ₹{}",
+                    billNo, bill.getBillTime(), customerId, bill.getNetAmount(),
+                    (bill.getCashReceived() - bill.getReturnAmount()), creditBalance);
 
             return updatedBill;
 

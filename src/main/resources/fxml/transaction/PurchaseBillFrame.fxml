@@ -42,7 +42,7 @@
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
                 <TextField fx:id="txtSupplier" prefHeight="38" promptText="purvzadar Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                    <font><Font name="Kiran" size="25.0" /></font>
+                    <font><Font name="Kiran" size="20.0" /></font>
                 </TextField>
             </VBox>
             <VBox spacing="3">
@@ -70,7 +70,7 @@
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
                 <TextField fx:id="txtCategory" prefHeight="38" prefWidth="160" promptText="k^TogaorI Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                    <font><Font name="Kiran" size="25.0" /></font>
+                    <font><Font name="Kiran" size="20.0" /></font>
                 </TextField>
             </VBox>
             <VBox spacing="3" HBox.hgrow="ALWAYS">
@@ -78,7 +78,7 @@
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
                 <TextField fx:id="txtItemName" prefHeight="38" promptText="AayTma Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                    <font><Font name="Kiran" size="25.0" /></font>
+                    <font><Font name="Kiran" size="20.0" /></font>
                 </TextField>
             </VBox>
             <VBox spacing="3">
@@ -140,11 +140,13 @@
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
                 <TextField fx:id="txtRemarks" prefHeight="38" promptText="Xaora ilaha..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                    <font><Font name="Kiran" size="25.0" /></font>
+                    <font><Font name="Kiran" size="20.0" /></font>
                 </TextField>
                 <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
-                    <Label style="-fx-text-fill: #616161; -fx-font-size: 12px;" text="Payment:" />
-                    <ComboBox fx:id="cmbPaymentMode" prefHeight="32" prefWidth="120" style="-fx-font-size: 12px;" />
+                    <HBox alignment="CENTER" spacing="6" style="-fx-background-color: white; -fx-border-color: #7B1FA2; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 2 6;">
+                        <FontAwesomeIcon fill="#7B1FA2" glyphName="MONEY" size="1em" />
+                        <ComboBox fx:id="cmbPaymentMode" prefHeight="28" prefWidth="150" style="-fx-font-size: 20px; -fx-background-color: transparent; -fx-border-color: transparent;" />
+                    </HBox>
                 </HBox>
             </VBox>
 

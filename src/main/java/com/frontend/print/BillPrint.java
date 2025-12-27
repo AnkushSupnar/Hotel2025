@@ -20,14 +20,11 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPageable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -41,8 +38,8 @@ public class BillPrint {
 
     private static final Logger LOG = LoggerFactory.getLogger(BillPrint.class);
 
-    // PDF output path
-    private static final String BILL_PDF_PATH = System.getProperty("user.home") + File.separator + "bill.pdf";
+    // PDF output directory
+    private static final String BILL_PDF_DIR = "D:" + File.separator + "Hotel Software";
 
     // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm ≈ 3.15 inches)
     private static final float PAPER_WIDTH = 226f;
@@ -66,7 +63,7 @@ public class BillPrint {
     private Font fontEnglishMedium;
 
     /**
-     * Print Bill to thermal printer
+     * Generate Bill PDF and save to D:\Hotel Software
      */
     public boolean printBill(Bill bill, String tableName) {
         if (bill == null) {
@@ -80,6 +77,12 @@ public class BillPrint {
             // Load fonts
             loadFonts();
 
+            // Ensure output directory exists
+            File outputDir = new File(BILL_PDF_DIR);
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+
             // Generate PDF
             String pdfPath = generateBillPdf(bill, tableName);
             if (pdfPath == null) {
@@ -87,54 +90,21 @@ public class BillPrint {
                 return false;
             }
 
-            // Print PDF
-            boolean printed = printPdf(pdfPath);
-            if (printed) {
-                LOG.info("Bill #{} printed successfully", bill.getBillNo());
-            }
-
-            return printed;
+            LOG.info("Bill #{} PDF saved successfully at: {}", bill.getBillNo(), pdfPath);
+            return true;
 
         } catch (Exception e) {
-            LOG.error("Error printing Bill #{}: {}", bill.getBillNo(), e.getMessage(), e);
+            LOG.error("Error generating Bill #{}: {}", bill.getBillNo(), e.getMessage(), e);
             return false;
         }
     }
 
     /**
-     * Print Bill with print dialog (for selecting printer)
+     * Generate Bill PDF and save to D:\Hotel Software (same as printBill)
      */
     public boolean printBillWithDialog(Bill bill, String tableName) {
-        if (bill == null) {
-            LOG.warn("No bill to print");
-            return false;
-        }
-
-        try {
-            LOG.info("Starting Bill PDF generation (with dialog) for Bill #{}", bill.getBillNo());
-
-            // Load fonts
-            loadFonts();
-
-            // Generate PDF
-            String pdfPath = generateBillPdf(bill, tableName);
-            if (pdfPath == null) {
-                LOG.error("Failed to generate bill PDF");
-                return false;
-            }
-
-            // Print PDF with dialog
-            boolean printed = printPdfWithDialog(pdfPath);
-            if (printed) {
-                LOG.info("Bill #{} printed successfully", bill.getBillNo());
-            }
-
-            return printed;
-
-        } catch (Exception e) {
-            LOG.error("Error printing Bill #{}: {}", bill.getBillNo(), e.getMessage(), e);
-            return false;
-        }
+        // Simply delegate to printBill - no longer showing printer dialog
+        return printBill(bill, tableName);
     }
 
     /**
@@ -208,8 +178,9 @@ public class BillPrint {
 
             Document document = new Document(pageSize, 3f, 3f, 5f, 5f);
 
-            // Create PDF file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(BILL_PDF_PATH));
+            // Create PDF file path
+            String pdfPath = BILL_PDF_DIR + File.separator + "bill.pdf";
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
             document.open();
 
             // Add header table (which includes items table)
@@ -217,8 +188,8 @@ public class BillPrint {
 
             document.close();
 
-            LOG.info("Bill PDF generated at: {}", BILL_PDF_PATH);
-            return BILL_PDF_PATH;
+            LOG.info("Bill PDF generated at: {}", pdfPath);
+            return pdfPath;
 
         } catch (Exception e) {
             LOG.error("Error generating bill PDF: {}", e.getMessage(), e);
@@ -524,64 +495,6 @@ public class BillPrint {
         } catch (Exception e) {
             LOG.warn("Could not get customer name for ID {}", customerId);
             return null;
-        }
-    }
-
-    /**
-     * Print PDF using PDFBox
-     */
-    private boolean printPdf(String pdfPath) {
-        try {
-            File pdfFile = new File(pdfPath);
-            if (!pdfFile.exists()) {
-                LOG.error("PDF file not found: {}", pdfPath);
-                return false;
-            }
-
-            PDDocument document = PDDocument.load(pdfFile);
-            PrinterJob job = PrinterJob.getPrinterJob();
-            job.setPageable(new PDFPageable(document));
-            job.print();
-            document.close();
-
-            LOG.info("PDF printed successfully");
-            return true;
-
-        } catch (Exception e) {
-            LOG.error("Error printing PDF: {}", e.getMessage(), e);
-            return false;
-        }
-    }
-
-    /**
-     * Print PDF with dialog
-     */
-    private boolean printPdfWithDialog(String pdfPath) {
-        try {
-            File pdfFile = new File(pdfPath);
-            if (!pdfFile.exists()) {
-                LOG.error("PDF file not found: {}", pdfPath);
-                return false;
-            }
-
-            PDDocument document = PDDocument.load(pdfFile);
-            PrinterJob job = PrinterJob.getPrinterJob();
-            job.setPageable(new PDFPageable(document));
-
-            if (job.printDialog()) {
-                job.print();
-                document.close();
-                LOG.info("PDF printed successfully");
-                return true;
-            } else {
-                document.close();
-                LOG.info("Print cancelled by user");
-                return false;
-            }
-
-        } catch (Exception e) {
-            LOG.error("Error printing PDF: {}", e.getMessage(), e);
-            return false;
         }
     }
 }

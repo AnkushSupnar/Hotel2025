@@ -63,6 +63,9 @@ public class Bill {
     @Column(name = "remarks", length = 255)
     private String remarks;
 
+    @Column(name = "bank_id")
+    private Integer bankId;
+
     @Column(name = "close_at")
     private LocalDateTime closeAt;
 
@@ -232,6 +235,14 @@ public class Bill {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Integer getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(Integer bankId) {
+        this.bankId = bankId;
     }
 
     public LocalDateTime getCloseAt() {
