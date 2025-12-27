@@ -30,6 +30,9 @@ public class TransactionMenuController implements Initializable {
     private Button btnBilling;
 
     @FXML
+    private Button btnPurchaseOrder;
+
+    @FXML
     private Button btnPurchaseInvoice;
 
     @Override
@@ -41,6 +44,10 @@ public class TransactionMenuController implements Initializable {
     private void setupEventHandlers() {
         if (btnBilling != null) {
             btnBilling.setOnAction(e -> navigateToBilling());
+        }
+
+        if (btnPurchaseOrder != null) {
+            btnPurchaseOrder.setOnAction(e -> navigateToPurchaseOrder());
         }
 
         if (btnPurchaseInvoice != null) {
@@ -62,6 +69,20 @@ public class TransactionMenuController implements Initializable {
         }
     }
 
+    private void navigateToPurchaseOrder() {
+        try {
+            LOG.info("Navigating to Purchase Order Frame");
+            BorderPane mainPane = getMainPane();
+            if (mainPane != null) {
+                Pane pane = loader.getPage("/fxml/transaction/PurchaseOrderFrame.fxml");
+                mainPane.setCenter(pane);
+                LOG.info("Successfully navigated to Purchase Order Frame");
+            }
+        } catch (Exception e) {
+            LOG.error("Error navigating to Purchase Order Frame: ", e);
+        }
+    }
+
     private void navigateToPurchaseInvoice() {
         try {
             LOG.info("Navigating to Purchase Invoice Frame");
@@ -80,6 +101,8 @@ public class TransactionMenuController implements Initializable {
         try {
             if (btnBilling != null && btnBilling.getScene() != null) {
                 return (BorderPane) btnBilling.getScene().lookup("#mainPane");
+            } else if (btnPurchaseOrder != null && btnPurchaseOrder.getScene() != null) {
+                return (BorderPane) btnPurchaseOrder.getScene().lookup("#mainPane");
             } else if (btnPurchaseInvoice != null && btnPurchaseInvoice.getScene() != null) {
                 return (BorderPane) btnPurchaseInvoice.getScene().lookup("#mainPane");
             }
