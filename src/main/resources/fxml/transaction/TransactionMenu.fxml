@@ -3,84 +3,67 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="714.0" stylesheets="@../css/menu.css" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.TransactionMenuController">
-    <children>
-        <HBox layoutX="33.0" layoutY="40.0" spacing="10.0">
-            <children>
-                <VBox alignment="TOP_CENTER" prefHeight="231.0" prefWidth="220.0" styleClass="pane">
-                    <children>
-                        <FontAwesomeIcon glyphName="RUPEE" size="4em" VBox.vgrow="ALWAYS">
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin></FontAwesomeIcon>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headingtext" text="TRANSACTIONS">
-                            <font>
-                                <Font name="Lucida Console" size="16.0" />
-                            </font>
-                        </Text>
-                        <VBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT">
-                            <children>
-                                <Button fx:id="btnBilling" alignment="TOP_LEFT" lineSpacing="10.0" mnemonicParsing="false" text="DAILY BILLING">
-                                    <graphic>
-                                        <FontAwesomeIcon glyphName="USD" />
-                                    </graphic>
-                                </Button>
-                                <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="35.0" prefWidth="140.0" text="VIEW BILLS">
-                                    <graphic>
-                                        <FontAwesomeIcon glyphName="USD" />
-                                    </graphic>
-                                </Button>
-                            </children>
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </VBox>
-                    </children>
-                    <effect>
-                        <DropShadow />
-                    </effect>
-                </VBox>
-                <VBox alignment="TOP_CENTER" prefHeight="231.0" prefWidth="220.0" styleClass="pane">
-                    <children>
-                        <FontAwesomeIcon glyphName="CAR" size="4em" VBox.vgrow="ALWAYS">
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin></FontAwesomeIcon>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headingtext" text="PURCHASE INVOICE">
-                            <font>
-                                <Font name="Lucida Console" size="16.0" />
-                            </font>
-                        </Text>
-                        <VBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT">
-                            <children>
-                                <Button fx:id="btnPurchaseInvoice" alignment="TOP_LEFT" lineSpacing="10.0" mnemonicParsing="false" text="PURCHASE INVOICE">
-                                    <graphic>
-                                        <FontAwesomeIcon glyphName="USD" />
-                                    </graphic>
-                                </Button>
-                                <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="35.0" prefWidth="178.0" text="VIEW INVOICE">
-                                    <graphic>
-                                        <FontAwesomeIcon glyphName="USD" />
-                                    </graphic>
-                                </Button>
-                            </children>
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </VBox>
-                    </children>
-                    <effect>
-                        <DropShadow />
-                    </effect>
-                </VBox>
-            </children>
-        </HBox>
-    </children>
-</AnchorPane>
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-background-color: #ECEFF1; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.TransactionMenuController">
+
+    <!-- Header -->
+    <HBox alignment="CENTER" spacing="15" style="-fx-background-color: linear-gradient(to right, #7B1FA2, #6A1B9A); -fx-background-radius: 8; -fx-padding: 15;">
+        <FontAwesomeIcon fill="white" glyphName="EXCHANGE" size="1.8em" />
+        <Label style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;" text="TRANSACTION MENU" />
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Transaction Cards Container -->
+    <HBox alignment="CENTER" spacing="25" style="-fx-padding: 20 0;">
+
+        <!-- Billing Card -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-min-width: 280; -fx-min-height: 280;">
+            <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to bottom right, #4CAF50, #388E3C); -fx-background-radius: 50; -fx-padding: 20;">
+                <FontAwesomeIcon fill="white" glyphName="RUPEE" size="3em" />
+            </VBox>
+            <Label style="-fx-text-fill: #212121; -fx-font-size: 18px; -fx-font-weight: bold;" text="SALES BILLING" />
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px; -fx-wrap-text: true; -fx-text-alignment: center;" text="Create and manage daily sales bills" />
+            <Region VBox.vgrow="ALWAYS" />
+            <VBox alignment="CENTER" spacing="10">
+                <Button fx:id="btnBilling" prefHeight="40" prefWidth="180" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="DAILY BILLING">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="PLUS_CIRCLE" size="1.2em" />
+                    </graphic>
+                </Button>
+                <Button prefHeight="35" prefWidth="180" style="-fx-background-color: #E8F5E9; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-background-radius: 5; -fx-cursor: hand;" text="VIEW BILLS">
+                    <graphic>
+                        <FontAwesomeIcon fill="#4CAF50" glyphName="LIST" size="1em" />
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+
+        <!-- Purchase Invoice Card -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-min-width: 280; -fx-min-height: 280;">
+            <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to bottom right, #7B1FA2, #6A1B9A); -fx-background-radius: 50; -fx-padding: 20;">
+                <FontAwesomeIcon fill="white" glyphName="SHOPPING_CART" size="3em" />
+            </VBox>
+            <Label style="-fx-text-fill: #212121; -fx-font-size: 18px; -fx-font-weight: bold;" text="PURCHASE INVOICE" />
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px; -fx-wrap-text: true; -fx-text-alignment: center;" text="Manage purchase bills from suppliers" />
+            <Region VBox.vgrow="ALWAYS" />
+            <VBox alignment="CENTER" spacing="10">
+                <Button fx:id="btnPurchaseInvoice" prefHeight="40" prefWidth="180" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="PURCHASE ENTRY">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="PLUS_CIRCLE" size="1.2em" />
+                    </graphic>
+                </Button>
+                <Button prefHeight="35" prefWidth="180" style="-fx-background-color: #F3E5F5; -fx-text-fill: #7B1FA2; -fx-font-size: 13px; -fx-background-radius: 5; -fx-cursor: hand;" text="VIEW INVOICES">
+                    <graphic>
+                        <FontAwesomeIcon fill="#7B1FA2" glyphName="LIST" size="1em" />
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+
+    </HBox>
+
+</VBox>

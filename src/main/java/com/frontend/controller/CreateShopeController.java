@@ -1,9 +1,9 @@
 package com.frontend.controller;
 
-import com.frontend.entity.Employee;
+import com.frontend.entity.Employees;
 import com.frontend.entity.Shop;
 import com.frontend.service.AuthApiService;
-import com.frontend.service.EmployeeService;
+import com.frontend.service.EmployeesService;
 import com.frontend.service.ShopService;
 import com.frontend.view.AlertNotification;
 import com.frontend.view.FxmlView;
@@ -51,7 +51,7 @@ public class CreateShopeController {
     AuthApiService authApiService;
 
     @Autowired
-    EmployeeService employeeService;
+    EmployeesService employeesService;
 
     @Autowired
     ShopService shopService;
@@ -99,22 +99,21 @@ public class CreateShopeController {
             // Save shop
             Shop savedShop = shopService.createShop(shop);
 
-            // Step 2: Create Admin Employee record
+            // Step 2: Create Admin Employee record using Employees entity
             String[] nameParts = parseOwnerName(ownerName);
 
-            Employee adminEmployee = new Employee();
+            Employees adminEmployee = new Employees();
             adminEmployee.setFirstName(nameParts[0]);
             adminEmployee.setMiddleName(nameParts[1]);
             adminEmployee.setLastName(nameParts[2]);
-            adminEmployee.setAddress(txtShopAddress.getText().trim());
-            adminEmployee.setContact(txtWonerContact.getText().trim());
+            adminEmployee.setAddressLine(txtShopAddress.getText().trim());
+            adminEmployee.setMobileNo(txtWonerContact.getText().trim());
             adminEmployee.setDesignation("ADMIN");
-            adminEmployee.setSalary(0.0f);
-            adminEmployee.setSalaryType("Fixed");
-            adminEmployee.setStatus("Active");
+            adminEmployee.setCurrentSalary(0.0f);
+            adminEmployee.setActiveStatus(true);
 
             // Save employee
-            Employee savedEmployee = employeeService.createEmployee(adminEmployee);
+            Employees savedEmployee = employeesService.createEmployee(adminEmployee);
 
             // Step 3: Create Admin User linked to the Employee
             boolean success = authApiService.registerWithEmployee(

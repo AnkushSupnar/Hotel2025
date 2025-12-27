@@ -7,14 +7,14 @@ import com.frontend.customUI.AutoCompleteTextField_old;
 import com.frontend.dto.CategoryMasterDto;
 import com.frontend.entity.CategoryMaster;
 import com.frontend.entity.Customer;
-import com.frontend.entity.Employee;
+import com.frontend.entity.Employees;
 import com.frontend.entity.Item;
 import com.frontend.entity.TableMaster;
 import com.frontend.entity.TempTransaction;
 import com.frontend.service.BillService;
 import com.frontend.service.CategoryApiService;
 import com.frontend.service.CustomerService;
-import com.frontend.service.EmployeeService;
+import com.frontend.service.EmployeesService;
 import com.frontend.service.ItemService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
@@ -82,7 +82,7 @@ public class BillingController implements Initializable {
     private CommonMethod commonMethod;
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeesService employeesService;
 
     @Autowired
     private TempTransactionService tempTransactionService;
@@ -839,7 +839,7 @@ public class BillingController implements Initializable {
 
     private void setUpTempTransactionTable() {
         // Load waiter names into ComboBox
-        allWaitorNames = employeeService.getWaitorNames();
+        allWaitorNames = employeesService.getWaiterNames();
         setupWaitorComboBox();
 
         Font systemFont14 = Font.font(14);
@@ -1649,7 +1649,7 @@ public class BillingController implements Initializable {
                 // Set waiter from closed bill
                 if (currentClosedBill.getWaitorId() != null) {
                     try {
-                        Employee waitor = employeeService.getEmployeeById(currentClosedBill.getWaitorId());
+                        Employees waitor = employeesService.getEmployeeById(currentClosedBill.getWaitorId());
                         if (waitor != null) {
                             cmbWaitorName.getSelectionModel().select(waitor.getFirstName());
                             LOG.info("Waiter from closed bill: {} (ID: {})", waitor.getFirstName(), currentClosedBill.getWaitorId());
@@ -1690,7 +1690,7 @@ public class BillingController implements Initializable {
                 Integer waitorId = tempTransactions.get(0).getWaitorId();
                 if (waitorId != null) {
                     try {
-                        Employee waitor = employeeService.getEmployeeById(waitorId);
+                        Employees waitor = employeesService.getEmployeeById(waitorId);
                         if (waitor != null) {
                             cmbWaitorName.getSelectionModel().select(waitor.getFirstName());
                             LOG.info("Waiter from temp transactions: {} (ID: {})", waitor.getFirstName(), waitorId);
@@ -2478,7 +2478,7 @@ public class BillingController implements Initializable {
         tempTransaction.setAmt(Float.parseFloat(txtAmount.getText()));
         tempTransaction.setTableNo(tableMasterService.getTableByName(txtTableNumber.getText()).getId());
         String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
-        tempTransaction.setWaitorId(employeeService.searchByFirstName(selectedWaitor).get(0).getId());
+        tempTransaction.setWaitorId(employeesService.searchByFirstName(selectedWaitor).get(0).getEmployeeId());
 
         // Set printQty based on category stock
         // If category stock = 'N' (no stock tracking), set printQty = qty (needs to be printed for kitchen)
@@ -2640,9 +2640,9 @@ public class BillingController implements Initializable {
                 Integer waitorId = null;
                 String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
                 if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
-                    List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
+                    List<Employees> waiters = employeesService.searchByFirstName(selectedWaitor);
                     if (!waiters.isEmpty()) {
-                        waitorId = waiters.get(0).getId();
+                        waitorId = waiters.get(0).getEmployeeId();
                     }
                 }
 
@@ -3203,7 +3203,7 @@ public class BillingController implements Initializable {
             // Load waiter
             if (billBeingEdited.getWaitorId() != null) {
                 try {
-                    Employee waiter = employeeService.getEmployeeById(billBeingEdited.getWaitorId());
+                    Employees waiter = employeesService.getEmployeeById(billBeingEdited.getWaitorId());
                     if (waiter != null) {
                         cmbWaitorName.getSelectionModel().select(waiter.getFirstName());
                     }
@@ -3334,9 +3334,9 @@ public class BillingController implements Initializable {
             Integer waitorId = null;
             String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
             if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
-                List<Employee> waiters = employeeService.searchByFirstName(selectedWaitor);
+                List<Employees> waiters = employeesService.searchByFirstName(selectedWaitor);
                 if (!waiters.isEmpty()) {
-                    waitorId = waiters.get(0).getId();
+                    waitorId = waiters.get(0).getEmployeeId();
                 }
             }
 

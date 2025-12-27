@@ -21,8 +21,8 @@ public class User {
     private String role;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_id", referencedColumnName = "Id")
-    private Employee employee;
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
+    private Employees employee;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -51,7 +51,7 @@ public class User {
         this.role = role;
     }
 
-    public User(String username, String password, String role, Employee employee) {
+    public User(String username, String password, String role, Employees employee) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -91,11 +91,11 @@ public class User {
         this.role = role;
     }
 
-    public Employee getEmployee() {
+    public Employees getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employee employee) {
+    public void setEmployee(Employees employee) {
         this.employee = employee;
     }
 

@@ -1,10 +1,11 @@
 package com.frontend.controller.master;
 
 import com.frontend.config.SpringFXMLLoader;
-import com.frontend.entity.Employee;
-import com.frontend.service.EmployeeService;
+import com.frontend.entity.Employees;
+import com.frontend.service.EmployeesService;
 import com.frontend.service.SessionService;
 import com.frontend.view.AlertNotification;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,7 +34,7 @@ public class AddEmployeeController implements Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(AddEmployeeController.class);
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeesService employeesService;
 
     @Autowired
     private AlertNotification alertNotification;
@@ -40,6 +42,7 @@ public class AddEmployeeController implements Initializable {
     @Autowired
     private SpringFXMLLoader loader;
 
+    // Name fields
     @FXML
     private TextField txtFirstName;
 
@@ -49,24 +52,64 @@ public class AddEmployeeController implements Initializable {
     @FXML
     private TextField txtLastName;
 
+    // Contact fields
     @FXML
-    private TextField txtAddress;
+    private TextField txtMobileNo;
 
     @FXML
-    private TextField txtContact;
+    private TextField txtAlternateMobile;
 
     @FXML
-    private TextField txtDesignation;
+    private TextField txtEmail;
+
+    // Address fields
+    @FXML
+    private TextField txtAddressLine;
+
+    @FXML
+    private TextField txtCity;
+
+    @FXML
+    private TextField txtTaluka;
+
+    @FXML
+    private TextField txtDistrict;
+
+    @FXML
+    private TextField txtState;
+
+    @FXML
+    private TextField txtPincode;
+
+    // Identity fields
+    @FXML
+    private TextField txtAadharNo;
+
+    // Employment fields
+    @FXML
+    private ComboBox<String> cmbDesignation;
 
     @FXML
     private TextField txtSalary;
 
     @FXML
-    private ComboBox<String> cmbSalaryType;
+    private DatePicker dpDateJoin;
+
+    // Emergency contact fields
+    @FXML
+    private TextField txtEmergencyName;
 
     @FXML
-    private ComboBox<String> cmbStatus;
+    private TextField txtEmergencyNo;
 
+    // Other fields
+    @FXML
+    private TextField txtRemarks;
+
+    @FXML
+    private CheckBox chkActiveStatus;
+
+    // Buttons
     @FXML
     private Button btnSave;
 
@@ -82,6 +125,7 @@ public class AddEmployeeController implements Initializable {
     @FXML
     private Button btnUpdate;
 
+    // Search and Table
     @FXML
     private TextField txtSearch;
 
@@ -95,10 +139,13 @@ public class AddEmployeeController implements Initializable {
     private TableColumn<EmployeeData, String> colFullName;
 
     @FXML
-    private TableColumn<EmployeeData, String> colContact;
+    private TableColumn<EmployeeData, String> colMobile;
 
     @FXML
     private TableColumn<EmployeeData, String> colDesignation;
+
+    @FXML
+    private TableColumn<EmployeeData, String> colCity;
 
     @FXML
     private TableColumn<EmployeeData, Float> colSalary;
@@ -128,31 +175,36 @@ public class AddEmployeeController implements Initializable {
         // Setup table with filtered data
         tblEmployees.setItems(filteredData);
 
-        // Setup salary type combo box
-        cmbSalaryType.setItems(FXCollections.observableArrayList(
-                "Monthly", "Daily", "Hourly", "Fixed"));
+        // Setup designation combo box with common designations
+        cmbDesignation.setItems(FXCollections.observableArrayList(
+                "Waiter", "Chef", "Manager", "Receptionist", "Cleaner", "Cashier",
+                "Supervisor", "Helper", "Cook", "Delivery Boy", "Security"));
 
-        // Setup status combo box
-        cmbStatus.setItems(FXCollections.observableArrayList(
-                "Active", "Inactive", "On Leave", "Terminated"));
+        // Set default date to today
+        dpDateJoin.setValue(LocalDate.now());
+
+        // Set default active status
+        chkActiveStatus.setSelected(true);
     }
 
     private void setupTableColumns() {
         // Setup table columns
         colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         colFullName.setCellValueFactory(cellData -> cellData.getValue().fullNameProperty());
-        colContact.setCellValueFactory(cellData -> cellData.getValue().contactProperty());
+        colMobile.setCellValueFactory(cellData -> cellData.getValue().mobileProperty());
         colDesignation.setCellValueFactory(cellData -> cellData.getValue().designationProperty());
+        colCity.setCellValueFactory(cellData -> cellData.getValue().cityProperty());
         colSalary.setCellValueFactory(cellData -> cellData.getValue().salaryProperty().asObject());
         colStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
 
         // Apply custom font to Full Name and Designation columns
         applyFullNameColumnFont();
-        applyDesignationColumnFont();
+      //  applyDesignationColumnFont();
+        applyCityColumnFont();
 
         // Add row selection listener to open employee in edit mode
         tblEmployees.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) { // Single click to select
+            if (event.getClickCount() == 1) {
                 EmployeeData selectedEmployeeData = tblEmployees.getSelectionModel().getSelectedItem();
                 if (selectedEmployeeData != null) {
                     editEmployee(selectedEmployeeData);
@@ -202,7 +254,6 @@ public class AddEmployeeController implements Initializable {
     }
 
     private void setupSearchAndFilter() {
-        // Setup search by employee name or contact
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             applyFilters();
         });
@@ -212,21 +263,18 @@ public class AddEmployeeController implements Initializable {
         filteredData.setPredicate(employee -> {
             String searchText = txtSearch.getText();
 
-            // Filter by search text (name, contact, or designation)
             if (searchText != null && !searchText.trim().isEmpty()) {
                 String lowerCaseFilter = searchText.toLowerCase();
                 return employee.getFullName().toLowerCase().contains(lowerCaseFilter) ||
-                        employee.getContact().toLowerCase().contains(lowerCaseFilter) ||
-                        employee.getDesignation().toLowerCase().contains(lowerCaseFilter);
+                        employee.getMobile().toLowerCase().contains(lowerCaseFilter) ||
+                        employee.getDesignation().toLowerCase().contains(lowerCaseFilter) ||
+                        (employee.getCity() != null && employee.getCity().toLowerCase().contains(lowerCaseFilter));
             }
 
             return true;
         });
     }
 
-    /**
-     * Apply custom font to Full Name column cells only (not header)
-     */
     private void applyFullNameColumnFont() {
         try {
             Font customFont = SessionService.getCustomFont();
@@ -234,7 +282,6 @@ public class AddEmployeeController implements Initializable {
             if (customFont != null) {
                 String fontFamily = customFont.getFamily();
 
-                // Create a cell factory to apply custom font only to cells (not header)
                 colFullName.setCellFactory(column -> {
                     TableCell<EmployeeData, String> cell = new TableCell<EmployeeData, String>() {
                         @Override
@@ -251,33 +298,27 @@ public class AddEmployeeController implements Initializable {
                         }
                     };
 
-                    // Apply inline style to cell only (not affecting header)
                     cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px;");
 
                     return cell;
                 });
 
                 LOG.info("Custom font '{}' applied to Full Name column cells only", fontFamily);
-            } else {
-                LOG.debug("No custom font configured for table");
             }
         } catch (Exception e) {
             LOG.error("Error applying custom font to Full Name column: ", e);
         }
     }
 
-    /**
-     * Apply custom font to Designation column cells only (not header)
-     */
-    private void applyDesignationColumnFont() {
+    
+    private void applyCityColumnFont() {
         try {
             Font customFont = SessionService.getCustomFont();
 
             if (customFont != null) {
                 String fontFamily = customFont.getFamily();
 
-                // Create a cell factory to apply custom font only to cells (not header)
-                colDesignation.setCellFactory(column -> {
+                colCity.setCellFactory(column -> {
                     TableCell<EmployeeData, String> cell = new TableCell<EmployeeData, String>() {
                         @Override
                         protected void updateItem(String item, boolean empty) {
@@ -293,30 +334,23 @@ public class AddEmployeeController implements Initializable {
                         }
                     };
 
-                    // Apply inline style to cell only (not affecting header)
                     cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px;");
 
                     return cell;
                 });
 
-                LOG.info("Custom font '{}' applied to Designation column cells only", fontFamily);
-            } else {
-                LOG.debug("No custom font configured for table");
+                LOG.info("Custom font '{}' applied to City column cells only", fontFamily);
             }
         } catch (Exception e) {
-            LOG.error("Error applying custom font to Designation column: ", e);
+            LOG.error("Error applying custom font to City column: ", e);
         }
     }
 
-    /**
-     * Apply custom font to input fields from session settings
-     */
     private void applyCustomFont() {
         try {
             Font customFont = SessionService.getCustomFont();
 
             if (customFont != null) {
-                // Apply font to input fields with appropriate size
                 Font inputFont = Font.font(customFont.getFamily(), 25);
 
                 // Apply to name fields
@@ -324,38 +358,52 @@ public class AddEmployeeController implements Initializable {
                 applyFontToTextField(txtMiddleName, inputFont, 25);
                 applyFontToTextField(txtLastName, inputFont, 25);
 
-                // Apply to designation field
-                applyFontToTextField(txtDesignation, inputFont, 25);
+                // Apply to address fields
+                applyFontToTextField(txtAddressLine, inputFont, 25);
+                applyFontToTextField(txtCity, inputFont, 25);
+                applyFontToTextField(txtTaluka, inputFont, 25);
+                applyFontToTextField(txtDistrict, inputFont, 25);
+                applyFontToTextField(txtState, inputFont, 25);
 
-                LOG.info("Custom font '{}' applied to name and designation input fields", customFont.getFamily());
-            } else {
-                LOG.debug("No custom font configured");
+                // Apply to emergency contact name
+                applyFontToTextField(txtEmergencyName, inputFont, 25);
+
+                // Apply to remarks
+                applyFontToTextField(txtRemarks, inputFont, 25);
+
+                // Apply to search field
+                applyFontToTextField(txtSearch, inputFont, 25);
+
+                LOG.info("Custom font '{}' applied to input fields", customFont.getFamily());
             }
         } catch (Exception e) {
             LOG.error("Error applying custom font: ", e);
         }
     }
 
-    /**
-     * Helper method to apply custom font to a text field with persistence
-     */
     private void applyFontToTextField(TextField textField, Font font, int fontSize) {
         if (textField == null || font == null) {
             return;
         }
 
-        // Set the font object
         textField.setFont(font);
-
-        // Set inline style to override CSS and ensure font persists
         textField.setStyle(
                 "-fx-font-family: '" + font.getFamily() + "';" +
                         "-fx-font-size: " + fontSize + "px;");
 
-        // Add focus listener to ensure font persists through focus changes
         textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             textField.setFont(font);
         });
+    }
+
+    /**
+     * Helper to convert empty strings to null (for unique constraint fields)
+     */
+    private String emptyToNull(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return value.trim();
     }
 
     private void saveEmployee() {
@@ -364,25 +412,47 @@ public class AddEmployeeController implements Initializable {
         }
 
         try {
-            Employee employee = new Employee();
+            Employees employee = new Employees();
             employee.setFirstName(txtFirstName.getText().trim());
-            employee.setMiddleName(txtMiddleName.getText().trim());
-            employee.setLastName(txtLastName.getText().trim());
-            employee.setAddress(txtAddress.getText().trim());
-            employee.setContact(txtContact.getText().trim());
-            employee.setDesignation(txtDesignation.getText().trim());
-            employee.setSalary(Float.parseFloat(txtSalary.getText().trim()));
-            employee.setSalaryType(cmbSalaryType.getValue());
-            employee.setStatus(cmbStatus.getValue());
+            employee.setMiddleName(emptyToNull(txtMiddleName.getText()));
+            employee.setLastName(emptyToNull(txtLastName.getText()));
+            employee.setMobileNo(txtMobileNo.getText().trim());
+            employee.setAlternateMobileNo(emptyToNull(txtAlternateMobile.getText()));
+            employee.setEmailId(emptyToNull(txtEmail.getText()));
+            employee.setAddressLine(emptyToNull(txtAddressLine.getText()));
+            employee.setCity(emptyToNull(txtCity.getText()));
+            employee.setTaluka(emptyToNull(txtTaluka.getText()));
+            employee.setDistrict(emptyToNull(txtDistrict.getText()));
+            employee.setState(emptyToNull(txtState.getText()));
+            employee.setPincode(emptyToNull(txtPincode.getText()));
+            employee.setAadharNo(emptyToNull(txtAadharNo.getText()));
+
+            // Get designation from combo box (could be selected or typed)
+            String designation = cmbDesignation.getValue();
+            if (designation == null || designation.isEmpty()) {
+                designation = cmbDesignation.getEditor().getText();
+            }
+            employee.setDesignation(designation != null ? designation.trim() : "");
+
+            // Parse salary if provided
+            if (!txtSalary.getText().trim().isEmpty()) {
+                employee.setCurrentSalary(Float.parseFloat(txtSalary.getText().trim()));
+            }
+
+            employee.setDateJoin(dpDateJoin.getValue());
+            employee.setEmergencyContactName(emptyToNull(txtEmergencyName.getText()));
+            employee.setEmergencyContactNo(emptyToNull(txtEmergencyNo.getText()));
+            employee.setRemarks(emptyToNull(txtRemarks.getText()));
+            employee.setActiveStatus(chkActiveStatus.isSelected());
 
             if (selectedEmployee == null) {
                 // Create new employee
-                employeeService.createEmployee(employee);
+                employeesService.createEmployee(employee);
                 alertNotification.showSuccess("Employee created successfully!");
             } else {
                 // Update existing employee
-                employee.setId(selectedEmployee.getId());
-                employeeService.updateEmployee(selectedEmployee.getId(), employee);
+                employee.setEmployeeId(selectedEmployee.getId());
+                employeesService.updateEmployee(selectedEmployee.getId(), employee);
                 alertNotification.showSuccess("Employee updated successfully!");
                 selectedEmployee = null;
             }
@@ -401,33 +471,66 @@ public class AddEmployeeController implements Initializable {
 
     private void editEmployee(EmployeeData employee) {
         selectedEmployee = employee;
-        txtFirstName.setText(employee.getFirstName());
-        txtMiddleName.setText(employee.getMiddleName());
-        txtLastName.setText(employee.getLastName());
-        txtAddress.setText(employee.getAddress());
-        txtContact.setText(employee.getContact());
-        txtDesignation.setText(employee.getDesignation());
-        txtSalary.setText(String.valueOf(employee.getSalary()));
-        cmbSalaryType.setValue(employee.getSalaryType());
-        cmbStatus.setValue(employee.getStatus());
 
-        // Show Update button, hide Save button
-        btnSave.setVisible(false);
-        btnSave.setManaged(false);
-        btnUpdate.setVisible(true);
-        btnUpdate.setManaged(true);
+        // Load full employee data from service
+        try {
+            Employees fullEmployee = employeesService.getEmployeeById(employee.getId());
+
+            txtFirstName.setText(fullEmployee.getFirstName() != null ? fullEmployee.getFirstName() : "");
+            txtMiddleName.setText(fullEmployee.getMiddleName() != null ? fullEmployee.getMiddleName() : "");
+            txtLastName.setText(fullEmployee.getLastName() != null ? fullEmployee.getLastName() : "");
+            txtMobileNo.setText(fullEmployee.getMobileNo() != null ? fullEmployee.getMobileNo() : "");
+            txtAlternateMobile.setText(fullEmployee.getAlternateMobileNo() != null ? fullEmployee.getAlternateMobileNo() : "");
+            txtEmail.setText(fullEmployee.getEmailId() != null ? fullEmployee.getEmailId() : "");
+            txtAddressLine.setText(fullEmployee.getAddressLine() != null ? fullEmployee.getAddressLine() : "");
+            txtCity.setText(fullEmployee.getCity() != null ? fullEmployee.getCity() : "");
+            txtTaluka.setText(fullEmployee.getTaluka() != null ? fullEmployee.getTaluka() : "");
+            txtDistrict.setText(fullEmployee.getDistrict() != null ? fullEmployee.getDistrict() : "");
+            txtState.setText(fullEmployee.getState() != null ? fullEmployee.getState() : "");
+            txtPincode.setText(fullEmployee.getPincode() != null ? fullEmployee.getPincode() : "");
+            txtAadharNo.setText(fullEmployee.getAadharNo() != null ? fullEmployee.getAadharNo() : "");
+            cmbDesignation.setValue(fullEmployee.getDesignation());
+            txtSalary.setText(fullEmployee.getCurrentSalary() != null ? String.valueOf(fullEmployee.getCurrentSalary()) : "");
+            dpDateJoin.setValue(fullEmployee.getDateJoin());
+            txtEmergencyName.setText(fullEmployee.getEmergencyContactName() != null ? fullEmployee.getEmergencyContactName() : "");
+            txtEmergencyNo.setText(fullEmployee.getEmergencyContactNo() != null ? fullEmployee.getEmergencyContactNo() : "");
+            txtRemarks.setText(fullEmployee.getRemarks() != null ? fullEmployee.getRemarks() : "");
+            chkActiveStatus.setSelected(fullEmployee.getActiveStatus() != null ? fullEmployee.getActiveStatus() : true);
+
+            // Show Update button, hide Save button
+            btnSave.setVisible(false);
+            btnSave.setManaged(false);
+            btnUpdate.setVisible(true);
+            btnUpdate.setManaged(true);
+
+        } catch (Exception e) {
+            LOG.error("Error loading employee for edit: ", e);
+            alertNotification.showError("Error loading employee data: " + e.getMessage());
+        }
     }
 
     private void clearForm() {
         txtFirstName.clear();
         txtMiddleName.clear();
         txtLastName.clear();
-        txtAddress.clear();
-        txtContact.clear();
-        txtDesignation.clear();
+        txtMobileNo.clear();
+        txtAlternateMobile.clear();
+        txtEmail.clear();
+        txtAddressLine.clear();
+        txtCity.clear();
+        txtTaluka.clear();
+        txtDistrict.clear();
+        txtState.clear();
+        txtPincode.clear();
+        txtAadharNo.clear();
+        cmbDesignation.setValue(null);
+        cmbDesignation.getEditor().clear();
         txtSalary.clear();
-        cmbSalaryType.setValue(null);
-        cmbStatus.setValue(null);
+        dpDateJoin.setValue(LocalDate.now());
+        txtEmergencyName.clear();
+        txtEmergencyNo.clear();
+        txtRemarks.clear();
+        chkActiveStatus.setSelected(true);
         selectedEmployee = null;
 
         // Show Save button, hide Update button
@@ -444,67 +547,48 @@ public class AddEmployeeController implements Initializable {
             return false;
         }
 
-        if (txtMiddleName.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter middle name");
-            txtMiddleName.requestFocus();
+        if (txtMobileNo.getText().trim().isEmpty()) {
+            alertNotification.showError("Please enter mobile number");
+            txtMobileNo.requestFocus();
             return false;
         }
 
-        if (txtLastName.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter last name");
-            txtLastName.requestFocus();
+        // Validate mobile number format (10 digits)
+        if (!txtMobileNo.getText().trim().matches("\\d{10}")) {
+            alertNotification.showError("Mobile number must be 10 digits");
+            txtMobileNo.requestFocus();
             return false;
         }
 
-        if (txtAddress.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter address");
-            txtAddress.requestFocus();
+        // Check for duplicate mobile (except for current employee being edited)
+        if (selectedEmployee == null) {
+            if (employeesService.existsByMobile(txtMobileNo.getText().trim())) {
+                alertNotification.showError("Employee with this mobile number already exists");
+                txtMobileNo.requestFocus();
+                return false;
+            }
+        }
+
+        // Validate designation
+        String designation = cmbDesignation.getValue();
+        if (designation == null || designation.isEmpty()) {
+            designation = cmbDesignation.getEditor().getText();
+        }
+        if (designation == null || designation.trim().isEmpty()) {
+            alertNotification.showError("Please select or enter designation");
+            cmbDesignation.requestFocus();
             return false;
         }
 
-        if (txtContact.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter contact number");
-            txtContact.requestFocus();
-            return false;
-        }
-
-        // Validate contact number format (10 digits)
-        if (!txtContact.getText().trim().matches("\\d{10}")) {
-            alertNotification.showError("Contact number must be 10 digits");
-            txtContact.requestFocus();
-            return false;
-        }
-
-        if (txtDesignation.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter designation");
-            txtDesignation.requestFocus();
-            return false;
-        }
-
-        if (txtSalary.getText().trim().isEmpty()) {
-            alertNotification.showError("Please enter salary");
-            txtSalary.requestFocus();
-            return false;
-        }
-
-        try {
-            Float.parseFloat(txtSalary.getText().trim());
-        } catch (NumberFormatException e) {
-            alertNotification.showError("Salary must be a valid number");
-            txtSalary.requestFocus();
-            return false;
-        }
-
-        if (cmbSalaryType.getValue() == null || cmbSalaryType.getValue().isEmpty()) {
-            alertNotification.showError("Please select salary type");
-            cmbSalaryType.requestFocus();
-            return false;
-        }
-
-        if (cmbStatus.getValue() == null || cmbStatus.getValue().isEmpty()) {
-            alertNotification.showError("Please select status");
-            cmbStatus.requestFocus();
-            return false;
+        // Validate salary if provided
+        if (!txtSalary.getText().trim().isEmpty()) {
+            try {
+                Float.parseFloat(txtSalary.getText().trim());
+            } catch (NumberFormatException e) {
+                alertNotification.showError("Salary must be a valid number");
+                txtSalary.requestFocus();
+                return false;
+            }
         }
 
         return true;
@@ -512,26 +596,23 @@ public class AddEmployeeController implements Initializable {
 
     private void loadEmployees() {
         try {
-            List<Employee> employees = employeeService.getAllEmployees();
+            List<Employees> employees = employeesService.getAllEmployees();
             employeeData.clear();
 
-            for (Employee employee : employees) {
+            for (Employees employee : employees) {
                 employeeData.add(new EmployeeData(
-                        employee.getId(),
+                        employee.getEmployeeId(),
                         employee.getFirstName(),
                         employee.getMiddleName(),
                         employee.getLastName(),
-                        employee.getAddress(),
-                        employee.getContact(),
+                        employee.getMobileNo(),
                         employee.getDesignation(),
-                        employee.getSalary(),
-                        employee.getSalaryType(),
-                        employee.getStatus()));
+                        employee.getCity(),
+                        employee.getCurrentSalary(),
+                        employee.getActiveStatus()));
             }
 
-            // Refresh the table view
             tblEmployees.refresh();
-
             LOG.info("Loaded {} employees", employees.size());
 
         } catch (Exception e) {
@@ -547,27 +628,41 @@ public class AddEmployeeController implements Initializable {
         private final SimpleStringProperty middleName;
         private final SimpleStringProperty lastName;
         private final SimpleStringProperty fullName;
-        private final SimpleStringProperty address;
-        private final SimpleStringProperty contact;
+        private final SimpleStringProperty mobile;
         private final SimpleStringProperty designation;
+        private final SimpleStringProperty city;
         private final SimpleFloatProperty salary;
-        private final SimpleStringProperty salaryType;
+        private final SimpleBooleanProperty active;
         private final SimpleStringProperty status;
 
-        public EmployeeData(int id, String firstName, String middleName, String lastName,
-                String address, String contact, String designation, Float salary,
-                String salaryType, String status) {
-            this.id = new SimpleIntegerProperty(id);
-            this.firstName = new SimpleStringProperty(firstName);
-            this.middleName = new SimpleStringProperty(middleName);
-            this.lastName = new SimpleStringProperty(lastName);
-            this.fullName = new SimpleStringProperty(firstName + " " + middleName + " " + lastName);
-            this.address = new SimpleStringProperty(address);
-            this.contact = new SimpleStringProperty(contact);
-            this.designation = new SimpleStringProperty(designation);
-            this.salary = new SimpleFloatProperty(salary);
-            this.salaryType = new SimpleStringProperty(salaryType);
-            this.status = new SimpleStringProperty(status);
+        public EmployeeData(Integer id, String firstName, String middleName, String lastName,
+                String mobile, String designation, String city, Float salary, Boolean active) {
+            this.id = new SimpleIntegerProperty(id != null ? id : 0);
+            this.firstName = new SimpleStringProperty(firstName != null ? firstName : "");
+            this.middleName = new SimpleStringProperty(middleName != null ? middleName : "");
+            this.lastName = new SimpleStringProperty(lastName != null ? lastName : "");
+
+            // Build full name
+            StringBuilder fullNameBuilder = new StringBuilder();
+            if (firstName != null && !firstName.isEmpty()) {
+                fullNameBuilder.append(firstName);
+            }
+            if (middleName != null && !middleName.isEmpty()) {
+                if (fullNameBuilder.length() > 0) fullNameBuilder.append(" ");
+                fullNameBuilder.append(middleName);
+            }
+            if (lastName != null && !lastName.isEmpty()) {
+                if (fullNameBuilder.length() > 0) fullNameBuilder.append(" ");
+                fullNameBuilder.append(lastName);
+            }
+            this.fullName = new SimpleStringProperty(fullNameBuilder.toString());
+
+            this.mobile = new SimpleStringProperty(mobile != null ? mobile : "");
+            this.designation = new SimpleStringProperty(designation != null ? designation : "");
+            this.city = new SimpleStringProperty(city != null ? city : "");
+            this.salary = new SimpleFloatProperty(salary != null ? salary : 0f);
+            this.active = new SimpleBooleanProperty(active != null ? active : true);
+            this.status = new SimpleStringProperty(active != null && active ? "Active" : "Inactive");
         }
 
         public int getId() {
@@ -610,20 +705,12 @@ public class AddEmployeeController implements Initializable {
             return fullName;
         }
 
-        public String getAddress() {
-            return address.get();
+        public String getMobile() {
+            return mobile.get();
         }
 
-        public SimpleStringProperty addressProperty() {
-            return address;
-        }
-
-        public String getContact() {
-            return contact.get();
-        }
-
-        public SimpleStringProperty contactProperty() {
-            return contact;
+        public SimpleStringProperty mobileProperty() {
+            return mobile;
         }
 
         public String getDesignation() {
@@ -634,6 +721,14 @@ public class AddEmployeeController implements Initializable {
             return designation;
         }
 
+        public String getCity() {
+            return city.get();
+        }
+
+        public SimpleStringProperty cityProperty() {
+            return city;
+        }
+
         public Float getSalary() {
             return salary.get();
         }
@@ -642,12 +737,12 @@ public class AddEmployeeController implements Initializable {
             return salary;
         }
 
-        public String getSalaryType() {
-            return salaryType.get();
+        public Boolean isActive() {
+            return active.get();
         }
 
-        public SimpleStringProperty salaryTypeProperty() {
-            return salaryType;
+        public SimpleBooleanProperty activeProperty() {
+            return active;
         }
 
         public String getStatus() {

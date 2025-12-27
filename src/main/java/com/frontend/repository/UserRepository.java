@@ -1,5 +1,6 @@
 package com.frontend.repository;
 
+import com.frontend.entity.Employees;
 import com.frontend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,26 +29,40 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRole(String role);
 
     /**
+     * Find all users ordered by username
+     */
+    List<User> findAllByOrderByUsernameAsc();
+
+    /**
      * Find users by employee ID
      */
-    @Query("SELECT u FROM User u WHERE u.employee.id = :employeeId")
-    List<User> findByEmployeeId(@Param("employeeId") Long employeeId);
+    @Query("SELECT u FROM User u WHERE u.employee.employeeId = :employeeId")
+    List<User> findByEmployeeId(@Param("employeeId") Integer employeeId);
 
     /**
      * Find users by employee
      */
-    @Query("SELECT u FROM User u WHERE u.employee = :employee")
-    List<User> findByEmployee(@Param("employee") com.frontend.entity.Employee employee);
+    Optional<User> findByEmployee(Employees employee);
+
+    /**
+     * Check if employee already has a user account
+     */
+    boolean existsByEmployee(Employees employee);
 
     /**
      * Count users for an employee
      */
-    @Query("SELECT COUNT(u) FROM User u WHERE u.employee.id = :employeeId")
-    long countByEmployeeId(@Param("employeeId") Long employeeId);
+    @Query("SELECT COUNT(u) FROM User u WHERE u.employee.employeeId = :employeeId")
+    long countByEmployeeId(@Param("employeeId") Integer employeeId);
 
     /**
      * Get all usernames
      */
     @Query("SELECT u.username FROM User u")
     List<String> findAllUsernames();
+
+    /**
+     * Search users by username
+     */
+    List<User> findByUsernameContainingIgnoreCase(String username);
 }

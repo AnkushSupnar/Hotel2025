@@ -1,9 +1,11 @@
 package com.frontend.controller;
 
 import com.frontend.customUI.AutoCompleteTextField;
+import com.frontend.entity.ApplicationSetting;
 import com.frontend.entity.Shop;
 import com.frontend.entity.User;
 import com.frontend.repository.UserRepository;
+import com.frontend.service.ApplicationSettingService;
 import com.frontend.service.AuthApiService;
 import com.frontend.service.SessionService;
 import com.frontend.service.ShopService;
@@ -15,10 +17,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 @Component
@@ -66,6 +71,13 @@ public class LoginController {
     @Autowired
     ShopService shopService;
 
+    @Autowired
+    ApplicationSettingService applicationSettingService;
+
+    // Custom font for username field
+    private Font customFont;
+    private AutoCompleteTextField autoCompleteTextField;
+
     @FXML
     private void initialize() {
         btnLogin.setOnAction(event -> login());
@@ -74,6 +86,9 @@ public class LoginController {
             txtServerUrl.setVisible(false);
             txtServerUrl.setManaged(false);
         }
+
+        // Load custom font first
+        loadCustomFont();
 
         // Initialize shop dropdown
         initializeShopDropdown();
@@ -84,6 +99,78 @@ public class LoginController {
         // Setup registration link handler
         if (linkRegister != null) {
             linkRegister.setOnAction(event -> openRegistrationScreen());
+        }
+    }
+
+    /**
+     * Load custom font from application settings
+     */
+    private void loadCustomFont() {
+        try {
+            // First try to get font path from database settings
+            String fontPath = null;
+            try {
+                ApplicationSetting fontSetting = applicationSettingService.getSettingByName("input_font_path").orElse(null);
+                if (fontSetting != null && fontSetting.getSettingValue() != null) {
+                    fontPath = fontSetting.getSettingValue();
+                }
+            } catch (Exception e) {
+                System.err.println("Error getting font setting from database: " + e.getMessage());
+            }
+
+            // Try loading from external path
+            if (fontPath != null && !fontPath.trim().isEmpty()) {
+                File fontFile = new File(fontPath);
+                if (fontFile.exists()) {
+                    try (FileInputStream fontStream = new FileInputStream(fontFile)) {
+                        customFont = Font.loadFont(fontStream, 20);
+                        if (customFont != null) {
+                            System.out.println("Custom font loaded from external path: " + fontPath);
+                            applyCustomFontToUsername();
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // Try loading from bundled resources
+            java.io.InputStream resourceStream = getClass().getResourceAsStream("/fonts/kiran.ttf");
+            if (resourceStream != null) {
+                customFont = Font.loadFont(resourceStream, 20);
+                resourceStream.close();
+                if (customFont != null) {
+                    System.out.println("Custom font loaded from bundled resources: /fonts/kiran.ttf");
+                    applyCustomFontToUsername();
+                    return;
+                }
+            }
+
+            System.out.println("No custom font available, using system default");
+
+        } catch (Exception e) {
+            System.err.println("Error loading custom font: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Apply custom font to username field
+     */
+    private void applyCustomFontToUsername() {
+        if (customFont != null && txtUserName != null) {
+            String fontFamily = customFont.getFamily();
+            txtUserName.setFont(customFont);
+            txtUserName.setStyle(
+                "-fx-font-family: '" + fontFamily + "';" +
+                "-fx-font-size: 20px;" +
+                "-fx-text-fill: #212121;"
+            );
+
+            // Maintain font on focus changes
+            txtUserName.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                txtUserName.setFont(customFont);
+            });
+
+            System.out.println("Custom font '" + fontFamily + "' applied to username field");
         }
     }
 
@@ -169,8 +256,14 @@ public class LoginController {
                     linkRegister.setManaged(false);
                 }
 
-                new AutoCompleteTextField(txtUserName, usernames, txtPassword);
-                System.out.println("Autocomplete initialized with " + usernames.size() + " usernames");
+                // Create autocomplete with custom font if available
+                if (customFont != null) {
+                    autoCompleteTextField = new AutoCompleteTextField(txtUserName, usernames, customFont, txtPassword);
+                    System.out.println("Autocomplete initialized with custom font and " + usernames.size() + " usernames");
+                } else {
+                    autoCompleteTextField = new AutoCompleteTextField(txtUserName, usernames, txtPassword);
+                    System.out.println("Autocomplete initialized with " + usernames.size() + " usernames");
+                }
             }
         } catch (Exception e) {
             System.err.println("Error initializing username autocomplete: " + e.getMessage());

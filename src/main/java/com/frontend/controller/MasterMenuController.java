@@ -150,12 +150,7 @@ public class MasterMenuController implements Initializable {
         // User Management
         userCard.setOnMouseClicked(e -> {
             try {
-                // Navigate to existing user management
-                BorderPane mainPane = getMainPane();
-                if (mainPane != null) {
-                    Pane pane = loader.getPage("/fxml/create/AddUser.fxml");
-                    mainPane.setCenter(pane);
-                }
+                loadUserManagement();
             } catch (Exception ex) {
                 LOG.error("Error loading user management: ", ex);
             }
@@ -206,6 +201,14 @@ public class MasterMenuController implements Initializable {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             Pane pane = loader.getPage("/fxml/master/AddSupplier.fxml");
+            mainPane.setCenter(pane);
+        }
+    }
+
+    private void loadUserManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/master/AddUser.fxml");
             mainPane.setCenter(pane);
         }
     }

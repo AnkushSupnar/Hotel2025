@@ -1,6 +1,6 @@
 package com.frontend.service;
 
-import com.frontend.entity.Employee;
+import com.frontend.entity.Employees;
 import com.frontend.entity.User;
 import com.frontend.repository.UserRepository;
 import org.slf4j.Logger;
@@ -89,7 +89,7 @@ public class AuthApiService {
     /**
      * Register new user with employee link in database (plain text password)
      */
-    public boolean registerWithEmployee(String username, String password, String role, Employee employee) {
+    public boolean registerWithEmployee(String username, String password, String role, Employees employee) {
         LOG.debug("Attempting registration for user: {} with role: {} and employee: {}",
                 username, role, employee != null ? employee.getEmployeeId() : null);
 

@@ -1,7 +1,7 @@
 package com.frontend.service;
 
 import com.frontend.entity.ApplicationSetting;
-import com.frontend.entity.Employee;
+import com.frontend.entity.Employees;
 import com.frontend.entity.Shop;
 import com.frontend.entity.User;
 import javafx.scene.text.Font;
@@ -31,7 +31,7 @@ public class SessionService {
 
     // Static properties for desktop application (single user session)
     private static User currentUser;
-    private static Employee currentEmployee;
+    private static Employees currentEmployee;
     private static Shop currentShop;
     private static Map<String, String> applicationSettings;
 
@@ -73,7 +73,7 @@ public class SessionService {
     /**
      * Get current employee (if user is linked to an employee)
      */
-    public static Employee getCurrentEmployee() {
+    public static Employees getCurrentEmployee() {
         return currentEmployee;
     }
 

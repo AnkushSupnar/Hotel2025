@@ -148,6 +148,7 @@ public class AddSupplierController implements Initializable {
         // Apply custom font to table columns
         applyNameColumnFont();
         applyAddressColumnFont();
+        applyCityColumnFont();
 
         // Add row selection listener to open supplier in edit mode
         tblSuppliers.setOnMouseClicked(event -> {
@@ -361,6 +362,48 @@ public class AddSupplierController implements Initializable {
             }
         } catch (Exception e) {
             LOG.error("Error applying custom font to Address column: ", e);
+        }
+    }
+
+    /**
+     * Apply custom font to City column cells only (not header)
+     */
+    private void applyCityColumnFont() {
+        try {
+            Font customFont = SessionService.getCustomFont();
+
+            if (customFont != null) {
+                String fontFamily = customFont.getFamily();
+
+                // Create a cell factory to apply custom font only to cells (not header)
+                colCity.setCellFactory(column -> {
+                    TableCell<SupplierData, String> cell = new TableCell<SupplierData, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null) {
+                                setText(null);
+                                setGraphic(null);
+                            } else {
+                                setText(item);
+                                setGraphic(null);
+                            }
+                        }
+                    };
+
+                    // Apply inline style to cell only (not affecting header)
+                    cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px;");
+
+                    return cell;
+                });
+
+                LOG.info("Custom font '{}' applied to City column cells only", fontFamily);
+            } else {
+                LOG.debug("No custom font configured for table");
+            }
+        } catch (Exception e) {
+            LOG.error("Error applying custom font to City column: ", e);
         }
     }
 
