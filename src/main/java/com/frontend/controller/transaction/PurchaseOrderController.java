@@ -8,6 +8,8 @@ import com.frontend.entity.*;
 import com.frontend.print.PurchaseOrderPrint;
 import com.frontend.service.*;
 import com.frontend.view.AlertNotification;
+import com.frontend.view.FxmlView;
+import com.frontend.view.StageManager;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,10 +19,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -61,12 +65,17 @@ public class PurchaseOrderController implements Initializable {
     @Autowired
     private PurchaseOrderPrint purchaseOrderPrint;
 
+    @Lazy
+    @Autowired
+    private StageManager stageManager;
+
     // ==================== LEFT SIDE: Order Entry Form ====================
 
     // Labels with custom font
     @FXML private Label lblSupplier;
     @FXML private Label lblCategory;
     @FXML private Label lblItemName;
+    @FXML private Label lblUnit;
     @FXML private Label lblQty;
     @FXML private Label lblRemarks;
 
@@ -78,6 +87,7 @@ public class PurchaseOrderController implements Initializable {
     // Section 2: Item Entry
     @FXML private TextField txtCategory;
     @FXML private TextField txtItemName;
+    @FXML private ComboBox<String> cmbUnit;
     @FXML private TextField txtQty;
     @FXML private Button btnAddItem;
     @FXML private Button btnEditItem;
@@ -87,8 +97,8 @@ public class PurchaseOrderController implements Initializable {
     // Items Table
     @FXML private TableView<OrderItemData> tblOrderItems;
     @FXML private TableColumn<OrderItemData, Integer> colSrNo;
-    @FXML private TableColumn<OrderItemData, String> colCategory;
     @FXML private TableColumn<OrderItemData, String> colItemName;
+    @FXML private TableColumn<OrderItemData, String> colUnit;
     @FXML private TableColumn<OrderItemData, Float> colQty;
 
     // Section 3: Order Summary
@@ -107,9 +117,13 @@ public class PurchaseOrderController implements Initializable {
     @FXML private Button btnRefreshOrders;
     @FXML private DatePicker dpSearchFromDate;
     @FXML private DatePicker dpSearchToDate;
+    @FXML private Label lblToDate;
     @FXML private TextField txtSearchOrderNo;
     @FXML private TextField txtSearchSupplier;
     @FXML private Button btnSearchOrders;
+    @FXML private Button btnPrintOrder;
+    @FXML private Button btnCopyOrder;
+    @FXML private Button btnCreateInvoice;
     @FXML private Button btnClearSearch;
 
     @FXML private TableView<ExistingOrderData> tblExistingOrders;
@@ -127,6 +141,7 @@ public class PurchaseOrderController implements Initializable {
     private AutoCompleteTextField supplierAutoComplete;
     private AutoCompleteTextField categoryAutoComplete;
     private AutoCompleteTextField itemAutoComplete;
+    private AutoCompleteTextField searchSupplierAutoComplete;
 
     // Data
     private ObservableList<OrderItemData> orderItems = FXCollections.observableArrayList();
@@ -143,6 +158,18 @@ public class PurchaseOrderController implements Initializable {
     private int serialNumber = 1;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final String[] UNIT_OPTIONS = {"KG", "NOS", "LTR", "PCS", "BOX", "PKT", "DOZ", "GM", "ML"};
+
+    // Static variable to pass selected order to Invoice screen
+    private static Integer selectedOrderNoForInvoice = null;
+
+    public static Integer getSelectedOrderNoForInvoice() {
+        return selectedOrderNoForInvoice;
+    }
+
+    public static void clearSelectedOrderNoForInvoice() {
+        selectedOrderNoForInvoice = null;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -157,6 +184,10 @@ public class PurchaseOrderController implements Initializable {
         dpOrderDate.setValue(LocalDate.now());
         dpSearchFromDate.setValue(LocalDate.now().minusDays(30));
         dpSearchToDate.setValue(LocalDate.now());
+
+        // Initialize unit ComboBox
+        cmbUnit.getItems().addAll(UNIT_OPTIONS);
+        cmbUnit.setValue("KG"); // Default value
 
         loadExistingOrders();
     }
@@ -207,6 +238,10 @@ public class PurchaseOrderController implements Initializable {
         itemAutoComplete.setUseContainsFilter(true);
         itemAutoComplete.setOnSelectionCallback(this::onItemSelected);
         itemAutoComplete.setNextFocusField(txtQty);
+
+        // Search Supplier AutoComplete (same font as txtSupplier)
+        searchSupplierAutoComplete = new AutoCompleteTextField(txtSearchSupplier, supplierNames, font20);
+        searchSupplierAutoComplete.setUseContainsFilter(true);
     }
 
     private void onSupplierSelected(String selection) {
@@ -269,8 +304,8 @@ public class PurchaseOrderController implements Initializable {
 
     private void setupItemsTable() {
         colSrNo.setCellValueFactory(cellData -> cellData.getValue().srNoProperty().asObject());
-        colCategory.setCellValueFactory(cellData -> cellData.getValue().categoryNameProperty());
         colItemName.setCellValueFactory(cellData -> cellData.getValue().itemNameProperty());
+        colUnit.setCellValueFactory(cellData -> cellData.getValue().unitProperty());
         colQty.setCellValueFactory(cellData -> cellData.getValue().qtyProperty().asObject());
 
         applyTableColumnFonts();
@@ -333,6 +368,7 @@ public class PurchaseOrderController implements Initializable {
         editingItem = item;
         txtCategory.setText(item.getCategoryName());
         txtItemName.setText(item.getItemName());
+        cmbUnit.setValue(item.getUnit() != null ? item.getUnit() : "KG");
         txtQty.setText(String.valueOf(item.getQty()));
     }
 
@@ -349,6 +385,9 @@ public class PurchaseOrderController implements Initializable {
         // Right side event handlers
         btnRefreshOrders.setOnAction(e -> loadExistingOrders());
         btnSearchOrders.setOnAction(e -> searchOrders());
+        btnPrintOrder.setOnAction(e -> printSelectedOrder());
+        btnCopyOrder.setOnAction(e -> copySelectedOrder());
+        btnCreateInvoice.setOnAction(e -> createInvoiceFromOrder());
         btnClearSearch.setOnAction(e -> clearSearch());
 
         txtQty.setOnAction(e -> addItem());
@@ -395,7 +434,8 @@ public class PurchaseOrderController implements Initializable {
                 }
                 tblOrderItems.refresh();
                 updateTotals();
-                clearItemFields();
+                clearItemFieldsKeepCategory();
+                txtItemName.requestFocus();
                 return;
             }
         }
@@ -406,17 +446,18 @@ public class PurchaseOrderController implements Initializable {
             return;
         }
 
+        String unit = cmbUnit.getValue() != null ? cmbUnit.getValue() : "KG";
         Integer itemCode = selectedItem != null ? selectedItem.getItemCode() : null;
         Integer categoryId = selectedItem != null ? selectedItem.getCategoryId() :
                             (selectedCategory != null ? selectedCategory.getId() : null);
 
-        OrderItemData data = new OrderItemData(serialNumber++, categoryName, itemName, qty, itemCode, categoryId);
+        OrderItemData data = new OrderItemData(serialNumber++, categoryName, itemName, unit, qty, itemCode, categoryId);
         orderItems.add(data);
 
         tblOrderItems.refresh();
         updateTotals();
-        clearItemFields();
-        txtCategory.requestFocus();
+        clearItemFieldsKeepCategory();
+        txtItemName.requestFocus();
     }
 
     private void editItem() {
@@ -435,24 +476,31 @@ public class PurchaseOrderController implements Initializable {
 
         editingItem.setCategoryName(txtCategory.getText().trim());
         editingItem.setItemName(txtItemName.getText().trim());
+        editingItem.setUnit(cmbUnit.getValue() != null ? cmbUnit.getValue() : "KG");
         editingItem.setQty(qty);
 
         tblOrderItems.refresh();
         updateTotals();
-        clearItemFields();
-        editingItem = null;
-        tblOrderItems.getSelectionModel().clearSelection();
+        clearItemFieldsKeepCategory();
+        txtItemName.requestFocus();
     }
 
     private void clearItemFields() {
+        clearItemFieldsKeepCategory();
+        // Also clear category
         categoryAutoComplete.clear();
-        itemAutoComplete.clear();
-        txtQty.clear();
         selectedCategory = null;
-        selectedItem = null;
-        editingItem = null;
         currentCategoryItems.clear();
         itemAutoComplete.setSuggestions(new ArrayList<>());
+    }
+
+    private void clearItemFieldsKeepCategory() {
+        // Clear only item, unit, qty - keep category
+        itemAutoComplete.clear();
+        cmbUnit.setValue("KG");
+        txtQty.clear();
+        selectedItem = null;
+        editingItem = null;
         tblOrderItems.getSelectionModel().clearSelection();
     }
 
@@ -518,6 +566,7 @@ public class PurchaseOrderController implements Initializable {
             for (OrderItemData itemData : orderItems) {
                 PurchaseOrderTransaction trans = new PurchaseOrderTransaction();
                 trans.setItemName(itemData.getItemName());
+                trans.setUnit(itemData.getUnit());
                 trans.setQty(itemData.getQty());
                 trans.setItemCode(itemData.getItemCode());
                 trans.setCategoryId(itemData.getCategoryId());
@@ -690,8 +739,125 @@ public class PurchaseOrderController implements Initializable {
         dpSearchFromDate.setValue(LocalDate.now().minusDays(30));
         dpSearchToDate.setValue(LocalDate.now());
         txtSearchOrderNo.clear();
-        txtSearchSupplier.clear();
+        searchSupplierAutoComplete.clear();
         loadExistingOrders();
+    }
+
+    private void printSelectedOrder() {
+        ExistingOrderData selected = tblExistingOrders.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alertNotification.showWarning("Please select an order to print");
+            return;
+        }
+
+        try {
+            // Load the complete order with transactions
+            PurchaseOrder order = purchaseOrderService.getOrderWithTransactions(selected.getOrderNo());
+            if (order == null) {
+                alertNotification.showError("Order not found");
+                return;
+            }
+
+            // Print the order as A4 PDF
+            boolean success = purchaseOrderPrint.printPurchaseOrder(order);
+            if (success) {
+                alertNotification.showSuccess("Purchase Order #" + order.getOrderNo() + " printed successfully!");
+            } else {
+                alertNotification.showError("Failed to print Purchase Order");
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error printing order: ", e);
+            alertNotification.showError("Error printing order: " + e.getMessage());
+        }
+    }
+
+    private void copySelectedOrder() {
+        ExistingOrderData selected = tblExistingOrders.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alertNotification.showWarning("Please select an order to copy");
+            return;
+        }
+
+        try {
+            // Load the complete order with transactions
+            PurchaseOrder order = purchaseOrderService.getOrderWithTransactions(selected.getOrderNo());
+            if (order == null) {
+                alertNotification.showError("Order not found");
+                return;
+            }
+
+            // Clear current form and set as NEW order (not editing)
+            editingOrder = null;
+
+            // Set supplier from copied order
+            selectedSupplier = null;
+            for (Supplier supplier : allSuppliers) {
+                if (supplier.getId().equals(order.getPartyId())) {
+                    selectedSupplier = supplier;
+                    supplierAutoComplete.setText(supplier.getName());
+                    break;
+                }
+            }
+
+            // Set today's date for new order
+            dpOrderDate.setValue(LocalDate.now());
+
+            // Clear remarks (user can add new remarks)
+            txtRemarks.setText("");
+
+            // Copy all items from the selected order
+            orderItems.clear();
+            serialNumber = 1;
+            for (PurchaseOrderTransaction trans : order.getTransactions()) {
+                orderItems.add(new OrderItemData(
+                        serialNumber++,
+                        trans.getCategoryName() != null ? trans.getCategoryName() : "",
+                        trans.getItemName(),
+                        trans.getUnit() != null ? trans.getUnit() : "KG",
+                        trans.getQty(),
+                        trans.getItemCode(),
+                        trans.getCategoryId()
+                ));
+            }
+
+            tblOrderItems.refresh();
+            updateTotals();
+
+            // Clear item entry fields
+            clearItemFields();
+
+            alertNotification.showSuccess("Order #" + selected.getOrderNo() + " copied! Modify items and save as new order.");
+
+        } catch (Exception e) {
+            LOG.error("Error copying order: ", e);
+            alertNotification.showError("Error copying order: " + e.getMessage());
+        }
+    }
+
+    private void createInvoiceFromOrder() {
+        ExistingOrderData selected = tblExistingOrders.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alertNotification.showWarning("Please select an order to create invoice");
+            return;
+        }
+
+        try {
+            // Store the selected order number for the Invoice screen
+            selectedOrderNoForInvoice = selected.getOrderNo();
+
+            // Navigate to Purchase Invoice from PO screen in center pane
+            BorderPane mainPane = (BorderPane) btnBack.getScene().lookup("#mainPane");
+            if (mainPane != null) {
+                Pane pane = loader.getPage("/fxml/transaction/PurchaseInvoiceFromPO.fxml");
+                mainPane.setCenter(pane);
+                LOG.info("Navigated to Purchase Invoice from PO screen for order #{}", selected.getOrderNo());
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error navigating to invoice screen: ", e);
+            alertNotification.showError("Error: " + e.getMessage());
+        }
     }
 
     private void loadOrderForEditing(Integer orderNo) {
@@ -726,6 +892,7 @@ public class PurchaseOrderController implements Initializable {
                         serialNumber++,
                         trans.getCategoryName() != null ? trans.getCategoryName() : "",
                         trans.getItemName(),
+                        trans.getUnit() != null ? trans.getUnit() : "KG",
                         trans.getQty(),
                         trans.getItemCode(),
                         trans.getCategoryId()
@@ -784,6 +951,10 @@ public class PurchaseOrderController implements Initializable {
                 lblItemName.setFont(font25);
                 lblItemName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px; -fx-text-fill: #00897B; -fx-font-weight: bold;");
             }
+            if (lblUnit != null) {
+                lblUnit.setFont(font25);
+                lblUnit.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px; -fx-text-fill: #616161;");
+            }
             if (lblQty != null) {
                 lblQty.setFont(font25);
                 lblQty.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px; -fx-text-fill: #616161;");
@@ -797,52 +968,142 @@ public class PurchaseOrderController implements Initializable {
 
     private void applyTableColumnFonts() {
         Font customFont = SessionService.getCustomFont();
-        if (customFont != null) {
-            String fontFamily = customFont.getFamily();
+        String fontFamily = customFont != null ? customFont.getFamily() : "Segoe UI";
 
-            // Category column
-            colCategory.setCellFactory(column -> {
-                TableCell<OrderItemData, String> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty || item == null ? null : item);
-                    }
-                };
-                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px;");
-                return cell;
-            });
+        // Sr. No column - English font
+        colSrNo.setCellFactory(column -> {
+            TableCell<OrderItemData, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : String.valueOf(item));
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-alignment: CENTER;");
+            return cell;
+        });
 
-            // Item name column
-            colItemName.setCellFactory(column -> {
-                TableCell<OrderItemData, String> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty || item == null ? null : item);
-                    }
-                };
-                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px;");
-                return cell;
-            });
-        }
+        // Item name column - Custom font
+        colItemName.setCellFactory(column -> {
+            TableCell<OrderItemData, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 22px;");
+            return cell;
+        });
+
+        // Unit column - English font
+        colUnit.setCellFactory(column -> {
+            TableCell<OrderItemData, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: CENTER;");
+            return cell;
+        });
+
+        // Quantity column - English font
+        colQty.setCellFactory(column -> {
+            TableCell<OrderItemData, Float> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Float item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : String.format("%.0f", item));
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: CENTER;");
+            return cell;
+        });
     }
 
     private void applySupplierNameColumnFont() {
         Font customFont = SessionService.getCustomFont();
-        if (customFont != null) {
-            String fontFamily = customFont.getFamily();
-            colSupplierName.setCellFactory(column -> {
-                TableCell<ExistingOrderData, String> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty || item == null ? null : item);
-                    }
-                };
-                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 12px;");
-                return cell;
-            });
+        String fontFamily = customFont != null ? customFont.getFamily() : "Segoe UI";
+
+        // Order No column
+        colOrderNo.setCellFactory(column -> {
+            TableCell<ExistingOrderData, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : String.valueOf(item));
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-font-weight: bold; -fx-alignment: CENTER;");
+            return cell;
+        });
+
+        // Order Date column
+        colOrderDate.setCellFactory(column -> {
+            TableCell<ExistingOrderData, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 13px; -fx-alignment: CENTER;");
+            return cell;
+        });
+
+        // Supplier Name column - Custom font
+        colSupplierName.setCellFactory(column -> {
+            TableCell<ExistingOrderData, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px;");
+            return cell;
+        });
+
+        // Order Qty column
+        colOrderQty.setCellFactory(column -> {
+            TableCell<ExistingOrderData, Float> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Float item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : String.format("%.0f", item));
+                }
+            };
+            cell.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-font-weight: bold; -fx-alignment: CENTER;");
+            return cell;
+        });
+
+        // Apply styles to search UI elements
+        applySearchUIStyles();
+    }
+
+    private void applySearchUIStyles() {
+        Font customFont = SessionService.getCustomFont();
+        String fontFamily = customFont != null ? customFont.getFamily() : "Segoe UI";
+
+        // Search text fields
+        if (txtSearchOrderNo != null) {
+            txtSearchOrderNo.setFont(Font.font("Segoe UI", 18));
+            txtSearchOrderNo.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;");
+        }
+        // txtSearchSupplier uses AutoCompleteTextField with font20 (same as txtSupplier)
+
+        // Date pickers - 14px font
+        if (dpSearchFromDate != null) {
+            dpSearchFromDate.setStyle("-fx-font-size: 14px; -fx-background-radius: 4;");
+        }
+        if (dpSearchToDate != null) {
+            dpSearchToDate.setStyle("-fx-font-size: 14px; -fx-background-radius: 4;");
+        }
+        // "To" label - 14px font
+        if (lblToDate != null) {
+            lblToDate.setStyle("-fx-text-fill: #757575; -fx-font-size: 14px;");
         }
     }
 
@@ -852,15 +1113,17 @@ public class PurchaseOrderController implements Initializable {
         private final SimpleIntegerProperty srNo;
         private final SimpleStringProperty categoryName;
         private final SimpleStringProperty itemName;
+        private final SimpleStringProperty unit;
         private final SimpleFloatProperty qty;
         private Integer itemCode;
         private Integer categoryId;
 
-        public OrderItemData(int srNo, String categoryName, String itemName, float qty,
+        public OrderItemData(int srNo, String categoryName, String itemName, String unit, float qty,
                              Integer itemCode, Integer categoryId) {
             this.srNo = new SimpleIntegerProperty(srNo);
             this.categoryName = new SimpleStringProperty(categoryName);
             this.itemName = new SimpleStringProperty(itemName);
+            this.unit = new SimpleStringProperty(unit);
             this.qty = new SimpleFloatProperty(qty);
             this.itemCode = itemCode;
             this.categoryId = categoryId;
@@ -877,6 +1140,10 @@ public class PurchaseOrderController implements Initializable {
         public String getItemName() { return itemName.get(); }
         public SimpleStringProperty itemNameProperty() { return itemName; }
         public void setItemName(String value) { itemName.set(value); }
+
+        public String getUnit() { return unit.get(); }
+        public SimpleStringProperty unitProperty() { return unit; }
+        public void setUnit(String value) { unit.set(value); }
 
         public float getQty() { return qty.get(); }
         public SimpleFloatProperty qtyProperty() { return qty; }

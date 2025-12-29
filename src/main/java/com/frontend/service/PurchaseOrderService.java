@@ -197,7 +197,7 @@ public class PurchaseOrderService {
     }
 
     /**
-     * Get purchase order with transactions eagerly loaded
+     * Get purchase order with transactions and supplier eagerly loaded
      */
     @Transactional(readOnly = true)
     public PurchaseOrder getOrderWithTransactions(Integer orderNo) {
@@ -206,6 +206,10 @@ public class PurchaseOrderService {
             PurchaseOrder order = optOrder.get();
             // Eagerly load transactions
             order.getTransactions().size();
+            // Eagerly load supplier to avoid LazyInitializationException
+            if (order.getSupplier() != null) {
+                order.getSupplier().getName();
+            }
             return order;
         }
         return null;

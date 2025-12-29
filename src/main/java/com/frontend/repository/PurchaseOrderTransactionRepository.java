@@ -2,6 +2,7 @@ package com.frontend.repository;
 
 import com.frontend.entity.PurchaseOrderTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,7 @@ public interface PurchaseOrderTransactionRepository extends JpaRepository<Purcha
     /**
      * Delete all transactions by order number
      */
+    @Modifying
     @Query("DELETE FROM PurchaseOrderTransaction t WHERE t.purchaseOrder.orderNo = :orderNo")
     void deleteByOrderNo(@Param("orderNo") Integer orderNo);
 

@@ -224,6 +224,16 @@ public enum FxmlView {
         public String getFxmlFile() {
             return "/fxml/demo/MaterialFXDemo.fxml";
         }
+    },
+    PURCHASE_INVOICE_FROM_PO {
+        @Override
+        String getTitle() {
+            return "Create Purchase Invoice from Order";
+        }
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/transaction/PurchaseInvoiceFromPO.fxml";
+        }
     }
     ;
     abstract String getTitle();

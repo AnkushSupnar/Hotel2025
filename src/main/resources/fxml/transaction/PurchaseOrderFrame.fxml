@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.PurchaseOrderController">
-    <SplitPane dividerPositions="0.6" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <SplitPane dividerPositions="0.6" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
     <!-- LEFT SIDE: Order Entry Form (60%) -->
     <VBox spacing="10" style="-fx-background-color: #ECEFF1; -fx-padding: 12;">
@@ -37,11 +37,11 @@
         <!-- Section 1: Supplier & Order Info -->
         <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
             <VBox spacing="3" HBox.hgrow="ALWAYS">
-                <Label fx:id="lblSupplier" style="-fx-text-fill: #00897B; -fx-font-weight: bold;" text="purvzadar">
+                <Label fx:id="lblSupplier" style="-fx-text-fill: #00897B; -fx-font-weight: bold;" text="paurvazadaracao naava">
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
-                <TextField fx:id="txtSupplier" prefHeight="38" promptText="purvzadar Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                    <font><Font name="Kiran" size="20.0" /></font>
+                <TextField fx:id="txtSupplier" prefHeight="38" promptText="paurvazadaracao naava Saaoqaa" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                    <font><Font name="Kiran" size="22.0" /></font>
                 </TextField>
             </VBox>
             <VBox spacing="3">
@@ -62,20 +62,26 @@
                     <Label fx:id="lblCategory" style="-fx-text-fill: #00897B; -fx-font-weight: bold;" text="k^TogaorI">
                         <font><Font name="Kiran" size="25.0" /></font>
                     </Label>
-                    <TextField fx:id="txtCategory" prefHeight="38" prefWidth="200" promptText="k^TogaorI Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                    <TextField fx:id="txtCategory" prefHeight="38" prefWidth="200" promptText="k^TogaorI SaaoQaa..." style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
                         <font><Font name="Kiran" size="20.0" /></font>
                     </TextField>
                 </VBox>
                 <VBox spacing="3" HBox.hgrow="ALWAYS">
-                    <Label fx:id="lblItemName" style="-fx-text-fill: #00897B; -fx-font-weight: bold;" text="AayTma naava">
+                    <Label fx:id="lblItemName" style="-fx-text-fill: #00897B; -fx-font-weight: bold;" text="maalaacao naava">
                         <font><Font name="Kiran" size="25.0" /></font>
                     </Label>
-                    <TextField fx:id="txtItemName" prefHeight="38" promptText="AayTma Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                    <TextField fx:id="txtItemName" prefHeight="38" promptText="maalaache naava SaaoQaa" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
                         <font><Font name="Kiran" size="20.0" /></font>
                     </TextField>
                 </VBox>
                 <VBox spacing="3">
-                    <Label fx:id="lblQty" style="-fx-text-fill: #616161;" text="p`maaNa">
+                    <Label fx:id="lblUnit" style="-fx-text-fill: #616161;" text="yaunaIT">
+                        <font><Font name="Kiran" size="25.0" /></font>
+                    </Label>
+                    <ComboBox fx:id="cmbUnit" prefHeight="38" prefWidth="100" promptText="Unit" style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                </VBox>
+                <VBox spacing="3">
+                    <Label fx:id="lblQty" style="-fx-text-fill: #616161;" text="naga">
                         <font><Font name="Kiran" size="25.0" /></font>
                     </Label>
                     <TextField fx:id="txtQty" alignment="CENTER" prefHeight="38" prefWidth="120" promptText="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
@@ -101,10 +107,10 @@
         <!-- Items Table -->
         <TableView fx:id="tblOrderItems" style="-fx-background-color: white; -fx-background-radius: 6;" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colSrNo" prefWidth="50" style="-fx-alignment: CENTER;" text="Sr." />
-                <TableColumn fx:id="colCategory" prefWidth="180" text="k^TogaorI" />
-                <TableColumn fx:id="colItemName" prefWidth="300" text="AayTma naava" />
-                <TableColumn fx:id="colQty" prefWidth="100" style="-fx-alignment: CENTER;" text="p`maaNa" />
+                <TableColumn fx:id="colSrNo" prefWidth="60" style="-fx-alignment: CENTER;" text="Sr." />
+                <TableColumn fx:id="colItemName" prefWidth="350" text="Item Name" />
+                <TableColumn fx:id="colUnit" prefWidth="100" style="-fx-alignment: CENTER;" text="Unit" />
+                <TableColumn fx:id="colQty" prefWidth="120" style="-fx-alignment: CENTER;" text="Quantity" />
             </columns>
         </TableView>
 
@@ -113,7 +119,7 @@
 
             <!-- Left: Remarks -->
             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                <Label fx:id="lblRemarks" style="-fx-text-fill: #616161;" text="Xaora (Remarks)">
+                <Label fx:id="lblRemarks" style="-fx-text-fill: #616161;" text="Xaora">
                     <font><Font name="Kiran" size="25.0" /></font>
                 </Label>
                 <TextField fx:id="txtRemarks" prefHeight="38" promptText="Xaora ilaha..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
@@ -177,32 +183,47 @@
             <!-- Row 1: Date Range -->
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#00897B" glyphName="CALENDAR" size="1em" />
-                <DatePicker fx:id="dpSearchFromDate" prefHeight="30" prefWidth="130" promptText="From Date" style="-fx-font-size: 10px; -fx-background-radius: 4;" />
-                <Label style="-fx-text-fill: #757575; -fx-font-size: 10px;" text="to" />
-                <DatePicker fx:id="dpSearchToDate" prefHeight="30" prefWidth="130" promptText="To Date" style="-fx-font-size: 10px; -fx-background-radius: 4;" />
+                <DatePicker fx:id="dpSearchFromDate" prefHeight="32" prefWidth="140" promptText="From Date" style="-fx-font-size: 14px; -fx-background-radius: 4;" />
+                <Label fx:id="lblToDate" style="-fx-text-fill: #757575; -fx-font-size: 14px;" text="to" />
+                <DatePicker fx:id="dpSearchToDate" prefHeight="32" prefWidth="140" promptText="To Date" style="-fx-font-size: 14px; -fx-background-radius: 4;" />
             </HBox>
 
             <!-- Row 2: Order No Search -->
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#00897B" glyphName="FILE_TEXT_ALT" size="1em" />
-                <TextField fx:id="txtSearchOrderNo" prefHeight="30" promptText="Order Number" style="-fx-font-size: 11px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="txtSearchOrderNo" prefHeight="30" promptText="Order Number" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
             </HBox>
 
             <!-- Row 3: Supplier Search -->
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#00897B" glyphName="TRUCK" size="1em" />
-                <TextField fx:id="txtSearchSupplier" prefHeight="30" promptText="Supplier Name" style="-fx-font-size: 11px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                    <font><Font name="Kiran" size="14.0" /></font>
+                <TextField fx:id="txtSearchSupplier" prefHeight="30" promptText="paurvazadaracao naava Saaoqaa" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                    <font><Font name="Kiran" size="22.0" /></font>
                 </TextField>
             </HBox>
 
             <!-- Action Buttons -->
             <HBox alignment="CENTER" spacing="6">
-                <Button fx:id="btnSearchOrders" prefHeight="28" style="-fx-background-color: #00897B; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <Button fx:id="btnSearchOrders" maxWidth="Infinity" prefHeight="28" style="-fx-background-color: #00897B; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" HBox.hgrow="ALWAYS">
                     <graphic>
                         <FontAwesomeIcon fill="white" glyphName="SEARCH" size="0.9em" />
                     </graphic>
                     <text>Search</text>
+                </Button>
+                <Button fx:id="btnPrintOrder" prefHeight="28" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" text="Print">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="PRINT" size="0.9em" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnCopyOrder" prefHeight="28" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" text="Copy">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="COPY" size="0.9em" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnCreateInvoice" prefHeight="28" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" text="Invoice">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="FILE_TEXT" size="0.9em" />
+                    </graphic>
                 </Button>
                 <Button fx:id="btnClearSearch" prefHeight="28" style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 10;">
                     <graphic>

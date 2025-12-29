@@ -36,6 +36,9 @@ public class PurchaseOrderTransaction {
     @Column(name = "category_name", length = 100)
     private String categoryName;
 
+    @Column(name = "unit", length = 20)
+    private String unit;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -71,6 +74,17 @@ public class PurchaseOrderTransaction {
         this.itemCode = itemCode;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
+    }
+
+    public PurchaseOrderTransaction(String itemName, Float qty, PurchaseOrder purchaseOrder,
+                                    Integer itemCode, Integer categoryId, String categoryName, String unit) {
+        this.itemName = itemName;
+        this.qty = qty;
+        this.purchaseOrder = purchaseOrder;
+        this.itemCode = itemCode;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.unit = unit;
     }
 
     // Getters and Setters
@@ -130,6 +144,14 @@ public class PurchaseOrderTransaction {
         this.categoryName = categoryName;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -157,6 +179,7 @@ public class PurchaseOrderTransaction {
                 "id=" + id +
                 ", itemName='" + itemName + '\'' +
                 ", qty=" + qty +
+                ", unit='" + unit + '\'' +
                 ", orderNo=" + getOrderNo() +
                 ", itemCode=" + itemCode +
                 ", categoryId=" + categoryId +
