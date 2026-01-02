@@ -197,14 +197,10 @@ public class PurchaseOrderController implements Initializable {
             allSuppliers = supplierService.getActiveSuppliers();
             LOG.info("Loaded {} suppliers", allSuppliers.size());
 
-            List<CategoryMasterDto> allCategories = categoryApiService.getAllCategories();
+            List<CategoryMasterDto> purchaseCategories = categoryApiService.getPurchaseCategories();
             stockCategories.clear();
-            for (CategoryMasterDto cat : allCategories) {
-                if ("Y".equalsIgnoreCase(cat.getStock())) {
-                    stockCategories.add(cat);
-                }
-            }
-            LOG.info("Loaded {} stock categories", stockCategories.size());
+            stockCategories.addAll(purchaseCategories);
+            LOG.info("Loaded {} purchase categories", stockCategories.size());
 
         } catch (Exception e) {
             LOG.error("Error loading data: ", e);

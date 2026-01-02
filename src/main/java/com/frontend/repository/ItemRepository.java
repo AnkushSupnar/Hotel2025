@@ -28,9 +28,14 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     Optional<Item> findByIdWithCategory(Integer id);
 
     /**
-     * Find item by name
+     * Find item by name (exact match)
      */
     Optional<Item> findByItemName(String itemName);
+
+    /**
+     * Find item by name (case-insensitive exact match)
+     */
+    Optional<Item> findByItemNameIgnoreCase(String itemName);
 
     /**
      * Find items by category ID

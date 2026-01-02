@@ -51,6 +51,12 @@ public class AddCategoryController implements Initializable {
     private RadioButton rbNo;
 
     @FXML
+    private RadioButton rbPurchaseYes;
+
+    @FXML
+    private RadioButton rbPurchaseNo;
+
+    @FXML
     private Button btnSave;
 
     @FXML
@@ -83,10 +89,14 @@ public class AddCategoryController implements Initializable {
     @FXML
     private TableColumn<CategoryTableData, String> colStock;
 
+    @FXML
+    private TableColumn<CategoryTableData, String> colPurchase;
+
     private ObservableList<CategoryTableData> categoryData = FXCollections.observableArrayList();
     private FilteredList<CategoryTableData> filteredData;
     private CategoryTableData selectedCategory = null;
     private ToggleGroup stockToggleGroup;
+    private ToggleGroup purchaseToggleGroup;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -106,6 +116,12 @@ public class AddCategoryController implements Initializable {
         rbNo.setToggleGroup(stockToggleGroup);
         rbYes.setSelected(true); // Default to YES
 
+        // Setup RadioButton ToggleGroup for purchase status
+        purchaseToggleGroup = new ToggleGroup();
+        rbPurchaseYes.setToggleGroup(purchaseToggleGroup);
+        rbPurchaseNo.setToggleGroup(purchaseToggleGroup);
+        rbPurchaseNo.setSelected(true); // Default to NO
+
         // Setup filter ComboBox
         cmbFilterStock.setItems(FXCollections.observableArrayList("All Status", "Y", "N"));
         cmbFilterStock.setValue("All Status");
@@ -122,6 +138,9 @@ public class AddCategoryController implements Initializable {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        if (colPurchase != null) {
+            colPurchase.setCellValueFactory(new PropertyValueFactory<>("purchase"));
+        }
 
         // Apply custom font to Category column (if available)
         applyCategoryColumnFont();
@@ -314,6 +333,7 @@ public class AddCategoryController implements Initializable {
             CategoryMasterDto categoryDto = new CategoryMasterDto();
             categoryDto.setCategory(txtCategoryName.getText().trim());
             categoryDto.setStock(getSelectedStockValue());
+            categoryDto.setPurchase(getSelectedPurchaseValue());
 
             if (selectedCategory == null) {
                 // Create new category
@@ -340,6 +360,10 @@ public class AddCategoryController implements Initializable {
         return rbYes.isSelected() ? "Y" : "N";
     }
 
+    private String getSelectedPurchaseValue() {
+        return rbPurchaseYes.isSelected() ? "Y" : "N";
+    }
+
     private void editCategory(CategoryTableData category) {
         selectedCategory = category;
         txtCategoryName.setText(category.getCategory());
@@ -349,6 +373,13 @@ public class AddCategoryController implements Initializable {
             rbYes.setSelected(true);
         } else {
             rbNo.setSelected(true);
+        }
+
+        // Set radio button based on purchase value
+        if ("Y".equals(category.getPurchase()) || "YES".equalsIgnoreCase(category.getPurchase())) {
+            rbPurchaseYes.setSelected(true);
+        } else {
+            rbPurchaseNo.setSelected(true);
         }
 
         // Show Update button, hide Save button
@@ -380,7 +411,8 @@ public class AddCategoryController implements Initializable {
 
     private void clearForm() {
         txtCategoryName.clear();
-        rbYes.setSelected(true); // Default to YES
+        rbYes.setSelected(true); // Default to YES for stock
+        rbPurchaseNo.setSelected(true); // Default to NO for purchase
         selectedCategory = null;
 
         // Show Save button, hide Update button
@@ -413,7 +445,7 @@ public class AddCategoryController implements Initializable {
             categoryData.clear();
 
             for (CategoryMasterDto dto : categories) {
-                categoryData.add(new CategoryTableData(dto.getId(), dto.getCategory(), dto.getStock()));
+                categoryData.add(new CategoryTableData(dto.getId(), dto.getCategory(), dto.getStock(), dto.getPurchase()));
             }
 
             // Refresh the table view to ensure it displays updated data
@@ -439,11 +471,13 @@ public class AddCategoryController implements Initializable {
         private final SimpleIntegerProperty id;
         private final SimpleStringProperty category;
         private final SimpleStringProperty stock;
+        private final SimpleStringProperty purchase;
 
-        public CategoryTableData(Integer id, String category, String stock) {
+        public CategoryTableData(Integer id, String category, String stock, String purchase) {
             this.id = new SimpleIntegerProperty(id);
             this.category = new SimpleStringProperty(category);
             this.stock = new SimpleStringProperty(stock);
+            this.purchase = new SimpleStringProperty(purchase != null ? purchase : "N");
         }
 
         public Integer getId() {
@@ -468,6 +502,14 @@ public class AddCategoryController implements Initializable {
 
         public SimpleStringProperty stockProperty() {
             return stock;
+        }
+
+        public String getPurchase() {
+            return purchase.get();
+        }
+
+        public SimpleStringProperty purchaseProperty() {
+            return purchase;
         }
     }
 }

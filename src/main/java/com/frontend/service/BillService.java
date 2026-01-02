@@ -43,6 +43,9 @@ public class BillService {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private ItemStockService itemStockService;
+
     /**
      * Create and save a new bill from temp transactions with CLOSE status
      *
@@ -198,6 +201,9 @@ public class BillService {
             savedBill = billRepository.save(savedBill);
             LOG.info("PAID Bill {} saved with {} transactions", savedBill.getBillNo(), savedBill.getTransactions().size());
 
+            // Reduce stock for items with stock-enabled categories
+            reduceStockForSale(savedBill);
+
             // Clear temp transactions for this table
             tempTransactionService.clearTransactionsForTable(tableNo);
 
@@ -278,6 +284,9 @@ public class BillService {
             savedBill = billRepository.save(savedBill);
             LOG.info("CREDIT Bill {} saved with {} transactions", savedBill.getBillNo(), savedBill.getTransactions().size());
 
+            // Reduce stock for items with stock-enabled categories
+            reduceStockForSale(savedBill);
+
             // Clear temp transactions for this table
             tempTransactionService.clearTransactionsForTable(tableNo);
 
@@ -329,6 +338,9 @@ public class BillService {
             // Eagerly fetch transactions to avoid LazyInitializationException
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
+
+            // Reduce stock for items with stock-enabled categories
+            reduceStockForSale(updatedBill);
 
             LOG.info("Bill {} marked as PAID ({}) at {} with {} transactions", billNo, paymode, bill.getBillTime(), updatedBill.getTransactions().size());
 
@@ -383,6 +395,9 @@ public class BillService {
             // Eagerly fetch transactions to avoid LazyInitializationException
             // when printing the bill in a background thread
             updatedBill.getTransactions().size();
+
+            // Reduce stock for items with stock-enabled categories
+            reduceStockForSale(updatedBill);
 
             // Calculate credit balance for logging
             float creditBalance = bill.getNetAmount() - (bill.getCashReceived() - bill.getReturnAmount());
@@ -916,10 +931,33 @@ public class BillService {
 
             Bill bill = optBill.get();
 
-            // Delete existing transactions for this bill
+            // Copy old transaction DATA (not entity references) before deleting
+            // This avoids Hibernate transaction conflicts
+            List<Map<String, Object>> oldTransactionData = new ArrayList<>();
+            for (Transaction trans : bill.getTransactions()) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("itemCode", trans.getItemCode());
+                data.put("itemName", trans.getItemName());
+                data.put("qty", trans.getQty());
+                data.put("rate", trans.getRate());
+                oldTransactionData.add(data);
+            }
+            LOG.info("Copied {} old transaction data for stock reversal in bill #{}", oldTransactionData.size(), billNo);
+
+            // Delete existing transactions for this bill FIRST
+            // Note: deleteByBillNo has clearAutomatically=true which clears the persistence context
             transactionRepository.deleteByBillNo(billNo);
-            bill.getTransactions().clear();
             LOG.info("Deleted existing transactions for bill #{}", billNo);
+
+            // Reload the bill after persistence context was cleared
+            optBill = billRepository.findById(billNo);
+            if (optBill.isEmpty()) {
+                throw new RuntimeException("Bill not found after reload: " + billNo);
+            }
+            bill = optBill.get();
+
+            // Reverse stock for old transactions using copied data (add back the old quantities)
+            reverseStockFromData(billNo, oldTransactionData);
 
             // Consolidate temp transactions with same itemName and rate
             List<TempTransaction> consolidatedTransactions = consolidateTempTransactions(tempTransactions);
@@ -961,6 +999,9 @@ public class BillService {
             // Eagerly fetch transactions for printing
             savedBill.getTransactions().size();
 
+            // Reduce stock for new transactions
+            reduceStockForSale(savedBill);
+
             LOG.info("Bill #{} updated successfully with {} transactions, status={}",
                     savedBill.getBillNo(), savedBill.getTransactions().size(), newStatus);
 
@@ -969,6 +1010,125 @@ public class BillService {
         } catch (Exception e) {
             LOG.error("Error updating bill #{}", billNo, e);
             throw new RuntimeException("Error updating bill: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Reduce stock for bill items
+     * Only reduces stock for items whose category has stock='Y'
+     */
+    private void reduceStockForSale(Bill bill) {
+        try {
+            LOG.info("Reducing stock for sales bill: {}", bill.getBillNo());
+            int stockUpdatedCount = 0;
+
+            for (Transaction trans : bill.getTransactions()) {
+                try {
+                    // Get item details to find category
+                    if (trans.getItemCode() != null) {
+                        Item item = itemService.getItemByCode(trans.getItemCode());
+                        if (item != null && item.getCategoryId() != null) {
+                            itemStockService.reduceStock(
+                                    trans.getItemCode(),
+                                    trans.getItemName(),
+                                    item.getCategoryId(),
+                                    trans.getQty(),
+                                    trans.getRate(),
+                                    bill.getBillNo()
+                            );
+                            stockUpdatedCount++;
+                        }
+                    } else if (trans.getItemName() != null) {
+                        // Try to find item by name
+                        Optional<Item> itemOpt = itemService.getItemByName(trans.getItemName());
+                        if (itemOpt.isPresent()) {
+                            Item item = itemOpt.get();
+                            if (item.getCategoryId() != null) {
+                                itemStockService.reduceStock(
+                                        item.getItemCode(),
+                                        trans.getItemName(),
+                                        item.getCategoryId(),
+                                        trans.getQty(),
+                                        trans.getRate(),
+                                        bill.getBillNo()
+                                );
+                                stockUpdatedCount++;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Failed to reduce stock for item: {} - {}", trans.getItemName(), e.getMessage());
+                    // Continue with other items even if one fails
+                }
+            }
+
+            LOG.info("Stock reduced for {} items in sales bill {}", stockUpdatedCount, bill.getBillNo());
+
+        } catch (Exception e) {
+            LOG.error("Error reducing stock for sales bill: {} - {}", bill.getBillNo(), e.getMessage());
+            // Don't throw - stock update failure shouldn't fail the bill save
+        }
+    }
+
+    /**
+     * Reverse stock using copied transaction data when editing a bill
+     * This method uses Map data instead of entity references to avoid Hibernate conflicts
+     */
+    private void reverseStockFromData(Integer billNo, List<Map<String, Object>> oldTransactionData) {
+        try {
+            LOG.info("Reversing stock for {} old transactions in bill: {}", oldTransactionData.size(), billNo);
+            int stockReversedCount = 0;
+
+            for (Map<String, Object> data : oldTransactionData) {
+                try {
+                    Integer itemCode = (Integer) data.get("itemCode");
+                    String itemName = (String) data.get("itemName");
+                    Float qty = (Float) data.get("qty");
+                    Float rate = (Float) data.get("rate");
+
+                    // Get item details to find category
+                    if (itemCode != null) {
+                        Item item = itemService.getItemByCode(itemCode);
+                        if (item != null && item.getCategoryId() != null) {
+                            itemStockService.reverseStockForSale(
+                                    itemCode,
+                                    itemName,
+                                    item.getCategoryId(),
+                                    qty,
+                                    rate,
+                                    billNo
+                            );
+                            stockReversedCount++;
+                        }
+                    } else if (itemName != null) {
+                        // Try to find item by name
+                        Optional<Item> itemOpt = itemService.getItemByName(itemName);
+                        if (itemOpt.isPresent()) {
+                            Item item = itemOpt.get();
+                            if (item.getCategoryId() != null) {
+                                itemStockService.reverseStockForSale(
+                                        item.getItemCode(),
+                                        itemName,
+                                        item.getCategoryId(),
+                                        qty,
+                                        rate,
+                                        billNo
+                                );
+                                stockReversedCount++;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Failed to reverse stock for item: {} - {}", data.get("itemName"), e.getMessage());
+                    // Continue with other items even if one fails
+                }
+            }
+
+            LOG.info("Stock reversed for {} items in bill {} (edit operation)", stockReversedCount, billNo);
+
+        } catch (Exception e) {
+            LOG.error("Error reversing stock for bill: {} - {}", billNo, e.getMessage());
+            // Don't throw - stock reversal failure shouldn't fail the bill update
         }
     }
 }

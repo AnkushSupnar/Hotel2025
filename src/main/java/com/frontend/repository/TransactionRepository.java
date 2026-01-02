@@ -64,8 +64,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     /**
      * Delete all transactions for a specific bill
+     * clearAutomatically ensures stale entities are removed from persistence context
+     * flushAutomatically ensures pending changes are flushed before delete
      */
-    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM Transaction t WHERE t.bill.billNo = :billNo")
     void deleteByBillNo(@Param("billNo") Integer billNo);
 }

@@ -245,11 +245,13 @@ public class BillingController implements Initializable {
     private ComboBox<PaymentOption> cmbPaymentMode;
 
     /**
-     * Inner class to represent payment options (CASH or Bank)
+     * Inner class to represent payment options (Cash bank or other Banks)
+     * Cash is treated as a bank with IFSC code "cash" for unified transaction tracking
      */
     public static class PaymentOption {
         private final String displayName;
-        private final Bank bank; // null for CASH option
+        private final Bank bank;
+        private static final String CASH_IFSC = "cash";
 
         public PaymentOption(String displayName, Bank bank) {
             this.displayName = displayName;
@@ -264,12 +266,18 @@ public class BillingController implements Initializable {
             return bank;
         }
 
+        /**
+         * Check if this is a cash payment (bank with IFSC code "cash")
+         */
         public boolean isCash() {
-            return bank == null;
+            return bank != null && CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
         }
 
+        /**
+         * Check if this is a regular bank payment (not cash)
+         */
         public boolean isBank() {
-            return bank != null;
+            return bank != null && !CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
         }
 
         @Override
@@ -1022,7 +1030,8 @@ public class BillingController implements Initializable {
 
     private void handleItemNameEnter() {
         System.out.println("Handeling Item Name Enter");
-        String itemName = txtItemName.getText().trim();
+        //String itemName = txtItemName.getText().trim();
+        String itemName = txtItemName.getText();
 
         if (!itemName.isEmpty()) {
             Item item = itemService.getItemByName(itemName).orElse(null);
@@ -2011,7 +2020,7 @@ public class BillingController implements Initializable {
     }
 
     /**
-     * Setup payment mode dropdown with CASH and Bank options
+     * Setup payment mode dropdown with all banks (including cash bank with IFSC "cash")
      */
     private void setupPaymentMode() {
         if (cmbPaymentMode == null) {
@@ -2027,13 +2036,17 @@ public class BillingController implements Initializable {
             // Create payment options list
             ObservableList<PaymentOption> paymentOptions = FXCollections.observableArrayList();
 
-            // Add CASH as first option
-            paymentOptions.add(new PaymentOption("CASH", null));
-
-            // Add all active banks
+            // Add all active banks (including cash bank with IFSC "cash")
             List<Bank> banks = bankService.getActiveBanks();
+            PaymentOption cashBankOption = null;
+
             for (Bank bank : banks) {
-                paymentOptions.add(new PaymentOption(bank.getBankName(), bank));
+                PaymentOption option = new PaymentOption(bank.getBankName(), bank);
+                paymentOptions.add(option);
+                // Track the cash bank option (IFSC = "cash") to select it by default
+                if ("cash".equalsIgnoreCase(bank.getIfsc())) {
+                    cashBankOption = option;
+                }
             }
 
             cmbPaymentMode.setItems(paymentOptions);
@@ -2049,11 +2062,16 @@ public class BillingController implements Initializable {
                         setStyle("");
                     } else {
                         setText(item.getDisplayName());
-                        // Style with readable colors - white background, colored text
+                        // Style with readable colors - green for cash, blue for banks
                         if (item.isCash()) {
-                            setStyle("-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            // Cash bank - green color with custom font
+                            if (fontFamily != null) {
+                                setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            } else {
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            }
                         } else {
-                            // Apply custom font for bank names (18px) with dark text for readability
+                            // Other banks - blue color with custom font
                             if (fontFamily != null) {
                                 setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
                             } else {
@@ -2070,26 +2088,30 @@ public class BillingController implements Initializable {
                 protected void updateItem(PaymentOption item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty || item == null) {
-                        setText("CASH");
+                        setText("");
                         setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
                     } else {
                         setText(item.getDisplayName());
-                        // Apply custom font for bank names in button cell (18px)
-                        if (item.isBank() && fontFamily != null) {
+                        // Apply custom font for all bank names in button cell (18px)
+                        if (fontFamily != null) {
                             setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px; -fx-font-weight: bold;");
                         } else {
-                            setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+                            setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
                         }
                     }
                 }
             });
 
-            // Select CASH by default
-            if (!paymentOptions.isEmpty()) {
+            // Select cash bank by default, otherwise first option
+            if (cashBankOption != null) {
+                cmbPaymentMode.getSelectionModel().select(cashBankOption);
+                LOG.info("Selected cash bank as default payment mode");
+            } else if (!paymentOptions.isEmpty()) {
                 cmbPaymentMode.getSelectionModel().selectFirst();
+                LOG.warn("Cash bank (IFSC='cash') not found, selecting first bank as default");
             }
 
-            LOG.info("Payment mode dropdown setup with CASH + {} banks (custom font: {})", banks.size(), fontFamily);
+            LOG.info("Payment mode dropdown setup with {} banks (custom font: {})", banks.size(), fontFamily);
 
         } catch (Exception e) {
             LOG.error("Error setting up payment mode: ", e);
@@ -2103,8 +2125,8 @@ public class BillingController implements Initializable {
         if (cmbPaymentMode != null && cmbPaymentMode.getValue() != null) {
             return cmbPaymentMode.getValue();
         }
-        // Default to CASH if nothing selected
-        return new PaymentOption("CASH", null);
+        // Return null if nothing selected - caller should handle this
+        return null;
     }
 
     // ============= Bill History Methods =============
@@ -2620,9 +2642,18 @@ public class BillingController implements Initializable {
         if (lblBalance != null) lblBalance.setText("₹ 0.00");
         if (lblDiscount != null) lblDiscount.setText("₹ 0.00");
         if (lblNetAmount != null) lblNetAmount.setText("₹ 0.00");
-        // Reset payment mode to CASH (first item in dropdown)
+        // Reset payment mode to cash bank
         if (cmbPaymentMode != null && !cmbPaymentMode.getItems().isEmpty()) {
-            cmbPaymentMode.getSelectionModel().selectFirst();
+            // Find and select the cash bank (IFSC="cash")
+            PaymentOption cashOption = cmbPaymentMode.getItems().stream()
+                    .filter(PaymentOption::isCash)
+                    .findFirst()
+                    .orElse(null);
+            if (cashOption != null) {
+                cmbPaymentMode.getSelectionModel().select(cashOption);
+            } else {
+                cmbPaymentMode.getSelectionModel().selectFirst();
+            }
         }
     }
 
@@ -3123,12 +3154,13 @@ public class BillingController implements Initializable {
 
                 // Get payment mode and bank ID from dropdown
                 PaymentOption selectedPayment = getSelectedPaymentOption();
-                Integer bankId = null;
-                String paymode = "CASH";
-                if (selectedPayment.isBank()) {
-                    bankId = selectedPayment.getBank().getId();
-                    paymode = "BANK";
+                if (selectedPayment == null || selectedPayment.getBank() == null) {
+                    alert.showError("Please select a payment mode");
+                    return;
                 }
+                // All payments go through bank (including cash bank with IFSC="cash")
+                Integer bankId = selectedPayment.getBank().getId();
+                String paymode = selectedPayment.isCash() ? "CASH" : "BANK";
 
                 // Calculate net received and discount
                 float netReceived = cashReceived - returnToCustomer;
@@ -3422,6 +3454,42 @@ public class BillingController implements Initializable {
             }
             if (txtReturnToCustomer != null && billBeingEdited.getReturnAmount() != null) {
                 txtReturnToCustomer.setText(String.format("%.0f", billBeingEdited.getReturnAmount()));
+            }
+
+            // Load payment mode from saved bill
+            if (cmbPaymentMode != null && !cmbPaymentMode.getItems().isEmpty()) {
+                PaymentOption matchedOption = null;
+                Integer savedBankId = billBeingEdited.getBankId();
+
+                // First try to match by bankId if available
+                if (savedBankId != null) {
+                    for (PaymentOption opt : cmbPaymentMode.getItems()) {
+                        if (opt.getBank() != null && opt.getBank().getId().equals(savedBankId)) {
+                            matchedOption = opt;
+                            break;
+                        }
+                    }
+                }
+
+                // If no bankId match and paymode is "CASH" (backwards compatibility), find cash bank
+                if (matchedOption == null && "CASH".equalsIgnoreCase(billBeingEdited.getPaymode())) {
+                    matchedOption = cmbPaymentMode.getItems().stream()
+                            .filter(PaymentOption::isCash)
+                            .findFirst()
+                            .orElse(null);
+                }
+
+                // Set the matched payment mode or default to cash bank
+                if (matchedOption != null) {
+                    cmbPaymentMode.setValue(matchedOption);
+                } else {
+                    // Default to cash bank
+                    PaymentOption cashOption = cmbPaymentMode.getItems().stream()
+                            .filter(PaymentOption::isCash)
+                            .findFirst()
+                            .orElse(cmbPaymentMode.getItems().get(0));
+                    cmbPaymentMode.setValue(cashOption);
+                }
             }
 
             // Update UI to show edit mode

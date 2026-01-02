@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -18,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.PurchaseBillController">
-    <SplitPane dividerPositions="0.6" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <SplitPane dividerPositions="0.6" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
     <!-- LEFT SIDE: Bill Entry Form (60%) -->
     <VBox spacing="10" style="-fx-background-color: #ECEFF1; -fx-padding: 12;">
@@ -38,24 +37,22 @@
         <!-- Section 1: Supplier & Bill Info -->
         <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
             <VBox spacing="3" HBox.hgrow="ALWAYS">
-                <Label fx:id="lblSupplier" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="purvzadar">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtSupplier" prefHeight="38" promptText="purvzadar Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                <Label fx:id="lblSupplier" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="paurvazadaracao naava">
                     <font><Font name="Kiran" size="20.0" /></font>
-                </TextField>
+                </Label>
+                <TextField fx:id="txtSupplier" prefHeight="42.0" prefWidth="353.0" promptText="paurvazadaracao naava....." style="-fx-background-color: #FAFAFA; -fx-border-color: #7B1FA2; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-family: 'Kiran'; -fx-font-size: 22px;" />
             </VBox>
-            <VBox spacing="3">
+            <VBox minWidth="120" spacing="3">
                 <Label style="-fx-text-fill: #616161; -fx-font-size: 12px;" text="Bill Date" />
-                <DatePicker fx:id="dpBillDate" prefHeight="38" prefWidth="130" style="-fx-font-size: 12px;" />
+                <DatePicker fx:id="dpBillDate" maxWidth="Infinity" prefHeight="38" prefWidth="106.0" style="-fx-font-size: 12px;" HBox.hgrow="NEVER" />
             </VBox>
-            <VBox spacing="3">
+            <VBox minWidth="100" spacing="3">
                 <Label style="-fx-text-fill: #616161; -fx-font-size: 12px;" text="Supplier Bill No." />
-                <TextField fx:id="txtSupplierBillNo" prefHeight="38" prefWidth="110" promptText="Bill No." style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                <TextField fx:id="txtSupplierBillNo" maxWidth="Infinity" prefHeight="38" prefWidth="86.0" promptText="Bill No." style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
             </VBox>
-            <VBox spacing="3">
+            <VBox minWidth="80" spacing="3">
                 <Label style="-fx-text-fill: #616161; -fx-font-size: 12px;" text="Ref No." />
-                <TextField fx:id="txtReffNo" prefHeight="38" prefWidth="90" promptText="Ref" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                <TextField fx:id="txtReffNo" maxWidth="Infinity" prefHeight="38" prefWidth="49.0" promptText="Ref" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
             </VBox>
             <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #7B1FA2; -fx-background-radius: 4; -fx-padding: 6 12;">
                 <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 9px;" text="ITEMS" />
@@ -63,89 +60,91 @@
             </VBox>
         </HBox>
 
-        <!-- Section 2: Item Entry Row -->
-        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
-            <VBox spacing="3">
-                <Label fx:id="lblCategory" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="k^TogaorI">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtCategory" prefHeight="38" prefWidth="160" promptText="k^TogaorI Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                    <font><Font name="Kiran" size="20.0" /></font>
-                </TextField>
-            </VBox>
-            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                <Label fx:id="lblItemName" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="AayTma naava">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtItemName" prefHeight="38" promptText="AayTma Xaaoqa..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                    <font><Font name="Kiran" size="20.0" /></font>
-                </TextField>
-            </VBox>
-            <VBox spacing="3">
-                <Label fx:id="lblQty" style="-fx-text-fill: #616161;" text="p`maaNa">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtQty" alignment="CENTER" prefHeight="38" prefWidth="70" promptText="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
-            </VBox>
-            <VBox spacing="3">
-                <Label fx:id="lblRate" style="-fx-text-fill: #616161;" text="dr">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtRate" alignment="CENTER" prefHeight="38" prefWidth="80" promptText="0.00" style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
-            </VBox>
-            <VBox spacing="3">
-                <Label fx:id="lblAmount" style="-fx-text-fill: #616161;" text="rk\kma">
-                    <font><Font name="Kiran" size="25.0" /></font>
-                </Label>
-                <TextField fx:id="txtAmount" alignment="CENTER" editable="false" prefHeight="38" prefWidth="90" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: #E8F5E9; -fx-border-color: #4CAF50; -fx-border-radius: 4; -fx-background-radius: 4;" text="0.00" />
-            </VBox>
-
-            <!-- Action Buttons -->
-            <VBox alignment="BOTTOM_CENTER" spacing="3">
-                <Label text=" " style="-fx-font-size: 10px;" />
-                <HBox spacing="4">
-                    <Button fx:id="btnAddItem" prefHeight="38" prefWidth="65" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="ADD">
-                        <graphic><FontAwesomeIcon fill="white" glyphName="PLUS" size="0.9em" /></graphic>
-                    </Button>
-                    <Button fx:id="btnEditItem" prefHeight="38" prefWidth="65" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand;" text="EDIT">
-                        <graphic><FontAwesomeIcon fill="white" glyphName="PENCIL" size="0.9em" /></graphic>
-                    </Button>
-                    <Button fx:id="btnClearFields" prefHeight="38" prefWidth="65" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand;" text="CLEAR">
-                        <graphic><FontAwesomeIcon fill="white" glyphName="ERASER" size="0.9em" /></graphic>
-                    </Button>
-                    <Button fx:id="btnRemoveItem" prefHeight="38" prefWidth="75" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand;" text="REMOVE">
-                        <graphic><FontAwesomeIcon fill="white" glyphName="TRASH" size="0.9em" /></graphic>
-                    </Button>
-                </HBox>
-            </VBox>
-        </HBox>
+        <!-- Section 2: Item Entry - Two Rows -->
+        <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
+            <!-- Row 1: Item Fields -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <VBox minWidth="140" spacing="3" HBox.hgrow="SOMETIMES">
+                    <Label fx:id="lblCategory" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="k^TogaorI">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </Label>
+                    <TextField fx:id="txtCategory" maxWidth="Infinity" prefHeight="40" prefWidth="195.0" promptText="k^TogaorI SaaoQaa..." style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </TextField>
+                </VBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label fx:id="lblItemName" style="-fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="maalaacao naava">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </Label>
+                    <TextField fx:id="txtItemName" maxWidth="Infinity" prefHeight="40" promptText="maalacao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </TextField>
+                </VBox>
+                <VBox minWidth="70" spacing="3">
+                    <Label fx:id="lblQty" style="-fx-text-fill: #616161;" text="naga">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </Label>
+                    <TextField fx:id="txtQty" alignment="CENTER" maxWidth="Infinity" prefHeight="40" prefWidth="61.0" promptText="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                </VBox>
+                <VBox minWidth="80" spacing="3">
+                    <Label fx:id="lblRate" style="-fx-text-fill: #616161;" text="dr">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </Label>
+                    <TextField fx:id="txtRate" alignment="CENTER" maxWidth="Infinity" prefHeight="40" prefWidth="69.0" promptText="0.00" style="-fx-font-size: 16px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                </VBox>
+                <VBox minWidth="100" spacing="3">
+                    <Label fx:id="lblAmount" style="-fx-text-fill: #616161;" text="r@kma">
+                        <font><Font name="Kiran" size="20.0" /></font>
+                    </Label>
+                    <TextField fx:id="txtAmount" alignment="CENTER" editable="false" maxWidth="Infinity" prefHeight="40" prefWidth="87.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #E8F5E9; -fx-border-color: #4CAF50; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-radius: 4;" text="0.00" />
+                </VBox>
+            </HBox>
+            <!-- Row 2: Action Buttons -->
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Button fx:id="btnAddItem" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="ADD" HBox.hgrow="ALWAYS">
+                    <graphic><FontAwesomeIcon fill="white" glyphName="PLUS" size="1em" /></graphic>
+                </Button>
+                <Button fx:id="btnEditItem" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="EDIT" HBox.hgrow="ALWAYS">
+                    <graphic><FontAwesomeIcon fill="white" glyphName="PENCIL" size="1em" /></graphic>
+                </Button>
+                <Button fx:id="btnClearFields" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="CLEAR" HBox.hgrow="ALWAYS">
+                    <graphic><FontAwesomeIcon fill="white" glyphName="ERASER" size="1em" /></graphic>
+                </Button>
+                <Button fx:id="btnRemoveItem" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="REMOVE" HBox.hgrow="ALWAYS">
+                    <graphic><FontAwesomeIcon fill="white" glyphName="TRASH" size="1em" /></graphic>
+                </Button>
+            </HBox>
+        </VBox>
 
         <!-- Items Table -->
-        <TableView fx:id="tblPurchaseItems" style="-fx-background-color: white; -fx-background-radius: 6;" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tblPurchaseItems" style="-fx-background-color: white; -fx-background-radius: 6; -fx-font-size: 14px;" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colSrNo" prefWidth="45" style="-fx-alignment: CENTER;" text="Sr." />
-                <TableColumn fx:id="colItemName" prefWidth="300" text="AayTma naava" />
-                <TableColumn fx:id="colQty" prefWidth="70" style="-fx-alignment: CENTER-RIGHT;" text="p`maaNa" />
-                <TableColumn fx:id="colRate" prefWidth="90" style="-fx-alignment: CENTER-RIGHT;" text="dr" />
-                <TableColumn fx:id="colAmount" prefWidth="100" style="-fx-alignment: CENTER-RIGHT;" text="rk\kma" />
+                <TableColumn fx:id="colSrNo" minWidth="50" prefWidth="60" style="-fx-alignment: CENTER; -fx-font-size: 14px;" text="Sr." />
+                <TableColumn fx:id="colItemName" minWidth="200" prefWidth="300" style="-fx-alignment: CENTER-LEFT;" text="Item Name" />
+                <TableColumn fx:id="colQty" minWidth="100" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;" text="Quantity" />
+                <TableColumn fx:id="colRate" minWidth="100" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;" text="Rate" />
+                <TableColumn fx:id="colAmount" minWidth="100" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;" text="Amount" />
             </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
         </TableView>
 
         <!-- Section 3: Bill Summary -->
-        <HBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
+        <HBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);">
 
             <!-- Left: Remarks -->
-            <VBox spacing="4" prefWidth="280">
-                <Label fx:id="lblRemarks" style="-fx-text-fill: #616161;" text="Xaora (Remarks)">
-                    <font><Font name="Kiran" size="25.0" /></font>
+            <VBox minWidth="150.0" spacing="4" HBox.hgrow="SOMETIMES">
+                <Label fx:id="lblRemarks" style="-fx-text-fill: #616161;" text="Saora">
+                    <font><Font name="Kiran" size="20.0" /></font>
                 </Label>
-                <TextField fx:id="txtRemarks" prefHeight="38" promptText="Xaora ilaha..." style="-fx-font-size: 14px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                <TextField fx:id="txtRemarks" maxWidth="Infinity" prefHeight="38" promptText="Saora ilaha..." style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;">
                     <font><Font name="Kiran" size="20.0" /></font>
                 </TextField>
-                <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
-                    <HBox alignment="CENTER" spacing="6" style="-fx-background-color: white; -fx-border-color: #7B1FA2; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 2 6;">
+                <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 4 0 0 0;">
+                    <HBox alignment="CENTER" spacing="6" style="-fx-background-color: white; -fx-border-color: #7B1FA2; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 2 6;" HBox.hgrow="ALWAYS">
                         <FontAwesomeIcon fill="#7B1FA2" glyphName="MONEY" size="1em" />
-                        <ComboBox fx:id="cmbPaymentMode" prefHeight="28" prefWidth="150" style="-fx-font-size: 20px; -fx-background-color: transparent; -fx-border-color: transparent;" />
+                        <ComboBox fx:id="cmbPaymentMode" maxWidth="Infinity" prefHeight="32" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS" />
                     </HBox>
                 </HBox>
             </VBox>
@@ -153,47 +152,50 @@
             <Separator orientation="VERTICAL" />
 
             <!-- Center: Bill Calculations -->
-            <VBox spacing="6" style="-fx-padding: 0 8;" HBox.hgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label fx:id="lblSubTotalLabel" prefWidth="130" style="-fx-text-fill: #616161;" text="ekUNa rk\kma">
-                        <font><Font name="Kiran" size="25.0" /></font>
+            <VBox minWidth="150.0" prefHeight="138.0" prefWidth="214.0" spacing="6" style="-fx-padding: 0 8;" HBox.hgrow="SOMETIMES">
+                <HBox alignment="CENTER_LEFT">
+                    <Label fx:id="lblSubTotalLabel" minWidth="80.0" style="-fx-text-fill: #616161;" text="ekUNa r@kma" HBox.hgrow="ALWAYS">
+                        <font><Font name="Kiran" size="20.0" /></font>
                     </Label>
-                    <Label fx:id="lblSubTotal" prefWidth="100" style="-fx-text-fill: #212121; -fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT;" text="0.00" />
+                    <Label fx:id="lblSubTotal" minWidth="80" prefHeight="26.0" prefWidth="118.0" style="-fx-text-fill: #212121; -fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT;" text="0.00" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label fx:id="lblDiscountLabel" prefWidth="130" style="-fx-text-fill: #616161;" text="sUT (-)">
-                        <font><Font name="Kiran" size="25.0" /></font>
+                <HBox alignment="CENTER_LEFT">
+                    <Label fx:id="lblDiscountLabel" minWidth="80.0" style="-fx-text-fill: #616161;" text="iDska{MT" HBox.hgrow="ALWAYS">
+                        <font><Font name="Kiran" size="20.0" /></font>
                     </Label>
-                    <TextField fx:id="txtDiscount" alignment="CENTER_RIGHT" prefHeight="30" prefWidth="100" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                    <TextField fx:id="txtDiscount" alignment="CENTER_RIGHT" minWidth="80.0" prefHeight="30" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label prefWidth="110" style="-fx-text-fill: #616161; -fx-font-size: 13px;" text="GST (+)" />
-                    <TextField fx:id="txtGst" alignment="CENTER_RIGHT" prefHeight="30" prefWidth="100" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                <HBox alignment="CENTER_LEFT">
+                    <Label minWidth="80.0" style="-fx-text-fill: #616161; -fx-font-size: 13px;" text="GST (+)" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtGst" alignment="CENTER_RIGHT" minWidth="80.0" prefHeight="30" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label prefWidth="110" style="-fx-text-fill: #616161; -fx-font-size: 13px;" text="Other Tax (+)" />
-                    <TextField fx:id="txtOtherTax" alignment="CENTER_RIGHT" prefHeight="30" prefWidth="100" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                <HBox alignment="CENTER_LEFT">
+                    <Label minWidth="80.0" style="-fx-text-fill: #616161; -fx-font-size: 13px;" text="Other Tax (+)" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtOtherTax" alignment="CENTER_RIGHT" minWidth="80.0" prefHeight="30" promptText="0.00" style="-fx-font-size: 13px; -fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" />
                 </HBox>
             </VBox>
 
             <Separator orientation="VERTICAL" />
 
             <!-- Right: Grand Total & Actions -->
-            <VBox alignment="CENTER" spacing="6">
-                <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to bottom, #7B1FA2, #6A1B9A); -fx-background-radius: 6; -fx-padding: 12 20;">
-                    <Label fx:id="lblGrandTotalLabel" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14px;" text="ema\D TaoTla">
-                        <font><Font name="Kiran" size="25.0" /></font>
+            <VBox alignment="CENTER" minWidth="200.0" spacing="6.0">
+                <VBox alignment="CENTER" maxWidth="Infinity" style="-fx-background-color: linear-gradient(to bottom, #7B1FA2, #6A1B9A); -fx-background-radius: 6; -fx-padding: 12 20;">
+                    <Label fx:id="lblGrandTotalLabel" style="-fx-text-fill: rgba(255,255,255,0.8);" text="ibala r@kma">
+                        <font><Font name="Kiran" size="20.0" /></font>
                     </Label>
-                    <Label fx:id="lblGrandTotal" style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;" text="0.00" />
+                    <Label fx:id="lblGrandTotal" style="-fx-text-fill: white; -fx-font-weight: bold;" text="0.00">
+                     <font>
+                        <Font size="26.0" />
+                     </font></Label>
                 </VBox>
                 <HBox alignment="CENTER" spacing="6">
-                    <Button fx:id="btnSaveBill" prefHeight="36" prefWidth="90" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="SAVE">
+                    <Button fx:id="btnSaveBill" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand;" text="SAVE" HBox.hgrow="ALWAYS">
                         <graphic><FontAwesomeIcon fill="white" glyphName="SAVE" size="1em" /></graphic>
                     </Button>
-                    <Button fx:id="btnNewBill" prefHeight="36" prefWidth="80" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand;" text="NEW">
+                    <Button fx:id="btnNewBill" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand;" text="NEW" HBox.hgrow="ALWAYS">
                         <graphic><FontAwesomeIcon fill="white" glyphName="PLUS" size="1em" /></graphic>
                     </Button>
-                    <Button fx:id="btnClearAll" prefHeight="36" prefWidth="80" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand;" text="CLEAR">
+                    <Button fx:id="btnClearAll" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand;" text="CLEAR" HBox.hgrow="ALWAYS">
                         <graphic><FontAwesomeIcon fill="white" glyphName="TRASH" size="1em" /></graphic>
                     </Button>
                 </HBox>
@@ -222,28 +224,25 @@
             <!-- Row 1: Date Range -->
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#7B1FA2" glyphName="CALENDAR" size="1em" />
-                <DatePicker fx:id="dpSearchFromDate" prefHeight="30" prefWidth="130" promptText="From Date" style="-fx-font-size: 10px; -fx-background-radius: 4;" />
-                <Label style="-fx-text-fill: #757575; -fx-font-size: 10px;" text="to" />
-                <DatePicker fx:id="dpSearchToDate" prefHeight="30" prefWidth="130" promptText="To Date" style="-fx-font-size: 10px; -fx-background-radius: 4;" />
+                <DatePicker fx:id="dpSearchFromDate" prefHeight="34" prefWidth="130" promptText="From Date" style="-fx-font-size: 14px; -fx-background-radius: 4;" />
+                <Label style="-fx-text-fill: #757575; -fx-font-size: 14px;" text="to" />
+                <DatePicker fx:id="dpSearchToDate" prefHeight="34" prefWidth="130" promptText="To Date" style="-fx-font-size: 14px; -fx-background-radius: 4;" />
             </HBox>
 
             <!-- Row 2: Bill No Search -->
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#7B1FA2" glyphName="FILE_TEXT_ALT" size="1em" />
-                <TextField fx:id="txtSearchBillNo" prefHeight="30" promptText="Bill Number" style="-fx-font-size: 11px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="txtSearchBillNo" prefHeight="34" promptText="Bill Number" style="-fx-font-size: 14px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
             </HBox>
 
-            <!-- Row 3: Supplier Search -->
-            <HBox alignment="CENTER_LEFT" spacing="6">
+            <!-- Row 3: Supplier Search (AutocompleteTextField added programmatically) -->
+            <HBox fx:id="hboxSearchSupplier" alignment="CENTER_LEFT" spacing="6">
                 <FontAwesomeIcon fill="#7B1FA2" glyphName="TRUCK" size="1em" />
-                <TextField fx:id="txtSearchSupplier" prefHeight="30" promptText="Supplier Name" style="-fx-font-size: 11px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                    <font><Font name="Kiran" size="14.0" /></font>
-                </TextField>
             </HBox>
 
             <!-- Action Buttons -->
             <HBox alignment="CENTER" spacing="6">
-                <Button fx:id="btnSearchBills" prefHeight="28" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <Button fx:id="btnSearchBills" maxWidth="Infinity" prefHeight="28" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" HBox.hgrow="ALWAYS">
                     <graphic>
                         <FontAwesomeIcon fill="white" glyphName="SEARCH" size="0.9em" />
                     </graphic>
@@ -258,13 +257,13 @@
         </VBox>
 
         <!-- Existing Bills Table -->
-        <TableView fx:id="tblExistingBills" fixedCellSize="28" style="-fx-font-size: 11px; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tblExistingBills" fixedCellSize="32" style="-fx-font-size: 14px; -fx-background-color: white;" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colBillNo" minWidth="50" prefWidth="55" text="Bill#" />
-                <TableColumn fx:id="colBillDate" minWidth="75" prefWidth="80" text="Date" />
-                <TableColumn fx:id="colSupplierName" minWidth="100" prefWidth="110" text="Supplier" />
-                <TableColumn fx:id="colBillAmount" minWidth="70" prefWidth="75" text="Amount" />
-                <TableColumn fx:id="colBillStatus" minWidth="55" prefWidth="60" text="Status" />
+                <TableColumn fx:id="colBillNo" minWidth="60" prefWidth="70" style="-fx-alignment: CENTER;" text="Bill#" />
+                <TableColumn fx:id="colBillDate" minWidth="90" prefWidth="100" style="-fx-alignment: CENTER;" text="Date" />
+                <TableColumn fx:id="colSupplierName" minWidth="120" prefWidth="140" text="Supplier" />
+                <TableColumn fx:id="colBillAmount" minWidth="90" prefWidth="100" style="-fx-alignment: CENTER-RIGHT;" text="Amount" />
+                <TableColumn fx:id="colBillStatus" minWidth="70" prefWidth="80" style="-fx-alignment: CENTER;" text="Status" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -41,7 +41,7 @@ public class PurchaseBill {
     @Column(name = "reff_no", length = 50)
     private String reffNo;
 
-    @Column(name = "pay", length = 20)
+    @Column(name = "pay", length = 100)
     private String pay;
 
     @Column(name = "pay_id")

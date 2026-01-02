@@ -41,8 +41,11 @@ public class KOTOrderPrint {
 
     private static final Logger LOG = LoggerFactory.getLogger(KOTOrderPrint.class);
 
+    // PDF output directory (same as BillPrint)
+    private static final String KOT_PDF_DIR = "D:" + File.separator + "Hotel Software";
+
     // PDF output path
-    private static final String KOT_PDF_PATH = System.getProperty("user.home") + File.separator + "kot.pdf";
+    private static final String KOT_PDF_PATH = KOT_PDF_DIR + File.separator + "KOT.pdf";
 
     // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm = 3.15 inches)
     private static final float PAPER_WIDTH = 226f;
@@ -81,6 +84,12 @@ public class KOTOrderPrint {
             // Load fonts
             loadFonts();
 
+            // Ensure output directory exists
+            File outputDir = new File(KOT_PDF_DIR);
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+
             // Generate PDF
             String waitorName = getWaitorName(waitorId);
             String pdfPath = generateKOTPdf(tableName, items, waitorName);
@@ -118,6 +127,12 @@ public class KOTOrderPrint {
 
             // Load fonts
             loadFonts();
+
+            // Ensure output directory exists
+            File outputDir = new File(KOT_PDF_DIR);
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
 
             // Generate PDF
             String waitorName = getWaitorName(waitorId);
@@ -236,7 +251,8 @@ public class KOTOrderPrint {
             // Set custom page size before opening - this is the correct way
             Rectangle pageSize = new Rectangle(PAPER_WIDTH, height);
             document.setPageSize(pageSize);
-            document.setMargins(3f, 3f, 5f, 5f);
+            // Minimal margins - cut to cut from top (left, right, top, bottom)
+            document.setMargins(3f, 3f, 0f, 2f);
 
             document.open();
 
@@ -272,7 +288,7 @@ public class KOTOrderPrint {
         PdfPCell cellHead = new PdfPCell(new Phrase("ha^Tola AMjanaI", fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(2f);
+        cellHead.setPaddingTop(0f); // Cut to cut from top
         cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
@@ -326,11 +342,8 @@ public class KOTOrderPrint {
         PdfPTable footerTable = new PdfPTable(2);
         footerTable.setWidths(new float[]{60, 40});
 
-        // Waiter: Marathi label + Marathi value
-        Phrase waiterPhrase = new Phrase();
-        waiterPhrase.add(new Chunk("vaoTr : ", fontSmall));
-        waiterPhrase.add(new Chunk(waitorName, fontMedium));
-        PdfPCell cellWaiter = new PdfPCell(waiterPhrase);
+        // Waiter: Use custom font for entire phrase (label + name)
+        PdfPCell cellWaiter = new PdfPCell(new Phrase("vaoTr : " + waitorName, fontMedium));
         cellWaiter.setHorizontalAlignment(Element.ALIGN_LEFT);
         cellWaiter.setBorder(Rectangle.TOP);
         cellWaiter.setPaddingTop(4f);

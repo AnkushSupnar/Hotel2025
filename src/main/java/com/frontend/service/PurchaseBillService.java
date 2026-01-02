@@ -33,6 +33,9 @@ public class PurchaseBillService {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private ItemStockService itemStockService;
+
     /**
      * Create and save a new purchase bill
      */
@@ -80,6 +83,9 @@ public class PurchaseBillService {
             savedBill = purchaseBillRepository.save(savedBill);
             LOG.info("Purchase bill {} saved with {} transactions",
                     savedBill.getBillNo(), savedBill.getTransactions().size());
+
+            // Update stock for items with stock-enabled categories
+            updateStockForPurchase(savedBill);
 
             return savedBill;
 
@@ -319,5 +325,44 @@ public class PurchaseBillService {
      */
     public long getBillCountByDate(LocalDate date) {
         return purchaseBillRepository.countByBillDate(date);
+    }
+
+    /**
+     * Update stock for purchase bill items
+     * Only updates stock for items whose category has stock='Y'
+     */
+    private void updateStockForPurchase(PurchaseBill bill) {
+        try {
+            LOG.info("Updating stock for purchase bill: {}", bill.getBillNo());
+            int stockUpdatedCount = 0;
+
+            for (PurchaseTransaction trans : bill.getTransactions()) {
+                try {
+                    // Only update stock if categoryId and itemCode are available
+                    if (trans.getCategoryId() != null) {
+                        itemStockService.addStock(
+                                trans.getItemCode(),
+                                trans.getItemName(),
+                                trans.getCategoryId(),
+                                trans.getQty(),
+                                trans.getRate(),
+                                bill.getBillNo()
+                        );
+                        stockUpdatedCount++;
+                    } else {
+                        LOG.debug("Skipping stock update for item {} - no category ID", trans.getItemName());
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Failed to update stock for item: {} - {}", trans.getItemName(), e.getMessage());
+                    // Continue with other items even if one fails
+                }
+            }
+
+            LOG.info("Stock updated for {} items in purchase bill {}", stockUpdatedCount, bill.getBillNo());
+
+        } catch (Exception e) {
+            LOG.error("Error updating stock for purchase bill: {} - {}", bill.getBillNo(), e.getMessage());
+            // Don't throw - stock update failure shouldn't fail the bill save
+        }
     }
 }

@@ -47,6 +47,7 @@ public class CategoryApiService {
         dto.setId(entity.getId());
         dto.setCategory(entity.getCategory());
         dto.setStock(entity.getStock());
+        dto.setPurchase(entity.getPurchase());
         return dto;
     }
 
@@ -71,6 +72,7 @@ public class CategoryApiService {
         }
         entity.setCategory(dto.getCategory());
         entity.setStock(dto.getStock());
+        entity.setPurchase(dto.getPurchase() != null ? dto.getPurchase() : "N");
         return entity;
     }
 
@@ -118,6 +120,7 @@ public class CategoryApiService {
         CategoryMaster existing = existingOptional.get();
         existing.setCategory(categoryDto.getCategory());
         existing.setStock(categoryDto.getStock());
+        existing.setPurchase(categoryDto.getPurchase() != null ? categoryDto.getPurchase() : "N");
 
         CategoryMaster updated = categoryRepository.save(existing);
 
@@ -177,5 +180,41 @@ public class CategoryApiService {
 
         LOG.info("Category found with name: {}", name);
         return categoryOptional;
+    }
+
+    /**
+     * Get categories marked for purchase
+     */
+    public List<CategoryMasterDto> getPurchaseCategories() {
+        LOG.debug("Fetching purchase categories from database");
+
+        List<CategoryMaster> categories = categoryRepository.findByPurchase("Y");
+        LOG.info("Successfully fetched {} purchase categories", categories.size());
+
+        return convertToDto(categories);
+    }
+
+    /**
+     * Get categories marked for stock
+     */
+    public List<CategoryMasterDto> getStockCategories() {
+        LOG.debug("Fetching stock categories from database");
+
+        List<CategoryMaster> categories = categoryRepository.findByStock("Y");
+        LOG.info("Successfully fetched {} stock categories", categories.size());
+
+        return convertToDto(categories);
+    }
+
+    /**
+     * Get categories marked for both stock and purchase
+     */
+    public List<CategoryMasterDto> getStockAndPurchaseCategories() {
+        LOG.debug("Fetching stock and purchase categories from database");
+
+        List<CategoryMaster> categories = categoryRepository.findByStockAndPurchase("Y", "Y");
+        LOG.info("Successfully fetched {} stock+purchase categories", categories.size());
+
+        return convertToDto(categories);
     }
 }

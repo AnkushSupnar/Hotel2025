@@ -255,6 +255,10 @@ public class ItemService {
     }
 
     public Optional<Item> getItemByName(String name) {
-        return itemRepository.findByItemName(name);
+        if (name == null || name.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        // Use case-insensitive search with trimmed input
+        return itemRepository.findByItemNameIgnoreCase(name.trim());
     }
 }

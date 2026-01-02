@@ -103,6 +103,24 @@
                      </children>
                   </VBox>
 
+                  <!-- Purchase Status Field -->
+                  <VBox spacing="8">
+                     <children>
+                        <Label styleClass="input-label" text="PURCHASE STATUS" />
+                        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                           <children>
+                              <FontAwesomeIcon fill="#7E57C2" glyphName="SHOPPING_CART" size="1.2em" styleClass="input-icon" />
+                              <HBox alignment="CENTER_LEFT" spacing="20" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <RadioButton fx:id="rbPurchaseYes" styleClass="material-radio" text="Yes" />
+                                    <RadioButton fx:id="rbPurchaseNo" selected="true" styleClass="material-radio" text="No" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
                   <!-- Action Buttons -->
                   <VBox spacing="12">
                      <children>
@@ -193,7 +211,8 @@
                      <columns>
                         <TableColumn fx:id="colId" styleClass="id-column" text="ID" />
                         <TableColumn fx:id="colCategory" styleClass="category-name-column" text="Category Name" />
-                        <TableColumn fx:id="colStock" styleClass="stock-column" text="Stock Status" />
+                        <TableColumn fx:id="colStock" styleClass="stock-column" text="Stock" />
+                        <TableColumn fx:id="colPurchase" styleClass="stock-column" text="Purchase" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

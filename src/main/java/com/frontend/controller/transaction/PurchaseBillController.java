@@ -127,7 +127,7 @@ public class PurchaseBillController implements Initializable {
     @FXML private DatePicker dpSearchFromDate;
     @FXML private DatePicker dpSearchToDate;
     @FXML private TextField txtSearchBillNo;
-    @FXML private TextField txtSearchSupplier;
+    @FXML private HBox hboxSearchSupplier;
     @FXML private Button btnSearchBills;
     @FXML private Button btnClearSearch;
 
@@ -146,6 +146,8 @@ public class PurchaseBillController implements Initializable {
     private AutoCompleteTextField supplierAutoComplete;
     private AutoCompleteTextField categoryAutoComplete;
     private AutoCompleteTextField itemAutoComplete;
+    private AutoCompleteTextField searchSupplierAutoComplete;
+    private TextField txtSearchSupplier;
 
     // Data
     private ObservableList<PurchaseItemData> purchaseItems = FXCollections.observableArrayList();
@@ -188,14 +190,10 @@ public class PurchaseBillController implements Initializable {
             allSuppliers = supplierService.getActiveSuppliers();
             LOG.info("Loaded {} suppliers", allSuppliers.size());
 
-            List<CategoryMasterDto> allCategories = categoryApiService.getAllCategories();
+            List<CategoryMasterDto> purchaseCategories = categoryApiService.getPurchaseCategories();
             stockCategories.clear();
-            for (CategoryMasterDto cat : allCategories) {
-                if ("Y".equalsIgnoreCase(cat.getStock())) {
-                    stockCategories.add(cat);
-                }
-            }
-            LOG.info("Loaded {} stock categories", stockCategories.size());
+            stockCategories.addAll(purchaseCategories);
+            LOG.info("Loaded {} purchase categories", stockCategories.size());
 
             // Load banks for payment mode
             allBanks = bankService.getAllBanks();
@@ -233,6 +231,32 @@ public class PurchaseBillController implements Initializable {
         itemAutoComplete.setUseContainsFilter(true);
         itemAutoComplete.setOnSelectionCallback(this::onItemSelected);
         itemAutoComplete.setNextFocusField(txtQty);
+
+        // Search Supplier AutoComplete (in right panel)
+        setupSearchSupplierAutoComplete();
+    }
+
+    private void setupSearchSupplierAutoComplete() {
+        Font customFont = SessionService.getCustomFont();
+        Font font20 = customFont != null ? Font.font(customFont.getFamily(), 20) : Font.font(20);
+
+        // Create TextField for search supplier
+        txtSearchSupplier = new TextField();
+        txtSearchSupplier.setPromptText("paurvazadaracao naava.....");
+        txtSearchSupplier.setPrefHeight(38);
+        txtSearchSupplier.setStyle("-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;");
+        txtSearchSupplier.setFont(font20);
+        HBox.setHgrow(txtSearchSupplier, Priority.ALWAYS);
+
+        // Add to HBox
+        hboxSearchSupplier.getChildren().add(txtSearchSupplier);
+
+        // Setup AutoComplete
+        List<String> supplierNames = allSuppliers.stream()
+                .map(s -> s.getName() + (s.getCity() != null ? " (" + s.getCity() + ")" : ""))
+                .collect(Collectors.toList());
+        searchSupplierAutoComplete = new AutoCompleteTextField(txtSearchSupplier, supplierNames, font20);
+        searchSupplierAutoComplete.setUseContainsFilter(true);
     }
 
     private void onSupplierSelected(String selection) {
@@ -298,17 +322,20 @@ public class PurchaseBillController implements Initializable {
 
     private void setupPaymentComboBox() {
         ObservableList<PaymentOption> paymentOptions = FXCollections.observableArrayList();
+        PaymentOption cashBankOption = null;
 
-        // Add CASH option first
-        paymentOptions.add(new PaymentOption("CASH", null));
-
-        // Add CREDIT option
-        paymentOptions.add(new PaymentOption("CREDIT", null));
-
-        // Add all banks
+        // Add all banks (including cash bank with IFSC "cash")
         for (Bank bank : allBanks) {
-            paymentOptions.add(new PaymentOption(bank.getBankName(), bank));
+            PaymentOption option = new PaymentOption(bank.getBankName(), bank);
+            paymentOptions.add(option);
+            // Track the cash bank option to select it by default
+            if ("cash".equalsIgnoreCase(bank.getIfsc())) {
+                cashBankOption = option;
+            }
         }
+
+        // Add CREDIT option at the end (for credit purchases from suppliers)
+        paymentOptions.add(new PaymentOption("CREDIT", null));
 
         cmbPaymentMode.setItems(paymentOptions);
 
@@ -327,10 +354,13 @@ public class PurchaseBillController implements Initializable {
                 } else {
                     setText(item.getDisplayName());
                     if (item.isCash()) {
+                        // Cash bank - green color with custom font
                         setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-background-color: white;");
                     } else if (item.isCredit()) {
-                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-background-color: white;");
+                        // Credit - orange color with English font
+                        setStyle("-fx-font-size: 14px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-background-color: white;");
                     } else {
+                        // Other banks - blue color with custom font
                         setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0; -fx-background-color: white;");
                     }
                 }
@@ -347,10 +377,13 @@ public class PurchaseBillController implements Initializable {
                 } else {
                     setText(item.getDisplayName());
                     if (item.isCash()) {
+                        // Cash bank - custom font
                         setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;");
                     } else if (item.isCredit()) {
-                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #FF9800; -fx-font-weight: bold;");
+                        // Credit - English font
+                        setStyle("-fx-font-size: 14px; -fx-text-fill: #FF9800; -fx-font-weight: bold;");
                     } else {
+                        // Other banks - custom font
                         setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0;");
                     }
                 }
@@ -373,9 +406,13 @@ public class PurchaseBillController implements Initializable {
             }
         });
 
-        // Select CASH by default
-        if (!paymentOptions.isEmpty()) {
+        // Select cash bank by default, otherwise first option
+        if (cashBankOption != null) {
+            cmbPaymentMode.setValue(cashBankOption);
+            LOG.info("Selected cash bank as default payment mode");
+        } else if (!paymentOptions.isEmpty()) {
             cmbPaymentMode.setValue(paymentOptions.get(0));
+            LOG.warn("Cash bank (IFSC='cash') not found, selecting first option as default");
         }
     }
 
@@ -643,8 +680,14 @@ public class PurchaseBillController implements Initializable {
         try {
             // Get selected payment option
             PaymentOption selectedPayment = cmbPaymentMode.getValue();
-            String paymentMode = selectedPayment != null ? selectedPayment.getDisplayName() : "CASH";
-            Integer bankId = selectedPayment != null && selectedPayment.isBank() ? selectedPayment.getBank().getId() : null;
+            if (selectedPayment == null) {
+                alertNotification.showError("Please select a payment mode");
+                return;
+            }
+            // Store the display name (bank name or "CREDIT") in pay field for matching when loading
+            String paymentMode = selectedPayment.getDisplayName();
+            // All payments except CREDIT have a bankId (including cash bank)
+            Integer bankId = selectedPayment.getBank() != null ? selectedPayment.getBank().getId() : null;
 
             PurchaseBill bill = new PurchaseBill();
             bill.setPartyId(selectedSupplier.getId());
@@ -717,9 +760,14 @@ public class PurchaseBillController implements Initializable {
         txtGst.clear();
         txtOtherTax.clear();
         txtRemarks.clear();
-        // Reset to first option (CASH)
+        // Reset to cash bank
         if (!cmbPaymentMode.getItems().isEmpty()) {
-            cmbPaymentMode.setValue(cmbPaymentMode.getItems().get(0));
+            // Find and select the cash bank (IFSC="cash")
+            PaymentOption cashOption = cmbPaymentMode.getItems().stream()
+                    .filter(PaymentOption::isCash)
+                    .findFirst()
+                    .orElse(cmbPaymentMode.getItems().get(0));
+            cmbPaymentMode.setValue(cashOption);
         }
         clearAllItems();
     }
@@ -793,7 +841,14 @@ public class PurchaseBillController implements Initializable {
             LocalDate fromDate = dpSearchFromDate.getValue();
             LocalDate toDate = dpSearchToDate.getValue();
             String billNoStr = txtSearchBillNo.getText().trim();
-            String supplierSearch = txtSearchSupplier.getText().trim().toLowerCase();
+            String supplierSearchRaw = txtSearchSupplier.getText().trim();
+
+            // Extract supplier name without city (remove text in parentheses)
+            String supplierSearch = supplierSearchRaw;
+            if (supplierSearchRaw.contains("(")) {
+                supplierSearch = supplierSearchRaw.substring(0, supplierSearchRaw.indexOf("(")).trim();
+            }
+            supplierSearch = supplierSearch.toLowerCase();
 
             List<PurchaseBill> bills;
             if (fromDate != null && toDate != null) {
@@ -883,18 +938,47 @@ public class PurchaseBillController implements Initializable {
             txtRemarks.setText(bill.getRemarks() != null ? bill.getRemarks() : "");
 
             // Set payment mode from saved bill
-            String savedPayMode = bill.getPay() != null ? bill.getPay() : "CASH";
+            String savedPayMode = bill.getPay() != null ? bill.getPay() : "";
             PaymentOption matchedOption = null;
+
+            // First try to match by display name
             for (PaymentOption opt : cmbPaymentMode.getItems()) {
                 if (opt.getDisplayName().equals(savedPayMode)) {
                     matchedOption = opt;
                     break;
                 }
             }
+
+            // Handle backwards compatibility: if saved value was "CASH" (old format), find the cash bank
+            if (matchedOption == null && "CASH".equals(savedPayMode)) {
+                matchedOption = cmbPaymentMode.getItems().stream()
+                        .filter(PaymentOption::isCash)
+                        .findFirst()
+                        .orElse(null);
+            }
+
+            // If still no match and bankId is available, try to find by bankId
+            if (matchedOption == null && bill.getBankId() != null) {
+                Integer billBankId = bill.getBankId();
+                for (PaymentOption opt : cmbPaymentMode.getItems()) {
+                    if (opt.getBank() != null && opt.getBank().getId().equals(billBankId)) {
+                        matchedOption = opt;
+                        break;
+                    }
+                }
+            }
+
             if (matchedOption != null) {
                 cmbPaymentMode.setValue(matchedOption);
-            } else if (!cmbPaymentMode.getItems().isEmpty()) {
-                cmbPaymentMode.setValue(cmbPaymentMode.getItems().get(0));
+            } else {
+                // Default to cash bank if nothing matched
+                PaymentOption cashOption = cmbPaymentMode.getItems().stream()
+                        .filter(PaymentOption::isCash)
+                        .findFirst()
+                        .orElse(!cmbPaymentMode.getItems().isEmpty() ? cmbPaymentMode.getItems().get(0) : null);
+                if (cashOption != null) {
+                    cmbPaymentMode.setValue(cashOption);
+                }
             }
 
             txtGst.setText(bill.getGst() != null ? String.format("%.2f", bill.getGst()) : "");
@@ -931,11 +1015,16 @@ public class PurchaseBillController implements Initializable {
     private void applyCustomFonts() {
         Font customFont = SessionService.getCustomFont();
         if (customFont != null) {
-            Font font25 = Font.font(customFont.getFamily(), 25);
-            Font font20 = Font.font(customFont.getFamily(), 20);
+            String fontFamily = customFont.getFamily();
+            Font font25 = Font.font(fontFamily, 25);
+            Font font22 = Font.font(fontFamily, 22);
+            Font font20 = Font.font(fontFamily, 20);
 
-            // Apply to TextFields (20px)
-            txtSupplier.setFont(font20);
+            // Apply to txtSupplier (22px - highlighted)
+            txtSupplier.setFont(font22);
+            txtSupplier.setStyle("-fx-background-color: #FAFAFA; -fx-border-color: #7B1FA2; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-family: '" + fontFamily + "'; -fx-font-size: 22px;");
+
+            // Apply to other TextFields (20px)
             txtCategory.setFont(font20);
             txtItemName.setFont(font20);
             txtRemarks.setFont(font20);
@@ -956,20 +1045,84 @@ public class PurchaseBillController implements Initializable {
 
     private void applyItemNameColumnFont() {
         Font customFont = SessionService.getCustomFont();
-        if (customFont != null) {
-            String fontFamily = customFont.getFamily();
-            colItemName.setCellFactory(column -> {
-                TableCell<PurchaseItemData, String> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty || item == null ? null : item);
+        String fontFamily = customFont != null ? customFont.getFamily() : "System";
+
+        // Item Name column with custom font - 25px
+        colItemName.setCellFactory(column -> {
+            TableCell<PurchaseItemData, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px;");
+            return cell;
+        });
+
+        // Quantity column - 18px bold, right aligned
+        colQty.setCellFactory(column -> {
+            TableCell<PurchaseItemData, Float> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Float item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.0f", item));
                     }
-                };
-                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px;");
-                return cell;
-            });
-        }
+                }
+            };
+            cell.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 10 0 0;");
+            return cell;
+        });
+
+        // Rate column - 18px bold, right aligned
+        colRate.setCellFactory(column -> {
+            TableCell<PurchaseItemData, Float> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Float item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.2f", item));
+                    }
+                }
+            };
+            cell.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 10 0 0;");
+            return cell;
+        });
+
+        // Amount column - 18px bold, right aligned, green color
+        colAmount.setCellFactory(column -> {
+            TableCell<PurchaseItemData, Float> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Float item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.2f", item));
+                    }
+                }
+            };
+            cell.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 10 0 0; -fx-text-fill: #2E7D32;");
+            return cell;
+        });
+
+        // Sr. No column - 14px, centered
+        colSrNo.setCellFactory(column -> {
+            TableCell<PurchaseItemData, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : String.valueOf(item));
+                }
+            };
+            cell.setStyle("-fx-font-size: 14px; -fx-alignment: CENTER;");
+            return cell;
+        });
     }
 
     private void applySupplierNameColumnFont() {
@@ -984,7 +1137,7 @@ public class PurchaseBillController implements Initializable {
                         setText(empty || item == null ? null : item);
                     }
                 };
-                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 12px;");
+                cell.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px;");
                 return cell;
             });
         }
@@ -1071,11 +1224,12 @@ public class PurchaseBillController implements Initializable {
     }
 
     /**
-     * Payment option for dropdown - can be CASH, CREDIT, or a Bank
+     * Payment option for dropdown - can be Cash bank (IFSC="cash"), CREDIT, or other Banks
      */
     public static class PaymentOption {
         private final String displayName;
-        private final Bank bank; // null for CASH/CREDIT option
+        private final Bank bank; // null only for CREDIT option
+        private static final String CASH_IFSC = "cash";
 
         public PaymentOption(String displayName, Bank bank) {
             this.displayName = displayName;
@@ -1090,16 +1244,22 @@ public class PurchaseBillController implements Initializable {
             return bank;
         }
 
+        /**
+         * Check if this is a cash payment (bank with IFSC code "cash")
+         */
         public boolean isCash() {
-            return bank == null && "CASH".equals(displayName);
+            return bank != null && CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
         }
 
         public boolean isCredit() {
             return bank == null && "CREDIT".equals(displayName);
         }
 
+        /**
+         * Check if this is a regular bank payment (not cash and not credit)
+         */
         public boolean isBank() {
-            return bank != null;
+            return bank != null && !CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
         }
 
         @Override

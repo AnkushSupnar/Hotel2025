@@ -58,6 +58,9 @@ public class PurchaseInvoiceFromPOController implements Initializable {
     @Autowired
     private BankService bankService;
 
+    @Autowired
+    private BankTransactionService bankTransactionService;
+
     // Header
     @FXML private Label lblOrderNo;
     @FXML private Label lblOrderDate;
@@ -89,8 +92,8 @@ public class PurchaseInvoiceFromPOController implements Initializable {
 
     // Payment Section
     @FXML private ComboBox<String> cmbPaymentStatus;
-    @FXML private ComboBox<String> cmbPaymentMode;
-    @FXML private ComboBox<Bank> cmbBank;
+    @FXML private ComboBox<PaymentOption> cmbPaymentMode;
+    // cmbBank removed - using unified PaymentOption dropdown
     @FXML private Label lblBankLabel;
     @FXML private VBox vboxBank;
     @FXML private Label lblRemarks;
@@ -210,44 +213,12 @@ public class PurchaseInvoiceFromPOController implements Initializable {
     private void setupComboBoxes() {
         // Payment Status
         cmbPaymentStatus.setItems(FXCollections.observableArrayList("PAID", "DUE"));
-        cmbPaymentStatus.setValue("DUE");
+        cmbPaymentStatus.setValue("PAID"); // Default to PAID since we're creating invoice
 
-        // Payment Mode
-        cmbPaymentMode.setItems(FXCollections.observableArrayList("CASH", "BANK", "UPI", "CHEQUE", "CREDIT"));
-        cmbPaymentMode.setValue("CASH");
+        // Setup Payment Mode dropdown with all banks (including cash bank with IFSC "cash")
+        setupPaymentModeComboBox();
 
-        // Load banks
-        try {
-            allBanks = bankService.getAllBanks();
-            cmbBank.setItems(FXCollections.observableArrayList(allBanks));
-            cmbBank.setConverter(new javafx.util.StringConverter<Bank>() {
-                @Override
-                public String toString(Bank bank) {
-                    return bank != null ? bank.getBankName() : "";
-                }
-
-                @Override
-                public Bank fromString(String string) {
-                    return allBanks.stream()
-                            .filter(b -> b.getBankName().equals(string))
-                            .findFirst().orElse(null);
-                }
-            });
-        } catch (Exception e) {
-            LOG.error("Error loading banks", e);
-        }
-
-        // Show/hide bank based on payment mode
-        cmbPaymentMode.setOnAction(e -> {
-            String mode = cmbPaymentMode.getValue();
-            boolean showBank = "BANK".equals(mode) || "CHEQUE".equals(mode);
-            cmbBank.setDisable(!showBank);
-            if (vboxBank != null) {
-                vboxBank.setVisible(showBank);
-                vboxBank.setManaged(showBank);
-            }
-        });
-        cmbBank.setDisable(true);
+        // Hide bank selector VBox since we're using unified dropdown
         if (vboxBank != null) {
             vboxBank.setVisible(false);
             vboxBank.setManaged(false);
@@ -258,6 +229,94 @@ public class PurchaseInvoiceFromPOController implements Initializable {
 
         // GST listener
         txtGst.textProperty().addListener((obs, oldVal, newVal) -> updateTotals());
+    }
+
+    private void setupPaymentModeComboBox() {
+        ObservableList<PaymentOption> paymentOptions = FXCollections.observableArrayList();
+        PaymentOption cashBankOption = null;
+
+        // Load all active banks
+        try {
+            allBanks = bankService.getActiveBanks();
+        } catch (Exception e) {
+            LOG.error("Error loading banks", e);
+            allBanks = new ArrayList<>();
+        }
+
+        // Add all banks (including cash bank with IFSC "cash")
+        for (Bank bank : allBanks) {
+            PaymentOption option = new PaymentOption(bank.getBankName(), bank);
+            paymentOptions.add(option);
+            // Track the cash bank option to select it by default
+            if ("cash".equalsIgnoreCase(bank.getIfsc())) {
+                cashBankOption = option;
+            }
+        }
+
+        // Add CREDIT option at the end (for credit purchases from suppliers)
+        paymentOptions.add(new PaymentOption("CREDIT", null));
+
+        cmbPaymentMode.setItems(paymentOptions);
+
+        // Get custom font
+        Font customFont = SessionService.getCustomFont();
+        String fontFamily = customFont != null ? customFont.getFamily() : "System";
+
+        // Custom cell factory for dropdown items
+        cmbPaymentMode.setCellFactory(listView -> new ListCell<PaymentOption>() {
+            @Override
+            protected void updateItem(PaymentOption item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getDisplayName());
+                    if (item.isCash()) {
+                        // Cash bank - green color with custom font
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-background-color: white;");
+                    } else if (item.isCredit()) {
+                        // Credit - orange color with English font 14px
+                        setStyle("-fx-font-size: 14px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-background-color: white;");
+                    } else {
+                        // Other banks - blue color with custom font
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0; -fx-background-color: white;");
+                    }
+                }
+            }
+        });
+
+        // Custom button cell for selected item display
+        cmbPaymentMode.setButtonCell(new ListCell<PaymentOption>() {
+            @Override
+            protected void updateItem(PaymentOption item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getDisplayName());
+                    if (item.isCash()) {
+                        // Cash bank - custom font
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;");
+                    } else if (item.isCredit()) {
+                        // Credit - English font 14px
+                        setStyle("-fx-font-size: 14px; -fx-text-fill: #FF9800; -fx-font-weight: bold;");
+                    } else {
+                        // Other banks - custom font
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: #1565C0;");
+                    }
+                }
+            }
+        });
+
+        // Select cash bank by default, otherwise first option
+        if (cashBankOption != null) {
+            cmbPaymentMode.setValue(cashBankOption);
+            LOG.info("Selected cash bank as default payment mode");
+        } else if (!paymentOptions.isEmpty()) {
+            cmbPaymentMode.setValue(paymentOptions.get(0));
+            LOG.warn("Cash bank (IFSC='cash') not found, selecting first option as default");
+        }
     }
 
     private void setupItemEntry() {
@@ -527,21 +586,26 @@ public class PurchaseInvoiceFromPOController implements Initializable {
         }
 
         try {
+            // Get selected payment option
+            PaymentOption selectedPayment = cmbPaymentMode.getValue();
+            if (selectedPayment == null) {
+                alertNotification.showError("Please select a payment mode");
+                return;
+            }
+
             // Create PurchaseBill
             PurchaseBill bill = new PurchaseBill();
             bill.setPartyId(currentOrder.getPartyId());
             bill.setBillDate(dpInvoiceDate.getValue());
             bill.setReffNo(txtRefNo.getText().trim());
-            bill.setPay(cmbPaymentStatus.getValue());
 
-            // Set payment mode
-            String paymentMode = cmbPaymentMode.getValue();
-            if ("BANK".equals(paymentMode) || "CHEQUE".equals(paymentMode)) {
-                Bank selectedBank = cmbBank.getValue();
-                if (selectedBank != null) {
-                    bill.setBankId(selectedBank.getId());
-                }
-            }
+            // Store the display name (bank name or "CREDIT") in pay field
+            String paymentMode = selectedPayment.getDisplayName();
+            bill.setPay(paymentMode);
+
+            // All payments except CREDIT have a bankId (including cash bank)
+            Integer bankId = selectedPayment.getBank() != null ? selectedPayment.getBank().getId() : null;
+            bill.setBankId(bankId);
 
             // GST
             float gst = 0f;
@@ -552,9 +616,15 @@ public class PurchaseInvoiceFromPOController implements Initializable {
                 }
             } catch (NumberFormatException ignored) {}
             bill.setGst((double) gst);
+            bill.setOtherTax(0.0); // Set otherTax to 0 (consistent with PurchaseBillController)
 
             bill.setRemarks(txtRemarks.getText().trim());
-            bill.setStatus("PAID".equals(cmbPaymentStatus.getValue()) ? "PAID" : "PENDING");
+            // Set status: PENDING for CREDIT, otherwise based on payment status dropdown
+            if (selectedPayment.isCredit()) {
+                bill.setStatus("PENDING");
+            } else {
+                bill.setStatus("PAID".equals(cmbPaymentStatus.getValue()) ? "PAID" : "PENDING");
+            }
 
             // Create transactions
             List<PurchaseTransaction> transactions = new ArrayList<>();
@@ -577,6 +647,29 @@ public class PurchaseInvoiceFromPOController implements Initializable {
             // Update purchase order status
             currentOrder.setStatus("COMPLETED");
             purchaseOrderService.saveOrder(currentOrder);
+
+            // Record bank transaction (withdrawal) if bank payment is selected
+            if (bill.getBankId() != null && savedBill.getNetAmount() != null && savedBill.getNetAmount() > 0) {
+                try {
+                    String particulars = "Purchase Invoice #" + savedBill.getBillNo();
+                    if (currentOrder.getSupplierName() != null && !currentOrder.getSupplierName().isEmpty()) {
+                        particulars += " (" + currentOrder.getSupplierName() + ")";
+                    }
+                    String remarks = "Purchase-Invoice-Bill-no-" + savedBill.getBillNo();
+                    bankTransactionService.recordWithdrawal(
+                            bill.getBankId(),
+                            savedBill.getNetAmount(),
+                            particulars,
+                            "PURCHASE",
+                            savedBill.getBillNo(),
+                            remarks);
+                    LOG.info("Bank withdrawal recorded for purchase invoice #{}: Amount={}",
+                            savedBill.getBillNo(), savedBill.getNetAmount());
+                } catch (Exception e) {
+                    LOG.error("Error recording bank transaction for purchase invoice: ", e);
+                    alertNotification.showWarning("Invoice saved but bank transaction failed: " + e.getMessage());
+                }
+            }
 
             alertNotification.showSuccess("Invoice #" + savedBill.getBillNo() + " created successfully!");
             navigateBack();
@@ -622,36 +715,7 @@ public class PurchaseInvoiceFromPOController implements Initializable {
             lblRemarks.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 22px; -fx-text-fill: #9E9E9E;");
 
             txtRemarks.setFont(Font.font(fontFamily, 22));
-            
             txtRemarks.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 22px;");
-            // Bank dropdown - apply custom font to button cell and list cells (16px)
-            cmbBank.setButtonCell(new ListCell<Bank>() {
-                @Override
-                protected void updateItem(Bank bank, boolean empty) {
-                    super.updateItem(bank, empty);
-                    if (empty || bank == null) {
-                        setText("");
-                    } else {
-                        setText(bank.getBankName());
-                        setFont(Font.font(fontFamily, 16));
-                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px;");
-                    }
-                }
-            });
-
-            cmbBank.setCellFactory(listView -> new ListCell<Bank>() {
-                @Override
-                protected void updateItem(Bank bank, boolean empty) {
-                    super.updateItem(bank, empty);
-                    if (empty || bank == null) {
-                        setText("");
-                    } else {
-                        setText(bank.getBankName());
-                        setFont(Font.font(fontFamily, 16));
-                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px;");
-                    }
-                }
-            });
         }
     }
 
@@ -754,6 +818,53 @@ public class PurchaseInvoiceFromPOController implements Initializable {
             };
             return cell;
         });
+    }
+
+    // ==================== Inner class for PaymentOption ====================
+
+    /**
+     * Payment option for dropdown - can be Cash bank (IFSC="cash"), CREDIT, or other Banks
+     */
+    public static class PaymentOption {
+        private final String displayName;
+        private final Bank bank; // null only for CREDIT option
+        private static final String CASH_IFSC = "cash";
+
+        public PaymentOption(String displayName, Bank bank) {
+            this.displayName = displayName;
+            this.bank = bank;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public Bank getBank() {
+            return bank;
+        }
+
+        /**
+         * Check if this is a cash payment (bank with IFSC code "cash")
+         */
+        public boolean isCash() {
+            return bank != null && CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
+        }
+
+        public boolean isCredit() {
+            return bank == null && "CREDIT".equals(displayName);
+        }
+
+        /**
+         * Check if this is a regular bank payment (not cash and not credit)
+         */
+        public boolean isBank() {
+            return bank != null && !CASH_IFSC.equalsIgnoreCase(bank.getIfsc());
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
     }
 
     // ==================== Inner class for table data ====================

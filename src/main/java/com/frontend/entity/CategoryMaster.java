@@ -17,6 +17,9 @@ public class CategoryMaster {
     @Column(length = 50)
     private String stock;
 
+    @Column(length = 1)
+    private String purchase = "N";
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -43,10 +46,23 @@ public class CategoryMaster {
         this.stock = stock;
     }
 
+    public CategoryMaster(String category, String stock, String purchase) {
+        this.category = category;
+        this.stock = stock;
+        this.purchase = purchase;
+    }
+
     public CategoryMaster(Integer id, String category, String stock) {
         this.id = id;
         this.category = category;
         this.stock = stock;
+    }
+
+    public CategoryMaster(Integer id, String category, String stock, String purchase) {
+        this.id = id;
+        this.category = category;
+        this.stock = stock;
+        this.purchase = purchase;
     }
 
     // Getters and Setters
@@ -74,6 +90,14 @@ public class CategoryMaster {
         this.stock = stock;
     }
 
+    public String getPurchase() {
+        return purchase;
+    }
+
+    public void setPurchase(String purchase) {
+        this.purchase = purchase;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -96,6 +120,7 @@ public class CategoryMaster {
                 "id=" + id +
                 ", category='" + category + '\'' +
                 ", stock='" + stock + '\'' +
+                ", purchase='" + purchase + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

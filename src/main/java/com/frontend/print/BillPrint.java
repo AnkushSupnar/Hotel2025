@@ -176,7 +176,8 @@ public class BillPrint {
             Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
             pageSize.setRotation(0); // Ensure no rotation
 
-            Document document = new Document(pageSize, 3f, 3f, 5f, 5f);
+            // Minimal margins - cut to cut from top (left, right, top, bottom)
+            Document document = new Document(pageSize, 3f, 3f, 0f, 2f);
 
             // Create PDF file path
             String pdfPath = BILL_PDF_DIR + File.separator + "bill.pdf";
@@ -209,7 +210,7 @@ public class BillPrint {
         PdfPCell cellHead = new PdfPCell(new Phrase("AMjanaI k^fo", fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(2f);
+        cellHead.setPaddingTop(0f); // Cut to cut from top
         cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
