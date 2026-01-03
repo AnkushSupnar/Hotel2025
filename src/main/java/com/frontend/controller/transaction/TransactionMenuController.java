@@ -35,6 +35,12 @@ public class TransactionMenuController implements Initializable {
     @FXML
     private Button btnPurchaseInvoice;
 
+    @FXML
+    private Button btnPayReceipt;
+
+    @FXML
+    private Button btnViewPayments;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Initializing TransactionMenuController");
@@ -52,6 +58,14 @@ public class TransactionMenuController implements Initializable {
 
         if (btnPurchaseInvoice != null) {
             btnPurchaseInvoice.setOnAction(e -> navigateToPurchaseInvoice());
+        }
+
+        if (btnPayReceipt != null) {
+            btnPayReceipt.setOnAction(e -> navigateToPayReceipt());
+        }
+
+        if (btnViewPayments != null) {
+            btnViewPayments.setOnAction(e -> navigateToPayReceipt());
         }
     }
 
@@ -97,6 +111,20 @@ public class TransactionMenuController implements Initializable {
         }
     }
 
+    private void navigateToPayReceipt() {
+        try {
+            LOG.info("Navigating to Pay Receipt Frame");
+            BorderPane mainPane = getMainPane();
+            if (mainPane != null) {
+                Pane pane = loader.getPage("/fxml/transaction/PayReceiptFrame.fxml");
+                mainPane.setCenter(pane);
+                LOG.info("Successfully navigated to Pay Receipt Frame");
+            }
+        } catch (Exception e) {
+            LOG.error("Error navigating to Pay Receipt Frame: ", e);
+        }
+    }
+
     private BorderPane getMainPane() {
         try {
             if (btnBilling != null && btnBilling.getScene() != null) {
@@ -105,6 +133,10 @@ public class TransactionMenuController implements Initializable {
                 return (BorderPane) btnPurchaseOrder.getScene().lookup("#mainPane");
             } else if (btnPurchaseInvoice != null && btnPurchaseInvoice.getScene() != null) {
                 return (BorderPane) btnPurchaseInvoice.getScene().lookup("#mainPane");
+            } else if (btnPayReceipt != null && btnPayReceipt.getScene() != null) {
+                return (BorderPane) btnPayReceipt.getScene().lookup("#mainPane");
+            } else if (btnViewPayments != null && btnViewPayments.getScene() != null) {
+                return (BorderPane) btnViewPayments.getScene().lookup("#mainPane");
             }
         } catch (Exception e) {
             LOG.warn("Could not find main pane, navigation might not work properly");

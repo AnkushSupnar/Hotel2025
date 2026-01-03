@@ -106,4 +106,45 @@ public interface PurchaseBillRepository extends JpaRepository<PurchaseBill, Inte
      */
     @Query("SELECT SUM(p.netAmount) FROM PurchaseBill p WHERE p.partyId = :partyId AND p.status = 'PENDING'")
     Double getTotalPendingAmountBySupplier(@Param("partyId") Integer partyId);
+
+    // ============= Payment Related Methods =============
+
+    /**
+     * Find bills with pending balance (PENDING or PARTIALLY_PAID status)
+     */
+    @Query("SELECT p FROM PurchaseBill p WHERE p.status IN ('PENDING', 'PARTIALLY_PAID') ORDER BY p.billDate DESC")
+    List<PurchaseBill> findBillsWithPendingBalance();
+
+    /**
+     * Find payable bills (PENDING or PARTIALLY_PAID) by supplier
+     */
+    @Query("SELECT p FROM PurchaseBill p WHERE p.partyId = :partyId " +
+           "AND p.status IN ('PENDING', 'PARTIALLY_PAID') ORDER BY p.billDate ASC")
+    List<PurchaseBill> findPayableBillsBySupplier(@Param("partyId") Integer partyId);
+
+    /**
+     * Get total payable amount for a supplier (netAmount - paidAmount for unpaid bills)
+     */
+    @Query("SELECT COALESCE(SUM(p.netAmount - COALESCE(p.paidAmount, 0)), 0) FROM PurchaseBill p " +
+           "WHERE p.partyId = :partyId AND p.status IN ('PENDING', 'PARTIALLY_PAID')")
+    Double getTotalPayableAmountBySupplier(@Param("partyId") Integer partyId);
+
+    /**
+     * Get all suppliers with pending bills (for dropdown)
+     */
+    @Query("SELECT DISTINCT p.partyId FROM PurchaseBill p WHERE p.status IN ('PENDING', 'PARTIALLY_PAID')")
+    List<Integer> findSuppliersWithPendingBills();
+
+    /**
+     * Count bills with pending balance
+     */
+    @Query("SELECT COUNT(p) FROM PurchaseBill p WHERE p.status IN ('PENDING', 'PARTIALLY_PAID')")
+    long countBillsWithPendingBalance();
+
+    /**
+     * Count payable bills by supplier
+     */
+    @Query("SELECT COUNT(p) FROM PurchaseBill p WHERE p.partyId = :partyId " +
+           "AND p.status IN ('PENDING', 'PARTIALLY_PAID')")
+    long countPayableBillsBySupplier(@Param("partyId") Integer partyId);
 }

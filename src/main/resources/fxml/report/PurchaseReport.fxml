@@ -4,14 +4,21 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.PurchaseReportController">
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.PurchaseReportController">
    <stylesheets>
       <URL value="@../css/master-material.css" />
+      <URL value="@../css/purchase-report.css" />
    </stylesheets>
    <children>
       <!-- Header with Back Button -->
@@ -37,21 +44,206 @@
 
             <!-- Spacer -->
             <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Refresh Button -->
+            <Button fx:id="btnRefresh" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="REFRESH" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="REFRESH" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Export Excel Button -->
+            <Button fx:id="btnExportExcel" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="FILE_EXCEL_ALT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="EXCEL" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Export PDF Button -->
+            <Button fx:id="btnExportPdf" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="FILE_PDF_ALT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="PDF" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
          </children>
          <padding>
-            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+            <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
          </padding>
       </HBox>
 
-      <!-- Content Area -->
-      <VBox alignment="CENTER" spacing="20.0" styleClass="master-content" VBox.vgrow="ALWAYS">
+      <!-- Main Content -->
+      <VBox spacing="15.0" VBox.vgrow="ALWAYS">
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+            <Insets bottom="20.0" left="25.0" right="25.0" top="15.0" />
          </padding>
          <children>
-            <FontAwesomeIcon fill="#2196F3" glyphName="SHOPPING_CART" size="5em" />
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Purchase Report" />
-            <Label style="-fx-font-size: 16px; -fx-text-fill: #757575;" text="Purchase report functionality coming soon..." />
+
+            <!-- Filter Section - Two Rows -->
+            <VBox spacing="10.0" styleClass="filter-section">
+               <padding>
+                  <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
+               </padding>
+               <children>
+                  <!-- Row 1: Period Buttons and Date Range -->
+                  <HBox alignment="CENTER_LEFT" spacing="15.0">
+                     <children>
+                        <!-- Period Buttons -->
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Period:" />
+                        <ToggleButton fx:id="btnToday" minWidth="60" styleClass="period-button" text="Today" />
+                        <ToggleButton fx:id="btnWeek" minWidth="55" styleClass="period-button" text="Week" />
+                        <ToggleButton fx:id="btnMonth" minWidth="60" styleClass="period-button" text="Month" />
+                        <ToggleButton fx:id="btnYear" minWidth="50" styleClass="period-button" text="Year" />
+                        <ToggleButton fx:id="btnCustom" minWidth="65" styleClass="period-button" text="Custom" />
+
+                        <Separator orientation="VERTICAL" />
+
+                        <!-- Date Range Pickers -->
+                        <Label style="-fx-text-fill: #555;" text="From:" />
+                        <DatePicker fx:id="dpFromDate" prefWidth="130" promptText="Start Date" />
+                        <Label style="-fx-text-fill: #555;" text="To:" />
+                        <DatePicker fx:id="dpToDate" prefWidth="130" promptText="End Date" />
+                     </children>
+                  </HBox>
+
+                  <!-- Row 2: Supplier Search -->
+                  <HBox alignment="CENTER_LEFT" spacing="15.0">
+                     <children>
+                        <Label fx:id="lblSupplierSearch" style="-fx-text-fill: #1a237e; -fx-font-weight: bold;" text="Supplier Name" />
+                        <TextField fx:id="txtSupplierSearch" prefHeight="40" prefWidth="300" promptText="paurvazadaracao SaaoQaa..." style="-fx-background-color: #FAFAFA; -fx-border-color: #1a237e; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnClearSupplier" prefHeight="40" styleClass="clear-button" text="X" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+
+            <!-- Summary Cards Row -->
+            <HBox alignment="CENTER" spacing="15.0">
+               <children>
+                  <!-- Total Purchase Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, purchase-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#2196F3" glyphName="INR" size="2em" />
+                        <Label fx:id="lblTotalPurchase" styleClass="summary-value" text="₹0.00" />
+                        <Label styleClass="summary-label" text="Total Purchase" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Total Bills Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, bills-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#4CAF50" glyphName="FILE_TEXT_ALT" size="2em" />
+                        <Label fx:id="lblTotalBills" styleClass="summary-value" text="0" />
+                        <Label styleClass="summary-label" text="Total Bills" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Average Bill Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, average-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#FF9800" glyphName="CALCULATOR" size="2em" />
+                        <Label fx:id="lblAvgBill" styleClass="summary-value" text="₹0.00" />
+                        <Label styleClass="summary-label" text="Avg. Bill" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Total GST Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, gst-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#E91E63" glyphName="PERCENT" size="2em" />
+                        <Label fx:id="lblTotalGst" styleClass="summary-value" text="₹0.00" />
+                        <Label styleClass="summary-label" text="Total GST" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Paid Bills Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, paid-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#009688" glyphName="CHECK_CIRCLE" size="2em" />
+                        <Label fx:id="lblPaidBills" styleClass="summary-value" text="0" />
+                        <Label styleClass="summary-label" text="Paid Bills" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Pending Bills Card -->
+                  <VBox alignment="CENTER" spacing="8.0" styleClass="summary-card, pending-summary-card">
+                     <children>
+                        <FontAwesomeIcon fill="#9C27B0" glyphName="CLOCK_ALT" size="2em" />
+                        <Label fx:id="lblPendingBills" styleClass="summary-value" text="0" />
+                        <Label styleClass="summary-label" text="Pending Bills" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <!-- Bills Table -->
+            <VBox styleClass="table-container" VBox.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <TableView fx:id="tblBills" styleClass="purchase-table" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="colBillNo" maxWidth="80" minWidth="60" prefWidth="70" text="Bill No" />
+                        <TableColumn fx:id="colDate" maxWidth="110" minWidth="90" prefWidth="100" text="Date" />
+                        <TableColumn fx:id="colSupplier" minWidth="150" prefWidth="200" text="Supplier" />
+                        <TableColumn fx:id="colReffNo" maxWidth="120" minWidth="80" prefWidth="100" text="Ref No" />
+                        <TableColumn fx:id="colAmount" maxWidth="120" minWidth="90" prefWidth="100" text="Amount" />
+                        <TableColumn fx:id="colGst" maxWidth="100" minWidth="70" prefWidth="80" text="GST" />
+                        <TableColumn fx:id="colNetAmount" maxWidth="130" minWidth="100" prefWidth="110" text="Net Amount" />
+                        <TableColumn fx:id="colPayMode" maxWidth="120" minWidth="80" prefWidth="100" text="Pay Mode" />
+                        <TableColumn fx:id="colStatus" maxWidth="100" minWidth="70" prefWidth="80" text="Status" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </VBox>
+
+            <!-- Footer with record count -->
+            <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="footer-section">
+               <padding>
+                  <Insets bottom="8.0" left="15.0" right="15.0" top="8.0" />
+               </padding>
+               <children>
+                  <Label fx:id="lblRecordCount" style="-fx-font-size: 13px; -fx-text-fill: #666;" text="Showing 0 records" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label fx:id="lblDateRange" style="-fx-font-size: 13px; -fx-text-fill: #666;" text="" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

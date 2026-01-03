@@ -34,8 +34,21 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     /**
      * Find item by name (case-insensitive exact match)
+     * Returns first matching item to handle duplicates
      */
-    Optional<Item> findByItemNameIgnoreCase(String itemName);
+    Optional<Item> findFirstByItemNameIgnoreCase(String itemName);
+
+    /**
+     * Find all items by name (case-insensitive exact match)
+     * Use this when you need to check for duplicates
+     */
+    List<Item> findByItemNameIgnoreCase(String itemName);
+
+    /**
+     * Find item by category ID and name (case-insensitive)
+     * This is the preferred method as items with same name can exist in different categories
+     */
+    Optional<Item> findFirstByCategoryIdAndItemNameIgnoreCase(Integer categoryId, String itemName);
 
     /**
      * Find items by category ID

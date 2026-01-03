@@ -69,11 +69,22 @@ public class PurchaseBillService {
             for (PurchaseTransaction trans : transactions) {
                 trans.setPurchaseBill(savedBill);
 
-                // Get item_code from Item entity by item name if available
-                Optional<Item> itemOpt = itemService.getItemByName(trans.getItemName());
+                // Get item_code from Item entity by category and item name (preferred)
+                // Items with same name can exist in different categories
+                Optional<Item> itemOpt;
+                if (trans.getCategoryId() != null) {
+                    // Use category + name lookup (accurate)
+                    itemOpt = itemService.getItemByCategoryAndName(trans.getCategoryId(), trans.getItemName());
+                } else {
+                    // Fallback to name-only lookup
+                    itemOpt = itemService.getItemByName(trans.getItemName());
+                }
+
                 if (itemOpt.isPresent()) {
                     trans.setItemCode(itemOpt.get().getItemCode());
-                    trans.setCategoryId(itemOpt.get().getCategoryId());
+                    if (trans.getCategoryId() == null) {
+                        trans.setCategoryId(itemOpt.get().getCategoryId());
+                    }
                 }
 
                 savedBill.addTransaction(trans);
@@ -263,6 +274,51 @@ public class PurchaseBillService {
     public Double getTotalPendingAmount(Integer supplierId) {
         Double amount = purchaseBillRepository.getTotalPendingAmountBySupplier(supplierId);
         return amount != null ? amount : 0.0;
+    }
+
+    // ============= Payment Related Methods =============
+
+    /**
+     * Get bills with pending balance (PENDING or PARTIALLY_PAID status)
+     */
+    public List<PurchaseBill> getBillsWithPendingBalance() {
+        return purchaseBillRepository.findBillsWithPendingBalance();
+    }
+
+    /**
+     * Get payable bills for a specific supplier (PENDING or PARTIALLY_PAID)
+     */
+    public List<PurchaseBill> getPayableBillsBySupplier(Integer supplierId) {
+        return purchaseBillRepository.findPayableBillsBySupplier(supplierId);
+    }
+
+    /**
+     * Get total payable amount for a supplier (netAmount - paidAmount for unpaid bills)
+     */
+    public Double getTotalPayableAmount(Integer supplierId) {
+        Double amount = purchaseBillRepository.getTotalPayableAmountBySupplier(supplierId);
+        return amount != null ? amount : 0.0;
+    }
+
+    /**
+     * Get list of supplier IDs that have pending bills
+     */
+    public List<Integer> getSuppliersWithPendingBills() {
+        return purchaseBillRepository.findSuppliersWithPendingBills();
+    }
+
+    /**
+     * Count bills with pending balance
+     */
+    public long countBillsWithPendingBalance() {
+        return purchaseBillRepository.countBillsWithPendingBalance();
+    }
+
+    /**
+     * Count payable bills for a supplier
+     */
+    public long countPayableBillsBySupplier(Integer supplierId) {
+        return purchaseBillRepository.countPayableBillsBySupplier(supplierId);
     }
 
     /**

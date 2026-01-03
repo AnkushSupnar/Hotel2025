@@ -258,7 +258,18 @@ public class ItemService {
         if (name == null || name.trim().isEmpty()) {
             return Optional.empty();
         }
-        // Use case-insensitive search with trimmed input
-        return itemRepository.findByItemNameIgnoreCase(name.trim());
+        // Use case-insensitive search with trimmed input - findFirst to handle duplicates
+        return itemRepository.findFirstByItemNameIgnoreCase(name.trim());
+    }
+
+    /**
+     * Get item by category ID and name (preferred method)
+     * Items with same name can exist in different categories
+     */
+    public Optional<Item> getItemByCategoryAndName(Integer categoryId, String name) {
+        if (categoryId == null || name == null || name.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        return itemRepository.findFirstByCategoryIdAndItemNameIgnoreCase(categoryId, name.trim());
     }
 }

@@ -1,0 +1,286 @@
+/* ========================================
+   PURCHASE REPORT - CUSTOM STYLES
+   ======================================== */
+
+/* Filter Section */
+.filter-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Period Toggle Buttons */
+.period-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #555;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 15;
+    -fx-background-radius: 20;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+}
+
+.period-button:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #2196F3;
+}
+
+.period-button:selected {
+    -fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+/* Clear Button */
+.clear-button {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #f44336;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+}
+
+.clear-button:hover {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+/* Summary Cards */
+.summary-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 10, 0, 0, 3);
+    -fx-min-width: 160;
+    -fx-pref-width: 175;
+}
+
+.summary-card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgb(33, 150, 243, 0.3), 15, 0, 0, 5);
+}
+
+.summary-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a237e;
+}
+
+.summary-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+    -fx-font-weight: 500;
+}
+
+/* Card-specific border accents */
+.purchase-summary-card {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.bills-summary-card {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.average-summary-card {
+    -fx-border-color: #FF9800;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.gst-summary-card {
+    -fx-border-color: #E91E63;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.paid-summary-card {
+    -fx-border-color: #009688;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.pending-summary-card {
+    -fx-border-color: #9C27B0;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+/* Table Container */
+.table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Purchase Table */
+.purchase-table {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: #f0f0f0;
+}
+
+.purchase-table .column-header {
+    -fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2);
+    -fx-padding: 10 5;
+}
+
+.purchase-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.purchase-table .table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.purchase-table .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.purchase-table .table-row-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.purchase-table .table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, #2196F3, #1976D2);
+    -fx-background-insets: 0;
+}
+
+.purchase-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.purchase-table .table-row-cell:selected:hover {
+    -fx-background-color: linear-gradient(to right, #1e88e5, #1565c0);
+}
+
+.purchase-table .table-row-cell:selected:odd {
+    -fx-background-color: linear-gradient(to right, #2196F3, #1976D2);
+}
+
+/* Focused selection */
+.purchase-table:focused .table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, #2196F3, #1976D2);
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.4), 8, 0, 0, 2);
+}
+
+.purchase-table .table-cell {
+    -fx-padding: 8 10;
+    -fx-alignment: CENTER-LEFT;
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+/* Footer Section */
+.footer-section {
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 6;
+}
+
+/* Date Picker Styling */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+}
+
+.date-picker:focused {
+    -fx-border-color: #2196F3;
+}
+
+/* Text Field Styling */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+.text-field:focused {
+    -fx-border-color: #2196F3;
+}
+
+/* Status Cell Colors */
+.status-paid {
+    -fx-text-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+.status-pending {
+    -fx-text-fill: #9C27B0;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   EXPORT BUTTONS
+   ======================================== */
+
+.export-button {
+    -fx-background-radius: 8;
+    -fx-padding: 10 16;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+}
+
+.export-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.export-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Excel Button */
+.excel-button {
+    -fx-background-color: #217346;
+    -fx-border-color: #1a5c38;
+}
+
+.excel-button:hover {
+    -fx-background-color: #1a5c38;
+    -fx-effect: dropshadow(gaussian, rgba(33, 115, 70, 0.5), 10, 0, 0, 3);
+}
+
+.excel-button .export-icon {
+    -fx-fill: white;
+}
+
+.excel-button .export-text {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* PDF Button */
+.pdf-button {
+    -fx-background-color: #D32F2F;
+    -fx-border-color: #b71c1c;
+}
+
+.pdf-button:hover {
+    -fx-background-color: #b71c1c;
+    -fx-effect: dropshadow(gaussian, rgba(211, 47, 47, 0.5), 10, 0, 0, 3);
+}
+
+.pdf-button .export-icon {
+    -fx-fill: white;
+}
+
+.pdf-button .export-text {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}

@@ -62,6 +62,9 @@ public class PurchaseBill {
     @Column(name = "status", length = 20)
     private String status = "PENDING";
 
+    @Column(name = "paid_amount")
+    private Double paidAmount = 0.0;
+
     @OneToMany(mappedBy = "purchaseBill", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PurchaseTransaction> transactions = new ArrayList<>();
 
@@ -215,6 +218,32 @@ public class PurchaseBill {
         this.status = status;
     }
 
+    public Double getPaidAmount() {
+        return paidAmount;
+    }
+
+    public void setPaidAmount(Double paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+
+    /**
+     * Calculate the remaining balance amount to be paid
+     * @return balance amount (netAmount - paidAmount)
+     */
+    public Double getBalanceAmount() {
+        Double net = netAmount != null ? netAmount : 0.0;
+        Double paid = paidAmount != null ? paidAmount : 0.0;
+        return net - paid;
+    }
+
+    /**
+     * Check if the bill is fully paid
+     * @return true if balance amount is zero or less
+     */
+    public boolean isFullyPaid() {
+        return getBalanceAmount() <= 0.0;
+    }
+
     public List<PurchaseTransaction> getTransactions() {
         return transactions;
     }
@@ -270,6 +299,7 @@ public class PurchaseBill {
                 ", payId=" + payId +
                 ", bankId=" + bankId +
                 ", netAmount=" + netAmount +
+                ", paidAmount=" + paidAmount +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +

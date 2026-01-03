@@ -64,6 +64,28 @@
             </VBox>
         </VBox>
 
+        <!-- Pay Receipt Card -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-min-width: 250; -fx-min-height: 280;">
+            <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to bottom right, #FF5722, #E64A19); -fx-background-radius: 50; -fx-padding: 20;">
+                <FontAwesomeIcon fill="white" glyphName="MONEY" size="3em" />
+            </VBox>
+            <Label style="-fx-text-fill: #212121; -fx-font-size: 18px; -fx-font-weight: bold;" text="PAY RECEIPT" />
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px; -fx-wrap-text: true; -fx-text-alignment: center;" text="Pay pending purchase bills" />
+            <Region VBox.vgrow="ALWAYS" />
+            <VBox alignment="CENTER" spacing="10">
+                <Button fx:id="btnPayReceipt" prefHeight="40" prefWidth="180" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="PAY NOW">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="CREDIT_CARD" size="1.2em" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnViewPayments" prefHeight="35" prefWidth="180" style="-fx-background-color: #FFCCBC; -fx-text-fill: #FF5722; -fx-font-size: 13px; -fx-background-radius: 5; -fx-cursor: hand;" text="VIEW PAYMENTS">
+                    <graphic>
+                        <FontAwesomeIcon fill="#FF5722" glyphName="LIST" size="1em" />
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+
     </HBox>
 
 </VBox>
