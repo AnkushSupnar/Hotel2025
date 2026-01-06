@@ -10,21 +10,22 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.ReportMenuController">
+<VBox styleClass="report-menu-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.ReportMenuController">
    <stylesheets>
       <URL value="@../css/master-material.css" />
+      <URL value="@../css/report-menu.css" />
    </stylesheets>
    <children>
       <!-- Header with Back Button -->
-      <HBox alignment="CENTER_LEFT" styleClass="master-header">
+      <HBox alignment="CENTER_LEFT" styleClass="report-header">
          <children>
             <!-- Back Button -->
             <Button fx:id="btnBack" styleClass="back-button">
                <graphic>
                   <HBox alignment="CENTER" spacing="8">
                      <children>
-                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
-                        <Label styleClass="back-text" text="BACK" />
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" fill="white" />
+                        <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="BACK" />
                      </children>
                   </HBox>
                </graphic>
@@ -34,55 +35,150 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Title -->
-            <Label styleClass="master-title" text="Reports" />
+            <HBox alignment="CENTER" spacing="10">
+               <FontAwesomeIcon fill="white" glyphName="BAR_CHART" size="1.8em" />
+               <Label styleClass="report-title" text="REPORTS" />
+            </HBox>
 
             <!-- Spacer -->
             <Region HBox.hgrow="ALWAYS" />
          </children>
          <padding>
-            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
          </padding>
       </HBox>
 
-      <!-- Content Area with Cards -->
-      <VBox spacing="25.0" styleClass="master-content">
+      <!-- Tab Chips Container -->
+      <HBox alignment="CENTER" spacing="20" styleClass="tab-chips-container">
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
          </padding>
          <children>
+            <!-- Sales Tab Chip -->
+            <HBox fx:id="chipSales" alignment="CENTER" spacing="10"
+                  style="-fx-background-color: linear-gradient(to right, #4CAF50, #388E3C); -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);">
+               <children>
+                  <FontAwesomeIcon fx:id="iconSales" fill="white" glyphName="LINE_CHART" size="1.3em" />
+                  <Label fx:id="lblSales" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="SALES" />
+               </children>
+            </HBox>
 
-            <!-- Row of Report Cards -->
-            <HBox alignment="CENTER" spacing="25.0">
+            <!-- Purchase Tab Chip -->
+            <HBox fx:id="chipPurchase" alignment="CENTER" spacing="10"
+                  style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
+               <children>
+                  <FontAwesomeIcon fx:id="iconPurchase" fill="#7B1FA2" glyphName="TRUCK" size="1.3em" />
+                  <Label fx:id="lblPurchase" style="-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;" text="PURCHASE" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+
+      <!-- Content Area - Sales Reports (shown by default) -->
+      <VBox fx:id="salesContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+            <!-- Sales Reports Grid -->
+            <HBox alignment="CENTER" spacing="30">
                <children>
                   <!-- Sales Report Card -->
-                  <StackPane fx:id="salesReportCard" styleClass="master-card, sales-card" HBox.hgrow="ALWAYS">
+                  <StackPane fx:id="salesReportCard" styleClass="report-card, sales-card">
                      <children>
-                        <VBox alignment="CENTER" spacing="15.0">
+                        <VBox alignment="CENTER" spacing="15">
                            <children>
                               <StackPane styleClass="card-icon-container, sales-icon-bg">
                                  <children>
-                                    <FontAwesomeIcon fill="#4CAF50" glyphName="LINE_CHART" size="2.5em" styleClass="card-icon" />
+                                    <FontAwesomeIcon fill="#4CAF50" glyphName="LINE_CHART" size="2.5em" />
                                  </children>
                               </StackPane>
                               <Label styleClass="card-title" text="Sales Report" />
-                              <Label styleClass="card-description" text="View daily, weekly, and monthly sales reports" />
+                              <Label styleClass="card-description" text="View sales data with date filters and export options" />
+                              <Button fx:id="btnViewSalesReport" styleClass="card-button, sales-button" text="VIEW REPORT">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
+                                 </graphic>
+                              </Button>
                            </children>
                         </VBox>
                      </children>
                   </StackPane>
 
-                  <!-- Purchase Report Card -->
-                  <StackPane fx:id="purchaseReportCard" styleClass="master-card, purchase-card" HBox.hgrow="ALWAYS">
+                  <!-- Payment Received Report Card -->
+                  <StackPane fx:id="paymentReceivedCard" styleClass="report-card, sales-card">
                      <children>
-                        <VBox alignment="CENTER" spacing="15.0">
+                        <VBox alignment="CENTER" spacing="15">
+                           <children>
+                              <StackPane styleClass="card-icon-container, sales-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#4CAF50" glyphName="MONEY" size="2.5em" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Payment Received" />
+                              <Label styleClass="card-description" text="View all payment receipts from customers" />
+                              <Button fx:id="btnViewPaymentReceived" styleClass="card-button, sales-button" text="VIEW REPORT">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+
+      <!-- Content Area - Purchase Reports (hidden by default) -->
+      <VBox fx:id="purchaseContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" visible="false" managed="false" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+            <!-- Purchase Reports Grid -->
+            <HBox alignment="CENTER" spacing="30">
+               <children>
+                  <!-- Purchase Report Card -->
+                  <StackPane fx:id="purchaseReportCard" styleClass="report-card, purchase-card">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15">
                            <children>
                               <StackPane styleClass="card-icon-container, purchase-icon-bg">
                                  <children>
-                                    <FontAwesomeIcon fill="#2196F3" glyphName="SHOPPING_CART" size="2.5em" styleClass="card-icon" />
+                                    <FontAwesomeIcon fill="#7B1FA2" glyphName="TRUCK" size="2.5em" />
                                  </children>
                               </StackPane>
                               <Label styleClass="card-title" text="Purchase Report" />
-                              <Label styleClass="card-description" text="View purchase and inventory reports" />
+                              <Label styleClass="card-description" text="View purchase data with date filters and export options" />
+                              <Button fx:id="btnViewPurchaseReport" styleClass="card-button, purchase-button" text="VIEW REPORT">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- Pay Receipt Report Card -->
+                  <StackPane fx:id="payReceiptReportCard" styleClass="report-card, purchase-card">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15">
+                           <children>
+                              <StackPane styleClass="card-icon-container, purchase-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#7B1FA2" glyphName="CREDIT_CARD" size="2.5em" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Pay Receipt Report" />
+                              <Label styleClass="card-description" text="View all payments made to suppliers" />
+                              <Button fx:id="btnViewPayReceipt" styleClass="card-button, purchase-button" text="VIEW REPORT">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
+                                 </graphic>
+                              </Button>
                            </children>
                         </VBox>
                      </children>

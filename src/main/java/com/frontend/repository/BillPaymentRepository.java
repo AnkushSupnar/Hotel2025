@@ -135,4 +135,20 @@ public interface BillPaymentRepository extends JpaRepository<BillPayment, Intege
     List<BillPayment> findBySupplierIdAndPaymentDateBetweenWithDetails(
             @Param("supplierId") Integer supplierId,
             @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // ============= Receipt-based Queries =============
+
+    /**
+     * Find payments by receipt number
+     */
+    List<BillPayment> findByReceiptNoOrderByBillNoAsc(Integer receiptNo);
+
+    /**
+     * Find payments by receipt number with bill details
+     */
+    @Query("SELECT bp FROM BillPayment bp " +
+           "LEFT JOIN FETCH bp.purchaseBill pb " +
+           "WHERE bp.receiptNo = :receiptNo " +
+           "ORDER BY bp.billNo ASC")
+    List<BillPayment> findByReceiptNoWithBillDetails(@Param("receiptNo") Integer receiptNo);
 }

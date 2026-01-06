@@ -1070,6 +1070,46 @@ public class BillService {
         }
     }
 
+    // ============= Credit Bill Payment Methods =============
+
+    /**
+     * Get credit bills with pending balance for a customer
+     * Returns bills where netAmount - paidAmount > 0
+     */
+    public List<Bill> getCreditBillsWithPendingBalanceByCustomerId(Integer customerId) {
+        return billRepository.findCreditBillsWithPendingBalanceByCustomerId(customerId);
+    }
+
+    /**
+     * Get total pending amount for a customer (credit bills)
+     */
+    public Double getTotalPendingAmountByCustomerId(Integer customerId) {
+        Double amount = billRepository.getTotalPendingAmountByCustomerId(customerId);
+        return amount != null ? amount : 0.0;
+    }
+
+    /**
+     * Get all customer IDs with pending credit bills
+     */
+    public List<Integer> getCustomerIdsWithPendingBills() {
+        return billRepository.findCustomerIdsWithPendingBills();
+    }
+
+    /**
+     * Get all credit bills with pending balance (across all customers)
+     */
+    public List<Bill> getAllCreditBillsWithPendingBalance() {
+        return billRepository.findAllCreditBillsWithPendingBalance();
+    }
+
+    /**
+     * Get total credit balance across all customers
+     */
+    public Double getTotalCreditBalance() {
+        Double amount = billRepository.getTotalCreditBalance();
+        return amount != null ? amount : 0.0;
+    }
+
     /**
      * Reverse stock using copied transaction data when editing a bill
      * This method uses Map data instead of entity references to avoid Hibernate conflicts

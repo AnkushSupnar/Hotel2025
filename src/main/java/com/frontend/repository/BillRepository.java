@@ -165,4 +165,49 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
      */
     @Query("SELECT b FROM Bill b WHERE b.billDate = :billDate AND b.status IN ('PAID', 'CREDIT') ORDER BY b.billNo ASC")
     List<Bill> findPaidAndCreditBillsByDate(@Param("billDate") String billDate);
+
+    // ============= Credit Bill Payment Queries =============
+
+    /**
+     * Find credit bills with pending balance for a customer
+     * Returns bills where netAmount - paidAmount > 0
+     */
+    @Query("SELECT b FROM Bill b WHERE b.customerId = :customerId AND b.status = 'CREDIT' " +
+           "AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0 ORDER BY b.billNo ASC")
+    List<Bill> findCreditBillsWithPendingBalanceByCustomerId(@Param("customerId") Integer customerId);
+
+    /**
+     * Get total pending amount for a customer (credit bills)
+     */
+    @Query("SELECT COALESCE(SUM(b.netAmount - COALESCE(b.paidAmount, 0)), 0) FROM Bill b " +
+           "WHERE b.customerId = :customerId AND b.status = 'CREDIT'")
+    Double getTotalPendingAmountByCustomerId(@Param("customerId") Integer customerId);
+
+    /**
+     * Get all customers with pending credit bills
+     */
+    @Query("SELECT DISTINCT b.customerId FROM Bill b WHERE b.status = 'CREDIT' " +
+           "AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0")
+    List<Integer> findCustomerIdsWithPendingBills();
+
+    /**
+     * Count credit bills with pending balance for a customer
+     */
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.customerId = :customerId AND b.status = 'CREDIT' " +
+           "AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0")
+    Long countCreditBillsWithPendingBalanceByCustomerId(@Param("customerId") Integer customerId);
+
+    /**
+     * Find all credit bills (unpaid or partially paid)
+     */
+    @Query("SELECT b FROM Bill b WHERE b.status = 'CREDIT' " +
+           "AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0 ORDER BY b.billDate DESC, b.billNo DESC")
+    List<Bill> findAllCreditBillsWithPendingBalance();
+
+    /**
+     * Get total credit balance across all customers
+     */
+    @Query("SELECT COALESCE(SUM(b.netAmount - COALESCE(b.paidAmount, 0)), 0) FROM Bill b " +
+           "WHERE b.status = 'CREDIT' AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0")
+    Double getTotalCreditBalance();
 }

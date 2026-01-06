@@ -57,6 +57,9 @@ public class Bill {
     @Column(name = "net_amount")
     private Float netAmount = 0.0f;
 
+    @Column(name = "paid_amount")
+    private Float paidAmount = 0.0f;
+
     @Column(name = "total_qty")
     private Float totalQty = 0.0f;
 
@@ -219,6 +222,24 @@ public class Bill {
 
     public void setNetAmount(Float netAmount) {
         this.netAmount = netAmount;
+    }
+
+    public Float getPaidAmount() {
+        return paidAmount;
+    }
+
+    public void setPaidAmount(Float paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+
+    /**
+     * Get balance amount for credit bills
+     * Balance = netAmount - paidAmount
+     */
+    public Float getBalanceAmount() {
+        Float net = netAmount != null ? netAmount : 0f;
+        Float paid = paidAmount != null ? paidAmount : 0f;
+        return net - paid;
     }
 
     public Float getTotalQty() {

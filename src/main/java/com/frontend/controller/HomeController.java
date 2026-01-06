@@ -37,8 +37,8 @@ public class HomeController implements Initializable {
     @FXML private javafx.scene.layout.VBox sidebarHeader;
     @FXML private BorderPane mainPane;
     @FXML private HBox menuDashboard;
-    @FXML private HBox menuTransaction;
-    @FXML private HBox menuBilling;
+    @FXML private HBox menuSales;
+    @FXML private HBox menuPurchase;
     @FXML private HBox menuMaster;
     @FXML private HBox menuReport;
     @FXML private HBox menuSettings;
@@ -95,20 +95,21 @@ public class HomeController implements Initializable {
                 LOG.error("Error loading dashboard: ", ex);
             }
         });
-        menuBilling.setOnMouseClicked(e -> {
+        menuSales.setOnMouseClicked(e -> {
             try {
-                openBillingWindow();
-            } catch (Exception ex) {
-                LOG.error("Error loading billing: ", ex);
-            }
-        });
-        
-        menuTransaction.setOnMouseClicked(e -> {
-            try {
-                pane = loader.getPage("/fxml/transaction/TransactionMenu.fxml");
+                pane = loader.getPage("/fxml/transaction/SalesMenu.fxml");
                 mainPane.setCenter(pane);
             } catch (Exception ex) {
-                LOG.error("Error loading transaction: ", ex);
+                LOG.error("Error loading sales menu: ", ex);
+            }
+        });
+
+        menuPurchase.setOnMouseClicked(e -> {
+            try {
+                pane = loader.getPage("/fxml/transaction/PurchaseMenu.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading purchase menu: ", ex);
             }
         });
 //        menuCreate.setOnMouseClicked(e->{

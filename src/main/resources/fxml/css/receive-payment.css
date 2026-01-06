@@ -1,0 +1,457 @@
+/* ========================================
+   RECEIVE PAYMENT - CUSTOM STYLES
+   Teal Material Theme (#009688, #00796B)
+   (Green for receiving money)
+   ======================================== */
+
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.receive-payment-header {
+    -fx-background-color: linear-gradient(to right, #009688, #00796B);
+    -fx-padding: 12 20;
+}
+
+.receive-payment-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   CUSTOMER SECTION
+   ======================================== */
+
+.customer-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+    -fx-padding: 12;
+}
+
+.customer-label {
+    -fx-text-fill: #00796B;
+}
+
+.pending-amount-label {
+    -fx-text-fill: #D32F2F;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   PENDING BILLS TABLE
+   ======================================== */
+
+.pending-bills-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.pending-bills-table {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: #f0f0f0;
+}
+
+.pending-bills-table .column-header {
+    -fx-background-color: linear-gradient(to bottom, #009688, #00796B);
+    -fx-padding: 10 5;
+}
+
+.pending-bills-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.pending-bills-table .table-row-cell {
+    -fx-cell-size: 38px;
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.pending-bills-table .table-row-cell:odd {
+    -fx-background-color: #E0F2F1;
+}
+
+.pending-bills-table .table-row-cell:hover {
+    -fx-background-color: #B2DFDB;
+}
+
+.pending-bills-table .table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, #009688, #00796B);
+    -fx-background-insets: 0;
+}
+
+.pending-bills-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.pending-bills-table .table-cell {
+    -fx-padding: 8 10;
+    -fx-alignment: CENTER-LEFT;
+    -fx-text-fill: #333;
+}
+
+/* ========================================
+   PAYMENT ENTRY SECTION
+   ======================================== */
+
+.payment-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+    -fx-padding: 10;
+}
+
+.payment-section-title {
+    -fx-text-fill: #00796B;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.payment-field-label {
+    -fx-text-fill: #616161;
+    -fx-font-size: 11px;
+}
+
+.payment-amount-field {
+    -fx-background-color: #E0F2F1;
+    -fx-border-color: #009688;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 8;
+}
+
+.payment-amount-field:focused {
+    -fx-border-color: #00796B;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.3), 8, 0, 0, 0);
+}
+
+.payment-mode-combo {
+    -fx-background-color: white;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 14px;
+}
+
+.payment-mode-combo:focused {
+    -fx-border-color: #009688;
+}
+
+/* ========================================
+   ACTION BUTTONS
+   ======================================== */
+
+.receive-button {
+    -fx-background-color: linear-gradient(to bottom, #009688, #00796B);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.4), 8, 0, 0, 3);
+}
+
+.receive-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #00796B, #004D40);
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.6), 12, 0, 0, 4);
+}
+
+.receive-button:pressed {
+    -fx-background-color: #004D40;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.2), 4, 0, 0, 1);
+}
+
+.clear-button {
+    -fx-background-color: #B2DFDB;
+    -fx-text-fill: #00796B;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.clear-button:hover {
+    -fx-background-color: #80CBC4;
+}
+
+.new-button {
+    -fx-background-color: #26A69A;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.new-button:hover {
+    -fx-background-color: #009688;
+}
+
+/* ========================================
+   PAYMENT HISTORY PANEL (RIGHT SIDE)
+   ======================================== */
+
+.history-panel {
+    -fx-background-color: #FAFAFA;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 0 1;
+}
+
+.history-header {
+    -fx-background-color: linear-gradient(to right, #26A69A, #4DB6AC);
+    -fx-padding: 12 15;
+}
+
+.history-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.history-filter-section {
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.history-table {
+    -fx-background-color: white;
+}
+
+.history-table .column-header {
+    -fx-background-color: linear-gradient(to bottom, #4DB6AC, #26A69A);
+    -fx-padding: 8 5;
+}
+
+.history-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.history-table .table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-background-color: white;
+}
+
+.history-table .table-row-cell:odd {
+    -fx-background-color: #E0F2F1;
+}
+
+.history-table .table-row-cell:selected {
+    -fx-background-color: #B2DFDB;
+}
+
+.history-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #004D40;
+}
+
+.history-table .table-cell {
+    -fx-padding: 5 8;
+    -fx-alignment: CENTER-LEFT;
+}
+
+/* ========================================
+   SUMMARY FOOTER
+   ======================================== */
+
+.summary-footer {
+    -fx-background-color: linear-gradient(to bottom, #F5F5F5, #EEEEEE);
+    -fx-padding: 0;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1 0 0 0;
+}
+
+.summary-box {
+    -fx-padding: 10 15;
+}
+
+.summary-box-today {
+    -fx-background-color: #009688;
+}
+
+.summary-box-month {
+    -fx-background-color: #00796B;
+}
+
+.summary-label-title {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-size: 10px;
+}
+
+.summary-label-value {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   BILL INFO DISPLAY
+   ======================================== */
+
+.bill-info-box {
+    -fx-background-color: #E0F2F1;
+    -fx-border-color: #4DB6AC;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 8;
+}
+
+.bill-info-label {
+    -fx-text-fill: #009688;
+    -fx-font-size: 11px;
+}
+
+.bill-info-value {
+    -fx-text-fill: #004D40;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   STATUS INDICATORS
+   ======================================== */
+
+.status-pending {
+    -fx-text-fill: #F44336;
+    -fx-font-weight: bold;
+}
+
+.status-partial {
+    -fx-text-fill: #FF9800;
+    -fx-font-weight: bold;
+}
+
+.status-paid {
+    -fx-text-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   FORM INPUTS
+   ======================================== */
+
+.form-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 12px;
+}
+
+.form-text-field:focused {
+    -fx-border-color: #009688;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.2), 6, 0, 0, 0);
+}
+
+.form-date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4;
+}
+
+.form-date-picker:focused {
+    -fx-border-color: #009688;
+}
+
+/* ========================================
+   SEARCH BUTTON
+   ======================================== */
+
+.search-button {
+    -fx-background-color: #009688;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+}
+
+.search-button:hover {
+    -fx-background-color: #00796B;
+}
+
+.clear-search-button {
+    -fx-background-color: #78909C;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 6 10;
+}
+
+.clear-search-button:hover {
+    -fx-background-color: #607D8B;
+}
+
+/* ========================================
+   REFRESH BUTTON
+   ======================================== */
+
+.refresh-button {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+}
+
+.refresh-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   PRINT BUTTON
+   ======================================== */
+
+.print-button {
+    -fx-background-color: #26A69A;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+}
+
+.print-button:hover {
+    -fx-background-color: #009688;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 136, 0.4), 8, 0, 0, 2);
+}
+
+.print-button:disabled {
+    -fx-background-color: #9E9E9E;
+    -fx-opacity: 0.7;
+}
+
+/* ========================================
+   SEARCH LABEL
+   ======================================== */
+
+.search-label {
+    -fx-text-fill: #00796B;
+}

@@ -1,0 +1,221 @@
+/* ========================================
+   REPORT MENU - TAB STYLE CSS
+   ======================================== */
+
+/* Root Container */
+.report-menu-root {
+    -fx-background-color: #ECEFF1;
+}
+
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.report-header {
+    -fx-background-color: linear-gradient(to right, #1565C0, #0D47A1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 3);
+}
+
+.report-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ========================================
+   TAB CHIPS STYLES
+   ======================================== */
+
+.tab-chips-container {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+/* Base chip style - inactive state */
+.tab-chip {
+    -fx-background-color: #E8EAF6;
+    -fx-background-radius: 25 25 25 25;
+    -fx-border-radius: 25 25 25 25;
+    -fx-padding: 12 35 12 35;
+    -fx-cursor: hand;
+    -fx-min-width: 160;
+    -fx-pref-height: 45;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.tab-chip:hover {
+    -fx-background-color: #C5CAE9;
+}
+
+/* Active Sales Tab (Green) - must override background-radius */
+.tab-chip-active {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #388E3C);
+    -fx-background-radius: 25 25 25 25;
+    -fx-border-radius: 25 25 25 25;
+    -fx-padding: 12 35 12 35;
+    -fx-min-width: 160;
+    -fx-pref-height: 45;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);
+}
+
+.tab-chip-active:hover {
+    -fx-background-color: linear-gradient(to right, #43A047, #2E7D32);
+}
+
+/* Active Purchase Tab (Purple) - must override background-radius */
+.tab-chip-active-purchase {
+    -fx-background-color: linear-gradient(to right, #7B1FA2, #6A1B9A);
+    -fx-background-radius: 25 25 25 25;
+    -fx-border-radius: 25 25 25 25;
+    -fx-padding: 12 35 12 35;
+    -fx-min-width: 160;
+    -fx-pref-height: 45;
+    -fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.4), 8, 0, 0, 3);
+}
+
+.tab-chip-active-purchase:hover {
+    -fx-background-color: linear-gradient(to right, #6A1B9A, #4A148C);
+}
+
+.tab-chip-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.tab-chip-label-inactive {
+    -fx-text-fill: #5E35B1;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   CONTENT AREA STYLES
+   ======================================== */
+
+.tab-content {
+    -fx-background-color: #ECEFF1;
+}
+
+.content-section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-padding: 0 0 10 5;
+}
+
+.content-section-title-purchase {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A1B9A;
+    -fx-padding: 0 0 10 5;
+}
+
+/* ========================================
+   REPORT CARD STYLES
+   ======================================== */
+
+.report-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 25 30;
+    -fx-min-width: 280;
+    -fx-max-width: 320;
+    -fx-pref-width: 300;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 10, 0, 0, 4);
+}
+
+.report-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 6);
+    -fx-translate-y: -3;
+}
+
+/* Sales Card Hover */
+.sales-card:hover {
+    -fx-background-color: #E8F5E9;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.35), 15, 0, 0, 6);
+}
+
+/* Purchase Card Hover */
+.purchase-card:hover {
+    -fx-background-color: #F3E5F5;
+    -fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.35), 15, 0, 0, 6);
+}
+
+/* Card Icon Container */
+.card-icon-container {
+    -fx-padding: 18;
+    -fx-background-radius: 50;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+    -fx-max-width: 70;
+    -fx-max-height: 70;
+    -fx-alignment: center;
+}
+
+.sales-icon-bg {
+    -fx-background-color: #E8F5E9;
+}
+
+.purchase-icon-bg {
+    -fx-background-color: #F3E5F5;
+}
+
+/* Card Text */
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+}
+
+.card-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-max-width: 250;
+}
+
+/* Card Button */
+.card-button {
+    -fx-padding: 10 20;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.card-button.sales-button {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #388E3C);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 5, 0, 0, 2);
+}
+
+.card-button.sales-button:hover {
+    -fx-background-color: linear-gradient(to right, #43A047, #2E7D32);
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.5), 8, 0, 0, 3);
+}
+
+.card-button.purchase-button {
+    -fx-background-color: linear-gradient(to right, #7B1FA2, #6A1B9A);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.3), 5, 0, 0, 2);
+}
+
+.card-button.purchase-button:hover {
+    -fx-background-color: linear-gradient(to right, #6A1B9A, #4A148C);
+    -fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.5), 8, 0, 0, 3);
+}

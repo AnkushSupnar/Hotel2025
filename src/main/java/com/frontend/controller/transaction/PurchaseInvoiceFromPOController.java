@@ -683,10 +683,10 @@ public class PurchaseInvoiceFromPOController implements Initializable {
     private void navigateBack() {
         PurchaseOrderController.clearSelectedOrderNoForInvoice();
         try {
-            // Navigate back to Purchase Order screen in center pane
+            // Navigate back to Purchase Menu
             BorderPane mainPane = (BorderPane) btnBack.getScene().lookup("#mainPane");
             if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/PurchaseOrderFrame.fxml");
+                Pane pane = loader.getPage("/fxml/transaction/PurchaseMenu.fxml");
                 mainPane.setCenter(pane);
             }
         } catch (Exception e) {

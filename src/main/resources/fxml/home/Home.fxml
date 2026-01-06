@@ -47,23 +47,23 @@
                            </children>
                         </HBox>
                         
-                        <!-- Billing Menu -->
-                        <HBox fx:id="menuBilling" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <!-- Sales Menu -->
+                        <HBox fx:id="menuSales" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="CREDIT_CARD" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="BILLING">
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.5em" styleClass="menu-icon" />
+                              <Text styleClass="menu-text" text="SALES">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </Text>
                            </children>
                         </HBox>
-                        
-                        <!-- Transaction Menu -->
-                        <HBox fx:id="menuTransaction" alignment="CENTER_LEFT" styleClass="menu-item">
+
+                        <!-- Purchase Menu -->
+                        <HBox fx:id="menuPurchase" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="EXCHANGE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="TRANSACTIONS">
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.5em" styleClass="menu-icon" />
+                              <Text styleClass="menu-text" text="PURCHASE">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>

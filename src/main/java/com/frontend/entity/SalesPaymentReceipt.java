@@ -3,32 +3,35 @@ package com.frontend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Entity representing a payment made towards a Purchase Bill
- * Supports partial payments - multiple payments can be made for a single bill
+ * Entity representing a Payment Receipt for customer payments (sales credit bills)
+ * One SalesPaymentReceipt groups multiple SalesBillPayment allocations made in a single payment session
+ * This creates ONE bank transaction (DEPOSIT) for the total amount received
  */
 @Entity
-@Table(name = "bill_payment")
-public class BillPayment {
+@Table(name = "sales_payment_receipt")
+public class SalesPaymentReceipt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "receipt_no")
+    private Integer receiptNo;
 
-    @Column(name = "bill_no", nullable = false)
-    private Integer billNo;
+    @Column(name = "customer_id", nullable = false)
+    private Integer customerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bill_no", referencedColumnName = "bill_no", insertable = false, updatable = false)
-    private PurchaseBill purchaseBill;
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Customer customer;
 
     @Column(name = "payment_date", nullable = false)
     private LocalDate paymentDate;
 
-    @Column(name = "payment_amount", nullable = false)
-    private Double paymentAmount;
+    @Column(name = "total_amount", nullable = false)
+    private Double totalAmount;
 
     @Column(name = "bank_id", nullable = false)
     private Integer bankId;
@@ -52,15 +55,11 @@ public class BillPayment {
     @Column(name = "bank_transaction_id")
     private Integer bankTransactionId;
 
-    @Column(name = "receipt_no")
-    private Integer receiptNo;
+    @Column(name = "bills_count")
+    private Integer billsCount = 1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receipt_no", referencedColumnName = "receipt_no", insertable = false, updatable = false)
-    private PaymentReceipt paymentReceipt;
-
-    @Column(name = "supplier_id")
-    private Integer supplierId;
+    @OneToMany(mappedBy = "salesPaymentReceipt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SalesBillPayment> billPayments = new ArrayList<>();
 
     @Column(name = "created_by")
     private Integer createdBy;
@@ -86,40 +85,40 @@ public class BillPayment {
     }
 
     // Constructors
-    public BillPayment() {
+    public SalesPaymentReceipt() {
     }
 
-    public BillPayment(Integer billNo, Double paymentAmount, Integer bankId, String paymentMode) {
-        this.billNo = billNo;
-        this.paymentAmount = paymentAmount;
+    public SalesPaymentReceipt(Integer customerId, Double totalAmount, Integer bankId, String paymentMode) {
+        this.customerId = customerId;
+        this.totalAmount = totalAmount;
         this.bankId = bankId;
         this.paymentMode = paymentMode;
         this.paymentDate = LocalDate.now();
     }
 
     // Getters and Setters
-    public Integer getId() {
-        return id;
+    public Integer getReceiptNo() {
+        return receiptNo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setReceiptNo(Integer receiptNo) {
+        this.receiptNo = receiptNo;
     }
 
-    public Integer getBillNo() {
-        return billNo;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setBillNo(Integer billNo) {
-        this.billNo = billNo;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
-    public PurchaseBill getPurchaseBill() {
-        return purchaseBill;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setPurchaseBill(PurchaseBill purchaseBill) {
-        this.purchaseBill = purchaseBill;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public LocalDate getPaymentDate() {
@@ -130,12 +129,12 @@ public class BillPayment {
         this.paymentDate = paymentDate;
     }
 
-    public Double getPaymentAmount() {
-        return paymentAmount;
+    public Double getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setPaymentAmount(Double paymentAmount) {
-        this.paymentAmount = paymentAmount;
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Integer getBankId() {
@@ -194,28 +193,20 @@ public class BillPayment {
         this.bankTransactionId = bankTransactionId;
     }
 
-    public Integer getReceiptNo() {
-        return receiptNo;
+    public Integer getBillsCount() {
+        return billsCount;
     }
 
-    public void setReceiptNo(Integer receiptNo) {
-        this.receiptNo = receiptNo;
+    public void setBillsCount(Integer billsCount) {
+        this.billsCount = billsCount;
     }
 
-    public PaymentReceipt getPaymentReceipt() {
-        return paymentReceipt;
+    public List<SalesBillPayment> getBillPayments() {
+        return billPayments;
     }
 
-    public void setPaymentReceipt(PaymentReceipt paymentReceipt) {
-        this.paymentReceipt = paymentReceipt;
-    }
-
-    public Integer getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Integer supplierId) {
-        this.supplierId = supplierId;
+    public void setBillPayments(List<SalesBillPayment> billPayments) {
+        this.billPayments = billPayments;
     }
 
     public Integer getCreatedBy() {
@@ -243,26 +234,51 @@ public class BillPayment {
     }
 
     // Helper methods
+    public void addBillPayment(SalesBillPayment billPayment) {
+        billPayments.add(billPayment);
+        billPayment.setSalesPaymentReceipt(this);
+    }
+
+    public void removeBillPayment(SalesBillPayment billPayment) {
+        billPayments.remove(billPayment);
+        billPayment.setSalesPaymentReceipt(null);
+    }
+
+    public String getCustomerName() {
+        return customer != null ? customer.getFullName() : "";
+    }
+
     public String getBankName() {
         return bank != null ? bank.getBankName() : paymentMode;
     }
 
-    public String getSupplierName() {
-        return purchaseBill != null && purchaseBill.getSupplier() != null
-                ? purchaseBill.getSupplier().getName() : "";
+    /**
+     * Get a summary of bill numbers paid in this receipt
+     */
+    public String getBillsSummary() {
+        if (billPayments == null || billPayments.isEmpty()) {
+            return "";
+        }
+        if (billPayments.size() == 1) {
+            return "#" + billPayments.get(0).getBillNo();
+        }
+        // Return first and last bill numbers
+        int firstBill = billPayments.get(0).getBillNo();
+        int lastBill = billPayments.get(billPayments.size() - 1).getBillNo();
+        return "#" + firstBill + " - #" + lastBill;
     }
 
     @Override
     public String toString() {
-        return "BillPayment{" +
-                "id=" + id +
-                ", billNo=" + billNo +
+        return "SalesPaymentReceipt{" +
+                "receiptNo=" + receiptNo +
+                ", customerId=" + customerId +
                 ", paymentDate=" + paymentDate +
-                ", paymentAmount=" + paymentAmount +
+                ", totalAmount=" + totalAmount +
                 ", bankId=" + bankId +
                 ", paymentMode='" + paymentMode + '\'' +
-                ", chequeNo='" + chequeNo + '\'' +
-                ", referenceNo='" + referenceNo + '\'' +
+                ", billsCount=" + billsCount +
+                ", bankTransactionId=" + bankTransactionId +
                 ", createdAt=" + createdAt +
                 '}';
     }

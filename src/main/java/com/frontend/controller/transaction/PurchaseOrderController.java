@@ -610,8 +610,8 @@ public class PurchaseOrderController implements Initializable {
         try {
             BorderPane mainPane = (BorderPane) btnBack.getScene().lookup("#mainPane");
             if (mainPane != null) {
-                javafx.scene.Node dashboard = (javafx.scene.Node) mainPane.getProperties().get("initialDashboard");
-                if (dashboard != null) mainPane.setCenter(dashboard);
+                Pane menuPane = loader.getPage("/fxml/transaction/PurchaseMenu.fxml");
+                mainPane.setCenter(menuPane);
             }
         } catch (Exception e) {
             LOG.error("Error navigating back: ", e);

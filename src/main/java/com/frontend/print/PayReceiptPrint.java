@@ -1,6 +1,7 @@
 package com.frontend.print;
 
 import com.frontend.entity.BillPayment;
+import com.frontend.entity.PaymentReceipt;
 import com.frontend.entity.PurchaseBill;
 import com.frontend.entity.Supplier;
 import com.frontend.repository.PurchaseBillRepository;
@@ -107,6 +108,682 @@ public class PayReceiptPrint {
 
     public boolean printMultiPaymentReceiptWithDialog(List<BillPayment> payments, Supplier supplier, Window ownerWindow) {
         return printMultiPaymentReceipt(payments, supplier);
+    }
+
+    /**
+     * Print a PaymentReceipt (grouped payment)
+     * Shows single receipt with bill allocations breakdown
+     */
+    public boolean printPaymentReceipt(PaymentReceipt receipt, Supplier supplier) {
+        if (receipt == null) return false;
+        try {
+            loadFonts();
+            ensureOutputDir();
+            String pdfPath = generatePaymentReceiptPdf(receipt, supplier);
+            if (pdfPath != null) {
+                openPdf(pdfPath);
+                return true;
+            }
+        } catch (Exception e) {
+            LOG.error("Error generating payment receipt: {}", e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * Generate PDF for PaymentReceipt (Master-Detail pattern)
+     * Compact single-page layout
+     */
+    private String generatePaymentReceiptPdf(PaymentReceipt receipt, Supplier supplier) {
+        try {
+            // Fixed compact page size - fits all on one page
+            int billsCount = receipt.getBillsCount() != null ? receipt.getBillsCount() : 1;
+            float pageHeight = 380f + (billsCount > 1 ? (billsCount * 22f) : 0f);
+            Rectangle pageSize = new Rectangle(595f, Math.min(pageHeight, 550f));
+
+            Document doc = new Document(pageSize, 20f, 20f, 10f, 10f);
+            String pdfPath = PDF_DIR + File.separator + "PayReceipt.pdf";
+            PdfWriter.getInstance(doc, new FileOutputStream(pdfPath));
+            doc.open();
+
+            // Main container table
+            PdfPTable mainTable = new PdfPTable(1);
+            mainTable.setWidthPercentage(100);
+
+            // === COMPACT HEADER ===
+            mainTable.addCell(createCompactHeaderCell());
+
+            // === RECEIPT INFO + SUPPLIER + PAYMENT (Combined compact row) ===
+            mainTable.addCell(createCompactInfoCell(receipt, supplier));
+
+            // === BILL ALLOCATIONS TABLE (if multiple bills) ===
+            if (billsCount > 1 && receipt.getBillPayments() != null && !receipt.getBillPayments().isEmpty()) {
+                mainTable.addCell(createCompactBillTableCell(receipt));
+            }
+
+            // === COMPACT SUMMARY + FOOTER ===
+            mainTable.addCell(createCompactSummaryFooterCell(receipt, supplier));
+
+            doc.add(mainTable);
+            doc.close();
+
+            LOG.info("Payment Receipt PDF generated: ReceiptNo={}, Bills={}, Path={}",
+                    receipt.getReceiptNo(), billsCount, pdfPath);
+            return pdfPath;
+
+        } catch (Exception e) {
+            LOG.error("Payment Receipt PDF generation error: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Compact header - single line
+     */
+    private PdfPCell createCompactHeaderCell() {
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(Rectangle.BOTTOM);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setPadding(3f);
+        cell.setPaddingBottom(5f);
+
+        // Company name + Receipt title in one line
+        Paragraph header = new Paragraph();
+        header.setAlignment(Element.ALIGN_CENTER);
+        header.add(new Chunk("AMjanaI k^fo", fontHeader));
+        header.add(new Chunk("  |  ", new Font(Font.FontFamily.HELVETICA, 14f, Font.NORMAL, LIGHT_GRAY)));
+        header.add(new Chunk("paOsao BarlyacaI paavataI", fontTitle));
+        cell.addElement(header);
+
+        return cell;
+    }
+
+    /**
+     * Combined compact info cell - Receipt#, Date, Supplier, Payment Mode, Amount
+     */
+    private PdfPCell createCompactInfoCell(PaymentReceipt receipt, Supplier supplier) {
+        PdfPTable mainInfo = new PdfPTable(3);
+        try {
+            mainInfo.setWidthPercentage(100);
+            mainInfo.setWidths(new float[]{35, 35, 30});
+        } catch (Exception ignored) {}
+
+        // Column 1: Receipt Info
+        PdfPCell col1 = new PdfPCell();
+        col1.setBorder(Rectangle.RIGHT);
+        col1.setBorderColor(BORDER_COLOR);
+        col1.setPadding(5f);
+
+        Paragraph receiptInfo = new Paragraph();
+        receiptInfo.add(new Chunk("pavataI k`. : ", fontLabel));
+        receiptInfo.add(new Chunk("#" + receipt.getReceiptNo(), englishFontBold));
+        col1.addElement(receiptInfo);
+
+        String date = receipt.getPaymentDate() != null ?
+                receipt.getPaymentDate().format(DATE_FMT) : LocalDate.now().format(DATE_FMT);
+        Paragraph dateInfo = new Paragraph();
+        dateInfo.add(new Chunk("idnaaMk : ", fontLabel));
+        dateInfo.add(new Chunk(date, englishFontBold));
+        col1.addElement(dateInfo);
+
+        Paragraph billsInfo = new Paragraph();
+        billsInfo.add(new Chunk("ibala : ", fontLabel));
+        billsInfo.add(new Chunk(getBillNumbersSummary(receipt), englishFontBold));
+        col1.addElement(billsInfo);
+
+        mainInfo.addCell(col1);
+
+        // Column 2: Supplier + Payment Mode
+        PdfPCell col2 = new PdfPCell();
+        col2.setBorder(Rectangle.RIGHT);
+        col2.setBorderColor(BORDER_COLOR);
+        col2.setPadding(5f);
+
+        Paragraph supplierInfo = new Paragraph();
+        supplierInfo.add(new Chunk("paurvazadar : ", fontLabel));
+        supplierInfo.add(new Chunk(supplier != null ? supplier.getName() : "-", fontValue));
+        col2.addElement(supplierInfo);
+
+        Paragraph modeInfo = new Paragraph();
+        modeInfo.add(new Chunk("pa`kar : ", fontLabel));
+        modeInfo.add(new Chunk(receipt.getPaymentMode() != null ? receipt.getPaymentMode() : "-", fontValue));
+        col2.addElement(modeInfo);
+
+        if (receipt.getChequeNo() != null && !receipt.getChequeNo().trim().isEmpty()) {
+            Paragraph chequeInfo = new Paragraph();
+            chequeInfo.add(new Chunk("caok k`. : ", fontLabel));
+            chequeInfo.add(new Chunk(receipt.getChequeNo(), englishFontBold));
+            col2.addElement(chequeInfo);
+        }
+
+        mainInfo.addCell(col2);
+
+        // Column 3: Total Amount (Highlighted)
+        Double totalAmt = receipt.getTotalAmount() != null ? receipt.getTotalAmount() : 0.0;
+
+        PdfPCell col3 = new PdfPCell();
+        col3.setBorder(Rectangle.NO_BORDER);
+        col3.setBackgroundColor(new BaseColor(232, 245, 233)); // Light green
+        col3.setPadding(8f);
+        col3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        col3.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        Paragraph amtLabel = new Paragraph("ekUNa Barlaolao", fontLabel);
+        amtLabel.setAlignment(Element.ALIGN_CENTER);
+        col3.addElement(amtLabel);
+
+        Paragraph amtValue = new Paragraph("Rs. " + String.format("%,.2f", totalAmt), englishFontLarge);
+        amtValue.setAlignment(Element.ALIGN_CENTER);
+        col3.addElement(amtValue);
+
+        mainInfo.addCell(col3);
+
+        PdfPCell wrapper = new PdfPCell(mainInfo);
+        wrapper.setBorder(Rectangle.BOTTOM);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(0f);
+        return wrapper;
+    }
+
+    /**
+     * Compact bill allocations table
+     */
+    private PdfPCell createCompactBillTableCell(PaymentReceipt receipt) {
+        PdfPCell wrapper = new PdfPCell();
+        wrapper.setBorder(Rectangle.BOTTOM);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(5f);
+
+        // Table: Bill No | Bill Date | Bill Amount | Paid Amount | Status
+        PdfPTable billTable = new PdfPTable(5);
+        try {
+            billTable.setWidthPercentage(100);
+            billTable.setWidths(new float[]{15, 20, 22, 22, 21});
+        } catch (Exception ignored) {}
+
+        // Compact header row
+        addCompactTableHeader(billTable, "ibala k`.");
+        addCompactTableHeader(billTable, "idnaaMk");
+        addCompactTableHeader(billTable, "ibala r@kma");
+        addCompactTableHeader(billTable, "Barlaolao");
+        addCompactTableHeaderEng(billTable, "STATUS");
+
+        // Data rows
+        for (BillPayment bp : receipt.getBillPayments()) {
+            PurchaseBill bill = getBillDetails(bp.getBillNo());
+
+            addCompactTableData(billTable, "#" + bp.getBillNo());
+
+            String billDate = bill != null && bill.getBillDate() != null ?
+                    bill.getBillDate().format(DATE_FMT) : "-";
+            addCompactTableData(billTable, billDate);
+
+            double billAmt = bill != null && bill.getNetAmount() != null ? bill.getNetAmount() : 0.0;
+            addCompactTableData(billTable, "Rs. " + String.format("%,.2f", billAmt));
+
+            double paidAmt = bp.getPaymentAmount() != null ? bp.getPaymentAmount() : 0.0;
+            addCompactTableDataHighlight(billTable, "Rs. " + String.format("%,.2f", paidAmt));
+
+            String status = bill != null ? bill.getStatus() : "-";
+            addCompactTableDataEng(billTable, status);
+        }
+
+        wrapper.addElement(billTable);
+        return wrapper;
+    }
+
+    private void addCompactTableHeader(PdfPTable table, String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 14f, Font.BOLD, BLACK)));
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setBackgroundColor(new BaseColor(240, 240, 240));
+        cell.setPadding(3f);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    private void addCompactTableHeaderEng(PdfPTable table, String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK)));
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setBackgroundColor(new BaseColor(240, 240, 240));
+        cell.setPadding(3f);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    private void addCompactTableData(PdfPTable table, String text) {
+        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BLACK);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    private void addCompactTableDataHighlight(PdfPTable table, String text) {
+        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setBackgroundColor(new BaseColor(245, 255, 245));
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    private void addCompactTableDataEng(PdfPTable table, String text) {
+        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(BORDER_COLOR);
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    /**
+     * Compact summary + signature + footer combined
+     */
+    private PdfPCell createCompactSummaryFooterCell(PaymentReceipt receipt, Supplier supplier) {
+        PdfPCell wrapper = new PdfPCell();
+        wrapper.setBorder(Rectangle.NO_BORDER);
+        wrapper.setPadding(5f);
+
+        // Summary row: Bills Count | Total Paid | Supplier Pending
+        PdfPTable summaryTable = new PdfPTable(6);
+        try {
+            summaryTable.setWidthPercentage(100);
+            summaryTable.setWidths(new float[]{18, 15, 18, 17, 17, 15});
+        } catch (Exception ignored) {}
+
+        // Labels and values inline
+        addCompactSummaryLabel(summaryTable, "Barlaolao ibala :");
+        addCompactSummaryValue(summaryTable, String.valueOf(receipt.getBillsCount()));
+
+        addCompactSummaryLabel(summaryTable, "ekUNa Barlaolao :");
+        addCompactSummaryValue(summaryTable, "Rs. " + String.format("%,.2f", receipt.getTotalAmount()));
+
+        Double totalPending = getTotalPendingForSupplier(supplier != null ? supplier.getId() : null);
+        addCompactSummaryLabel(summaryTable, "paurvazadar baakI :");
+        addCompactSummaryValueHighlight(summaryTable, "Rs. " + String.format("%,.2f", totalPending));
+
+        wrapper.addElement(summaryTable);
+
+        // Compact signature section
+        PdfPTable signTable = new PdfPTable(2);
+        try {
+            signTable.setWidthPercentage(100);
+            signTable.setWidths(new float[]{50, 50});
+            signTable.setSpacingBefore(10f);
+        } catch (Exception ignored) {}
+
+        PdfPCell recvCell = new PdfPCell();
+        recvCell.setBorder(Rectangle.NO_BORDER);
+        recvCell.setPadding(2f);
+        Paragraph recv = new Paragraph();
+        recv.setAlignment(Element.ALIGN_CENTER);
+        recv.add(new Chunk("____________\n", englishFont));
+        recv.add(new Chunk("paOsao GaoNaar", new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        recvCell.addElement(recv);
+        signTable.addCell(recvCell);
+
+        PdfPCell authCell = new PdfPCell();
+        authCell.setBorder(Rectangle.NO_BORDER);
+        authCell.setPadding(2f);
+        Paragraph auth = new Paragraph();
+        auth.setAlignment(Element.ALIGN_CENTER);
+        auth.add(new Chunk("____________\n", englishFont));
+        auth.add(new Chunk("paOsao doNaar", new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        authCell.addElement(auth);
+        signTable.addCell(authCell);
+
+        wrapper.addElement(signTable);
+
+        // Compact footer
+        Paragraph footer = new Paragraph();
+        footer.setAlignment(Element.ALIGN_CENTER);
+        footer.add(new Chunk(LocalDateTime.now().format(DATETIME_FMT) + " | Computer Generated",
+                new Font(Font.FontFamily.HELVETICA, 8f, Font.NORMAL, LIGHT_GRAY)));
+        footer.setSpacingBefore(3f);
+        wrapper.addElement(footer);
+
+        return wrapper;
+    }
+
+    private void addCompactSummaryLabel(PdfPTable table, String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        table.addCell(cell);
+    }
+
+    private void addCompactSummaryValue(PdfPTable table, String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, BLACK)));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(cell);
+    }
+
+    private void addCompactSummaryValueHighlight(PdfPTable table, String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, new BaseColor(211, 47, 47))));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(2f);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(cell);
+    }
+
+    private PdfPCell createPaymentReceiptInfoCell(PaymentReceipt receipt) {
+        PdfPTable infoTable = new PdfPTable(6);
+        try {
+            infoTable.setWidthPercentage(100);
+            infoTable.setWidths(new float[]{18, 15, 18, 18, 16, 15});
+        } catch (Exception ignored) {}
+
+        // Receipt No - Label
+        PdfPCell lblReceipt = new PdfPCell(new Phrase("pavataI k`. :", fontLabel));
+        lblReceipt.setBorder(Rectangle.NO_BORDER);
+        lblReceipt.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        lblReceipt.setPaddingRight(5f);
+        lblReceipt.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(lblReceipt);
+
+        // Receipt No - Value
+        PdfPCell valReceipt = new PdfPCell(new Phrase("#" + receipt.getReceiptNo(), englishFontBold));
+        valReceipt.setBorder(Rectangle.NO_BORDER);
+        valReceipt.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valReceipt.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(valReceipt);
+
+        // Date - Label
+        PdfPCell lblDate = new PdfPCell(new Phrase("idnaaMk :", fontLabel));
+        lblDate.setBorder(Rectangle.NO_BORDER);
+        lblDate.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        lblDate.setPaddingRight(5f);
+        lblDate.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(lblDate);
+
+        // Date - Value
+        String date = receipt.getPaymentDate() != null ?
+                receipt.getPaymentDate().format(DATE_FMT) : LocalDate.now().format(DATE_FMT);
+        PdfPCell valDate = new PdfPCell(new Phrase(date, englishFontBold));
+        valDate.setBorder(Rectangle.NO_BORDER);
+        valDate.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valDate.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(valDate);
+
+        // Bills Count - Label
+        PdfPCell lblBills = new PdfPCell(new Phrase("ibala :", fontLabel));
+        lblBills.setBorder(Rectangle.NO_BORDER);
+        lblBills.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        lblBills.setPaddingRight(5f);
+        lblBills.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(lblBills);
+
+        // Bills Count - Value
+        PdfPCell valBills = new PdfPCell(new Phrase(String.valueOf(receipt.getBillsCount()), englishFontBold));
+        valBills.setBorder(Rectangle.NO_BORDER);
+        valBills.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valBills.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        infoTable.addCell(valBills);
+
+        PdfPCell wrapper = new PdfPCell(infoTable);
+        wrapper.setBorder(Rectangle.BOTTOM);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(8f);
+        return wrapper;
+    }
+
+    private PdfPCell createReceiptSupplierPaymentCell(PaymentReceipt receipt, Supplier supplier) {
+        PdfPTable twoCol = new PdfPTable(2);
+        try {
+            twoCol.setWidthPercentage(100);
+            twoCol.setWidths(new float[]{50, 50});
+        } catch (Exception ignored) {}
+
+        // LEFT: Supplier Info
+        PdfPCell leftCell = new PdfPCell();
+        leftCell.setBorder(Rectangle.RIGHT);
+        leftCell.setBorderColor(BORDER_COLOR);
+        leftCell.setPadding(10f);
+
+        Paragraph supplierTitle = new Paragraph("paurvazadaracaO maaihtaI", fontTitle);
+        supplierTitle.setSpacingAfter(8f);
+        leftCell.addElement(supplierTitle);
+
+        PdfPTable supplierDetails = new PdfPTable(2);
+        try {
+            supplierDetails.setWidths(new float[]{30, 70});
+        } catch (Exception ignored) {}
+
+        addDetailRow(supplierDetails, "naava :", supplier != null ? supplier.getName() : "-");
+        if (supplier != null && supplier.getContact() != null && !supplier.getContact().isEmpty()) {
+            addDetailRow(supplierDetails, "saMpak- :", supplier.getContact());
+        }
+        leftCell.addElement(supplierDetails);
+        twoCol.addCell(leftCell);
+
+        // RIGHT: Payment Info + Total Amount
+        PdfPCell rightCell = new PdfPCell();
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setPadding(10f);
+
+        Paragraph paymentTitle = new Paragraph("Barlayaacao tpSaIla", fontTitle);
+        paymentTitle.setSpacingAfter(8f);
+        rightCell.addElement(paymentTitle);
+
+        PdfPTable paymentDetails = new PdfPTable(2);
+        try {
+            paymentDetails.setWidths(new float[]{40, 60});
+        } catch (Exception ignored) {}
+
+        addDetailRow(paymentDetails, "pa`kar :", receipt.getPaymentMode() != null ? receipt.getPaymentMode() : "-");
+        if (receipt.getChequeNo() != null && !receipt.getChequeNo().trim().isEmpty()) {
+            addDetailRow(paymentDetails, "caok k`. :", receipt.getChequeNo());
+        }
+        if (receipt.getReferenceNo() != null && !receipt.getReferenceNo().trim().isEmpty()) {
+            addDetailRow(paymentDetails, "saMdBa- k`. :", receipt.getReferenceNo());
+        }
+        rightCell.addElement(paymentDetails);
+
+        // Total Amount - Highlighted in box
+        Double totalAmt = receipt.getTotalAmount() != null ? receipt.getTotalAmount() : 0.0;
+
+        PdfPTable amtBox = new PdfPTable(1);
+        amtBox.setWidthPercentage(100);
+        amtBox.setSpacingBefore(8f);
+
+        Paragraph amtPara = new Paragraph();
+        amtPara.setAlignment(Element.ALIGN_CENTER);
+        amtPara.add(new Chunk("ekUNa Barlaolao\n", fontLabel));
+        amtPara.add(new Chunk("Rs. " + String.format("%,.2f", totalAmt), englishFontLarge));
+
+        PdfPCell amtCell = new PdfPCell(amtPara);
+        amtCell.setBorder(Rectangle.BOX);
+        amtCell.setBorderColor(new BaseColor(76, 175, 80)); // Green border
+        amtCell.setBackgroundColor(new BaseColor(232, 245, 233)); // Light green bg
+        amtCell.setPadding(8f);
+        amtCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        amtBox.addCell(amtCell);
+
+        rightCell.addElement(amtBox);
+
+        twoCol.addCell(rightCell);
+
+        PdfPCell wrapper = new PdfPCell(twoCol);
+        wrapper.setBorder(Rectangle.NO_BORDER);
+        wrapper.setPadding(0f);
+        return wrapper;
+    }
+
+    private PdfPCell createBillAllocationsTableCell(PaymentReceipt receipt) {
+        PdfPCell wrapper = new PdfPCell();
+        wrapper.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(8f);
+
+        // Title
+        Paragraph title = new Paragraph("ibala vaaTpa tpSaIla", fontTitle);
+        title.setSpacingAfter(5f);
+        wrapper.addElement(title);
+
+        // Table: Bill No | Bill Date | Bill Amount | Paid Amount | Status
+        PdfPTable billTable = new PdfPTable(5);
+        try {
+            billTable.setWidthPercentage(100);
+            billTable.setWidths(new float[]{15, 20, 22, 22, 21});
+        } catch (Exception ignored) {}
+
+        // Header row
+        addTableHeaderCell(billTable, "ibala k`.");
+        addTableHeaderCell(billTable, "idnaaMk");
+        addTableHeaderCell(billTable, "ibala r@kma");
+        addTableHeaderCell(billTable, "Barlaolao");
+        addTableHeaderCellEnglish(billTable, "STATUS");
+
+        // Data rows
+        for (BillPayment bp : receipt.getBillPayments()) {
+            PurchaseBill bill = getBillDetails(bp.getBillNo());
+
+            // Bill No
+            addTableDataCell(billTable, "#" + bp.getBillNo(), false);
+
+            // Bill Date
+            String billDate = bill != null && bill.getBillDate() != null ?
+                    bill.getBillDate().format(DATE_FMT) : "-";
+            addTableDataCell(billTable, billDate, false);
+
+            // Bill Amount
+            double billAmt = bill != null && bill.getNetAmount() != null ? bill.getNetAmount() : 0.0;
+            addTableDataCell(billTable, "Rs. " + String.format("%,.2f", billAmt), false);
+
+            // Paid Amount in this receipt
+            double paidAmt = bp.getPaymentAmount() != null ? bp.getPaymentAmount() : 0.0;
+            addTableDataCell(billTable, "Rs. " + String.format("%,.2f", paidAmt), true);
+
+            // Status
+            String status = bill != null ? bill.getStatus() : "-";
+            addTableDataCellEnglish(billTable, status);
+        }
+
+        wrapper.addElement(billTable);
+        return wrapper;
+    }
+
+    private PdfPCell createSingleBillDetailsCell(PaymentReceipt receipt) {
+        PdfPCell wrapper = new PdfPCell();
+        wrapper.setBorder(Rectangle.TOP);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(8f);
+
+        // Get bill details if available
+        BillPayment bp = receipt.getBillPayments() != null && !receipt.getBillPayments().isEmpty()
+                ? receipt.getBillPayments().get(0) : null;
+
+        if (bp == null) {
+            return wrapper;
+        }
+
+        PurchaseBill bill = getBillDetails(bp.getBillNo());
+
+        // Title
+        Paragraph title = new Paragraph("ibala tpSaIla", fontTitle);
+        title.setSpacingAfter(5f);
+        wrapper.addElement(title);
+
+        PdfPTable details = new PdfPTable(4);
+        try {
+            details.setWidthPercentage(100);
+            details.setWidths(new float[]{25, 25, 25, 25});
+        } catch (Exception ignored) {}
+
+        // Bill No
+        addSummaryCell(details, "ibala k`.", "#" + bp.getBillNo(), false);
+
+        // Bill Date
+        String billDate = bill != null && bill.getBillDate() != null ?
+                bill.getBillDate().format(DATE_FMT) : "-";
+        addSummaryCell(details, "ibala idnaaMk", billDate, false);
+
+        // Bill Amount
+        double billAmt = bill != null && bill.getNetAmount() != null ? bill.getNetAmount() : 0.0;
+        addSummaryCell(details, "ibala r@kma", "Rs. " + String.format("%,.2f", billAmt), false);
+
+        // Status
+        String status = bill != null ? bill.getStatus() : "-";
+        addSummaryCell(details, "isTataI", status, false);
+
+        wrapper.addElement(details);
+        return wrapper;
+    }
+
+    private PdfPCell createReceiptSummaryCell(PaymentReceipt receipt, Supplier supplier) {
+        PdfPCell wrapper = new PdfPCell();
+        wrapper.setBorder(Rectangle.TOP);
+        wrapper.setBorderColor(BORDER_COLOR);
+        wrapper.setPadding(10f);
+
+        // Title
+        Paragraph title = new Paragraph("samaroI (Summary)", fontTitle);
+        title.setSpacingAfter(8f);
+        wrapper.addElement(title);
+
+        // Summary table - show paid bills info
+        PdfPTable summaryTable = new PdfPTable(4);
+        try {
+            summaryTable.setWidthPercentage(100);
+            summaryTable.setWidths(new float[]{25, 25, 25, 25});
+        } catch (Exception ignored) {}
+
+        // Row 1: Paid Bills Count | Total Amount Paid
+        addSummaryCell(summaryTable, "Barlaolao ibala", String.valueOf(receipt.getBillsCount()), false);
+        addSummaryCell(summaryTable, "ekUNa Barlaolao",
+                "Rs. " + String.format("%,.2f", receipt.getTotalAmount()), false);
+
+        // Row 2: Bill Numbers Paid | Supplier Pending
+        String billNos = getBillNumbersSummary(receipt);
+        addSummaryCell(summaryTable, "ibala k`.", billNos, false);
+
+        Double totalPending = getTotalPendingForSupplier(supplier != null ? supplier.getId() : null);
+        addSummaryCell(summaryTable, "paurvazadar baakI", "Rs. " + String.format("%,.2f", totalPending), true);
+
+        wrapper.addElement(summaryTable);
+
+        // Remarks if present
+        if (receipt.getRemarks() != null && !receipt.getRemarks().trim().isEmpty()) {
+            Paragraph remarksPara = new Paragraph();
+            remarksPara.add(new Chunk("Saora : ", fontLabel));
+            remarksPara.add(new Chunk(receipt.getRemarks(), fontValue));
+            remarksPara.setSpacingBefore(8f);
+            wrapper.addElement(remarksPara);
+        }
+
+        return wrapper;
+    }
+
+    /**
+     * Get summary of bill numbers paid in this receipt
+     */
+    private String getBillNumbersSummary(PaymentReceipt receipt) {
+        if (receipt.getBillPayments() == null || receipt.getBillPayments().isEmpty()) {
+            return "-";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (BillPayment bp : receipt.getBillPayments()) {
+            if (count > 0) sb.append(", ");
+            sb.append("#").append(bp.getBillNo());
+            count++;
+            if (count >= 4 && receipt.getBillPayments().size() > 4) {
+                sb.append("...");
+                break;
+            }
+        }
+        return sb.toString();
     }
 
     private void ensureOutputDir() {
@@ -455,22 +1132,26 @@ public class PayReceiptPrint {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setPaddingBottom(8f);
 
-        // Company name centered - Marathi 20px
+        // Company name centered - single line
         Paragraph header = new Paragraph();
         header.setAlignment(Element.ALIGN_CENTER);
         header.add(new Chunk("AMjanaI k^fo", fontHeader));
-        
-        cell.addElement(header);
-        header.add(new Chunk(" - f^imalaI rosTa^rMT", new Font(customBaseFont, 20f, Font.NORMAL, GRAY)));
+        header.add(new Chunk(" - f^imalaI rosTa^rMT", new Font(customBaseFont, 18f, Font.NORMAL, GRAY)));
         cell.addElement(header);
 
-        // Receipt title - English 14px, Marathi 20px
+        // Receipt title - Marathi 20px
         Paragraph title = new Paragraph();
         title.setAlignment(Element.ALIGN_CENTER);
-       // title.add(new Chunk("PAYMENT RECEIPT", fontSmall));
         title.add(new Chunk("paOsao BarlyacaI paavataI", fontTitle));
-        title.setSpacingBefore(3f);
+        title.setSpacingBefore(5f);
         cell.addElement(title);
+
+        // Horizontal line
+        Paragraph line = new Paragraph();
+        line.setAlignment(Element.ALIGN_CENTER);
+        line.add(new Chunk("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL, LIGHT_GRAY)));
+        line.setSpacingBefore(3f);
+        cell.addElement(line);
 
         return cell;
     }

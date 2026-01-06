@@ -15,25 +15,28 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Controller for Transaction Menu
- * Handles navigation to Billing and Purchase Invoice screens
+ * Controller for Purchase Menu
+ * Handles navigation to Purchase Order, Purchase Invoice, and Pay Receipt screens
  */
 @Component
-public class TransactionMenuController implements Initializable {
+public class PurchaseMenuController implements Initializable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TransactionMenuController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PurchaseMenuController.class);
 
     @Autowired
     private SpringFXMLLoader loader;
 
     @FXML
-    private Button btnBilling;
-
-    @FXML
     private Button btnPurchaseOrder;
 
     @FXML
+    private Button btnViewOrders;
+
+    @FXML
     private Button btnPurchaseInvoice;
+
+    @FXML
+    private Button btnViewInvoices;
 
     @FXML
     private Button btnPayReceipt;
@@ -41,29 +44,27 @@ public class TransactionMenuController implements Initializable {
     @FXML
     private Button btnViewPayments;
 
-    @FXML
-    private Button btnReceivePayment;
-
-    @FXML
-    private Button btnViewReceipts;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        LOG.info("Initializing TransactionMenuController");
+        LOG.info("Initializing PurchaseMenuController");
         setupEventHandlers();
     }
 
     private void setupEventHandlers() {
-        if (btnBilling != null) {
-            btnBilling.setOnAction(e -> navigateToBilling());
-        }
-
         if (btnPurchaseOrder != null) {
             btnPurchaseOrder.setOnAction(e -> navigateToPurchaseOrder());
         }
 
+        if (btnViewOrders != null) {
+            btnViewOrders.setOnAction(e -> navigateToPurchaseOrder());
+        }
+
         if (btnPurchaseInvoice != null) {
             btnPurchaseInvoice.setOnAction(e -> navigateToPurchaseInvoice());
+        }
+
+        if (btnViewInvoices != null) {
+            btnViewInvoices.setOnAction(e -> navigateToPurchaseInvoice());
         }
 
         if (btnPayReceipt != null) {
@@ -72,28 +73,6 @@ public class TransactionMenuController implements Initializable {
 
         if (btnViewPayments != null) {
             btnViewPayments.setOnAction(e -> navigateToPayReceipt());
-        }
-
-        if (btnReceivePayment != null) {
-            btnReceivePayment.setOnAction(e -> navigateToReceivePayment());
-        }
-
-        if (btnViewReceipts != null) {
-            btnViewReceipts.setOnAction(e -> navigateToReceivePayment());
-        }
-    }
-
-    private void navigateToBilling() {
-        try {
-            LOG.info("Navigating to Billing Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/BillingFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Billing Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Billing Frame: ", e);
         }
     }
 
@@ -139,25 +118,9 @@ public class TransactionMenuController implements Initializable {
         }
     }
 
-    private void navigateToReceivePayment() {
-        try {
-            LOG.info("Navigating to Receive Payment Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/ReceivePaymentFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Receive Payment Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Receive Payment Frame: ", e);
-        }
-    }
-
     private BorderPane getMainPane() {
         try {
-            if (btnBilling != null && btnBilling.getScene() != null) {
-                return (BorderPane) btnBilling.getScene().lookup("#mainPane");
-            } else if (btnPurchaseOrder != null && btnPurchaseOrder.getScene() != null) {
+            if (btnPurchaseOrder != null && btnPurchaseOrder.getScene() != null) {
                 return (BorderPane) btnPurchaseOrder.getScene().lookup("#mainPane");
             } else if (btnPurchaseInvoice != null && btnPurchaseInvoice.getScene() != null) {
                 return (BorderPane) btnPurchaseInvoice.getScene().lookup("#mainPane");
@@ -165,10 +128,10 @@ public class TransactionMenuController implements Initializable {
                 return (BorderPane) btnPayReceipt.getScene().lookup("#mainPane");
             } else if (btnViewPayments != null && btnViewPayments.getScene() != null) {
                 return (BorderPane) btnViewPayments.getScene().lookup("#mainPane");
-            } else if (btnReceivePayment != null && btnReceivePayment.getScene() != null) {
-                return (BorderPane) btnReceivePayment.getScene().lookup("#mainPane");
-            } else if (btnViewReceipts != null && btnViewReceipts.getScene() != null) {
-                return (BorderPane) btnViewReceipts.getScene().lookup("#mainPane");
+            } else if (btnViewOrders != null && btnViewOrders.getScene() != null) {
+                return (BorderPane) btnViewOrders.getScene().lookup("#mainPane");
+            } else if (btnViewInvoices != null && btnViewInvoices.getScene() != null) {
+                return (BorderPane) btnViewInvoices.getScene().lookup("#mainPane");
             }
         } catch (Exception e) {
             LOG.warn("Could not find main pane, navigation might not work properly");
