@@ -34,29 +34,35 @@ public class ReportMenuController implements Initializable {
     // Tab Chips
     @FXML private HBox chipSales;
     @FXML private HBox chipPurchase;
+    @FXML private HBox chipMiscellaneous;
     @FXML private FontAwesomeIcon iconSales;
     @FXML private FontAwesomeIcon iconPurchase;
+    @FXML private FontAwesomeIcon iconMiscellaneous;
     @FXML private Label lblSales;
     @FXML private Label lblPurchase;
+    @FXML private Label lblMiscellaneous;
 
     // Content Areas
     @FXML private VBox salesContent;
     @FXML private VBox purchaseContent;
+    @FXML private VBox miscellaneousContent;
 
     // Report Cards
     @FXML private StackPane salesReportCard;
     @FXML private StackPane purchaseReportCard;
     @FXML private StackPane paymentReceivedCard;
     @FXML private StackPane payReceiptReportCard;
+    @FXML private StackPane reducedItemReportCard;
 
     // Report Buttons
     @FXML private Button btnViewSalesReport;
     @FXML private Button btnViewPurchaseReport;
     @FXML private Button btnViewPaymentReceived;
     @FXML private Button btnViewPayReceipt;
+    @FXML private Button btnViewReducedItemReport;
 
-    // Track active tab
-    private boolean isSalesTabActive = true;
+    // Track active tab (0=Sales, 1=Purchase, 2=Miscellaneous)
+    private int activeTab = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,22 +86,29 @@ public class ReportMenuController implements Initializable {
     private void setupTabChips() {
         // Sales Tab Click
         chipSales.setOnMouseClicked(e -> {
-            if (!isSalesTabActive) {
+            if (activeTab != 0) {
                 switchToSalesTab();
             }
         });
 
         // Purchase Tab Click
         chipPurchase.setOnMouseClicked(e -> {
-            if (isSalesTabActive) {
+            if (activeTab != 1) {
                 switchToPurchaseTab();
+            }
+        });
+
+        // Miscellaneous Tab Click
+        chipMiscellaneous.setOnMouseClicked(e -> {
+            if (activeTab != 2) {
+                switchToMiscellaneousTab();
             }
         });
     }
 
     private void switchToSalesTab() {
         LOG.info("Switching to Sales tab");
-        isSalesTabActive = true;
+        activeTab = 0;
 
         // Update chip styles using inline styles for proper rendering
         chipSales.setStyle("-fx-background-color: linear-gradient(to right, #4CAF50, #388E3C); " +
@@ -106,24 +119,32 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
 
+        chipMiscellaneous.setStyle("-fx-background-color: #E8EAF6; " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+
         // Update icons
         iconSales.setFill(Color.WHITE);
         iconPurchase.setFill(Color.valueOf("#7B1FA2"));
+        iconMiscellaneous.setFill(Color.valueOf("#E65100"));
 
         // Update labels
         lblSales.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
         lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
 
         // Show/Hide content
         salesContent.setVisible(true);
         salesContent.setManaged(true);
         purchaseContent.setVisible(false);
         purchaseContent.setManaged(false);
+        miscellaneousContent.setVisible(false);
+        miscellaneousContent.setManaged(false);
     }
 
     private void switchToPurchaseTab() {
         LOG.info("Switching to Purchase tab");
-        isSalesTabActive = false;
+        activeTab = 1;
 
         // Update chip styles using inline styles for proper rendering
         chipPurchase.setStyle("-fx-background-color: linear-gradient(to right, #7B1FA2, #6A1B9A); " +
@@ -134,19 +155,63 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
 
+        chipMiscellaneous.setStyle("-fx-background-color: #E8EAF6; " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+
         // Update icons
         iconPurchase.setFill(Color.WHITE);
         iconSales.setFill(Color.valueOf("#4CAF50"));
+        iconMiscellaneous.setFill(Color.valueOf("#E65100"));
 
         // Update labels
         lblPurchase.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
         lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
 
         // Show/Hide content
         purchaseContent.setVisible(true);
         purchaseContent.setManaged(true);
         salesContent.setVisible(false);
         salesContent.setManaged(false);
+        miscellaneousContent.setVisible(false);
+        miscellaneousContent.setManaged(false);
+    }
+
+    private void switchToMiscellaneousTab() {
+        LOG.info("Switching to Miscellaneous tab");
+        activeTab = 2;
+
+        // Update chip styles using inline styles for proper rendering
+        chipMiscellaneous.setStyle("-fx-background-color: linear-gradient(to right, #E65100, #BF360C); " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.4), 8, 0, 0, 3);");
+
+        chipSales.setStyle("-fx-background-color: #E8EAF6; " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+
+        chipPurchase.setStyle("-fx-background-color: #E8EAF6; " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+
+        // Update icons
+        iconMiscellaneous.setFill(Color.WHITE);
+        iconSales.setFill(Color.valueOf("#4CAF50"));
+        iconPurchase.setFill(Color.valueOf("#7B1FA2"));
+
+        // Update labels
+        lblMiscellaneous.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        // Show/Hide content
+        miscellaneousContent.setVisible(true);
+        miscellaneousContent.setManaged(true);
+        salesContent.setVisible(false);
+        salesContent.setManaged(false);
+        purchaseContent.setVisible(false);
+        purchaseContent.setManaged(false);
     }
 
     private void setupReportCards() {
@@ -170,6 +235,11 @@ public class ReportMenuController implements Initializable {
             payReceiptReportCard.setOnMouseClicked(e -> loadPayReceiptReport());
         }
 
+        // Reduced Item Report Card - loads ReducedItemReport.fxml
+        if (reducedItemReportCard != null) {
+            reducedItemReportCard.setOnMouseClicked(e -> loadReducedItemReport());
+        }
+
         // Button handlers
         if (btnViewSalesReport != null) {
             btnViewSalesReport.setOnAction(e -> loadSalesReport());
@@ -185,6 +255,10 @@ public class ReportMenuController implements Initializable {
 
         if (btnViewPayReceipt != null) {
             btnViewPayReceipt.setOnAction(e -> loadPayReceiptReport());
+        }
+
+        if (btnViewReducedItemReport != null) {
+            btnViewReducedItemReport.setOnAction(e -> loadReducedItemReport());
         }
     }
 
@@ -240,6 +314,20 @@ public class ReportMenuController implements Initializable {
                 LOG.info("Pay Receipt Report loaded successfully");
             } catch (Exception e) {
                 LOG.error("Error loading Pay Receipt Report: ", e);
+            }
+        }
+    }
+
+    private void loadReducedItemReport() {
+        LOG.info("Loading Reduced Item Report");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            try {
+                Pane pane = loader.getPage("/fxml/report/ReducedItemReport.fxml");
+                mainPane.setCenter(pane);
+                LOG.info("Reduced Item Report loaded successfully");
+            } catch (Exception e) {
+                LOG.error("Error loading Reduced Item Report: ", e);
             }
         }
     }

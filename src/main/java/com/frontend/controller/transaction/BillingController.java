@@ -518,14 +518,24 @@ public class BillingController implements Initializable {
                 txtCategoryName.setFont(kiranFont25);
                 txtCategoryName.setStyle(fontStyle);
 
-                // Apply to all text fields
-                applyFontToTextField(txtCode, kiranFont25, fontStyle);
+                // Apply Kiran font to Item Name field (for Marathi typing)
                 applyFontToTextField(txtItemName, kiranFont25, fontStyle);
-                applyFontToTextField(txtQuantity, kiranFont25, fontStyle);
-                applyFontToTextField(txtPrice, kiranFont25, fontStyle);
-                applyFontToTextField(txtAmount, kiranFont25, fontStyle);
 
-                LOG.info("Kiran font (size 25) applied to all billing text fields");
+                // Apply English font (18px plain) to numeric/code fields
+                Font englishFont18 = Font.font("System", 18.0);
+                String englishFontStyle = "-fx-font-family: 'System'; -fx-font-size: 18px;";
+                applyFontToTextField(txtCode, englishFont18, englishFontStyle);
+                applyFontToTextField(txtQuantity, englishFont18, englishFontStyle);
+                applyFontToTextField(txtPrice, englishFont18, englishFontStyle);
+                applyFontToTextField(txtAmount, englishFont18, englishFontStyle);
+
+                // Set English prompt text for numeric/code fields
+                txtCode.setPromptText("Code");
+                txtQuantity.setPromptText("Quantity");
+                txtPrice.setPromptText("Rate");
+                txtAmount.setPromptText("Amount");
+
+                LOG.info("Kiran font applied to category/item fields, English font (18px) applied to code/numeric fields");
             }
         } catch (Exception e) {
             LOG.error("Error setting up Kiran font: ", e);
@@ -854,9 +864,10 @@ public class BillingController implements Initializable {
             }
         });
 
-        // Prevent non-numeric input in quantity field
+        // Allow numeric input with optional minus sign for quantity reduction
+        // Pattern: optional minus sign followed by digits (e.g., "5", "-1", "-2")
         txtQuantity.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
+            if (!newValue.matches("-?\\d*")) {
                 txtQuantity.setText(oldValue);
             }
         });
@@ -1120,7 +1131,7 @@ public class BillingController implements Initializable {
         String quantityText = txtQuantity.getText().trim();
         String priceText = txtPrice.getText().trim();
 
-        if (itemName.isEmpty() || quantityText.isEmpty()) {
+        if (itemName.isEmpty() || quantityText.isEmpty() || quantityText.equals("-")) {
             return;
         }
 
@@ -1141,8 +1152,10 @@ public class BillingController implements Initializable {
                 txtPrice.setText(String.valueOf(rate));
             }
 
-            if (quantity <= 0) {
-                showAlert("Quantity must be greater than zero");
+            // Allow negative quantity for reducing existing items
+            // Validation for negative qty is done in validate() method
+            if (quantity == 0) {
+                showAlert("Quantity cannot be zero");
                 txtQuantity.clear();
                 return;
             }
@@ -1573,31 +1586,49 @@ public class BillingController implements Initializable {
     /**
      * Add item to observable list only (for edit bill mode)
      * Does not save to database - that happens on SAVE
+     * Supports negative quantity to reduce existing item quantity
      */
     private void addItemToListOnly() {
         try {
             String itemName = txtItemName.getText().trim();
             float qty = Float.parseFloat(txtQuantity.getText().trim());
             float rate = Float.parseFloat(txtPrice.getText().trim());
-            float amt = qty * rate;
 
             // Check if item with same name and rate already exists in the list
             TempTransaction existing = null;
-            for (TempTransaction t : tempTransactionList) {
+            int existingIndex = -1;
+            for (int i = 0; i < tempTransactionList.size(); i++) {
+                TempTransaction t = tempTransactionList.get(i);
                 if (t.getItemName().equals(itemName) && t.getRate().equals(rate)) {
                     existing = t;
+                    existingIndex = i;
                     break;
                 }
             }
 
             if (existing != null) {
-                // Update existing item - add quantity
-                existing.setQty(existing.getQty() + qty);
-                existing.setAmt(existing.getQty() * existing.getRate());
-                tblTransaction.refresh();
-                LOG.info("Updated existing item in list: {} qty={}", itemName, existing.getQty());
+                // Update existing item - add quantity (handles negative qty for reduction)
+                float newQty = existing.getQty() + qty;
+
+                if (newQty <= 0) {
+                    // Remove item from list if quantity becomes 0 or negative
+                    tempTransactionList.remove(existingIndex);
+                    tblTransaction.refresh();
+                    LOG.info("Removed item from list (qty became {}): {}", newQty, itemName);
+                } else {
+                    existing.setQty(newQty);
+                    existing.setAmt(newQty * existing.getRate());
+                    tblTransaction.refresh();
+                    LOG.info("Updated existing item in list: {} qty={}", itemName, newQty);
+                }
             } else {
+                // Don't allow adding negative quantity for non-existing item
+                if (qty < 0) {
+                    alert.showError("Cannot reduce quantity. Item not found in the order.");
+                    return;
+                }
                 // Add new item to list
+                float amt = qty * rate;
                 TempTransaction newTrans = new TempTransaction();
                 newTrans.setId(tempTransactionList.size() + 1); // Temporary ID for display
                 newTrans.setItemName(itemName);
@@ -1647,13 +1678,29 @@ public class BillingController implements Initializable {
     /**
      * Add transaction to database and sync with TableView
      * If item exists with same name and rate, updates quantity instead
+     * Tracks reduced kitchen items when quantity is negative
      */
     private void addTempTransactionToDatabase(TempTransaction transaction) {
         try {
             Integer tableNo = transaction.getTableNo();
 
-            // Save to database - service handles add/update logic
-            TempTransaction savedTransaction = tempTransactionService.addOrUpdateTransaction(transaction);
+            // Get current user info for tracking
+            Long userId = SessionService.getCurrentUserId();
+            String userName = SessionService.getCurrentUsername();
+
+            // Save to database - use tracking method for negative quantities
+            TempTransaction savedTransaction;
+            if (transaction.getQty() < 0) {
+                // Negative quantity - use tracking method to track kitchen item reductions
+                savedTransaction = tempTransactionService.addOrUpdateTransactionWithTracking(
+                        transaction,
+                        userId != null ? userId.intValue() : null,
+                        userName
+                );
+            } else {
+                // Positive quantity - use normal method
+                savedTransaction = tempTransactionService.addOrUpdateTransaction(transaction);
+            }
 
             // Reload all transactions for this table to sync TableView with database
             loadTransactionsForTable(tableNo);
@@ -1872,8 +1919,17 @@ public class BillingController implements Initializable {
                     clearItemForm();
                     LOG.info("Item removed from list (edit bill mode): {}", selected.getItemName());
                 } else {
-                    // Normal mode - delete from database
-                    tempTransactionService.deleteTransaction(selected.getId());
+                    // Normal mode - delete from database with tracking
+                    // Get current user info for tracking
+                    Long userId = SessionService.getCurrentUserId();
+                    String userName = SessionService.getCurrentUsername();
+
+                    // Use tracking method to track kitchen item removals
+                    tempTransactionService.removeTransactionWithTracking(
+                            selected.getId(),
+                            userId != null ? userId.intValue() : null,
+                            userName
+                    );
 
                     // Reload transactions for this table to sync
                     Integer tableNo = tableMasterService.getTableByName(txtTableNumber.getText()).getId();
@@ -2720,6 +2776,11 @@ public class BillingController implements Initializable {
 
     private void addTempTransactionInTableView(TempTransaction tempTransaction) {
         if (tblTransaction.getItems().isEmpty()) {
+            // Don't allow adding negative quantity as first item
+            if (tempTransaction.getQty() < 0) {
+                LOG.warn("Cannot add negative quantity as first item");
+                return;
+            }
             tempTransaction.setId(1);
             tempTransactionList.add(tempTransaction);
             LOG.info("1st TempTransaction added: {}", tempTransaction);
@@ -2733,8 +2794,29 @@ public class BillingController implements Initializable {
                         && Float.compare(oldTransaction.getRate(), tempTransaction.getRate()) == 0) {
                     System.out.println("Match found at index " + i);
 
-                    oldTransaction.setQty(oldTransaction.getQty() + tempTransaction.getQty());
-                    oldTransaction.setAmt(oldTransaction.getAmt() + tempTransaction.getAmt());
+                    float newQty = oldTransaction.getQty() + tempTransaction.getQty();
+
+                    if (newQty <= 0) {
+                        // Remove item from list if quantity becomes 0 or negative
+                        tempTransactionList.remove(i);
+                        LOG.info("Item removed from table view (qty became {}): {}", newQty, oldTransaction.getItemName());
+                    } else {
+                        // Update quantity and amount
+                        oldTransaction.setQty(newQty);
+                        oldTransaction.setAmt(newQty * oldTransaction.getRate());
+
+                        // Update printQty - reduce by the same amount (negative qty)
+                        if (tempTransaction.getQty() < 0 && oldTransaction.getPrintQty() != null) {
+                            float newPrintQty = oldTransaction.getPrintQty() + tempTransaction.getPrintQty();
+                            oldTransaction.setPrintQty(Math.max(0f, newPrintQty)); // Don't go below 0
+                        } else if (tempTransaction.getPrintQty() != null && tempTransaction.getPrintQty() > 0) {
+                            float existingPrintQty = oldTransaction.getPrintQty() != null ? oldTransaction.getPrintQty() : 0f;
+                            oldTransaction.setPrintQty(existingPrintQty + tempTransaction.getPrintQty());
+                        }
+
+                        LOG.info("Updated item in table view: {} qty={}, printQty={}",
+                                oldTransaction.getItemName(), newQty, oldTransaction.getPrintQty());
+                    }
 
                     // Trigger TableView update (if using properties) or refresh
                     tblTransaction.refresh();
@@ -2744,6 +2826,11 @@ public class BillingController implements Initializable {
             }
 
             if (!foundMatch) {
+                // Don't allow adding negative quantity for non-existing item
+                if (tempTransaction.getQty() < 0) {
+                    LOG.warn("Cannot add negative quantity for non-existing item: {}", tempTransaction.getItemName());
+                    return;
+                }
                 tempTransaction.setId(tempTransactionList.size() + 1);
                 tempTransactionList.add(tempTransaction);
                 LOG.info("New item added: {}", tempTransaction);
@@ -2767,7 +2854,7 @@ public class BillingController implements Initializable {
             alert.showError("Enter Item Name");
             return false;
         }
-        if (txtQuantity.getText().isEmpty()) {
+        if (txtQuantity.getText().isEmpty() || txtQuantity.getText().equals("-")) {
             alert.showError("Enter Quantity");
             txtQuantity.requestFocus();
             return false;
@@ -2778,7 +2865,47 @@ public class BillingController implements Initializable {
             return false;
         }
 
+        // Validate negative quantity - item must exist and resulting qty must be > 0
+        try {
+            float qty = Float.parseFloat(txtQuantity.getText().trim());
+            float rate = Float.parseFloat(txtPrice.getText().trim());
+            String itemName = txtItemName.getText().trim();
+
+            if (qty < 0) {
+                // Check if item exists in table view with same name and rate
+                TempTransaction existingItem = findExistingItemInTableView(itemName, rate);
+                if (existingItem == null) {
+                    alert.showError("Cannot reduce quantity. Item '" + itemName + "' not found in the order.");
+                    txtQuantity.requestFocus();
+                    return false;
+                }
+
+                // Check if resulting quantity would be valid (> 0)
+                float resultingQty = existingItem.getQty() + qty; // qty is negative, so this subtracts
+                if (resultingQty < 0) {
+                    alert.showError("Cannot reduce by " + Math.abs(qty) + ". Current quantity is only " + existingItem.getQty().intValue());
+                    txtQuantity.requestFocus();
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            alert.showError("Invalid quantity or price");
+            return false;
+        }
+
         return true;
+    }
+
+    /**
+     * Find existing item in table view by item name and rate
+     */
+    private TempTransaction findExistingItemInTableView(String itemName, float rate) {
+        for (TempTransaction t : tempTransactionList) {
+            if (t.getItemName().equals(itemName) && Float.compare(t.getRate(), rate) == 0) {
+                return t;
+            }
+        }
+        return null;
     }
 
     // ============= Bill Action Button Methods =============

@@ -58,9 +58,9 @@ public interface SalesPaymentReceiptRepository extends JpaRepository<SalesPaymen
     List<SalesPaymentReceipt> findByCustomerIdWithBillPayments(@Param("customerId") Integer customerId);
 
     /**
-     * Find receipts by date range with customer eagerly loaded
+     * Find receipts by date range with customer and bank eagerly loaded
      */
-    @Query("SELECT spr FROM SalesPaymentReceipt spr LEFT JOIN FETCH spr.customer " +
+    @Query("SELECT spr FROM SalesPaymentReceipt spr LEFT JOIN FETCH spr.customer LEFT JOIN FETCH spr.bank " +
            "WHERE spr.paymentDate BETWEEN :startDate AND :endDate " +
            "ORDER BY spr.paymentDate DESC, spr.receiptNo DESC")
     List<SalesPaymentReceipt> findByDateRangeWithCustomer(

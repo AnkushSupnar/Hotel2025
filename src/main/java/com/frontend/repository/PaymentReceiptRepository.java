@@ -58,9 +58,9 @@ public interface PaymentReceiptRepository extends JpaRepository<PaymentReceipt, 
     List<PaymentReceipt> findBySupplierIdWithBillPayments(@Param("supplierId") Integer supplierId);
 
     /**
-     * Find receipts by date range with supplier eagerly loaded
+     * Find receipts by date range with supplier and bank eagerly loaded
      */
-    @Query("SELECT pr FROM PaymentReceipt pr LEFT JOIN FETCH pr.supplier " +
+    @Query("SELECT pr FROM PaymentReceipt pr LEFT JOIN FETCH pr.supplier LEFT JOIN FETCH pr.bank " +
            "WHERE pr.paymentDate BETWEEN :startDate AND :endDate " +
            "ORDER BY pr.paymentDate DESC, pr.receiptNo DESC")
     List<PaymentReceipt> findByDateRangeWithSupplier(

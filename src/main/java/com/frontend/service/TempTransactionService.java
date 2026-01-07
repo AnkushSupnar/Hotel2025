@@ -23,6 +23,9 @@ public class TempTransactionService {
     @Autowired
     private TempTransactionRepository tempTransactionRepository;
 
+    @Autowired
+    private ReducedItemService reducedItemService;
+
     /**
      * Add or update a transaction for a table.
      * If item with same name and rate exists for the table, update quantity and amount.
@@ -51,15 +54,23 @@ public class TempTransactionService {
                 Float newQty = existingTrans.getQty() + transaction.getQty();
                 Float newAmt = newQty * rate;
 
+                // If resulting quantity is 0 or less, delete the transaction
+                if (newQty <= 0) {
+                    tempTransactionRepository.delete(existingTrans);
+                    LOG.info("Deleted transaction ID {} (qty became {}): {} @ {}",
+                            existingTrans.getId(), newQty, itemName, rate);
+                    return null; // Return null to indicate deletion
+                }
+
                 existingTrans.setQty(newQty);
                 existingTrans.setAmt(newAmt);
 
-                // Update printQty only if this is a printable item (category stock = 'N')
-                // If transaction.printQty > 0, it means category stock = 'N', so add to printQty
-                // If transaction.printQty = 0, it means category stock = 'Y', don't update printQty
-                if (transaction.getPrintQty() != null && transaction.getPrintQty() > 0) {
+                // Update printQty - handle both positive and negative quantities
+                if (transaction.getPrintQty() != null) {
                     Float existingPrintQty = existingTrans.getPrintQty() != null ? existingTrans.getPrintQty() : 0f;
-                    existingTrans.setPrintQty(existingPrintQty + transaction.getPrintQty());
+                    Float newPrintQty = existingPrintQty + transaction.getPrintQty();
+                    // Don't allow printQty to go below 0
+                    existingTrans.setPrintQty(Math.max(0f, newPrintQty));
                 }
 
                 TempTransaction updated = tempTransactionRepository.save(existingTrans);
@@ -67,6 +78,12 @@ public class TempTransactionService {
                         updated.getId(), updated.getQty(), updated.getAmt(), updated.getPrintQty());
                 return updated;
             } else {
+                // Don't create new transaction with negative quantity
+                if (transaction.getQty() < 0) {
+                    LOG.warn("Cannot create transaction with negative quantity: {} x {} @ {}",
+                            transaction.getQty(), itemName, rate);
+                    return null;
+                }
                 // Create new transaction
                 TempTransaction saved = tempTransactionRepository.save(transaction);
                 LOG.info("Created new transaction ID {}: {} x {} @ {} = {}",
@@ -78,6 +95,159 @@ public class TempTransactionService {
         } catch (Exception e) {
             LOG.error("Error adding/updating transaction", e);
             throw new RuntimeException("Error adding/updating transaction: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Add or update a transaction with tracking of reduced kitchen items.
+     * Tracks items that were already sent to kitchen when they are reduced/removed.
+     *
+     * @param transaction the transaction to add or update
+     * @param reducedByUserId User ID who is reducing the item
+     * @param reducedByUserName Username who is reducing the item
+     * @return the saved/updated transaction
+     */
+    @Transactional
+    public TempTransaction addOrUpdateTransactionWithTracking(TempTransaction transaction,
+                                                               Integer reducedByUserId,
+                                                               String reducedByUserName) {
+        try {
+            Integer tableNo = transaction.getTableNo();
+            String itemName = transaction.getItemName();
+            Float rate = transaction.getRate();
+            Float incomingQty = transaction.getQty();
+
+            LOG.info("Adding/updating transaction with tracking for table {}: {} x {} @ {}",
+                    tableNo, incomingQty, itemName, rate);
+
+            // Check if item already exists for this table with same name and rate
+            Optional<TempTransaction> existing = tempTransactionRepository
+                    .findByTableNoAndItemNameAndRate(tableNo, itemName, rate);
+
+            if (existing.isPresent() && incomingQty < 0) {
+                // Reducing quantity - check if we need to track kitchen items
+                TempTransaction existingTrans = existing.get();
+                Float existingQty = existingTrans.getQty();
+                Float existingPrintQty = existingTrans.getPrintQty() != null ? existingTrans.getPrintQty() : 0f;
+                Float reducingAmount = Math.abs(incomingQty);
+
+                // Items already sent to kitchen = qty - printQty
+                // (printQty is items waiting to be printed, not yet sent)
+                Float itemsSentToKitchen = existingQty - existingPrintQty;
+
+                if (itemsSentToKitchen > 0) {
+                    // Some items were already sent to kitchen
+                    // Calculate how many of the reduced items were from kitchen
+                    // First, reduce from printQty (items not yet sent to kitchen)
+                    Float reducedFromPending = Math.min(reducingAmount, existingPrintQty);
+                    Float reducedFromKitchen = reducingAmount - reducedFromPending;
+
+                    // If we're reducing more than pending items, track the kitchen items
+                    if (reducedFromKitchen > 0) {
+                        Float qtyToTrack = Math.min(reducedFromKitchen, itemsSentToKitchen);
+                        LOG.info("Tracking {} kitchen items being reduced: {} @ {} for table {}",
+                                qtyToTrack, itemName, rate, tableNo);
+
+                        reducedItemService.trackReducedItem(
+                                itemName,
+                                qtyToTrack,
+                                rate,
+                                tableNo,
+                                existingTrans.getWaitorId(),
+                                reducedByUserId,
+                                reducedByUserName,
+                                null // reason
+                        );
+                    }
+                }
+
+                // Now proceed with the normal update logic
+                Float newQty = existingQty + incomingQty;
+                Float newAmt = newQty * rate;
+
+                // If resulting quantity is 0 or less, delete the transaction
+                if (newQty <= 0) {
+                    tempTransactionRepository.delete(existingTrans);
+                    LOG.info("Deleted transaction ID {} (qty became {}): {} @ {}",
+                            existingTrans.getId(), newQty, itemName, rate);
+                    return null;
+                }
+
+                existingTrans.setQty(newQty);
+                existingTrans.setAmt(newAmt);
+
+                // Update printQty
+                if (transaction.getPrintQty() != null) {
+                    Float newPrintQty = existingPrintQty + transaction.getPrintQty();
+                    existingTrans.setPrintQty(Math.max(0f, newPrintQty));
+                }
+
+                TempTransaction updated = tempTransactionRepository.save(existingTrans);
+                LOG.info("Updated existing transaction ID {}: qty={}, amt={}, printQty={}",
+                        updated.getId(), updated.getQty(), updated.getAmt(), updated.getPrintQty());
+                return updated;
+
+            } else {
+                // Not reducing or item doesn't exist - use normal logic
+                return addOrUpdateTransaction(transaction);
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error adding/updating transaction with tracking", e);
+            throw new RuntimeException("Error adding/updating transaction: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Remove a transaction completely and track if it was a kitchen item.
+     *
+     * @param transactionId ID of the transaction to remove
+     * @param reducedByUserId User ID who is removing the item
+     * @param reducedByUserName Username who is removing the item
+     */
+    @Transactional
+    public void removeTransactionWithTracking(Integer transactionId,
+                                               Integer reducedByUserId,
+                                               String reducedByUserName) {
+        try {
+            Optional<TempTransaction> transOpt = tempTransactionRepository.findById(transactionId);
+            if (transOpt.isEmpty()) {
+                LOG.warn("Transaction not found for removal: ID={}", transactionId);
+                return;
+            }
+
+            TempTransaction trans = transOpt.get();
+            Float qty = trans.getQty();
+            Float printQty = trans.getPrintQty() != null ? trans.getPrintQty() : 0f;
+
+            // Items already sent to kitchen = qty - printQty
+            Float itemsSentToKitchen = qty - printQty;
+
+            if (itemsSentToKitchen > 0) {
+                // Track the kitchen items being removed
+                LOG.info("Tracking {} kitchen items being removed: {} @ {} for table {}",
+                        itemsSentToKitchen, trans.getItemName(), trans.getRate(), trans.getTableNo());
+
+                reducedItemService.trackReducedItem(
+                        trans.getItemName(),
+                        itemsSentToKitchen,
+                        trans.getRate(),
+                        trans.getTableNo(),
+                        trans.getWaitorId(),
+                        reducedByUserId,
+                        reducedByUserName,
+                        null // reason
+                );
+            }
+
+            // Delete the transaction
+            tempTransactionRepository.delete(trans);
+            LOG.info("Removed transaction ID {}: {} x {} @ {}",
+                    transactionId, qty, trans.getItemName(), trans.getRate());
+
+        } catch (Exception e) {
+            LOG.error("Error removing transaction with tracking: ID={}", transactionId, e);
+            throw new RuntimeException("Error removing transaction: " + e.getMessage(), e);
         }
     }
 

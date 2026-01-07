@@ -12,6 +12,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import com.frontend.service.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +141,11 @@ public class PayReceiptReportController implements Initializable {
     }
 
     private void setupTable() {
+        // Get custom font for Marathi columns
+        Font customFont = SessionService.getCustomFont(20.0);
+        final String marathiFontFamily = customFont != null ? customFont.getFamily() : null;
+
+        // Cell value factories
         colReceiptNo.setCellValueFactory(data ->
             new SimpleStringProperty(String.valueOf(data.getValue().getReceiptNo())));
 
@@ -172,7 +179,55 @@ public class PayReceiptReportController implements Initializable {
             return new SimpleStringProperty("");
         });
 
+        // Apply English font (14px) to standard columns
+        applyEnglishFontToColumn(colReceiptNo);
+        applyEnglishFontToColumn(colDate);
+        applyEnglishFontToColumn(colAmount);
+        applyEnglishFontToColumn(colBillsCount);
+        applyEnglishFontToColumn(colReference);
+
+        // Apply custom Marathi font (20px) to Supplier, PaymentMode, Bank columns
+        applyCustomFontToColumn(colSupplier, marathiFontFamily);
+        applyCustomFontToColumn(colPaymentMode, marathiFontFamily);
+        applyCustomFontToColumn(colBank, marathiFontFamily);
+
         tblReceipts.setItems(receiptsList);
+    }
+
+    private void applyEnglishFontToColumn(TableColumn<PaymentReceipt, String> column) {
+        column.setCellFactory(col -> new TableCell<PaymentReceipt, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    setStyle("-fx-font-size: 14px;");
+                }
+            }
+        });
+    }
+
+    private void applyCustomFontToColumn(TableColumn<PaymentReceipt, String> column, String fontFamily) {
+        column.setCellFactory(col -> new TableCell<PaymentReceipt, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (fontFamily != null) {
+                        setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px;");
+                    } else {
+                        setStyle("-fx-font-size: 20px;");
+                    }
+                }
+            }
+        });
     }
 
     private void setupButtons() {
