@@ -412,3 +412,177 @@
 .setting-card {
     -fx-transition: all 0.3s ease;
 }
+
+/* ========================================
+   USER RIGHTS MANAGEMENT
+   ======================================== */
+
+/* User Rights Card in Settings Menu */
+.user-rights-card:hover {
+    -fx-border-color: #9C27B0;
+    -fx-border-width: 2;
+    -fx-border-radius: 16;
+}
+
+.user-rights-icon-bg {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+/* Permissions Header */
+.permissions-header {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+/* Permission Count Label */
+.permission-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #667eea;
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+    -fx-background-radius: 15;
+    -fx-padding: 6 14;
+}
+
+/* Permissions ScrollPane */
+.permissions-scroll {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.permissions-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Permissions Grid Container */
+.permissions-grid {
+    -fx-background-color: white;
+}
+
+/* Category Header */
+.category-header {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5e35b1;
+    -fx-padding: 5 0 5 0;
+}
+
+/* Material Checkbox Styling */
+.material-checkbox {
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+    -fx-cursor: hand;
+}
+
+.material-checkbox:hover {
+    -fx-text-fill: #1a237e;
+}
+
+.material-checkbox:selected {
+    -fx-text-fill: #1a237e;
+}
+
+.material-checkbox .box {
+    -fx-background-color: white;
+    -fx-border-color: #9e9e9e;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+}
+
+.material-checkbox:hover .box {
+    -fx-border-color: #667eea;
+}
+
+.material-checkbox:selected .box {
+    -fx-background-color: #667eea;
+    -fx-border-color: #667eea;
+}
+
+.material-checkbox:selected .mark {
+    -fx-background-color: white;
+}
+
+.material-checkbox:disabled {
+    -fx-opacity: 0.7;
+}
+
+.material-checkbox:disabled .box {
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #bdbdbd;
+}
+
+.material-checkbox:disabled:selected .box {
+    -fx-background-color: #9e9e9e;
+    -fx-border-color: #9e9e9e;
+}
+
+/* Material ComboBox Styling */
+.material-combo {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10 0;
+    -fx-font-size: 15px;
+}
+
+.material-combo .list-cell {
+    -fx-text-fill: #212121;
+    -fx-font-size: 15px;
+}
+
+.material-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8;
+}
+
+.material-combo .arrow-button .arrow {
+    -fx-background-color: #667eea;
+}
+
+.material-combo-popup .list-view {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.2), 15, 0, 0, 5);
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.material-combo-popup .list-cell {
+    -fx-padding: 12 16;
+    -fx-background-color: transparent;
+}
+
+.material-combo-popup .list-cell:hover {
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+}
+
+.material-combo-popup .list-cell:selected {
+    -fx-background-color: rgba(102, 126, 234, 0.2);
+    -fx-text-fill: #1a237e;
+}
+
+/* Info Box for Role Info */
+.info-box-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1565C0;
+    -fx-letter-spacing: 0.3px;
+}
+
+.info-box-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #1976D2;
+    -fx-font-weight: 500;
+    -fx-wrap-text: true;
+}
+
+/* Secondary Button Text */
+.button-text-secondary {
+    -fx-text-fill: #667eea;
+}
+
+/* Disabled Save Button */
+.btn-primary-full:disabled {
+    -fx-background-color: #bdbdbd;
+    -fx-cursor: default;
+    -fx-opacity: 0.7;
+}

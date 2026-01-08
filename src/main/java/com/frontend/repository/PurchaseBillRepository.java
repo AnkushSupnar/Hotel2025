@@ -147,4 +147,13 @@ public interface PurchaseBillRepository extends JpaRepository<PurchaseBill, Inte
     @Query("SELECT COUNT(p) FROM PurchaseBill p WHERE p.partyId = :partyId " +
            "AND p.status IN ('PENDING', 'PARTIALLY_PAID')")
     long countPayableBillsBySupplier(@Param("partyId") Integer partyId);
+
+    // ============= Dashboard Queries =============
+
+    /**
+     * Get total pending payable amount across all suppliers (for dashboard)
+     */
+    @Query("SELECT COALESCE(SUM(p.netAmount - COALESCE(p.paidAmount, 0)), 0) FROM PurchaseBill p " +
+           "WHERE p.status IN ('PENDING', 'PARTIALLY_PAID')")
+    Double getTotalPendingPayable();
 }

@@ -284,3 +284,86 @@
 .text-primary { -fx-text-fill: #212121; }
 .text-secondary { -fx-text-fill: #757575; }
 .divider-color { -fx-border-color: #BDBDBD; }
+
+/* =============== USER PROFILE SECTION =============== */
+
+.user-avatar-container {
+    -fx-padding: 5;
+}
+
+.user-avatar {
+    -fx-min-width: 60;
+    -fx-min-height: 60;
+    -fx-pref-width: 60;
+    -fx-pref-height: 60;
+    -fx-background-color: linear-gradient(to bottom right, #42A5F5, #1976D2);
+    -fx-background-radius: 30;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 3);
+}
+
+.online-status-badge {
+    -fx-min-width: 14;
+    -fx-min-height: 14;
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 7;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 7;
+    -fx-translate-x: -5;
+    -fx-translate-y: -5;
+}
+
+.sidebar-username {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* =============== MENU BADGES =============== */
+
+.menu-badge {
+    -fx-min-width: 22;
+    -fx-min-height: 22;
+    -fx-background-radius: 11;
+    -fx-alignment: center;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sales-badge {
+    -fx-background-color: #4CAF50;
+}
+
+.purchase-badge {
+    -fx-background-color: #FF9800;
+}
+
+/* =============== SEARCH BAR =============== */
+
+.search-container {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
+.search-container:hover {
+    -fx-border-color: #1976D2;
+    -fx-background-color: #FFFFFF;
+}
+
+.global-search-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-prompt-text-fill: #9E9E9E;
+    -fx-text-fill: #424242;
+    -fx-font-size: 13px;
+}
+
+.global-search-field:focused {
+    -fx-background-color: transparent;
+}

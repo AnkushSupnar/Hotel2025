@@ -9,6 +9,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -48,6 +49,17 @@ public class HomeController implements Initializable {
     @FXML private Label lblTodayOrders;
     @FXML private Label lblActiveTables;
 
+    // NEW: Sidebar user profile
+    @FXML private Label lblSidebarUserName;
+    @FXML private Label lblOnlineStatus;
+
+    // NEW: Menu badges
+    @FXML private Label lblSalesBadge;
+    @FXML private Label lblPurchaseBadge;
+
+    // NEW: Global search
+    @FXML private TextField txtGlobalSearch;
+
     private Pane pane;
     private javafx.scene.Node initialDashboard;
     @Override
@@ -70,9 +82,20 @@ public class HomeController implements Initializable {
                 String username = SessionService.getCurrentUsername();
                 String role = SessionService.getCurrentUserRole();
                 txtUserName.setText(username + " (" + role + ")");
+
+                // NEW: Set sidebar username
+                if (lblSidebarUserName != null) {
+                    lblSidebarUserName.setText(username);
+                }
             } else {
                 txtUserName.setText("Guest User");
+                if (lblSidebarUserName != null) {
+                    lblSidebarUserName.setText("Guest User");
+                }
             }
+
+            // NEW: Setup global search
+            setupGlobalSearch();
 
             // Store initial dashboard content
             initialDashboard = mainPane.getCenter();
@@ -89,8 +112,9 @@ public class HomeController implements Initializable {
         }
         menuDashboard.setOnMouseClicked(e->{
             try {
-                pane = loader.getPage("/fxml/dashboard/Home.fxml");
+                pane = loader.getPage("/fxml/dashboard/Dashboard.fxml");
                 mainPane.setCenter(pane);
+                LOG.info("Loaded comprehensive dashboard");
             } catch (Exception ex) {
                 LOG.error("Error loading dashboard: ", ex);
             }
@@ -223,6 +247,57 @@ public class HomeController implements Initializable {
 
         } catch (Exception e) {
             LOG.error("Error opening billing window: ", e);
+        }
+    }
+
+    /**
+     * Setup global search functionality
+     */
+    private void setupGlobalSearch() {
+        if (txtGlobalSearch == null) return;
+
+        txtGlobalSearch.setOnAction(e -> {
+            String searchText = txtGlobalSearch.getText();
+            if (searchText != null && !searchText.trim().isEmpty()) {
+                performGlobalSearch(searchText.trim());
+            }
+        });
+    }
+
+    /**
+     * Perform global search across the application
+     */
+    private void performGlobalSearch(String searchText) {
+        LOG.info("Global search triggered for: {}", searchText);
+        // TODO: Implement global search functionality
+        // This could search across customers, bills, items, etc.
+    }
+
+    /**
+     * Update sales menu badge count
+     */
+    public void updateSalesBadge(int count) {
+        if (lblSalesBadge != null) {
+            if (count > 0) {
+                lblSalesBadge.setText(count > 99 ? "99+" : String.valueOf(count));
+                lblSalesBadge.setVisible(true);
+            } else {
+                lblSalesBadge.setVisible(false);
+            }
+        }
+    }
+
+    /**
+     * Update purchase menu badge count
+     */
+    public void updatePurchaseBadge(int count) {
+        if (lblPurchaseBadge != null) {
+            if (count > 0) {
+                lblPurchaseBadge.setText(count > 99 ? "99+" : String.valueOf(count));
+                lblPurchaseBadge.setVisible(true);
+            } else {
+                lblPurchaseBadge.setVisible(false);
+            }
         }
     }
 }

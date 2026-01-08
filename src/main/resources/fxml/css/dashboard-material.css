@@ -1,0 +1,787 @@
+/* ================================================
+   Dashboard Material Design Styles
+   Comprehensive styling for the dashboard view
+   ================================================ */
+
+/* =============== MAIN CONTAINER =============== */
+
+.dashboard-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.dashboard-scroll > .viewport {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #E3F2FD 0%, #F3E5F5 50%, #E8F5E9 100%);
+}
+
+.dashboard-main-container {
+    -fx-background-color: transparent;
+}
+
+/* =============== HEADER =============== */
+
+.dashboard-header {
+    -fx-padding: 0 0 10 0;
+}
+
+.dashboard-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+}
+
+.refresh-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8;
+    -fx-border-color: #1976D2;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+}
+
+.refresh-button:hover {
+    -fx-background-color: #E3F2FD;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.refresh-text {
+    -fx-text-fill: #1976D2;
+    -fx-font-weight: 600;
+}
+
+/* =============== KPI CARDS =============== */
+
+.kpi-row {
+    -fx-padding: 5 0;
+}
+
+.kpi-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-min-width: 200;
+    -fx-pref-width: 250;
+}
+
+.kpi-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 15, 0, 0, 5);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.kpi-icon-container {
+    -fx-min-width: 50;
+    -fx-min-height: 50;
+    -fx-pref-width: 50;
+    -fx-pref-height: 50;
+    -fx-background-radius: 10;
+    -fx-alignment: center;
+}
+
+/* Icon Background Colors */
+.sales-icon-bg { -fx-background-color: linear-gradient(to bottom right, #4CAF50, #388E3C); }
+.orders-icon-bg { -fx-background-color: linear-gradient(to bottom right, #2196F3, #1976D2); }
+.purchase-icon-bg { -fx-background-color: linear-gradient(to bottom right, #FF9800, #F57C00); }
+.credit-icon-bg { -fx-background-color: linear-gradient(to bottom right, #F44336, #D32F2F); }
+.profit-icon-bg { -fx-background-color: linear-gradient(to bottom right, #8BC34A, #689F38); }
+.cash-icon-bg { -fx-background-color: linear-gradient(to bottom right, #00BCD4, #0097A7); }
+.due-icon-bg { -fx-background-color: linear-gradient(to bottom right, #E91E63, #C2185B); }
+.avg-icon-bg { -fx-background-color: linear-gradient(to bottom right, #9C27B0, #7B1FA2); }
+
+.kpi-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+    -fx-font-weight: 500;
+}
+
+.kpi-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.kpi-sub-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9E9E9E;
+}
+
+/* KPI Value Colors */
+.sales-value { -fx-text-fill: #4CAF50; }
+.orders-value { -fx-text-fill: #2196F3; }
+.purchase-value { -fx-text-fill: #FF9800; }
+.credit-value { -fx-text-fill: #F44336; }
+.profit-value { -fx-text-fill: #8BC34A; }
+.profit-positive { -fx-text-fill: #4CAF50; }
+.profit-negative { -fx-text-fill: #F44336; }
+.cash-value { -fx-text-fill: #00BCD4; }
+.due-value { -fx-text-fill: #E91E63; }
+.avg-value { -fx-text-fill: #9C27B0; }
+
+/* Card Border Accents */
+.sales-card { -fx-border-color: #4CAF50; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.orders-card { -fx-border-color: #2196F3; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.purchase-card { -fx-border-color: #FF9800; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.credit-card { -fx-border-color: #F44336; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.profit-card { -fx-border-color: #8BC34A; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.cash-card { -fx-border-color: #00BCD4; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.due-card { -fx-border-color: #E91E63; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+.avg-card { -fx-border-color: #9C27B0; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; }
+
+/* =============== CHARTS =============== */
+
+.chart-row {
+    -fx-padding: 10 0;
+}
+
+.chart-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-min-height: 300;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+/* Line Chart Styling */
+.trend-chart .chart-series-line {
+    -fx-stroke: #667eea;
+    -fx-stroke-width: 3px;
+}
+
+.trend-chart .chart-line-symbol {
+    -fx-background-color: #667eea, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.trend-chart .chart-plot-background {
+    -fx-background-color: #FAFAFA;
+}
+
+/* Bar Chart Styling */
+.comparison-chart .default-color0.chart-bar {
+    -fx-bar-fill: #4CAF50;
+}
+
+.comparison-chart .default-color1.chart-bar {
+    -fx-bar-fill: #FF9800;
+}
+
+.comparison-chart .chart-plot-background {
+    -fx-background-color: #FAFAFA;
+}
+
+.comparison-chart .chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* =============== WIDGETS =============== */
+
+.widget-row {
+    -fx-padding: 10 0;
+}
+
+.widget-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-min-width: 200;
+}
+
+.widget-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+/* Table Status */
+.status-container {
+    -fx-padding: 15 0;
+}
+
+.status-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+.active-value { -fx-text-fill: #2196F3; }
+.available-value { -fx-text-fill: #4CAF50; }
+
+.status-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+}
+
+/* Order Status Progress Bars */
+.order-status-container {
+    -fx-padding: 10 0;
+}
+
+.order-status-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #424242;
+}
+
+.order-status-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+}
+
+.paid-progress .bar {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #81C784);
+    -fx-background-radius: 5;
+}
+
+.paid-progress .track {
+    -fx-background-color: #E8F5E9;
+    -fx-background-radius: 5;
+}
+
+.credit-progress .bar {
+    -fx-background-color: linear-gradient(to right, #FFC107, #FFD54F);
+    -fx-background-radius: 5;
+}
+
+.credit-progress .track {
+    -fx-background-color: #FFF8E1;
+    -fx-background-radius: 5;
+}
+
+.pending-progress .bar {
+    -fx-background-color: linear-gradient(to right, #F44336, #E57373);
+    -fx-background-radius: 5;
+}
+
+.pending-progress .track {
+    -fx-background-color: #FFEBEE;
+    -fx-background-radius: 5;
+}
+
+/* Top Items List */
+.top-items-list {
+    -fx-padding: 5 0;
+}
+
+.top-item-row {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 8;
+}
+
+.top-item-row:hover {
+    -fx-background-color: #E3F2FD;
+}
+
+.rank-badge {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #757575;
+    -fx-background-radius: 15;
+    -fx-min-width: 28;
+    -fx-min-height: 28;
+    -fx-alignment: center;
+}
+
+.rank-gold { -fx-background-color: linear-gradient(to bottom, #FFD700, #FFA000); }
+.rank-silver { -fx-background-color: linear-gradient(to bottom, #C0C0C0, #9E9E9E); }
+.rank-bronze { -fx-background-color: linear-gradient(to bottom, #CD7F32, #8B4513); }
+
+.item-name {
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+}
+
+.item-quantity {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4CAF50;
+}
+
+.empty-list-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #9E9E9E;
+    -fx-font-style: italic;
+    -fx-padding: 20;
+}
+
+/* =============== QUICK ACTIONS =============== */
+
+.activity-row {
+    -fx-padding: 10 0;
+}
+
+.quick-actions-card {
+    -fx-min-width: 280;
+    -fx-pref-width: 300;
+}
+
+.quick-actions-grid {
+    -fx-padding: 10 0;
+}
+
+.quick-action-btn {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 12;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-padding: 15;
+    -fx-min-width: 120;
+    -fx-min-height: 90;
+    -fx-pref-width: 130;
+}
+
+.quick-action-btn:hover {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.quick-action-btn:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.new-order-btn:hover { -fx-border-color: #4CAF50; }
+.payment-btn:hover { -fx-border-color: #2196F3; }
+.purchase-btn:hover { -fx-border-color: #FF9800; }
+.reports-btn:hover { -fx-border-color: #9C27B0; }
+
+.action-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #424242;
+}
+
+/* =============== TRANSACTIONS =============== */
+
+.transactions-card {
+    -fx-min-width: 400;
+}
+
+.transactions-list {
+    -fx-padding: 5 0;
+}
+
+.transaction-row {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 8;
+}
+
+.transaction-row:hover {
+    -fx-background-color: #E3F2FD;
+}
+
+.tx-bill-no {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+}
+
+.tx-customer {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+}
+
+.tx-amount {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+.tx-status {
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+    -fx-padding: 2 8;
+    -fx-background-radius: 10;
+}
+
+.status-paid {
+    -fx-background-color: #E8F5E9;
+    -fx-text-fill: #4CAF50;
+}
+
+.status-credit {
+    -fx-background-color: #FFF8E1;
+    -fx-text-fill: #FF9800;
+}
+
+.status-close {
+    -fx-background-color: #FFEBEE;
+    -fx-text-fill: #F44336;
+}
+
+.tx-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9E9E9E;
+    -fx-min-width: 70;
+}
+
+/* =============== FOOTER STATS =============== */
+
+.footer-stats {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-padding: 15 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.footer-stat-item {
+    -fx-padding: 5 10;
+}
+
+.footer-stat-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+.footer-stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+}
+
+.system-status {
+    -fx-padding: 5 15;
+    -fx-background-color: #E8F5E9;
+    -fx-background-radius: 20;
+}
+
+.system-status-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.status-online {
+    -fx-text-fill: #4CAF50;
+}
+
+.status-offline {
+    -fx-text-fill: #F44336;
+}
+
+/* =============== GREETING & DATETIME =============== */
+
+.dashboard-greeting {
+    -fx-font-size: 14px;
+    -fx-text-fill: #757575;
+    -fx-font-weight: 500;
+}
+
+.datetime-container {
+    -fx-padding: 5 15;
+    -fx-background-color: rgba(25, 118, 210, 0.08);
+    -fx-background-radius: 8;
+}
+
+.current-date {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1976D2;
+}
+
+.current-time {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+/* =============== NOTIFICATION =============== */
+
+.notification-container {
+    -fx-padding: 0 10;
+}
+
+.notification-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 20;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+}
+
+.notification-button:hover {
+    -fx-background-color: rgba(25, 118, 210, 0.1);
+}
+
+.notification-badge {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-min-width: 18;
+    -fx-min-height: 18;
+    -fx-background-radius: 9;
+    -fx-alignment: center;
+    -fx-translate-x: 8;
+    -fx-translate-y: -5;
+}
+
+/* =============== TREND INDICATORS =============== */
+
+.trend-indicator {
+    -fx-padding: 3 8;
+    -fx-background-radius: 12;
+}
+
+.trend-up {
+    -fx-background-color: rgba(76, 175, 80, 0.15);
+}
+
+.trend-down {
+    -fx-background-color: rgba(244, 67, 54, 0.15);
+}
+
+.trend-neutral {
+    -fx-background-color: rgba(158, 158, 158, 0.15);
+}
+
+.trend-text {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.trend-up .trend-text {
+    -fx-text-fill: #4CAF50;
+}
+
+.trend-down .trend-text {
+    -fx-text-fill: #F44336;
+}
+
+.trend-neutral .trend-text {
+    -fx-text-fill: #9E9E9E;
+}
+
+/* =============== LOW STOCK ALERTS =============== */
+
+.alert-card {
+    -fx-border-color: #FFCDD2;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 12;
+}
+
+.alert-badge {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+    -fx-background-radius: 12;
+    -fx-alignment: center;
+}
+
+.alert-list {
+    -fx-padding: 5 0;
+}
+
+.alert-item {
+    -fx-background-color: #FFF8E1;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+}
+
+.alert-item:hover {
+    -fx-background-color: #FFECB3;
+}
+
+.alert-item-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #424242;
+}
+
+.alert-item-stock {
+    -fx-font-size: 11px;
+    -fx-text-fill: #F44336;
+    -fx-font-weight: 600;
+}
+
+.stock-critical {
+    -fx-text-fill: #D32F2F;
+}
+
+.stock-low {
+    -fx-text-fill: #FF9800;
+}
+
+/* =============== PAYMENT BREAKDOWN =============== */
+
+.payment-breakdown {
+    -fx-padding: 10 0;
+}
+
+.payment-icon-box {
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-background-radius: 6;
+    -fx-alignment: center;
+}
+
+.cash-bg { -fx-background-color: #4CAF50; }
+.bank-bg { -fx-background-color: #2196F3; }
+.credit-bg { -fx-background-color: #FF9800; }
+
+.payment-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+}
+
+.payment-amount {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+    -fx-min-width: 80;
+    -fx-alignment: center-right;
+}
+
+.cash-payment-progress .bar {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #81C784);
+    -fx-background-radius: 3;
+}
+
+.cash-payment-progress .track {
+    -fx-background-color: #E8F5E9;
+    -fx-background-radius: 3;
+}
+
+.bank-payment-progress .bar {
+    -fx-background-color: linear-gradient(to right, #2196F3, #64B5F6);
+    -fx-background-radius: 3;
+}
+
+.bank-payment-progress .track {
+    -fx-background-color: #E3F2FD;
+    -fx-background-radius: 3;
+}
+
+.credit-payment-progress .bar {
+    -fx-background-color: linear-gradient(to right, #FF9800, #FFB74D);
+    -fx-background-radius: 3;
+}
+
+.credit-payment-progress .track {
+    -fx-background-color: #FFF3E0;
+    -fx-background-radius: 3;
+}
+
+/* =============== MONTHLY TARGET =============== */
+
+.target-card {
+    -fx-border-color: #C8E6C9;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 12;
+}
+
+.target-container {
+    -fx-padding: 10 0;
+}
+
+.target-progress-container {
+    -fx-min-width: 120;
+    -fx-min-height: 120;
+}
+
+.target-progress-bar {
+    -fx-pref-width: 120;
+    -fx-pref-height: 120;
+    -fx-background-radius: 60;
+}
+
+.target-progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #8BC34A);
+    -fx-background-radius: 60;
+    -fx-padding: 8;
+}
+
+.target-progress-bar .track {
+    -fx-background-color: #E8F5E9;
+    -fx-background-radius: 60;
+}
+
+.target-percentage {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+}
+
+.target-sub-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9E9E9E;
+}
+
+.target-current {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+}
+
+.target-goal {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #757575;
+}
+
+.target-detail-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9E9E9E;
+}
+
+.target-divider {
+    -fx-font-size: 20px;
+    -fx-text-fill: #E0E0E0;
+}
+
+.days-remaining {
+    -fx-font-size: 12px;
+    -fx-text-fill: #FF9800;
+    -fx-font-weight: 600;
+    -fx-background-color: #FFF8E1;
+    -fx-background-radius: 12;
+    -fx-padding: 5 12;
+}
+
+/* =============== SCROLLBAR STYLING =============== */
+
+.dashboard-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+}
+
+.dashboard-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(25, 118, 210, 0.3);
+    -fx-background-radius: 5;
+}
+
+.dashboard-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(25, 118, 210, 0.5);
+}
+
+.dashboard-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.dashboard-scroll .scroll-bar:vertical .increment-button,
+.dashboard-scroll .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll .scroll-bar:vertical .increment-arrow,
+.dashboard-scroll .scroll-bar:vertical .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}

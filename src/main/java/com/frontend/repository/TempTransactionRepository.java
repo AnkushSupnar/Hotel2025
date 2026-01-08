@@ -65,4 +65,10 @@ public interface TempTransactionRepository extends JpaRepository<TempTransaction
      */
     @Query("SELECT t FROM TempTransaction t WHERE t.tableNo = :tableNo AND t.printQty > 0")
     List<TempTransaction> findPrintableItemsByTableNo(@Param("tableNo") Integer tableNo);
+
+    /**
+     * Get all distinct table numbers that have temp transactions (for dashboard active tables)
+     */
+    @Query("SELECT DISTINCT t.tableNo FROM TempTransaction t WHERE t.tableNo IS NOT NULL")
+    List<Integer> findDistinctActiveTableNumbers();
 }

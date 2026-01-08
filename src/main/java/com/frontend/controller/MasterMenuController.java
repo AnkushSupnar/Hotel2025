@@ -1,6 +1,7 @@
 package com.frontend.controller;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.util.NavigationGuard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,6 +23,9 @@ public class MasterMenuController implements Initializable {
 
     @Autowired
     SpringFXMLLoader loader;
+
+    @Autowired
+    NavigationGuard navigationGuard;
 
     @FXML
     private Button btnBack;
@@ -172,64 +176,56 @@ public class MasterMenuController implements Initializable {
     private void loadCategoryManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddCategory.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddCategory.fxml");
         }
     }
 
     private void loadItemManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddItem.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddItem.fxml");
         }
     }
 
     private void loadTableManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddTable.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddTable.fxml");
         }
     }
 
     private void loadCustomerManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddCustomer.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddCustomer.fxml");
         }
     }
 
     private void loadEmployeeManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddEmployee.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddEmployee.fxml");
         }
     }
 
     private void loadSupplierManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddSupplier.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddSupplier.fxml");
         }
     }
 
     private void loadUserManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddUser.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddUser.fxml");
         }
     }
 
     private void loadBankManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            Pane pane = loader.getPage("/fxml/master/AddBank.fxml");
-            mainPane.setCenter(pane);
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/master/AddBank.fxml");
         }
     }
 

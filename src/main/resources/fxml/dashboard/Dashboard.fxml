@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.frontend.controller.dashboard.DashboardController">
+   <stylesheets>
+      <URL value="@../css/dashboard-material.css" />
+   </stylesheets>
+
+   <children>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="dashboard-scroll">
+         <content>
+      <VBox spacing="20.0" styleClass="dashboard-main-container">
+         <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+
+         <!-- Dashboard Header -->
+         <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="dashboard-header">
+            <children>
+               <FontAwesomeIcon fill="#1976D2" glyphName="DASHBOARD" size="2em" />
+               <VBox spacing="2.0">
+                  <children>
+                     <Label fx:id="lblGreeting" styleClass="dashboard-greeting" text="Good Morning!" />
+                     <Label styleClass="dashboard-title" text="Dashboard" />
+                  </children>
+               </VBox>
+
+               <Region HBox.hgrow="ALWAYS" />
+
+               <!-- Date Time Display -->
+               <VBox alignment="CENTER_RIGHT" spacing="2.0" styleClass="datetime-container">
+                  <children>
+                     <Label fx:id="lblCurrentDate" styleClass="current-date" text="Thursday, January 9, 2025" />
+                     <Label fx:id="lblCurrentTime" styleClass="current-time" text="10:30 AM" />
+                  </children>
+               </VBox>
+
+               <!-- Notification Bell -->
+               <StackPane styleClass="notification-container">
+                  <children>
+                     <Button fx:id="btnNotification" mnemonicParsing="false" styleClass="notification-button">
+                        <graphic>
+                           <FontAwesomeIcon fill="#1976D2" glyphName="BELL" size="1.5em" />
+                        </graphic>
+                     </Button>
+                     <Label fx:id="lblNotificationBadge" styleClass="notification-badge" text="3" StackPane.alignment="TOP_RIGHT" />
+                  </children>
+               </StackPane>
+
+               <Button fx:id="btnRefresh" mnemonicParsing="false" styleClass="refresh-button">
+                  <graphic>
+                     <HBox alignment="CENTER" spacing="8.0">
+                        <children>
+                           <FontAwesomeIcon fill="#1976D2" glyphName="REFRESH" size="1.2em" />
+                           <Label styleClass="refresh-text" text="Refresh" />
+                        </children>
+                     </HBox>
+                  </graphic>
+               </Button>
+            </children>
+         </HBox>
+
+         <!-- Row 1: Primary KPI Cards -->
+         <HBox alignment="CENTER" spacing="20.0" styleClass="kpi-row">
+            <children>
+               <!-- Today's Sales Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, sales-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, sales-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="MONEY" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Today's Sales" />
+                                 <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                       <Label fx:id="lblTodaysSales" styleClass="kpi-value, sales-value" text="₹0" />
+                                       <HBox fx:id="salesTrendBox" alignment="CENTER" spacing="3.0" styleClass="trend-indicator, trend-up">
+                                          <children>
+                                             <FontAwesomeIcon fx:id="salesTrendIcon" fill="#4CAF50" glyphName="ARROW_UP" size="0.9em" />
+                                             <Label fx:id="lblSalesTrend" styleClass="trend-text" text="+12%" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Today's Orders Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, orders-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, orders-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Today's Orders" />
+                                 <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                       <Label fx:id="lblTodaysOrders" styleClass="kpi-value, orders-value" text="0" />
+                                       <HBox fx:id="ordersTrendBox" alignment="CENTER" spacing="3.0" styleClass="trend-indicator, trend-up">
+                                          <children>
+                                             <FontAwesomeIcon fx:id="ordersTrendIcon" fill="#4CAF50" glyphName="ARROW_UP" size="0.9em" />
+                                             <Label fx:id="lblOrdersTrend" styleClass="trend-text" text="+5%" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Today's Purchase Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, purchase-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, purchase-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Today's Purchase" />
+                                 <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                       <Label fx:id="lblTodaysPurchase" styleClass="kpi-value, purchase-value" text="₹0" />
+                                       <HBox fx:id="purchaseTrendBox" alignment="CENTER" spacing="3.0" styleClass="trend-indicator, trend-down">
+                                          <children>
+                                             <FontAwesomeIcon fx:id="purchaseTrendIcon" fill="#F44336" glyphName="ARROW_DOWN" size="0.9em" />
+                                             <Label fx:id="lblPurchaseTrend" styleClass="trend-text" text="-8%" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Pending Credit Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, credit-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, credit-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="CREDIT_CARD" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Pending Credit" />
+                                 <Label fx:id="lblPendingCredit" styleClass="kpi-value, credit-value" text="₹0" />
+                                 <Label fx:id="lblPendingCreditCount" styleClass="kpi-sub-label" text="0 pending" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Row 2: Financial Summary Cards -->
+         <HBox alignment="CENTER" spacing="20.0" styleClass="kpi-row">
+            <children>
+               <!-- Gross Profit Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, profit-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, profit-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="LINE_CHART" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Gross Profit" />
+                                 <Label fx:id="lblGrossProfit" styleClass="kpi-value, profit-value" text="₹0" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Cash in Hand Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, cash-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, cash-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="BANK" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Cash in Hand" />
+                                 <Label fx:id="lblCashInHand" styleClass="kpi-value, cash-value" text="₹0" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Payments Due Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, due-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, due-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="CLOCK_ALT" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Payments Due" />
+                                 <Label fx:id="lblPaymentsDue" styleClass="kpi-value, due-value" text="₹0" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+
+               <!-- Avg Order Value Card -->
+               <VBox alignment="CENTER" spacing="10.0" styleClass="kpi-card, avg-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <VBox alignment="CENTER" styleClass="kpi-icon-container, avg-icon-bg">
+                              <children>
+                                 <FontAwesomeIcon fill="#FFFFFF" glyphName="CALCULATOR" size="1.5em" />
+                              </children>
+                           </VBox>
+                           <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="kpi-label" text="Avg Order Value" />
+                                 <Label fx:id="lblAvgOrderValue" styleClass="kpi-value, avg-value" text="₹0" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Row 3: Charts -->
+         <HBox alignment="CENTER" spacing="20.0" styleClass="chart-row">
+            <children>
+               <!-- Sales Trend Chart -->
+               <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <Label styleClass="chart-title" text="Sales Trend (Last 7 Days)" />
+                     <LineChart fx:id="salesTrendChart" animated="false" legendVisible="false"
+                                prefHeight="250.0" styleClass="trend-chart" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                           <CategoryAxis fx:id="salesChartXAxis" label="Day" side="BOTTOM" />
+                        </xAxis>
+                        <yAxis>
+                           <NumberAxis fx:id="salesChartYAxis" label="Amount (₹)" side="LEFT" />
+                        </yAxis>
+                     </LineChart>
+                  </children>
+               </VBox>
+
+               <!-- Sales vs Purchase Chart -->
+               <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <Label styleClass="chart-title" text="Sales vs Purchase (Last 7 Days)" />
+                     <BarChart fx:id="salesVsPurchaseChart" animated="false"
+                               prefHeight="250.0" styleClass="comparison-chart" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                           <CategoryAxis fx:id="comparisonChartXAxis" label="Day" side="BOTTOM" />
+                        </xAxis>
+                        <yAxis>
+                           <NumberAxis fx:id="comparisonChartYAxis" label="Amount (₹)" side="LEFT" />
+                        </yAxis>
+                     </BarChart>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Row 4: New Widgets - Low Stock, Payment Breakdown, Monthly Target -->
+         <HBox alignment="TOP_CENTER" spacing="20.0" styleClass="widget-row">
+            <children>
+               <!-- Low Stock Alerts -->
+               <VBox alignment="TOP_LEFT" spacing="15.0" styleClass="widget-card, alert-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <FontAwesomeIcon fill="#F44336" glyphName="EXCLAMATION_TRIANGLE" size="1.3em" />
+                           <Label styleClass="widget-title" text="Low Stock Alerts" />
+                           <Region HBox.hgrow="ALWAYS" />
+                           <Label fx:id="lblLowStockCount" styleClass="alert-badge" text="5" />
+                        </children>
+                     </HBox>
+                     <VBox fx:id="lowStockContainer" spacing="8.0" styleClass="alert-list">
+                        <!-- Items will be added dynamically -->
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Payment Method Breakdown -->
+               <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="widget-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <Label styleClass="widget-title" text="Payment Methods (Today)" />
+                     <VBox fx:id="paymentBreakdownContainer" alignment="CENTER" spacing="12.0" styleClass="payment-breakdown">
+                        <children>
+                           <!-- Cash -->
+                           <HBox alignment="CENTER_LEFT" spacing="10.0">
+                              <children>
+                                 <VBox alignment="CENTER" styleClass="payment-icon-box, cash-bg">
+                                    <children>
+                                       <FontAwesomeIcon fill="#FFFFFF" glyphName="MONEY" size="1em" />
+                                    </children>
+                                 </VBox>
+                                 <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                       <Label styleClass="payment-label" text="Cash" />
+                                       <ProgressBar fx:id="cashPaymentProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="cash-payment-progress" />
+                                    </children>
+                                 </VBox>
+                                 <Label fx:id="lblCashPayment" styleClass="payment-amount" text="₹0" />
+                              </children>
+                           </HBox>
+                           <!-- Bank -->
+                           <HBox alignment="CENTER_LEFT" spacing="10.0">
+                              <children>
+                                 <VBox alignment="CENTER" styleClass="payment-icon-box, bank-bg">
+                                    <children>
+                                       <FontAwesomeIcon fill="#FFFFFF" glyphName="BANK" size="1em" />
+                                    </children>
+                                 </VBox>
+                                 <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                       <Label styleClass="payment-label" text="Bank" />
+                                       <ProgressBar fx:id="bankPaymentProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="bank-payment-progress" />
+                                    </children>
+                                 </VBox>
+                                 <Label fx:id="lblBankPayment" styleClass="payment-amount" text="₹0" />
+                              </children>
+                           </HBox>
+                           <!-- Credit -->
+                           <HBox alignment="CENTER_LEFT" spacing="10.0">
+                              <children>
+                                 <VBox alignment="CENTER" styleClass="payment-icon-box, credit-bg">
+                                    <children>
+                                       <FontAwesomeIcon fill="#FFFFFF" glyphName="CLOCK_ALT" size="1em" />
+                                    </children>
+                                 </VBox>
+                                 <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                       <Label styleClass="payment-label" text="Credit" />
+                                       <ProgressBar fx:id="creditPaymentProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="credit-payment-progress" />
+                                    </children>
+                                 </VBox>
+                                 <Label fx:id="lblCreditPayment" styleClass="payment-amount" text="₹0" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Monthly Target Progress -->
+               <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="widget-card, target-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <Label styleClass="widget-title" text="Monthly Sales Target" />
+                     <VBox alignment="CENTER" spacing="15.0" styleClass="target-container">
+                        <children>
+                           <!-- Circular Progress Indicator (using StackPane) -->
+                           <StackPane alignment="CENTER" styleClass="target-progress-container">
+                              <children>
+                                 <ProgressBar fx:id="monthlyTargetProgress" progress="0.72" styleClass="target-progress-bar" />
+                                 <VBox alignment="CENTER" spacing="2.0">
+                                    <children>
+                                       <Label fx:id="lblTargetPercentage" styleClass="target-percentage" text="72%" />
+                                       <Label styleClass="target-sub-label" text="achieved" />
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </StackPane>
+                           <!-- Target Details -->
+                           <HBox alignment="CENTER" spacing="20.0">
+                              <children>
+                                 <VBox alignment="CENTER" spacing="2.0">
+                                    <children>
+                                       <Label fx:id="lblCurrentSales" styleClass="target-current" text="₹72,000" />
+                                       <Label styleClass="target-detail-label" text="Current" />
+                                    </children>
+                                 </VBox>
+                                 <Label styleClass="target-divider" text="/" />
+                                 <VBox alignment="CENTER" spacing="2.0">
+                                    <children>
+                                       <Label fx:id="lblTargetAmount" styleClass="target-goal" text="₹1,00,000" />
+                                       <Label styleClass="target-detail-label" text="Target" />
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </HBox>
+                           <Label fx:id="lblDaysRemaining" styleClass="days-remaining" text="22 days remaining" />
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Row 5: Operational Widgets -->
+         <HBox alignment="TOP_CENTER" spacing="20.0" styleClass="widget-row">
+            <children>
+               <!-- Table Status -->
+               <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="widget-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <Label styleClass="widget-title" text="Table Status" />
+                     <VBox fx:id="tableStatusContainer" alignment="CENTER" spacing="10.0" styleClass="status-container">
+                        <children>
+                           <HBox alignment="CENTER" spacing="20.0">
+                              <children>
+                                 <VBox alignment="CENTER" spacing="5.0">
+                                    <children>
+                                       <Label fx:id="lblTotalTables" styleClass="status-value" text="0" />
+                                       <Label styleClass="status-label" text="Total" />
+                                    </children>
+                                 </VBox>
+                                 <VBox alignment="CENTER" spacing="5.0">
+                                    <children>
+                                       <Label fx:id="lblActiveTables" styleClass="status-value, active-value" text="0" />
+                                       <Label styleClass="status-label" text="Active" />
+                                    </children>
+                                 </VBox>
+                                 <VBox alignment="CENTER" spacing="5.0">
+                                    <children>
+                                       <Label fx:id="lblAvailableTables" styleClass="status-value, available-value" text="0" />
+                                       <Label styleClass="status-label" text="Available" />
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Order Status -->
+               <VBox alignment="TOP_LEFT" spacing="15.0" styleClass="widget-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <Label styleClass="widget-title" text="Today's Order Status" />
+                     <VBox spacing="12.0" styleClass="order-status-container">
+                        <children>
+                           <!-- Paid Orders -->
+                           <VBox spacing="5.0">
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                       <Label styleClass="order-status-label" text="PAID" />
+                                       <Region HBox.hgrow="ALWAYS" />
+                                       <Label fx:id="lblPaidCount" styleClass="order-status-count" text="0" />
+                                    </children>
+                                 </HBox>
+                                 <ProgressBar fx:id="paidProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="paid-progress" />
+                              </children>
+                           </VBox>
+                           <!-- Credit Orders -->
+                           <VBox spacing="5.0">
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                       <Label styleClass="order-status-label" text="CREDIT" />
+                                       <Region HBox.hgrow="ALWAYS" />
+                                       <Label fx:id="lblCreditCount" styleClass="order-status-count" text="0" />
+                                    </children>
+                                 </HBox>
+                                 <ProgressBar fx:id="creditProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="credit-progress" />
+                              </children>
+                           </VBox>
+                           <!-- Pending Orders -->
+                           <VBox spacing="5.0">
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                       <Label styleClass="order-status-label" text="PENDING" />
+                                       <Region HBox.hgrow="ALWAYS" />
+                                       <Label fx:id="lblPendingCount" styleClass="order-status-count" text="0" />
+                                    </children>
+                                 </HBox>
+                                 <ProgressBar fx:id="pendingProgress" maxWidth="1.7976931348623157E308" progress="0.0" styleClass="pending-progress" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Top Selling Items -->
+               <VBox alignment="TOP_LEFT" spacing="15.0" styleClass="widget-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <Label styleClass="widget-title" text="Top Selling Items (Today)" />
+                     <VBox fx:id="topItemsContainer" spacing="8.0" styleClass="top-items-list">
+                        <!-- Items will be added dynamically -->
+                     </VBox>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Row 5: Quick Actions & Recent Transactions -->
+         <HBox alignment="TOP_CENTER" spacing="20.0" styleClass="activity-row">
+            <children>
+               <!-- Quick Actions -->
+               <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="widget-card, quick-actions-card" HBox.hgrow="SOMETIMES">
+                  <children>
+                     <Label styleClass="widget-title" text="Quick Actions" />
+                     <GridPane hgap="15.0" vgap="15.0" styleClass="quick-actions-grid">
+                        <columnConstraints>
+                           <ColumnConstraints hgrow="ALWAYS" />
+                           <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints vgrow="ALWAYS" />
+                           <RowConstraints vgrow="ALWAYS" />
+                        </rowConstraints>
+                        <children>
+                           <!-- New Order Button -->
+                           <Button fx:id="btnNewOrder" mnemonicParsing="false" styleClass="quick-action-btn, new-order-btn" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                              <graphic>
+                                 <VBox alignment="CENTER" spacing="8.0">
+                                    <children>
+                                       <FontAwesomeIcon fill="#4CAF50" glyphName="PLUS_CIRCLE" size="2em" />
+                                       <Label styleClass="action-text" text="New Order" />
+                                    </children>
+                                 </VBox>
+                              </graphic>
+                           </Button>
+                           <!-- Receive Payment Button -->
+                           <Button fx:id="btnReceivePayment" mnemonicParsing="false" styleClass="quick-action-btn, payment-btn" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                              <graphic>
+                                 <VBox alignment="CENTER" spacing="8.0">
+                                    <children>
+                                       <FontAwesomeIcon fill="#2196F3" glyphName="MONEY" size="2em" />
+                                       <Label styleClass="action-text" text="Receive Payment" />
+                                    </children>
+                                 </VBox>
+                              </graphic>
+                           </Button>
+                           <!-- New Purchase Button -->
+                           <Button fx:id="btnNewPurchase" mnemonicParsing="false" styleClass="quick-action-btn, purchase-btn" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                              <graphic>
+                                 <VBox alignment="CENTER" spacing="8.0">
+                                    <children>
+                                       <FontAwesomeIcon fill="#FF9800" glyphName="TRUCK" size="2em" />
+                                       <Label styleClass="action-text" text="New Purchase" />
+                                    </children>
+                                 </VBox>
+                              </graphic>
+                           </Button>
+                           <!-- View Reports Button -->
+                           <Button fx:id="btnViewReports" mnemonicParsing="false" styleClass="quick-action-btn, reports-btn" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <graphic>
+                                 <VBox alignment="CENTER" spacing="8.0">
+                                    <children>
+                                       <FontAwesomeIcon fill="#9C27B0" glyphName="BAR_CHART" size="2em" />
+                                       <Label styleClass="action-text" text="View Reports" />
+                                    </children>
+                                 </VBox>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </GridPane>
+                  </children>
+               </VBox>
+
+               <!-- Recent Transactions -->
+               <VBox alignment="TOP_LEFT" spacing="15.0" styleClass="widget-card, transactions-card" HBox.hgrow="ALWAYS">
+                  <children>
+                     <Label styleClass="widget-title" text="Recent Transactions" />
+                     <VBox fx:id="recentTransactionsContainer" spacing="10.0" styleClass="transactions-list">
+                        <!-- Transactions will be added dynamically -->
+                     </VBox>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <!-- Footer Stats -->
+         <HBox alignment="CENTER" spacing="30.0" styleClass="footer-stats">
+            <children>
+               <HBox alignment="CENTER" spacing="8.0" styleClass="footer-stat-item">
+                  <children>
+                     <FontAwesomeIcon fill="#1976D2" glyphName="USERS" size="1.3em" />
+                     <Label fx:id="lblTotalCustomers" styleClass="footer-stat-value" text="0" />
+                     <Label styleClass="footer-stat-label" text="Customers" />
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER" spacing="8.0" styleClass="footer-stat-item">
+                  <children>
+                     <FontAwesomeIcon fill="#4CAF50" glyphName="CUTLERY" size="1.3em" />
+                     <Label fx:id="lblTotalItems" styleClass="footer-stat-value" text="0" />
+                     <Label styleClass="footer-stat-label" text="Menu Items" />
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER" spacing="8.0" styleClass="footer-stat-item">
+                  <children>
+                     <FontAwesomeIcon fill="#FF9800" glyphName="USER_SECRET" size="1.3em" />
+                     <Label fx:id="lblTotalEmployees" styleClass="footer-stat-value" text="0" />
+                     <Label styleClass="footer-stat-label" text="Employees" />
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER" spacing="8.0" styleClass="footer-stat-item">
+                  <children>
+                     <FontAwesomeIcon fill="#9C27B0" glyphName="TABLE" size="1.3em" />
+                     <Label fx:id="lblTotalTablesFooter" styleClass="footer-stat-value" text="0" />
+                     <Label styleClass="footer-stat-label" text="Tables" />
+                  </children>
+               </HBox>
+               <Region HBox.hgrow="ALWAYS" />
+               <HBox alignment="CENTER" spacing="8.0" styleClass="system-status">
+                  <children>
+                     <FontAwesomeIcon fx:id="statusIcon" fill="#4CAF50" glyphName="CHECK_CIRCLE" size="1.3em" />
+                     <Label fx:id="lblSystemStatus" styleClass="system-status-text" text="System Online" />
+                  </children>
+               </HBox>
+            </children>
+         </HBox>
+      </VBox>
+   </content>
+      </ScrollPane>
+   </children>
+</StackPane>

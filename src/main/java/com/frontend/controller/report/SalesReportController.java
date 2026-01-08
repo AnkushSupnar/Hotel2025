@@ -1,6 +1,7 @@
 package com.frontend.controller.report;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.customUI.AutoCompleteTextField;
 import com.frontend.entity.Bill;
 import com.frontend.entity.Customer;
 import com.frontend.entity.TableMaster;
@@ -41,6 +42,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -84,6 +86,7 @@ public class SalesReportController implements Initializable {
     // Customer search
     @FXML private TextField txtCustomerSearch;
     @FXML private Button btnClearCustomer;
+    private AutoCompleteTextField customerAutoComplete;
 
     // Summary labels
     @FXML private Label lblTotalSales;
@@ -128,6 +131,9 @@ public class SalesReportController implements Initializable {
         setupTable();
         loadCustomers();
         loadTables();
+
+        // Load customer suggestions for autocomplete
+        loadCustomerSuggestions();
 
         // Default to Today's report
         Platform.runLater(() -> {
@@ -184,7 +190,27 @@ public class SalesReportController implements Initializable {
     }
 
     private void setupCustomerSearch() {
-        // Add listener for customer search
+        // Get custom font for customer search field (20px)
+        Font customerSearchFont = SessionService.getCustomFont(20.0);
+
+        // Apply custom font to txtCustomerSearch via inline style (overrides CSS)
+        if (customerSearchFont != null) {
+            String fontFamily = customerSearchFont.getFamily();
+            double fontSize = customerSearchFont.getSize();
+            txtCustomerSearch.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: " + fontSize + "px;");
+        }
+
+        // Create AutoCompleteTextField with custom font
+        customerAutoComplete = new AutoCompleteTextField(txtCustomerSearch, new ArrayList<>(), customerSearchFont);
+        customerAutoComplete.setUseContainsFilter(true);
+        customerAutoComplete.setPromptText("grahakacao naava");
+
+        // Set callback when customer is selected
+        customerAutoComplete.setOnSelectionCallback(selectedCustomer -> {
+            searchCustomer(selectedCustomer);
+        });
+
+        // Also filter on text change for partial matching
         txtCustomerSearch.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.trim().isEmpty()) {
                 searchCustomer(newVal.trim());
@@ -193,6 +219,29 @@ public class SalesReportController implements Initializable {
                 refreshReport();
             }
         });
+    }
+
+    private void loadCustomerSuggestions() {
+        try {
+            if (allCustomers == null) {
+                loadCustomers();
+            }
+
+            List<String> customerNames = new ArrayList<>();
+            for (Customer customer : allCustomers) {
+                String fullName = customer.getFirstName() + " " + customer.getLastName();
+                if (!fullName.trim().isEmpty()) {
+                    customerNames.add(fullName.trim());
+                }
+            }
+
+            // Update suggestions in autocomplete
+            customerNames.sort(String.CASE_INSENSITIVE_ORDER);
+            customerAutoComplete.setSuggestions(customerNames);
+            LOG.info("Loaded {} customers for autocomplete", customerNames.size());
+        } catch (Exception e) {
+            LOG.error("Error loading customers for autocomplete: ", e);
+        }
     }
 
     private void setupTable() {
@@ -435,7 +484,11 @@ public class SalesReportController implements Initializable {
     }
 
     private void clearCustomerFilter() {
-        txtCustomerSearch.clear();
+        if (customerAutoComplete != null) {
+            customerAutoComplete.clear();
+        } else {
+            txtCustomerSearch.clear();
+        }
         selectedCustomerId = null;
         refreshReport();
     }

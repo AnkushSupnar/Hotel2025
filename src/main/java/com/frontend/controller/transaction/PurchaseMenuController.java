@@ -1,8 +1,10 @@
 package com.frontend.controller.transaction;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.util.NavigationGuard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -26,6 +28,12 @@ public class PurchaseMenuController implements Initializable {
     @Autowired
     private SpringFXMLLoader loader;
 
+    @Autowired
+    private NavigationGuard navigationGuard;
+
+    @FXML
+    private Button btnBack;
+
     @FXML
     private Button btnPurchaseOrder;
 
@@ -47,7 +55,41 @@ public class PurchaseMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Initializing PurchaseMenuController");
+        setupBackButton();
         setupEventHandlers();
+    }
+
+    private void setupBackButton() {
+        if (btnBack != null) {
+            btnBack.setOnAction(e -> {
+                try {
+                    LOG.info("Back button clicked - returning to home dashboard");
+                    showInitialDashboard();
+                } catch (Exception ex) {
+                    LOG.error("Error returning to home dashboard: ", ex);
+                }
+            });
+        }
+    }
+
+    private void showInitialDashboard() {
+        try {
+            BorderPane mainPane = getMainPane();
+            if (mainPane != null) {
+                Node initialDashboard = (Node) mainPane.getProperties().get("initialDashboard");
+
+                if (initialDashboard != null) {
+                    mainPane.setCenter(initialDashboard);
+                    LOG.info("Successfully restored initial dashboard");
+                } else {
+                    Pane pane = loader.getPage("/fxml/dashboard/Home.fxml");
+                    mainPane.setCenter(pane);
+                    LOG.info("Loaded dashboard from file");
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error showing initial dashboard: ", e);
+        }
     }
 
     private void setupEventHandlers() {
@@ -77,50 +119,34 @@ public class PurchaseMenuController implements Initializable {
     }
 
     private void navigateToPurchaseOrder() {
-        try {
-            LOG.info("Navigating to Purchase Order Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/PurchaseOrderFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Purchase Order Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Purchase Order Frame: ", e);
+        LOG.info("Navigating to Purchase Order Frame");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/transaction/PurchaseOrderFrame.fxml");
         }
     }
 
     private void navigateToPurchaseInvoice() {
-        try {
-            LOG.info("Navigating to Purchase Invoice Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/PurchaseBillFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Purchase Invoice Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Purchase Invoice Frame: ", e);
+        LOG.info("Navigating to Purchase Invoice Frame");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/transaction/PurchaseBillFrame.fxml");
         }
     }
 
     private void navigateToPayReceipt() {
-        try {
-            LOG.info("Navigating to Pay Receipt Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/PayReceiptFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Pay Receipt Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Pay Receipt Frame: ", e);
+        LOG.info("Navigating to Pay Receipt Frame");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/transaction/PayReceiptFrame.fxml");
         }
     }
 
     private BorderPane getMainPane() {
         try {
-            if (btnPurchaseOrder != null && btnPurchaseOrder.getScene() != null) {
+            if (btnBack != null && btnBack.getScene() != null) {
+                return (BorderPane) btnBack.getScene().lookup("#mainPane");
+            } else if (btnPurchaseOrder != null && btnPurchaseOrder.getScene() != null) {
                 return (BorderPane) btnPurchaseOrder.getScene().lookup("#mainPane");
             } else if (btnPurchaseInvoice != null && btnPurchaseInvoice.getScene() != null) {
                 return (BorderPane) btnPurchaseInvoice.getScene().lookup("#mainPane");

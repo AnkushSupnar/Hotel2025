@@ -1,8 +1,12 @@
 package com.frontend.controller.report;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.customUI.AutoCompleteTextField;
 import com.frontend.entity.PaymentReceipt;
+import com.frontend.entity.Supplier;
 import com.frontend.service.PaymentReceiptService;
+import com.frontend.service.SessionService;
+import com.frontend.service.SupplierService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import com.frontend.service.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -41,6 +45,9 @@ public class PayReceiptReportController implements Initializable {
 
     @Autowired
     private PaymentReceiptService receiptService;
+
+    @Autowired
+    private SupplierService supplierService;
 
     // Header buttons
     @FXML private Button btnBack;
@@ -62,6 +69,7 @@ public class PayReceiptReportController implements Initializable {
     // Supplier search
     @FXML private TextField txtSupplierSearch;
     @FXML private Button btnClearSupplier;
+    private AutoCompleteTextField supplierAutoComplete;
 
     // Summary labels
     @FXML private Label lblTotalReceipts;
@@ -101,6 +109,9 @@ public class PayReceiptReportController implements Initializable {
             setupTable();
             setupButtons();
             setupSearch();
+
+            // Load supplier suggestions for autocomplete
+            loadSupplierSuggestions();
 
             // Default to today
             btnToday.setSelected(true);
@@ -238,13 +249,56 @@ public class PayReceiptReportController implements Initializable {
     }
 
     private void setupSearch() {
+        // Get custom font for supplier search field (20px)
+        Font supplierSearchFont = SessionService.getCustomFont(20.0);
+
+        // Apply custom font to txtSupplierSearch via inline style (overrides CSS)
+        if (supplierSearchFont != null) {
+            String fontFamily = supplierSearchFont.getFamily();
+            double fontSize = supplierSearchFont.getSize();
+            txtSupplierSearch.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: " + fontSize + "px;");
+        }
+
+        // Create AutoCompleteTextField with custom font
+        supplierAutoComplete = new AutoCompleteTextField(txtSupplierSearch, new ArrayList<>(), supplierSearchFont);
+        supplierAutoComplete.setUseContainsFilter(true);
+        supplierAutoComplete.setPromptText("paurvaZadaracao naava");
+
+        // Set callback when supplier is selected
+        supplierAutoComplete.setOnSelectionCallback(selectedSupplier -> {
+            filterData();
+        });
+
+        // Also filter on text change for partial matching
         txtSupplierSearch.textProperty().addListener((obs, oldVal, newVal) -> {
             filterData();
         });
 
         btnClearSupplier.setOnAction(e -> {
-            txtSupplierSearch.clear();
+            supplierAutoComplete.clear();
+            filterData();
         });
+    }
+
+    private void loadSupplierSuggestions() {
+        try {
+            // Get all suppliers from database
+            List<Supplier> suppliers = supplierService.getAllSuppliers();
+            List<String> supplierNames = new ArrayList<>();
+
+            for (Supplier supplier : suppliers) {
+                if (supplier.getName() != null && !supplier.getName().isEmpty()) {
+                    supplierNames.add(supplier.getName());
+                }
+            }
+
+            // Update suggestions in autocomplete
+            supplierNames.sort(String.CASE_INSENSITIVE_ORDER);
+            supplierAutoComplete.setSuggestions(supplierNames);
+            LOG.info("Loaded {} suppliers for autocomplete from database", supplierNames.size());
+        } catch (Exception e) {
+            LOG.error("Error loading suppliers for autocomplete: ", e);
+        }
     }
 
     private void handlePeriodChange(ToggleButton selected) {
@@ -311,7 +365,7 @@ public class PayReceiptReportController implements Initializable {
     }
 
     private void filterData() {
-        String searchText = txtSupplierSearch.getText();
+        String searchText = supplierAutoComplete != null ? supplierAutoComplete.getText() : txtSupplierSearch.getText();
 
         if (searchText == null || searchText.trim().isEmpty()) {
             tblReceipts.setItems(receiptsList);
@@ -319,11 +373,14 @@ public class PayReceiptReportController implements Initializable {
             return;
         }
 
-        String lowerSearch = searchText.toLowerCase().trim();
+        String searchTrimmed = searchText.trim();
         ObservableList<PaymentReceipt> filtered = receiptsList.stream()
                 .filter(r -> {
                     String supplierName = r.getSupplierName();
-                    return supplierName != null && supplierName.toLowerCase().contains(lowerSearch);
+                    if (supplierName == null) return false;
+                    // Exact match if user selected from dropdown, otherwise contains match
+                    return supplierName.equalsIgnoreCase(searchTrimmed) ||
+                           supplierName.toLowerCase().contains(searchTrimmed.toLowerCase());
                 })
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
 

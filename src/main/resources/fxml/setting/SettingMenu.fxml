@@ -70,6 +70,23 @@
                         </VBox>
                      </children>
                   </StackPane>
+
+                  <!-- User Rights Card -->
+                  <StackPane fx:id="userRightsCard" styleClass="setting-card, user-rights-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, user-rights-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#9C27B0" glyphName="SHIELD" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="User Rights" />
+                              <Label styleClass="card-description" text="Manage screen access permissions per role" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
                </children>
             </HBox>
          </children>

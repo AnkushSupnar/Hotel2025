@@ -15,7 +15,7 @@ public class Role {
     @Column(name = "role_name", unique = true, nullable = false, length = 50)
     private String roleName;
 
-    @Column(name = "rights", nullable = false, length = 100)
+    @Column(name = "rights", nullable = false, length = 500)
     private String rights;
 
     @Column(name = "created_at", updatable = false)

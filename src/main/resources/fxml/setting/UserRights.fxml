@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.frontend.controller.setting.UserRightsController"
+      styleClass="app-setting-root">
+   <stylesheets>
+      <URL value="@../css/setting-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="app-setting-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="app-setting-title" text="User Rights Management" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Main Content Area -->
+      <HBox spacing="30" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="50.0" right="50.0" top="30.0" />
+         </padding>
+         <children>
+            <!-- Left Panel: Role Selection and Actions -->
+            <VBox spacing="20" styleClass="form-card" prefWidth="350" minWidth="320">
+               <padding>
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+               </padding>
+               <children>
+                  <!-- Panel Header -->
+                  <HBox alignment="CENTER_LEFT" spacing="12">
+                     <children>
+                        <StackPane styleClass="header-icon-container">
+                           <children>
+                              <FontAwesomeIcon glyphName="SHIELD" size="1.6em" fill="#9C27B0" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="form-card-title" text="Role Configuration" />
+                     </children>
+                  </HBox>
+
+                  <Separator styleClass="form-separator" />
+
+                  <!-- Role Selection -->
+                  <VBox spacing="10">
+                     <children>
+                        <Label styleClass="input-label" text="SELECT ROLE" />
+                        <HBox styleClass="input-container" alignment="CENTER_LEFT" spacing="12">
+                           <children>
+                              <FontAwesomeIcon glyphName="USER_CIRCLE" size="1.2em" fill="#7E57C2" />
+                              <ComboBox fx:id="cmbRole" promptText="Select a role..."
+                                        styleClass="material-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <!-- Action Buttons -->
+                  <VBox spacing="12">
+                     <children>
+                        <Button fx:id="btnSave" styleClass="btn-primary-full" maxWidth="Infinity">
+                           <graphic>
+                              <HBox alignment="CENTER" spacing="8">
+                                 <children>
+                                    <FontAwesomeIcon glyphName="SAVE" size="1.2em" fill="white" />
+                                    <Label text="SAVE PERMISSIONS" styleClass="button-text" />
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnReset" styleClass="btn-secondary-full" maxWidth="Infinity">
+                           <graphic>
+                              <HBox alignment="CENTER" spacing="8">
+                                 <children>
+                                    <FontAwesomeIcon glyphName="REFRESH" size="1.2em" fill="#667eea" />
+                                    <Label text="RESET TO DEFAULT" styleClass="button-text-secondary" />
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+
+                  <Separator styleClass="form-separator" />
+
+                  <!-- Role Info Box -->
+                  <VBox styleClass="info-box" spacing="8">
+                     <children>
+                        <Label text="Role Information" styleClass="info-box-title" />
+                        <Label fx:id="lblRoleInfo" text="Select a role to view its permissions"
+                               styleClass="info-box-text" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- Right Panel: Screen Permissions -->
+            <VBox spacing="0" styleClass="form-card" HBox.hgrow="ALWAYS">
+               <children>
+                  <!-- Panel Header -->
+                  <HBox alignment="CENTER_LEFT" spacing="12" styleClass="permissions-header">
+                     <padding>
+                        <Insets bottom="15.0" left="25.0" right="25.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <StackPane styleClass="header-icon-container">
+                           <children>
+                              <FontAwesomeIcon glyphName="LIST_ALT" size="1.6em" fill="#667eea" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="form-card-title" text="Screen Permissions" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblPermissionCount" styleClass="permission-count" text="0 of 0 selected" />
+                     </children>
+                  </HBox>
+
+                  <Separator />
+
+                  <!-- Scrollable Permissions Container -->
+                  <ScrollPane fitToWidth="true" styleClass="permissions-scroll" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="permissionsContainer" spacing="20" styleClass="permissions-grid">
+                           <padding>
+                              <Insets bottom="25.0" left="25.0" right="25.0" top="20.0" />
+                           </padding>
+                           <!-- Checkboxes will be dynamically added here by the controller -->
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

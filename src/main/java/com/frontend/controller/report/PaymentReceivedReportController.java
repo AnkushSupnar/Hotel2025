@@ -1,8 +1,12 @@
 package com.frontend.controller.report;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.customUI.AutoCompleteTextField;
+import com.frontend.entity.Customer;
 import com.frontend.entity.SalesPaymentReceipt;
+import com.frontend.service.CustomerService;
 import com.frontend.service.SalesPaymentReceiptService;
+import com.frontend.service.SessionService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import com.frontend.service.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -41,6 +45,9 @@ public class PaymentReceivedReportController implements Initializable {
 
     @Autowired
     private SalesPaymentReceiptService receiptService;
+
+    @Autowired
+    private CustomerService customerService;
 
     // Header buttons
     @FXML private Button btnBack;
@@ -62,6 +69,7 @@ public class PaymentReceivedReportController implements Initializable {
     // Customer search
     @FXML private TextField txtCustomerSearch;
     @FXML private Button btnClearCustomer;
+    private AutoCompleteTextField customerAutoComplete;
 
     // Summary labels
     @FXML private Label lblTotalReceipts;
@@ -101,6 +109,9 @@ public class PaymentReceivedReportController implements Initializable {
             setupTable();
             setupButtons();
             setupSearch();
+
+            // Load customer suggestions for autocomplete
+            loadCustomerSuggestions();
 
             // Default to today
             btnToday.setSelected(true);
@@ -238,13 +249,57 @@ public class PaymentReceivedReportController implements Initializable {
     }
 
     private void setupSearch() {
+        // Get custom font for customer search field (20px)
+        Font customerSearchFont = SessionService.getCustomFont(20.0);
+
+        // Apply custom font to txtCustomerSearch via inline style (overrides CSS)
+        if (customerSearchFont != null) {
+            String fontFamily = customerSearchFont.getFamily();
+            double fontSize = customerSearchFont.getSize();
+            txtCustomerSearch.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: " + fontSize + "px;");
+        }
+
+        // Create AutoCompleteTextField with custom font
+        customerAutoComplete = new AutoCompleteTextField(txtCustomerSearch, new ArrayList<>(), customerSearchFont);
+        customerAutoComplete.setUseContainsFilter(true);
+        customerAutoComplete.setPromptText("grahakacao naava");
+
+        // Set callback when customer is selected
+        customerAutoComplete.setOnSelectionCallback(selectedCustomer -> {
+            filterData();
+        });
+
+        // Also filter on text change for partial matching
         txtCustomerSearch.textProperty().addListener((obs, oldVal, newVal) -> {
             filterData();
         });
 
         btnClearCustomer.setOnAction(e -> {
-            txtCustomerSearch.clear();
+            customerAutoComplete.clear();
+            filterData();
         });
+    }
+
+    private void loadCustomerSuggestions() {
+        try {
+            // Get all customers from database
+            List<Customer> customers = customerService.getAllCustomers();
+            List<String> customerNames = new ArrayList<>();
+
+            for (Customer customer : customers) {
+                String fullName = (customer.getFirstName() + " " + customer.getLastName()).trim();
+                if (!fullName.isEmpty()) {
+                    customerNames.add(fullName);
+                }
+            }
+
+            // Update suggestions in autocomplete
+            customerNames.sort(String.CASE_INSENSITIVE_ORDER);
+            customerAutoComplete.setSuggestions(customerNames);
+            LOG.info("Loaded {} customers for autocomplete from database", customerNames.size());
+        } catch (Exception e) {
+            LOG.error("Error loading customers for autocomplete: ", e);
+        }
     }
 
     private void handlePeriodChange(ToggleButton selected) {
@@ -311,7 +366,7 @@ public class PaymentReceivedReportController implements Initializable {
     }
 
     private void filterData() {
-        String searchText = txtCustomerSearch.getText();
+        String searchText = customerAutoComplete != null ? customerAutoComplete.getText() : txtCustomerSearch.getText();
 
         if (searchText == null || searchText.trim().isEmpty()) {
             tblReceipts.setItems(receiptsList);
@@ -319,11 +374,14 @@ public class PaymentReceivedReportController implements Initializable {
             return;
         }
 
-        String lowerSearch = searchText.toLowerCase().trim();
+        String searchTrimmed = searchText.trim();
         ObservableList<SalesPaymentReceipt> filtered = receiptsList.stream()
                 .filter(r -> {
                     String customerName = r.getCustomerName();
-                    return customerName != null && customerName.toLowerCase().contains(lowerSearch);
+                    if (customerName == null) return false;
+                    // Exact match if user selected from dropdown, otherwise contains match
+                    return customerName.equalsIgnoreCase(searchTrimmed) ||
+                           customerName.toLowerCase().contains(searchTrimmed.toLowerCase());
                 })
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
 

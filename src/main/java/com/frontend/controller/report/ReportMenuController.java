@@ -1,6 +1,7 @@
 package com.frontend.controller.report;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.util.NavigationGuard;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +28,9 @@ public class ReportMenuController implements Initializable {
 
     @Autowired
     SpringFXMLLoader loader;
+
+    @Autowired
+    NavigationGuard navigationGuard;
 
     // Header
     @FXML private Button btnBack;
@@ -84,25 +88,124 @@ public class ReportMenuController implements Initializable {
     }
 
     private void setupTabChips() {
-        // Sales Tab Click
-        chipSales.setOnMouseClicked(e -> {
+        // Make chips pickable on entire bounds (not just non-transparent areas)
+        chipSales.setPickOnBounds(true);
+        chipPurchase.setPickOnBounds(true);
+        chipMiscellaneous.setPickOnBounds(true);
+
+        // Make child elements (icons and labels) mouse transparent so clicks go to parent
+        iconSales.setMouseTransparent(true);
+        iconPurchase.setMouseTransparent(true);
+        iconMiscellaneous.setMouseTransparent(true);
+        lblSales.setMouseTransparent(true);
+        lblPurchase.setMouseTransparent(true);
+        lblMiscellaneous.setMouseTransparent(true);
+
+        // Sales Tab Click - use event filter to ensure we receive the event
+        chipSales.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
             if (activeTab != 0) {
                 switchToSalesTab();
             }
+            e.consume();
         });
 
         // Purchase Tab Click
-        chipPurchase.setOnMouseClicked(e -> {
+        chipPurchase.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
             if (activeTab != 1) {
                 switchToPurchaseTab();
             }
+            e.consume();
         });
 
         // Miscellaneous Tab Click
-        chipMiscellaneous.setOnMouseClicked(e -> {
+        chipMiscellaneous.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
             if (activeTab != 2) {
                 switchToMiscellaneousTab();
             }
+            e.consume();
+        });
+
+        // Add hover effects for better UX
+        setupChipHoverEffects();
+    }
+
+    private void setupChipHoverEffects() {
+        // Sales chip hover and press effects
+        chipSales.setOnMouseEntered(e -> {
+            if (activeTab != 0) {
+                chipSales.setStyle("-fx-background-color: #C8E6C9; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 10, 0, 0, 4);");
+            }
+        });
+        chipSales.setOnMouseExited(e -> {
+            if (activeTab != 0) {
+                chipSales.setStyle("-fx-background-color: #E8EAF6; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+            }
+        });
+        chipSales.setOnMousePressed(e -> {
+            if (activeTab != 0) {
+                chipSales.setScaleX(0.95);
+                chipSales.setScaleY(0.95);
+            }
+        });
+        chipSales.setOnMouseReleased(e -> {
+            chipSales.setScaleX(1.0);
+            chipSales.setScaleY(1.0);
+        });
+
+        // Purchase chip hover and press effects
+        chipPurchase.setOnMouseEntered(e -> {
+            if (activeTab != 1) {
+                chipPurchase.setStyle("-fx-background-color: #E1BEE7; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.3), 10, 0, 0, 4);");
+            }
+        });
+        chipPurchase.setOnMouseExited(e -> {
+            if (activeTab != 1) {
+                chipPurchase.setStyle("-fx-background-color: #E8EAF6; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+            }
+        });
+        chipPurchase.setOnMousePressed(e -> {
+            if (activeTab != 1) {
+                chipPurchase.setScaleX(0.95);
+                chipPurchase.setScaleY(0.95);
+            }
+        });
+        chipPurchase.setOnMouseReleased(e -> {
+            chipPurchase.setScaleX(1.0);
+            chipPurchase.setScaleY(1.0);
+        });
+
+        // Miscellaneous chip hover and press effects
+        chipMiscellaneous.setOnMouseEntered(e -> {
+            if (activeTab != 2) {
+                chipMiscellaneous.setStyle("-fx-background-color: #FFE0B2; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.3), 10, 0, 0, 4);");
+            }
+        });
+        chipMiscellaneous.setOnMouseExited(e -> {
+            if (activeTab != 2) {
+                chipMiscellaneous.setStyle("-fx-background-color: #E8EAF6; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+            }
+        });
+        chipMiscellaneous.setOnMousePressed(e -> {
+            if (activeTab != 2) {
+                chipMiscellaneous.setScaleX(0.95);
+                chipMiscellaneous.setScaleY(0.95);
+            }
+        });
+        chipMiscellaneous.setOnMouseReleased(e -> {
+            chipMiscellaneous.setScaleX(1.0);
+            chipMiscellaneous.setScaleY(1.0);
         });
     }
 
@@ -266,13 +369,7 @@ public class ReportMenuController implements Initializable {
         LOG.info("Loading Sales Report");
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            try {
-                Pane pane = loader.getPage("/fxml/report/SalesReport.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Sales Report loaded successfully");
-            } catch (Exception e) {
-                LOG.error("Error loading Sales Report: ", e);
-            }
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/SalesReport.fxml");
         }
     }
 
@@ -280,13 +377,7 @@ public class ReportMenuController implements Initializable {
         LOG.info("Loading Purchase Report");
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            try {
-                Pane pane = loader.getPage("/fxml/report/PurchaseReport.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Purchase Report loaded successfully");
-            } catch (Exception e) {
-                LOG.error("Error loading Purchase Report: ", e);
-            }
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/PurchaseReport.fxml");
         }
     }
 
@@ -294,13 +385,7 @@ public class ReportMenuController implements Initializable {
         LOG.info("Loading Payment Received Report");
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            try {
-                Pane pane = loader.getPage("/fxml/report/PaymentReceivedReport.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Payment Received Report loaded successfully");
-            } catch (Exception e) {
-                LOG.error("Error loading Payment Received Report: ", e);
-            }
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/PaymentReceivedReport.fxml");
         }
     }
 
@@ -308,13 +393,7 @@ public class ReportMenuController implements Initializable {
         LOG.info("Loading Pay Receipt Report");
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            try {
-                Pane pane = loader.getPage("/fxml/report/PayReceiptReport.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Pay Receipt Report loaded successfully");
-            } catch (Exception e) {
-                LOG.error("Error loading Pay Receipt Report: ", e);
-            }
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/PayReceiptReport.fxml");
         }
     }
 
@@ -322,13 +401,7 @@ public class ReportMenuController implements Initializable {
         LOG.info("Loading Reduced Item Report");
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
-            try {
-                Pane pane = loader.getPage("/fxml/report/ReducedItemReport.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Reduced Item Report loaded successfully");
-            } catch (Exception e) {
-                LOG.error("Error loading Reduced Item Report: ", e);
-            }
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/ReducedItemReport.fxml");
         }
     }
 

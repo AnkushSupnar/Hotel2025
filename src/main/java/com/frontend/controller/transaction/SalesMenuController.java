@@ -1,7 +1,10 @@
 package com.frontend.controller.transaction;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.enums.ScreenPermission;
 import com.frontend.service.SessionService;
+import com.frontend.util.NavigationGuard;
+import com.frontend.view.AlertNotification;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -32,6 +35,15 @@ public class SalesMenuController implements Initializable {
     @Autowired
     private SpringFXMLLoader loader;
 
+    @Autowired
+    private NavigationGuard navigationGuard;
+
+    @Autowired
+    private AlertNotification alertNotification;
+
+    @FXML
+    private Button btnBack;
+
     @FXML
     private Button btnBilling;
 
@@ -44,7 +56,41 @@ public class SalesMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Initializing SalesMenuController");
+        setupBackButton();
         setupEventHandlers();
+    }
+
+    private void setupBackButton() {
+        if (btnBack != null) {
+            btnBack.setOnAction(e -> {
+                try {
+                    LOG.info("Back button clicked - returning to home dashboard");
+                    showInitialDashboard();
+                } catch (Exception ex) {
+                    LOG.error("Error returning to home dashboard: ", ex);
+                }
+            });
+        }
+    }
+
+    private void showInitialDashboard() {
+        try {
+            BorderPane mainPane = getMainPane();
+            if (mainPane != null) {
+                javafx.scene.Node initialDashboard = (javafx.scene.Node) mainPane.getProperties().get("initialDashboard");
+
+                if (initialDashboard != null) {
+                    mainPane.setCenter(initialDashboard);
+                    LOG.info("Successfully restored initial dashboard");
+                } else {
+                    Pane pane = loader.getPage("/fxml/dashboard/Home.fxml");
+                    mainPane.setCenter(pane);
+                    LOG.info("Loaded dashboard from file");
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error showing initial dashboard: ", e);
+        }
     }
 
     private void setupEventHandlers() {
@@ -65,6 +111,13 @@ public class SalesMenuController implements Initializable {
      * Open Billing screen in a new fullscreen window
      */
     private void openBillingWindow() {
+        // Check permission first
+        if (!navigationGuard.canAccess(ScreenPermission.BILLING)) {
+            alertNotification.showError("Access Denied: You don't have permission to access Billing");
+            LOG.warn("Access denied for user {} to Billing screen", SessionService.getCurrentUsername());
+            return;
+        }
+
         try {
             LOG.info("Opening Billing window");
 
@@ -101,22 +154,18 @@ public class SalesMenuController implements Initializable {
     }
 
     private void navigateToReceivePayment() {
-        try {
-            LOG.info("Navigating to Receive Payment Frame");
-            BorderPane mainPane = getMainPane();
-            if (mainPane != null) {
-                Pane pane = loader.getPage("/fxml/transaction/ReceivePaymentFrame.fxml");
-                mainPane.setCenter(pane);
-                LOG.info("Successfully navigated to Receive Payment Frame");
-            }
-        } catch (Exception e) {
-            LOG.error("Error navigating to Receive Payment Frame: ", e);
+        LOG.info("Navigating to Receive Payment Frame");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/transaction/ReceivePaymentFrame.fxml");
         }
     }
 
     private BorderPane getMainPane() {
         try {
-            if (btnBilling != null && btnBilling.getScene() != null) {
+            if (btnBack != null && btnBack.getScene() != null) {
+                return (BorderPane) btnBack.getScene().lookup("#mainPane");
+            } else if (btnBilling != null && btnBilling.getScene() != null) {
                 return (BorderPane) btnBilling.getScene().lookup("#mainPane");
             } else if (btnReceivePayment != null && btnReceivePayment.getScene() != null) {
                 return (BorderPane) btnReceivePayment.getScene().lookup("#mainPane");

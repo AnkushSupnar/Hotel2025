@@ -1,5 +1,6 @@
 package com.frontend;
 
+import com.frontend.service.RoleService;
 import com.frontend.view.FxmlView;
 import com.frontend.view.StageManager;
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
@@ -26,7 +27,8 @@ import java.io.InputStream;
 		"com.frontend.util",
 		"com.frontend.repository",
 		"com.frontend.entity",
-		"com.frontend.print"
+		"com.frontend.print",
+		"com.frontend.enums"
 })
 public class Main extends Application {
 	private ConfigurableApplicationContext springContext;
@@ -77,8 +79,26 @@ public class Main extends Application {
 		// Initialize MaterialFX theme
 		initializeMaterialFXTheme();
 
+		// Initialize default role permissions
+		initializeRolePermissions();
+
 		stageManager = springContext.getBean(StageManager.class, stage);
 		displayInitialScene();
+	}
+
+	/**
+	 * Initialize default role permissions on application startup
+	 * Creates predefined roles (ADMIN, MANAGER, CASHIER, WAITER, USER) if they don't exist
+	 */
+	private void initializeRolePermissions() {
+		try {
+			RoleService roleService = springContext.getBean(RoleService.class);
+			roleService.initializeDefaultRolePermissions();
+			System.out.println("Default role permissions initialized successfully");
+		} catch (Exception e) {
+			System.err.println("Error initializing role permissions: " + e.getMessage());
+			// Non-critical error - application can continue
+		}
 	}
 
 	/**

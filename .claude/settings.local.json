@@ -9,7 +9,8 @@
       "WebFetch(domain:marathifonts.net)",
       "Bash(mvn compile:*)",
       "Bash(dir /B:*)",
-      "Bash(del \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\PLAN_PaymentReceipt_Redesign.md\")"
+      "Bash(del \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\PLAN_PaymentReceipt_Redesign.md\")",
+      "Bash(./mvnw compile:*)"
     ],
     "deny": []
   }

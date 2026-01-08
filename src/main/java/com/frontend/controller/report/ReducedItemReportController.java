@@ -288,10 +288,17 @@ public class ReducedItemReportController implements Initializable {
         // Get custom font for user search field (20px)
         Font userSearchFont = SessionService.getCustomFont(20.0);
 
+        // Apply custom font to txtUserSearch via inline style (overrides CSS)
+        if (userSearchFont != null) {
+         //   String fontFamily = userSearchFont.getFamily();
+           // double fontSize = userSearchFont.getSize();
+           // txtUserSearch.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: " + fontSize + "px;");
+        }
+
         // Create AutoCompleteTextField with custom font
         userAutoComplete = new AutoCompleteTextField(txtUserSearch, new ArrayList<>(), userSearchFont);
         userAutoComplete.setUseContainsFilter(true);
-        userAutoComplete.setPromptText("Search by user");
+        userAutoComplete.setPromptText("yaujarcao naava");
 
         // Set callback when user is selected
         userAutoComplete.setOnSelectionCallback(selectedUser -> {

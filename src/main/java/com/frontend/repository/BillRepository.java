@@ -210,4 +210,30 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT COALESCE(SUM(b.netAmount - COALESCE(b.paidAmount, 0)), 0) FROM Bill b " +
            "WHERE b.status = 'CREDIT' AND (b.netAmount - COALESCE(b.paidAmount, 0)) > 0")
     Double getTotalCreditBalance();
+
+    // ============= Dashboard Queries =============
+
+    /**
+     * Find recent bills ordered by creation time (for dashboard)
+     */
+    List<Bill> findTop10ByOrderByCreatedAtDesc();
+
+    /**
+     * Count bills by date and status (for dashboard order status)
+     */
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.billDate = :billDate AND b.status = :status")
+    Long countByBillDateAndStatus(@Param("billDate") String billDate, @Param("status") String status);
+
+    /**
+     * Find bills by date with transactions eagerly loaded (for top selling items)
+     */
+    @Query("SELECT DISTINCT b FROM Bill b LEFT JOIN FETCH b.transactions WHERE b.billDate = :billDate")
+    List<Bill> findByBillDateWithTransactions(@Param("billDate") String billDate);
+
+    /**
+     * Count distinct active tables by bill status (for dashboard table status)
+     * Tables with CLOSE status bills are considered active/occupied
+     */
+    @Query("SELECT COUNT(DISTINCT b.tableNo) FROM Bill b WHERE b.status = :status AND b.tableNo IS NOT NULL")
+    Long countDistinctActiveTablesByStatus(@Param("status") String status);
 }
