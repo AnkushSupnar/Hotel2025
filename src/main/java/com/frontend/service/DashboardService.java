@@ -369,14 +369,27 @@ public class DashboardService {
             for (Bill bill : recentBills) {
                 if (transactions.size() >= limit) break;
 
-                // Get customer name if customerId exists
+                // Get customer full name if customerId exists
                 String customerName = "Walk-in";
                 if (bill.getCustomerId() != null) {
                     try {
-                        customerRepository.findById(bill.getCustomerId())
-                                .ifPresent(c -> {});
                         customerName = customerRepository.findById(bill.getCustomerId())
-                                .map(c -> c.getFirstName() != null ? c.getFirstName() : "Customer")
+                                .map(c -> {
+                                    // Build full name, handling null/empty parts
+                                    StringBuilder fullName = new StringBuilder();
+                                    if (c.getFirstName() != null && !c.getFirstName().trim().isEmpty()) {
+                                        fullName.append(c.getFirstName().trim());
+                                    }
+                                    if (c.getMiddleName() != null && !c.getMiddleName().trim().isEmpty()) {
+                                        if (fullName.length() > 0) fullName.append(" ");
+                                        fullName.append(c.getMiddleName().trim());
+                                    }
+                                    if (c.getLastName() != null && !c.getLastName().trim().isEmpty()) {
+                                        if (fullName.length() > 0) fullName.append(" ");
+                                        fullName.append(c.getLastName().trim());
+                                    }
+                                    return fullName.length() > 0 ? fullName.toString() : "Customer";
+                                })
                                 .orElse("Walk-in");
                     } catch (Exception e) {
                         // Ignore lookup errors

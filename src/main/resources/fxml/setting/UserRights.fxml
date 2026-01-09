@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -153,14 +154,42 @@
 
                   <Separator />
 
+                  <!-- Search Field -->
+                  <HBox alignment="CENTER_LEFT" spacing="12" styleClass="search-section">
+                     <padding>
+                        <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-container" HBox.hgrow="ALWAYS">
+                           <children>
+                              <FontAwesomeIcon fill="#9e9e9e" glyphName="SEARCH" size="1.2em" />
+                              <TextField fx:id="txtSearchPermission" promptText="Search permissions..."
+                                         styleClass="search-input" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+
+                  <!-- No Results Message (hidden by default) -->
+                  <VBox fx:id="noResultsContainer" alignment="CENTER" spacing="10" managed="false" visible="false"
+                        styleClass="no-results-container">
+                     <padding>
+                        <Insets bottom="40.0" left="25.0" right="25.0" top="40.0" />
+                     </padding>
+                     <children>
+                        <FontAwesomeIcon glyphName="SEARCH" size="3em" fill="#bdbdbd" />
+                        <Label fx:id="lblNoResults" text="No permissions found" styleClass="no-results-text" />
+                     </children>
+                  </VBox>
+
                   <!-- Scrollable Permissions Container -->
-                  <ScrollPane fitToWidth="true" styleClass="permissions-scroll" VBox.vgrow="ALWAYS">
+                  <ScrollPane fx:id="permissionsScrollPane" fitToWidth="true" styleClass="permissions-scroll" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="permissionsContainer" spacing="20" styleClass="permissions-grid">
                            <padding>
                               <Insets bottom="25.0" left="25.0" right="25.0" top="20.0" />
                            </padding>
-                           <!-- Checkboxes will be dynamically added here by the controller -->
+                           <!-- Categories with checkboxes will be dynamically added here by the controller -->
                         </VBox>
                      </content>
                   </ScrollPane>

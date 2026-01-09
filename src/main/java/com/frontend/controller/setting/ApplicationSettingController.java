@@ -5,9 +5,12 @@ import com.frontend.entity.ApplicationSetting;
 import com.frontend.service.ApplicationSettingService;
 import com.frontend.service.SessionService;
 import com.frontend.view.AlertNotification;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -18,8 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -27,8 +33,12 @@ import java.util.ResourceBundle;
 public class ApplicationSettingController implements Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationSettingController.class);
+
+    // Setting keys
     private static final String FONT_PATH_SETTING = "input_font_path";
     private static final String DOCUMENT_PATH_SETTING = "document_directory";
+    private static final String BILLING_PRINTER_SETTING = "billing_printer";
+    private static final String KOT_PRINTER_SETTING = "kot_printer";
 
     @Autowired
     private SpringFXMLLoader loader;
@@ -69,10 +79,30 @@ public class ApplicationSettingController implements Initializable {
     @FXML
     private Label lblCurrentFont;
 
+    // Printer components
+    @FXML
+    private ComboBox<String> cmbBillingPrinter;
+
+    @FXML
+    private ComboBox<String> cmbKotPrinter;
+
+    @FXML
+    private Button btnRefreshBillingPrinter;
+
+    @FXML
+    private Button btnRefreshKotPrinter;
+
+    @FXML
+    private Label lblCurrentBillingPrinter;
+
+    @FXML
+    private Label lblCurrentKotPrinter;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
         setupEventHandlers();
+        loadAvailablePrinters();
         loadCurrentSettings();
     }
 
@@ -114,6 +144,76 @@ public class ApplicationSettingController implements Initializable {
         btnBrowseFont.setOnAction(e -> browseFontFile());
         btnSave.setOnAction(e -> saveSettings());
         btnClear.setOnAction(e -> clearForm());
+
+        // Printer refresh buttons
+        btnRefreshBillingPrinter.setOnAction(e -> refreshPrinters(cmbBillingPrinter));
+        btnRefreshKotPrinter.setOnAction(e -> refreshPrinters(cmbKotPrinter));
+    }
+
+    /**
+     * Load all available printers from the system
+     */
+    private void loadAvailablePrinters() {
+        try {
+            ObservableList<String> printerNames = getAvailablePrinterNames();
+
+            // Populate both combo boxes
+            cmbBillingPrinter.setItems(FXCollections.observableArrayList(printerNames));
+            cmbKotPrinter.setItems(FXCollections.observableArrayList(printerNames));
+
+            LOG.info("Loaded {} available printers", printerNames.size());
+        } catch (Exception e) {
+            LOG.error("Error loading available printers: ", e);
+            alertNotification.showError("Error loading printers: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get list of all available printer names
+     */
+    private ObservableList<String> getAvailablePrinterNames() {
+        ObservableList<String> printerNames = FXCollections.observableArrayList();
+
+        try {
+            PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+
+            if (printServices != null && printServices.length > 0) {
+                Arrays.stream(printServices)
+                        .map(PrintService::getName)
+                        .sorted()
+                        .forEach(printerNames::add);
+            }
+
+            // Add a "None" option at the beginning
+            printerNames.add(0, "-- None --");
+
+        } catch (Exception e) {
+            LOG.error("Error getting printer list: ", e);
+        }
+
+        return printerNames;
+    }
+
+    /**
+     * Refresh printer list for a specific combo box
+     */
+    private void refreshPrinters(ComboBox<String> comboBox) {
+        try {
+            String currentSelection = comboBox.getValue();
+            ObservableList<String> printerNames = getAvailablePrinterNames();
+            comboBox.setItems(printerNames);
+
+            // Restore previous selection if still available
+            if (currentSelection != null && printerNames.contains(currentSelection)) {
+                comboBox.setValue(currentSelection);
+            }
+
+            alertNotification.showSuccess("Printer list refreshed");
+            LOG.info("Printer list refreshed, found {} printers", printerNames.size() - 1);
+        } catch (Exception e) {
+            LOG.error("Error refreshing printer list: ", e);
+            alertNotification.showError("Error refreshing printers: " + e.getMessage());
+        }
     }
 
     private void browseDocumentDirectory() {
@@ -202,9 +302,39 @@ public class ApplicationSettingController implements Initializable {
                 }
 
                 applicationSettingService.saveSetting(FONT_PATH_SETTING, fontPath);
-                successMessage.append("Font setting saved.");
+                successMessage.append("Font setting saved. ");
                 hasChanges = true;
                 LOG.info("Font setting saved: {}", fontPath);
+            }
+
+            // Save Billing Printer
+            String billingPrinter = cmbBillingPrinter.getValue();
+            if (billingPrinter != null && !billingPrinter.equals("-- None --")) {
+                applicationSettingService.saveSetting(BILLING_PRINTER_SETTING, billingPrinter);
+                successMessage.append("Billing printer saved. ");
+                hasChanges = true;
+                LOG.info("Billing printer saved: {}", billingPrinter);
+            } else if (billingPrinter != null && billingPrinter.equals("-- None --")) {
+                // Clear the setting if "None" is selected
+                applicationSettingService.deleteSettingByName(BILLING_PRINTER_SETTING);
+                successMessage.append("Billing printer cleared. ");
+                hasChanges = true;
+                LOG.info("Billing printer setting cleared");
+            }
+
+            // Save KOT Printer
+            String kotPrinter = cmbKotPrinter.getValue();
+            if (kotPrinter != null && !kotPrinter.equals("-- None --")) {
+                applicationSettingService.saveSetting(KOT_PRINTER_SETTING, kotPrinter);
+                successMessage.append("KOT printer saved. ");
+                hasChanges = true;
+                LOG.info("KOT printer saved: {}", kotPrinter);
+            } else if (kotPrinter != null && kotPrinter.equals("-- None --")) {
+                // Clear the setting if "None" is selected
+                applicationSettingService.deleteSettingByName(KOT_PRINTER_SETTING);
+                successMessage.append("KOT printer cleared. ");
+                hasChanges = true;
+                LOG.info("KOT printer setting cleared");
             }
 
             if (!hasChanges) {
@@ -212,7 +342,7 @@ public class ApplicationSettingController implements Initializable {
                 return;
             }
 
-            alertNotification.showSuccess(successMessage.toString());
+            alertNotification.showSuccess(successMessage.toString().trim());
 
             // Reload settings in session
             sessionService.reloadApplicationSettings();
@@ -229,6 +359,8 @@ public class ApplicationSettingController implements Initializable {
     private void clearForm() {
         txtDocumentPath.clear();
         txtFontPath.clear();
+        cmbBillingPrinter.setValue(null);
+        cmbKotPrinter.setValue(null);
     }
 
     private void loadCurrentSettings() {
@@ -254,10 +386,43 @@ public class ApplicationSettingController implements Initializable {
                 lblCurrentFont.setText("Not configured");
                 LOG.info("No font setting found");
             }
+
+            // Load Billing Printer Setting
+            Optional<ApplicationSetting> billingPrinterSetting = applicationSettingService.getSettingByName(BILLING_PRINTER_SETTING);
+            if (billingPrinterSetting.isPresent()) {
+                String billingPrinter = billingPrinterSetting.get().getSettingValue();
+                lblCurrentBillingPrinter.setText(billingPrinter);
+                // Also select in combo box if available
+                if (cmbBillingPrinter.getItems().contains(billingPrinter)) {
+                    cmbBillingPrinter.setValue(billingPrinter);
+                }
+                LOG.info("Loaded current billing printer: {}", billingPrinter);
+            } else {
+                lblCurrentBillingPrinter.setText("Not configured");
+                LOG.info("No billing printer setting found");
+            }
+
+            // Load KOT Printer Setting
+            Optional<ApplicationSetting> kotPrinterSetting = applicationSettingService.getSettingByName(KOT_PRINTER_SETTING);
+            if (kotPrinterSetting.isPresent()) {
+                String kotPrinter = kotPrinterSetting.get().getSettingValue();
+                lblCurrentKotPrinter.setText(kotPrinter);
+                // Also select in combo box if available
+                if (cmbKotPrinter.getItems().contains(kotPrinter)) {
+                    cmbKotPrinter.setValue(kotPrinter);
+                }
+                LOG.info("Loaded current KOT printer: {}", kotPrinter);
+            } else {
+                lblCurrentKotPrinter.setText("Not configured");
+                LOG.info("No KOT printer setting found");
+            }
+
         } catch (Exception e) {
             LOG.error("Error loading current settings: ", e);
             lblCurrentDocument.setText("Error loading settings");
             lblCurrentFont.setText("Error loading settings");
+            lblCurrentBillingPrinter.setText("Error loading settings");
+            lblCurrentKotPrinter.setText("Error loading settings");
         }
     }
 }

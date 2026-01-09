@@ -15,7 +15,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -92,7 +92,7 @@ public class DashboardController implements Initializable {
     @FXML private LineChart<String, Number> salesTrendChart;
     @FXML private CategoryAxis salesChartXAxis;
     @FXML private NumberAxis salesChartYAxis;
-    @FXML private BarChart<String, Number> salesVsPurchaseChart;
+    @FXML private AreaChart<String, Number> salesVsPurchaseChart;
     @FXML private CategoryAxis comparisonChartXAxis;
     @FXML private NumberAxis comparisonChartYAxis;
 

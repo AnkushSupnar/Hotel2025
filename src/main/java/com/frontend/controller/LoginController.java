@@ -81,6 +81,13 @@ public class LoginController {
     @FXML
     private void initialize() {
         btnLogin.setOnAction(event -> login());
+
+        // Add Enter key action on password field to trigger login
+        txtPassword.setOnAction(event -> login());
+
+        // Note: Username field Enter key is handled by AutoCompleteTextField
+        // which moves focus to password field after selection
+
         // Hide server URL field since we're using database now
         if (txtServerUrl != null) {
             txtServerUrl.setVisible(false);
@@ -153,24 +160,41 @@ public class LoginController {
     }
 
     /**
-     * Apply custom font to username field
+     * Apply custom font to username and password fields
+     * Note: Font is already set in FXML, this only applies if loaded from settings
      */
     private void applyCustomFontToUsername() {
-        if (customFont != null && txtUserName != null) {
+        if (customFont != null) {
             String fontFamily = customFont.getFamily();
-            txtUserName.setFont(customFont);
-            txtUserName.setStyle(
+            String fontStyle =
                 "-fx-font-family: '" + fontFamily + "';" +
                 "-fx-font-size: 20px;" +
-                "-fx-text-fill: #212121;"
-            );
+                "-fx-text-fill: #212121;" +
+                "-fx-prompt-text-fill: #9E9E9E;";
 
-            // Maintain font on focus changes
-            txtUserName.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            // Apply to username field
+            if (txtUserName != null) {
                 txtUserName.setFont(customFont);
-            });
+                txtUserName.setStyle(fontStyle);
 
-            System.out.println("Custom font '" + fontFamily + "' applied to username field");
+                // Maintain font on focus changes
+                txtUserName.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtUserName.setFont(customFont);
+                });
+            }
+
+            // Apply to password field as well
+            if (txtPassword != null) {
+                txtPassword.setFont(customFont);
+                txtPassword.setStyle(fontStyle);
+
+                // Maintain font on focus changes
+                txtPassword.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtPassword.setFont(customFont);
+                });
+            }
+
+            System.out.println("Custom font '" + fontFamily + "' applied to username and password fields");
         }
     }
 
@@ -184,7 +208,15 @@ public class LoginController {
             if (shops != null && !shops.isEmpty()) {
                 cmbShop.getItems().addAll(shops);
 
-                // Set custom cell factory to display restaurant name
+                // Build font style for dropdown cells
+                String cellFontStyle = "";
+                if (customFont != null) {
+                    cellFontStyle = "-fx-font-family: '" + customFont.getFamily() + "';" +
+                                   "-fx-font-size: 20px;";
+                }
+                final String fontStyle = cellFontStyle;
+
+                // Set custom cell factory to display restaurant name with Kiran font
                 cmbShop.setCellFactory(param -> new javafx.scene.control.ListCell<Shop>() {
                     @Override
                     protected void updateItem(Shop item, boolean empty) {
@@ -193,11 +225,16 @@ public class LoginController {
                             setText(null);
                         } else {
                             setText(item.getRestaurantName());
+                            // Apply Kiran font if loaded
+                            if (customFont != null) {
+                                setFont(customFont);
+                                setStyle(fontStyle + "-fx-text-fill: #212121;");
+                            }
                         }
                     }
                 });
 
-                // Set button cell to display selected restaurant name
+                // Set button cell to display selected restaurant name with Kiran font
                 cmbShop.setButtonCell(new javafx.scene.control.ListCell<Shop>() {
                     @Override
                     protected void updateItem(Shop item, boolean empty) {
@@ -206,6 +243,11 @@ public class LoginController {
                             setText("Select your restaurant");
                         } else {
                             setText(item.getRestaurantName());
+                        }
+                        // Apply Kiran font if loaded
+                        if (customFont != null) {
+                            setFont(customFont);
+                            setStyle(fontStyle + "-fx-text-fill: #212121;");
                         }
                     }
                 });

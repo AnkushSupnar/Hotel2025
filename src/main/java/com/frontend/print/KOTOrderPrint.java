@@ -1,7 +1,7 @@
 package com.frontend.print;
 
 import com.frontend.entity.TempTransaction;
-import com.frontend.service.EmployeeService;
+import com.frontend.service.EmployeesService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
 
@@ -51,7 +51,7 @@ public class KOTOrderPrint {
     private static final float PAPER_WIDTH = 226f;
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeesService employeesService;
 
     @Autowired
     private TableMasterService tableMasterService;
@@ -444,7 +444,7 @@ public class KOTOrderPrint {
             return "-";
         }
         try {
-            var waitor = employeeService.getEmployeeById(waitorId);
+            var waitor = employeesService.getEmployeeById(waitorId);
             return waitor != null ? waitor.getFirstName() : "-";
         } catch (Exception e) {
             LOG.warn("Could not get waiter name for ID {}", waitorId);

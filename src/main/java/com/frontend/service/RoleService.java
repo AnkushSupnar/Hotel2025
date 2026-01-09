@@ -279,20 +279,22 @@ public class RoleService {
 
         // MANAGER - All screens except User Rights
         createRoleIfNotExists("MANAGER",
-                "BILLING,RECEIVE_PAYMENT,PURCHASE_ORDER,PURCHASE_INVOICE,PAY_RECEIPT," +
+                "DASHBOARD," +
+                "BILLING,RECEIVE_PAYMENT," +
+                "PURCHASE_ORDER,PURCHASE_INVOICE,PURCHASE_INVOICE_FROM_PO,PAY_RECEIPT," +
                 "CATEGORY,ITEM,TABLE,CUSTOMER,EMPLOYEE,SUPPLIER,USER,BANK," +
                 "SALES_REPORT,PURCHASE_REPORT,PAYMENT_RECEIVED_REPORT,PAY_RECEIPT_REPORT,REDUCED_ITEM_REPORT," +
                 "APPLICATION_SETTINGS");
 
-        // CASHIER - Billing and payment related screens
+        // CASHIER - Billing and payment related screens + Dashboard
         createRoleIfNotExists("CASHIER",
-                "BILLING,RECEIVE_PAYMENT,SALES_REPORT,PAYMENT_RECEIVED_REPORT");
+                "DASHBOARD,BILLING,RECEIVE_PAYMENT,SALES_REPORT,PAYMENT_RECEIVED_REPORT");
 
-        // WAITER - Billing only
-        createRoleIfNotExists("WAITER", "BILLING");
+        // WAITER - Billing only + Dashboard
+        createRoleIfNotExists("WAITER", "DASHBOARD,BILLING");
 
-        // USER - Basic access
-        createRoleIfNotExists("USER", "BILLING,SALES_REPORT");
+        // USER - Basic access + Dashboard
+        createRoleIfNotExists("USER", "DASHBOARD,BILLING,SALES_REPORT");
     }
 
     /**

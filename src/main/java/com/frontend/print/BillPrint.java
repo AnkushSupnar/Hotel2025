@@ -4,7 +4,7 @@ import com.frontend.entity.Bill;
 import com.frontend.entity.Customer;
 import com.frontend.entity.Transaction;
 import com.frontend.service.CustomerService;
-import com.frontend.service.EmployeeService;
+import com.frontend.service.EmployeesService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
 import com.itextpdf.text.BaseColor;
@@ -45,7 +45,7 @@ public class BillPrint {
     private static final float PAPER_WIDTH = 226f;
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeesService employeesService;
 
     @Autowired
     private TableMasterService tableMasterService;
@@ -475,7 +475,7 @@ public class BillPrint {
             return "-";
         }
         try {
-            var waitor = employeeService.getEmployeeById(waitorId);
+            var waitor = employeesService.getEmployeeById(waitorId);
             return waitor != null ? waitor.getFirstName() : "-";
         } catch (Exception e) {
             LOG.warn("Could not get waiter name for ID {}", waitorId);

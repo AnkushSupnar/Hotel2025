@@ -1,8 +1,14 @@
 package com.frontend.controller;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.service.DashboardService;
 import com.frontend.service.SessionService;
 import com.frontend.view.StageManager;
+import javafx.application.Platform;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -13,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -33,6 +40,12 @@ public class HomeController implements Initializable {
     SpringFXMLLoader loader;
     @Autowired
     SessionService sessionService;
+    @Autowired
+    DashboardService dashboardService;
+
+    // Number formatter for currency
+    private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+
     @FXML private Label lblShopeeName;
     @FXML private Label lblSidebarShopName;
     @FXML private javafx.scene.layout.VBox sidebarHeader;
@@ -49,9 +62,6 @@ public class HomeController implements Initializable {
     @FXML private Label lblTodayOrders;
     @FXML private Label lblActiveTables;
 
-    // NEW: Sidebar user profile
-    @FXML private Label lblSidebarUserName;
-    @FXML private Label lblOnlineStatus;
 
     // NEW: Menu badges
     @FXML private Label lblSalesBadge;
@@ -77,25 +87,20 @@ public class HomeController implements Initializable {
                 lblSidebarShopName.setText("Restaurant Name");
             }
 
-            // Display logged-in user information
+            // Display logged-in user information in header
             if (SessionService.isLoggedIn()) {
                 String username = SessionService.getCurrentUsername();
                 String role = SessionService.getCurrentUserRole();
                 txtUserName.setText(username + " (" + role + ")");
-
-                // NEW: Set sidebar username
-                if (lblSidebarUserName != null) {
-                    lblSidebarUserName.setText(username);
-                }
             } else {
                 txtUserName.setText("Guest User");
-                if (lblSidebarUserName != null) {
-                    lblSidebarUserName.setText("Guest User");
-                }
             }
 
             // NEW: Setup global search
             setupGlobalSearch();
+
+            // Apply Kiran font to restaurant name and user fields
+            applyKiranFont();
 
             // Store initial dashboard content
             initialDashboard = mainPane.getCenter();
@@ -188,13 +193,54 @@ public class HomeController implements Initializable {
     }
 
     private void initializeDashboardData() {
-        try {
-            lblTodayRevenue.setText("₹0.00");
-            lblTodayOrders.setText("0");
-            lblActiveTables.setText("0");
-        } catch (Exception e) {
-            LOG.error("Error initializing dashboard data: ", e);
-        }
+        // Set loading state
+        lblTodayRevenue.setText("Loading...");
+        lblTodayOrders.setText("...");
+        lblActiveTables.setText("...");
+
+        // Load data asynchronously to avoid blocking UI
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Fetch live data from DashboardService
+                Float todaysSales = dashboardService.getTodaysSales();
+                Long todaysOrders = dashboardService.getTodaysOrderCount();
+                Map<String, Long> tableStatus = dashboardService.getTableStatus();
+
+                // Get active tables count
+                long activeTables = 0;
+                if (tableStatus != null) {
+                    activeTables = tableStatus.getOrDefault("active", 0L);
+                }
+
+                // Update UI on JavaFX thread
+                final Float sales = todaysSales != null ? todaysSales : 0f;
+                final Long orders = todaysOrders != null ? todaysOrders : 0L;
+                final long active = activeTables;
+
+                Platform.runLater(() -> {
+                    try {
+                        // Format currency
+                        String formattedSales = CURRENCY_FORMAT.format(sales);
+                        lblTodayRevenue.setText(formattedSales);
+                        lblTodayOrders.setText(String.valueOf(orders));
+                        lblActiveTables.setText(String.valueOf(active));
+
+                        LOG.info("Dashboard data loaded - Sales: {}, Orders: {}, Active Tables: {}",
+                                formattedSales, orders, active);
+                    } catch (Exception e) {
+                        LOG.error("Error updating dashboard UI: ", e);
+                    }
+                });
+
+            } catch (Exception e) {
+                LOG.error("Error fetching dashboard data: ", e);
+                Platform.runLater(() -> {
+                    lblTodayRevenue.setText("₹0.00");
+                    lblTodayOrders.setText("0");
+                    lblActiveTables.setText("0");
+                });
+            }
+        });
     }
 
     private void logout() {
@@ -262,6 +308,50 @@ public class HomeController implements Initializable {
                 performGlobalSearch(searchText.trim());
             }
         });
+    }
+
+    /**
+     * Apply Kiran font to restaurant name and user info fields
+     * - lblShopeeName (header title): 24px
+     * - lblSidebarShopName (sidebar title): 18px
+     * - txtUserName (user info): 16px
+     */
+    private void applyKiranFont() {
+        try {
+            // Load Kiran fonts with different sizes
+            Font kiranFont24 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 24);
+            Font kiranFont18 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 18);
+            Font kiranFont16 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 16);
+
+            if (kiranFont24 != null && kiranFont18 != null && kiranFont16 != null) {
+                String fontFamily = kiranFont24.getFamily();
+                LOG.info("Kiran font loaded successfully, family: {}", fontFamily);
+
+                // Apply to header shop name (24px)
+                if (lblShopeeName != null) {
+                    lblShopeeName.setFont(kiranFont24);
+                    lblShopeeName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 24px;");
+                }
+
+                // Apply to sidebar shop name (18px)
+                if (lblSidebarShopName != null) {
+                    lblSidebarShopName.setFont(kiranFont18);
+                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px; -fx-text-fill: white;");
+                }
+
+                // Apply to user name (16px)
+                if (txtUserName != null) {
+                    txtUserName.setFont(kiranFont16);
+                    txtUserName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px;");
+                }
+
+                LOG.info("Kiran font applied to lblShopeeName (24px), lblSidebarShopName (18px), txtUserName (16px)");
+            } else {
+                LOG.warn("Could not load Kiran font from bundled resources");
+            }
+        } catch (Exception e) {
+            LOG.error("Error applying Kiran font: ", e);
+        }
     }
 
     /**

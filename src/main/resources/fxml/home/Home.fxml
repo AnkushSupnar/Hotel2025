@@ -24,20 +24,10 @@
          <children>
             <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <!-- User Profile Section -->
-                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="120.0" prefWidth="280.0" styleClass="sidebar-header, clickable-header" spacing="8.0">
+                  <!-- Restaurant Header Section -->
+                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="80.0" prefWidth="280.0" styleClass="sidebar-header" spacing="8.0">
                      <children>
-                        <StackPane alignment="CENTER" styleClass="user-avatar-container">
-                           <children>
-                              <VBox alignment="CENTER" styleClass="user-avatar">
-                                 <children>
-                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="USER" size="2.5em" />
-                                 </children>
-                              </VBox>
-                              <Label fx:id="lblOnlineStatus" styleClass="online-status-badge" StackPane.alignment="BOTTOM_RIGHT" />
-                           </children>
-                        </StackPane>
-                        <Label fx:id="lblSidebarUserName" styleClass="sidebar-username" text="Admin User" />
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2em" />
                         <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
                      </children>
                   </VBox>

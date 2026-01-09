@@ -2,6 +2,7 @@ package com.frontend.controller;
 
 import com.frontend.entity.Employees;
 import com.frontend.entity.Shop;
+import com.frontend.service.ApplicationSettingService;
 import com.frontend.service.AuthApiService;
 import com.frontend.service.EmployeesService;
 import com.frontend.service.ShopService;
@@ -10,12 +11,20 @@ import com.frontend.view.FxmlView;
 import com.frontend.view.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 @Component
 public class CreateShopeController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CreateShopeController.class);
 
     @FXML
     private Button cancelButton;
@@ -60,6 +69,9 @@ public class CreateShopeController {
     AlertNotification alertNotification;
 
     @Autowired
+    ApplicationSettingService applicationSettingService;
+
+    @Autowired
     @Lazy
     StageManager stageManager;
 
@@ -67,6 +79,62 @@ public class CreateShopeController {
     private void initialize() {
         registerButton.setOnAction(e -> registerShop());
         cancelButton.setOnAction(e -> backToLogin());
+
+        // Apply Kiran font to specific fields
+        applyKiranFont();
+    }
+
+    /**
+     * Apply Kiran font with 20px size to Restaurant Name, Address, and Owner Name fields
+     * Follows the same approach as LoginController for consistent font rendering
+     */
+    private void applyKiranFont() {
+        try {
+            // Load Kiran font from bundled resources
+            Font kiranFont = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 20);
+
+            if (kiranFont != null) {
+                String fontFamily = kiranFont.getFamily();
+                LOG.info("Kiran font loaded successfully, family: {}", fontFamily);
+
+                // Build font style string (same approach as LoginController)
+                String fontStyle =
+                    "-fx-font-family: '" + fontFamily + "';" +
+                    "-fx-font-size: 20px;" +
+                    "-fx-text-fill: #212121;" +
+                    "-fx-prompt-text-fill: #9E9E9E;";
+
+                // Apply font to Restaurant Name field
+                txtShopName.setFont(kiranFont);
+                txtShopName.setStyle(fontStyle);
+                // Maintain font on focus changes
+                txtShopName.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtShopName.setFont(kiranFont);
+                });
+
+                // Apply font to Address field
+                txtShopAddress.setFont(kiranFont);
+                txtShopAddress.setStyle(fontStyle);
+                // Maintain font on focus changes
+                txtShopAddress.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtShopAddress.setFont(kiranFont);
+                });
+
+                // Apply font to Owner Name field
+                txtWonerName.setFont(kiranFont);
+                txtWonerName.setStyle(fontStyle);
+                // Maintain font on focus changes
+                txtWonerName.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtWonerName.setFont(kiranFont);
+                });
+
+                LOG.info("Kiran font (20px) applied to Restaurant Name, Address, and Owner Name fields with focus listeners");
+            } else {
+                LOG.error("Failed to load Kiran font from bundled resources");
+            }
+        } catch (Exception e) {
+            LOG.error("Error applying Kiran font: ", e);
+        }
     }
 
     /**

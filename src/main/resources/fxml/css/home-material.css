@@ -40,7 +40,7 @@
 }
 
 .app-title-sidebar {
-    -fx-font-size: 26px;
+    /* font-size removed - let controller control it for Kiran font */
     -fx-font-weight: bold;
     -fx-text-fill: #FFFFFF;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
@@ -115,7 +115,7 @@
 }
 
 .header-title {
-    -fx-font-size: 24px;
+    /* font-size removed - let controller control it for Kiran font */
     -fx-font-weight: bold;
     -fx-text-fill: #1976D2;
 }
@@ -127,7 +127,7 @@
 }
 
 .user-info-text {
-    -fx-font-size: 14px;
+    /* font-size removed - let controller control it for Kiran font */
     -fx-fill: #424242;
     -fx-font-weight: 500;
 }
