@@ -177,7 +177,12 @@
             <HBox alignment="CENTER_RIGHT" spacing="12.0" styleClass="user-info-container">
                <children>
                   <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="1.8em" />
-                  <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
+                  <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                     <children>
+                        <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
+                        <Text fx:id="txtDesignation" styleClass="designation-text" text="Designation" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
          </children>

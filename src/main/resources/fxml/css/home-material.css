@@ -40,10 +40,10 @@
 }
 
 .app-title-sidebar {
-    /* font-size removed - let controller control it for Kiran font */
+    /* font-size controlled by controller for Kiran font */
     -fx-font-weight: bold;
     -fx-text-fill: #FFFFFF;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 2);
 }
 
 .app-subtitle-sidebar {
@@ -115,9 +115,10 @@
 }
 
 .header-title {
-    /* font-size removed - let controller control it for Kiran font */
+    /* font-size controlled by controller for Kiran font */
     -fx-font-weight: bold;
-    -fx-text-fill: #1976D2;
+    -fx-text-fill: #1565C0;
+    -fx-effect: dropshadow(three-pass-box, rgba(21, 101, 192, 0.2), 3, 0, 0, 1);
 }
 
 .user-info-container {
@@ -127,9 +128,16 @@
 }
 
 .user-info-text {
-    /* font-size removed - let controller control it for Kiran font */
+    /* font-size controlled by controller for Kiran font */
     -fx-fill: #424242;
-    -fx-font-weight: 500;
+    -fx-font-weight: bold;
+}
+
+.designation-text {
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
+    -fx-font-size: 12px;
+    -fx-fill: #757575;
+    -fx-font-weight: normal;
 }
 
 /* =============== MAIN CONTENT STYLES =============== */

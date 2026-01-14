@@ -57,6 +57,7 @@ public class HomeController implements Initializable {
     @FXML private HBox menuReport;
     @FXML private HBox menuSettings;
     @FXML private Text txtUserName;
+    @FXML private Text txtDesignation;
     @FXML private HBox menuExit;
     @FXML private Label lblTodayRevenue;
     @FXML private Label lblTodayOrders;
@@ -90,10 +91,18 @@ public class HomeController implements Initializable {
             // Display logged-in user information in header
             if (SessionService.isLoggedIn()) {
                 String username = SessionService.getCurrentUsername();
-                String role = SessionService.getCurrentUserRole();
-                txtUserName.setText(username + " (" + role + ")");
+                String designation = SessionService.getCurrentEmployeeDesignation();
+                txtUserName.setText(username);
+                // Set designation if available, otherwise show role
+                if (designation != null && !designation.isEmpty()) {
+                    txtDesignation.setText(designation);
+                } else {
+                    String role = SessionService.getCurrentUserRole();
+                    txtDesignation.setText(role != null ? role : "");
+                }
             } else {
                 txtUserName.setText("Guest User");
+                txtDesignation.setText("");
             }
 
             // NEW: Setup global search
@@ -311,41 +320,47 @@ public class HomeController implements Initializable {
     }
 
     /**
-     * Apply Kiran font to restaurant name and user info fields
-     * - lblShopeeName (header title): 24px
-     * - lblSidebarShopName (sidebar title): 18px
+     * Apply Kiran font to restaurant name and user name fields
+     * - lblShopeeName (header title): 28px (larger for better appearance)
+     * - lblSidebarShopName (sidebar title): 20px
      * - txtUserName (user info): 16px
+     * - txtDesignation: English font (not Kiran)
      */
     private void applyKiranFont() {
         try {
             // Load Kiran fonts with different sizes
-            Font kiranFont24 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 24);
-            Font kiranFont18 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 18);
+            Font kiranFont28 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 28);
+            Font kiranFont20 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 20);
             Font kiranFont16 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 16);
 
-            if (kiranFont24 != null && kiranFont18 != null && kiranFont16 != null) {
-                String fontFamily = kiranFont24.getFamily();
+            if (kiranFont28 != null && kiranFont20 != null && kiranFont16 != null) {
+                String fontFamily = kiranFont28.getFamily();
                 LOG.info("Kiran font loaded successfully, family: {}", fontFamily);
 
-                // Apply to header shop name (24px)
+                // Apply to header shop name (28px - larger for better appearance)
                 if (lblShopeeName != null) {
-                    lblShopeeName.setFont(kiranFont24);
-                    lblShopeeName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 24px;");
+                    lblShopeeName.setFont(kiranFont28);
+                    lblShopeeName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1565C0;");
                 }
 
-                // Apply to sidebar shop name (18px)
+                // Apply to sidebar shop name (20px)
                 if (lblSidebarShopName != null) {
-                    lblSidebarShopName.setFont(kiranFont18);
-                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px; -fx-text-fill: white;");
+                    lblSidebarShopName.setFont(kiranFont20);
+                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
                 }
 
-                // Apply to user name (16px)
+                // Apply Kiran font to user name only (16px)
                 if (txtUserName != null) {
                     txtUserName.setFont(kiranFont16);
-                    txtUserName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px;");
+                    txtUserName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 16px; -fx-font-weight: bold;");
                 }
 
-                LOG.info("Kiran font applied to lblShopeeName (24px), lblSidebarShopName (18px), txtUserName (16px)");
+                // Apply English font to designation (system font)
+                if (txtDesignation != null) {
+                    txtDesignation.setStyle("-fx-font-family: 'Segoe UI', 'Arial', sans-serif; -fx-font-size: 12px; -fx-fill: #757575;");
+                }
+
+                LOG.info("Kiran font applied to lblShopeeName (28px), lblSidebarShopName (20px), txtUserName (16px). English font for txtDesignation.");
             } else {
                 LOG.warn("Could not load Kiran font from bundled resources");
             }

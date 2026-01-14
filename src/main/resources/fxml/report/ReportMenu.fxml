@@ -206,6 +206,28 @@
             <!-- Miscellaneous Reports Grid -->
             <HBox alignment="CENTER" spacing="30">
                <children>
+                  <!-- Bill Search Report Card -->
+                  <StackPane fx:id="billSearchReportCard" styleClass="report-card, misc-card">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15">
+                           <children>
+                              <StackPane styleClass="card-icon-container, misc-icon-bg">
+                                 <children>
+                                    <FontAwesomeIcon fill="#E65100" glyphName="SEARCH" size="2.5em" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Bill Search" />
+                              <Label styleClass="card-description" text="Search bills by number, customer, date" />
+                              <Button fx:id="btnViewBillSearch" styleClass="card-button, misc-button" text="VIEW REPORT">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
                   <!-- Reduced Item Report Card -->
                   <StackPane fx:id="reducedItemReportCard" styleClass="report-card, misc-card">
                      <children>

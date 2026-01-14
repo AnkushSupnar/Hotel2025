@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="login-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.LoginController">
+<AnchorPane minHeight="500.0" minWidth="800.0" styleClass="login-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.LoginController">
     <stylesheets>
         <URL value="@../css/Login.css" />
     </stylesheets>
@@ -24,10 +24,10 @@
     <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
         <!-- Main Content - Two Panel Layout -->
-        <HBox alignment="CENTER" spacing="0">
+        <HBox alignment="CENTER" spacing="0" HBox.hgrow="ALWAYS">
 
             <!-- Left Panel - Brand Section with Gradient -->
-            <VBox alignment="CENTER" prefWidth="550.0" styleClass="brand-panel">
+            <VBox alignment="CENTER" minWidth="350.0" styleClass="brand-panel" HBox.hgrow="ALWAYS">
                 <VBox alignment="CENTER" spacing="40" styleClass="brand-content">
 
                     <!-- Logo Container -->
@@ -77,7 +77,7 @@
             </VBox>
 
             <!-- Right Panel - Login Form -->
-            <VBox alignment="CENTER" prefWidth="650.0" styleClass="form-panel">
+            <VBox alignment="CENTER" minWidth="400.0" styleClass="form-panel" HBox.hgrow="ALWAYS">
 
                 <!-- Login Card -->
                 <VBox maxWidth="420" spacing="0" styleClass="login-card">
@@ -113,7 +113,7 @@
                                 <Label styleClass="input-label" text="Username" />
                             </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
-                                <FontAwesomeIcon fill="#90CAF9" glyphName="USER_CIRCLE" size="1.2em" styleClass="field-icon" />
+                                <FontAwesomeIcon fill="#90CAF9" glyphName="USER" size="1.2em" styleClass="field-icon" />
                                 <TextField fx:id="txtUserName" promptText="yaujar inavaDa" styleClass="material-input" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Kiran" size="20.0" />

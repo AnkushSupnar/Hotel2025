@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,14 +43,17 @@ public class KOTOrderPrint {
 
     private static final Logger LOG = LoggerFactory.getLogger(KOTOrderPrint.class);
 
-    // PDF output directory (same as BillPrint)
-    private static final String KOT_PDF_DIR = "D:" + File.separator + "Hotel Software";
+    // Default PDF output directory (used as fallback if settings not configured)
+    private static final String DEFAULT_PDF_DIR = "D:" + File.separator + "Hotel Software";
 
-    // PDF output path
-    private static final String KOT_PDF_PATH = KOT_PDF_DIR + File.separator + "KOT.pdf";
+    // KOT PDF filename
+    private static final String KOT_PDF_FILENAME = "KOT.pdf";
 
     // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm = 3.15 inches)
     private static final float PAPER_WIDTH = 226f;
+
+    // Setting key for KOT printer
+    private static final String KOT_PRINTER_SETTING = "kot_printer";
 
     @Autowired
     private EmployeesService employeesService;
@@ -70,7 +75,7 @@ public class KOTOrderPrint {
     private String lastPrintError = null;
 
     /**
-     * Print KOT to thermal printer
+     * Print KOT to thermal printer (uses configured KOT printer or default)
      */
     public boolean printKOT(String tableName, Integer tableId, List<TempTransaction> items, Integer waitorId) {
         if (items == null || items.isEmpty()) {
@@ -84,8 +89,9 @@ public class KOTOrderPrint {
             // Load fonts
             loadFonts();
 
-            // Ensure output directory exists
-            File outputDir = new File(KOT_PDF_DIR);
+            // Ensure output directory exists (from settings or default)
+            String outputDirPath = getPdfOutputDirectory();
+            File outputDir = new File(outputDirPath);
             if (!outputDir.exists()) {
                 outputDir.mkdirs();
             }
@@ -98,8 +104,11 @@ public class KOTOrderPrint {
                 return false;
             }
 
-            // Print PDF
-            boolean printed = printPdf(pdfPath);
+            // Get KOT printer from settings (or null for default)
+            PrintService kotPrinter = getKotPrinter();
+
+            // Print PDF to configured or default printer
+            boolean printed = printPdfToConfiguredPrinter(pdfPath, kotPrinter);
             if (printed) {
                 LOG.info("KOT printed successfully for table {}", tableName);
             }
@@ -114,7 +123,8 @@ public class KOTOrderPrint {
     }
 
     /**
-     * Print KOT with print dialog (for selecting printer)
+     * Print KOT directly to configured printer (no dialog)
+     * Uses KOT printer from settings, falls back to default printer if not configured
      */
     public boolean printKOTWithDialog(String tableName, Integer tableId, List<TempTransaction> items, Integer waitorId) {
         if (items == null || items.isEmpty()) {
@@ -123,16 +133,18 @@ public class KOTOrderPrint {
         }
 
         try {
-            LOG.info("Starting KOT PDF generation (with dialog) for table {} with {} items", tableName, items.size());
+            LOG.info("Starting KOT PDF generation for table {} with {} items", tableName, items.size());
 
             // Load fonts
             loadFonts();
 
-            // Ensure output directory exists
-            File outputDir = new File(KOT_PDF_DIR);
+            // Ensure output directory exists (from settings or default)
+            String outputDirPath = getPdfOutputDirectory();
+            File outputDir = new File(outputDirPath);
             if (!outputDir.exists()) {
                 outputDir.mkdirs();
             }
+            LOG.info("KOT PDF will be saved to: {}", outputDirPath);
 
             // Generate PDF
             String waitorName = getWaitorName(waitorId);
@@ -143,8 +155,11 @@ public class KOTOrderPrint {
                 return false;
             }
 
-            // Print PDF with dialog
-            boolean printed = printPdfWithDialog(pdfPath);
+            // Get KOT printer from settings (or null for default)
+            PrintService kotPrinter = getKotPrinter();
+
+            // Print PDF directly to configured or default printer (no dialog)
+            boolean printed = printPdfToConfiguredPrinter(pdfPath, kotPrinter);
             if (printed) {
                 LOG.info("KOT printed successfully for table {}", tableName);
             }
@@ -170,6 +185,52 @@ public class KOTOrderPrint {
      */
     public void clearLastPrintError() {
         lastPrintError = null;
+    }
+
+    /**
+     * Get the PDF output directory from settings or use default
+     */
+    private String getPdfOutputDirectory() {
+        String documentDir = SessionService.getDocumentDirectory();
+        if (documentDir != null && !documentDir.trim().isEmpty()) {
+            File dir = new File(documentDir);
+            if (dir.exists() && dir.isDirectory()) {
+                return documentDir;
+            }
+            LOG.warn("Document directory from settings does not exist: {}. Using default.", documentDir);
+        }
+        return DEFAULT_PDF_DIR;
+    }
+
+    /**
+     * Get the full PDF output path
+     */
+    private String getPdfOutputPath() {
+        return getPdfOutputDirectory() + File.separator + KOT_PDF_FILENAME;
+    }
+
+    /**
+     * Get the KOT printer from settings, or return null for default printer
+     */
+    private PrintService getKotPrinter() {
+        String kotPrinterName = SessionService.getApplicationSetting(KOT_PRINTER_SETTING);
+
+        if (kotPrinterName == null || kotPrinterName.trim().isEmpty() || kotPrinterName.equalsIgnoreCase("None")) {
+            LOG.info("No KOT printer configured, will use default printer");
+            return null;
+        }
+
+        // Find printer by name
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService service : printServices) {
+            if (service.getName().equalsIgnoreCase(kotPrinterName)) {
+                LOG.info("Found KOT printer: {}", kotPrinterName);
+                return service;
+            }
+        }
+
+        LOG.warn("KOT printer '{}' not found, will use default printer", kotPrinterName);
+        return null;
     }
 
     /**
@@ -225,6 +286,9 @@ public class KOTOrderPrint {
      */
     private String generateKOTPdf(String tableName, List<TempTransaction> items, String waitorName) {
         try {
+            // Get the output path from settings
+            String pdfPath = getPdfOutputPath();
+
             // Calculate dynamic height based on content
             // Header: Hotel name (30) + Order text (20) + Table/Date row (20) = 70
             // Items header row: 20
@@ -245,8 +309,8 @@ public class KOTOrderPrint {
             // Create document with default page size first
             Document document = new Document();
 
-            // Create PDF file
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(KOT_PDF_PATH));
+            // Create PDF file at the configured path
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
 
             // Set custom page size before opening - this is the correct way
             Rectangle pageSize = new Rectangle(PAPER_WIDTH, height);
@@ -267,8 +331,8 @@ public class KOTOrderPrint {
 
             document.close();
 
-            LOG.info("KOT PDF generated at: {} with height: {}", KOT_PDF_PATH, height);
-            return KOT_PDF_PATH;
+            LOG.info("KOT PDF generated at: {} with height: {}", pdfPath, height);
+            return pdfPath;
 
         } catch (Exception e) {
             LOG.error("Error generating KOT PDF: {}", e.getMessage(), e);
@@ -450,6 +514,76 @@ public class KOTOrderPrint {
             LOG.warn("Could not get waiter name for ID {}", waitorId);
             return "-";
         }
+    }
+
+    /**
+     * Print PDF to configured printer or default printer
+     * @param pdfPath Path to the PDF file
+     * @param printerService The printer to use, or null for default printer
+     */
+    private boolean printPdfToConfiguredPrinter(String pdfPath, PrintService printerService) {
+        File pdfFile = new File(pdfPath);
+        if (!pdfFile.exists()) {
+            LOG.error("PDF file not found: {}", pdfPath);
+            lastPrintError = "PDF file not found";
+            return false;
+        }
+
+        // Determine printer name for logging
+        String printerName = printerService != null ? printerService.getName() : "Default";
+        LOG.info("Printing KOT to printer: {}", printerName);
+
+        // Try printing with retry logic - reload document each attempt
+        int maxRetries = 3;
+        int retryCount = 0;
+
+        while (retryCount < maxRetries) {
+            PDDocument document = null;
+            try {
+                // Small delay before loading to ensure file is released
+                if (retryCount > 0) {
+                    Thread.sleep(2000);
+                }
+
+                document = PDDocument.load(pdfFile);
+                PrinterJob job = PrinterJob.getPrinterJob();
+
+                // Set the printer if specified, otherwise use default
+                if (printerService != null) {
+                    job.setPrintService(printerService);
+                }
+
+                // Use PORTRAIT orientation to prevent auto-rotation
+                job.setPageable(new PDFPageable(document, Orientation.PORTRAIT));
+
+                job.print();
+                document.close();
+                LOG.info("PDF printed successfully to printer: {}", printerName);
+                return true;
+
+            } catch (Exception pe) {
+                retryCount++;
+                String errorMsg = pe.getMessage() != null ? pe.getMessage().toLowerCase() : "";
+
+                // Close document before retry
+                if (document != null) {
+                    try { document.close(); } catch (Exception ignored) {}
+                }
+
+                if ((errorMsg.contains("access") || errorMsg.contains("denied") || errorMsg.contains("busy"))
+                        && retryCount < maxRetries) {
+                    LOG.warn("Printer access issue (attempt {}/{}): {}. Retrying in 2 seconds...",
+                            retryCount, maxRetries, pe.getMessage());
+                } else {
+                    LOG.error("Error printing PDF to {}: {}", printerName, pe.getMessage(), pe);
+                    lastPrintError = retryCount >= maxRetries
+                            ? "Printer access denied after " + maxRetries + " attempts. Please check printer: " + printerName
+                            : pe.getMessage();
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     /**

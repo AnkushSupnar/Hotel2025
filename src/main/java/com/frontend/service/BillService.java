@@ -421,6 +421,13 @@ public class BillService {
     }
 
     /**
+     * Get bill by bill number (returns Bill or null)
+     */
+    public Bill getBillByBillNo(Integer billNo) {
+        return billRepository.findById(billNo).orElse(null);
+    }
+
+    /**
      * Get bill with transactions eagerly loaded (for printing)
      */
     @Transactional

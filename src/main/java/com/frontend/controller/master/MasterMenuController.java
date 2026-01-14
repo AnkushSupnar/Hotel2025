@@ -1,13 +1,16 @@
-package com.frontend.controller;
+package com.frontend.controller.master;
 
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.service.SessionService;
 import com.frontend.util.NavigationGuard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +57,36 @@ public class MasterMenuController implements Initializable {
     @FXML
     private StackPane bankCard;
 
+    // Card title labels
+    @FXML
+    private Label lblCategoryTitle;
+
+    @FXML
+    private Label lblItemTitle;
+
+    @FXML
+    private Label lblTableTitle;
+
+    @FXML
+    private Label lblCustomerTitle;
+
+    @FXML
+    private Label lblEmployeeTitle;
+
+    @FXML
+    private Label lblSupplierTitle;
+
+    @FXML
+    private Label lblUserTitle;
+
+    @FXML
+    private Label lblBankTitle;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
         setupMenuActions();
+        applyCustomFonts();
     }
 
     /**
@@ -236,6 +265,30 @@ public class MasterMenuController implements Initializable {
         } catch (Exception e) {
             LOG.warn("Could not find main pane, navigation might not work properly");
             return null;
+        }
+    }
+
+    /**
+     * Apply custom font from SessionService to card title labels
+     * Uses inline style to override CSS font-family
+     */
+    private void applyCustomFonts() {
+        Font customFont = SessionService.getCustomFont();
+        if (customFont != null) {
+            String fontFamily = customFont.getFamily();
+            // Use inline style to override CSS - must include all card-title properties
+            String fontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: #1a237e;";
+
+            if (lblCategoryTitle != null) lblCategoryTitle.setStyle(fontStyle);
+            if (lblItemTitle != null) lblItemTitle.setStyle(fontStyle);
+            if (lblTableTitle != null) lblTableTitle.setStyle(fontStyle);
+            if (lblCustomerTitle != null) lblCustomerTitle.setStyle(fontStyle);
+            if (lblEmployeeTitle != null) lblEmployeeTitle.setStyle(fontStyle);
+            if (lblSupplierTitle != null) lblSupplierTitle.setStyle(fontStyle);
+            if (lblUserTitle != null) lblUserTitle.setStyle(fontStyle);
+            if (lblBankTitle != null) lblBankTitle.setStyle(fontStyle);
+
+            LOG.info("Applied custom font '{}' to card titles", fontFamily);
         }
     }
 }

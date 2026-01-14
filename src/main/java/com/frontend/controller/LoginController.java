@@ -81,6 +81,7 @@ public class LoginController {
     @FXML
     private void initialize() {
         btnLogin.setOnAction(event -> login());
+        btnCancel.setOnAction(event -> closeApplication());
 
         // Add Enter key action on password field to trigger login
         txtPassword.setOnAction(event -> login());
@@ -400,6 +401,11 @@ public class LoginController {
         } catch (Exception e) {
             alertNotification.showError("An unexpected error occurred: " + e.getMessage());
         }
+    }
+
+    private void closeApplication() {
+        javafx.application.Platform.exit();
+        System.exit(0);
     }
 
 }

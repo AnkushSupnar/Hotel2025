@@ -68,12 +68,16 @@ public class StageManager {
         Scene scene = prepareScene(rootnode);
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
-        primaryStage.sizeToScene();
-        primaryStage.centerOnScreen();
+
+        // All screens open in full screen mode
+        showFullScreen();
+
         if(!title.equals("Login"))
         {
-            showFullScreen();
             primaryStage.setOnCloseRequest(e->e.consume());
+        } else {
+            // Allow closing for Login screen
+            primaryStage.setOnCloseRequest(null);
         }
 
         try {

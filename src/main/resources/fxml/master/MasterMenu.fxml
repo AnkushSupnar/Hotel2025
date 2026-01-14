@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.MasterMenuController">
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.master.MasterMenuController">
    <stylesheets>
       <URL value="@../css/master-material.css" />
    </stylesheets>
@@ -46,7 +46,7 @@
       </HBox>
 
       <!-- Scrollable Content Area with Cards -->
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
          <content>
             <VBox spacing="25.0" styleClass="master-content">
                <padding>
@@ -67,8 +67,8 @@
                                           <FontAwesomeIcon fill="#E91E63" glyphName="SITEMAP" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Category Master" />
-                                    <Label styleClass="card-description" text="Manage food categories and menu sections" />
+                                    <Label fx:id="lblCategoryTitle" styleClass="card-title" text="k^TogaIrI maasTr" />
+                                    <Label styleClass="card-description" text="Manage food categories and menu sections" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -84,8 +84,8 @@
                                           <FontAwesomeIcon fill="#FF9800" glyphName="CUTLERY" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Item Master" />
-                                    <Label styleClass="card-description" text="Manage menu items and dishes" />
+                                    <Label fx:id="lblItemTitle" styleClass="card-title" text="AayaTma maasTr" />
+                                    <Label styleClass="card-description" text="Manage menu items and dishes" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -101,8 +101,8 @@
                                           <FontAwesomeIcon fill="#F44336" glyphName="TABLE" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Table Master" />
-                                    <Label styleClass="card-description" text="Manage restaurant tables" />
+                                    <Label fx:id="lblTableTitle" styleClass="card-title" text="Tobala maasTr" />
+                                    <Label styleClass="card-description" text="Manage restaurant tables" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -123,8 +123,8 @@
                                           <FontAwesomeIcon fill="#4CAF50" glyphName="USERS" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Customer Master" />
-                                    <Label styleClass="card-description" text="Manage customer information" />
+                                    <Label fx:id="lblCustomerTitle" styleClass="card-title" text="ksTmar maasTr" />
+                                    <Label styleClass="card-description" text="Manage customer information" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -140,8 +140,8 @@
                                           <FontAwesomeIcon fill="#9C27B0" glyphName="USER_CIRCLE" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Employee Master" />
-                                    <Label styleClass="card-description" text="Manage employee records" />
+                                    <Label fx:id="lblEmployeeTitle" styleClass="card-title" text="kamagaar maasTr" />
+                                    <Label styleClass="card-description" text="Manage employee records" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -157,8 +157,8 @@
                                           <FontAwesomeIcon fill="#2196F3" glyphName="TRUCK" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Supplier Master" />
-                                    <Label styleClass="card-description" text="Manage supplier details" />
+                                    <Label fx:id="lblSupplierTitle" styleClass="card-title" text="paurvazadar maasTr" />
+                                    <Label styleClass="card-description" text="Manage supplier details" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -174,8 +174,8 @@
                                           <FontAwesomeIcon fill="#00BCD4" glyphName="USER_PLUS" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="User Master" />
-                                    <Label styleClass="card-description" text="Manage system users and access" />
+                                    <Label fx:id="lblUserTitle" styleClass="card-title" text="yaujar maasTr" />
+                                    <Label styleClass="card-description" text="Manage system users and access" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>
@@ -187,7 +187,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="25.0">
                      <children>
                         <!-- Bank Management Card -->
-                        <StackPane fx:id="bankCard" styleClass="master-card, bank-card" prefWidth="280">
+                        <StackPane fx:id="bankCard" prefWidth="280" styleClass="master-card, bank-card">
                            <children>
                               <VBox alignment="CENTER" spacing="15.0">
                                  <children>
@@ -196,8 +196,8 @@
                                           <FontAwesomeIcon fill="#607D8B" glyphName="BANK" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label styleClass="card-title" text="Bank Master" />
-                                    <Label styleClass="card-description" text="Manage bank accounts" />
+                                    <Label fx:id="lblBankTitle" styleClass="card-title" text="ba^Mk maasTr" />
+                                    <Label styleClass="card-description" text="Manage bank accounts" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>

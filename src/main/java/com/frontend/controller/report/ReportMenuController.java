@@ -57,6 +57,7 @@ public class ReportMenuController implements Initializable {
     @FXML private StackPane paymentReceivedCard;
     @FXML private StackPane payReceiptReportCard;
     @FXML private StackPane reducedItemReportCard;
+    @FXML private StackPane billSearchReportCard;
 
     // Report Buttons
     @FXML private Button btnViewSalesReport;
@@ -64,6 +65,7 @@ public class ReportMenuController implements Initializable {
     @FXML private Button btnViewPaymentReceived;
     @FXML private Button btnViewPayReceipt;
     @FXML private Button btnViewReducedItemReport;
+    @FXML private Button btnViewBillSearch;
 
     // Track active tab (0=Sales, 1=Purchase, 2=Miscellaneous)
     private int activeTab = 0;
@@ -343,6 +345,11 @@ public class ReportMenuController implements Initializable {
             reducedItemReportCard.setOnMouseClicked(e -> loadReducedItemReport());
         }
 
+        // Bill Search Report Card - loads BillSearch.fxml
+        if (billSearchReportCard != null) {
+            billSearchReportCard.setOnMouseClicked(e -> loadBillSearchReport());
+        }
+
         // Button handlers
         if (btnViewSalesReport != null) {
             btnViewSalesReport.setOnAction(e -> loadSalesReport());
@@ -362,6 +369,10 @@ public class ReportMenuController implements Initializable {
 
         if (btnViewReducedItemReport != null) {
             btnViewReducedItemReport.setOnAction(e -> loadReducedItemReport());
+        }
+
+        if (btnViewBillSearch != null) {
+            btnViewBillSearch.setOnAction(e -> loadBillSearchReport());
         }
     }
 
@@ -402,6 +413,14 @@ public class ReportMenuController implements Initializable {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/ReducedItemReport.fxml");
+        }
+    }
+
+    private void loadBillSearchReport() {
+        LOG.info("Loading Bill Search Report");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/BillSearch.fxml");
         }
     }
 

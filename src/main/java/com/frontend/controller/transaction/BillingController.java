@@ -813,10 +813,11 @@ public class BillingController implements Initializable {
                     fontFamily));
             }
 
-            // Add selection listener to move focus to category field after waiter selection
-            cmbWaitorName.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null && !newVal.isEmpty()) {
-                    // Move focus to category name field after waiter is selected
+            // Move focus to category field when dropdown closes (after selection is complete)
+            // Using onHidden instead of selectedItemProperty to allow arrow key navigation in dropdown
+            cmbWaitorName.setOnHidden(event -> {
+                String selectedWaitor = cmbWaitorName.getSelectionModel().getSelectedItem();
+                if (selectedWaitor != null && !selectedWaitor.isEmpty()) {
                     Platform.runLater(() -> txtCategoryName.requestFocus());
                 }
             });
@@ -864,10 +865,10 @@ public class BillingController implements Initializable {
             }
         });
 
-        // Allow numeric input with optional minus sign for quantity reduction
-        // Pattern: optional minus sign followed by digits (e.g., "5", "-1", "-2")
+        // Allow numeric input with optional minus sign and decimal point for quantity
+        // Pattern: optional minus sign followed by digits with optional decimal (e.g., "5", "1.5", "-2.5")
         txtQuantity.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("-?\\d*")) {
+            if (!newValue.matches("-?\\d*\\.?\\d*")) {
                 txtQuantity.setText(oldValue);
             }
         });
@@ -1131,12 +1132,14 @@ public class BillingController implements Initializable {
         String quantityText = txtQuantity.getText().trim();
         String priceText = txtPrice.getText().trim();
 
-        if (itemName.isEmpty() || quantityText.isEmpty() || quantityText.equals("-")) {
+        // Skip calculation for empty or incomplete input (e.g., "-", ".", "-.")
+        if (itemName.isEmpty() || quantityText.isEmpty() ||
+            quantityText.equals("-") || quantityText.equals(".") || quantityText.equals("-.")) {
             return;
         }
 
         try {
-            int quantity = Integer.parseInt(quantityText);
+            float quantity = Float.parseFloat(quantityText);
 
             // Use price from field if user modified it, otherwise fetch from item
             float rate;
@@ -1314,11 +1317,14 @@ public class BillingController implements Initializable {
                         LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
 
                         // If table is fresh (no transactions), focus on waiter dropdown
+                        // If table has existing transactions, focus on category field for faster data entry
                         if (!hasExistingTransactions) {
                             Platform.runLater(() -> {
                                 cmbWaitorName.requestFocus();
                                 cmbWaitorName.show();
                             });
+                        } else {
+                            Platform.runLater(() -> txtCategoryName.requestFocus());
                         }
                     });
                     totalTables++;
@@ -1555,6 +1561,9 @@ public class BillingController implements Initializable {
     }
 
     private void add() {
+        // Calculate amount first before validation (in case user didn't lose focus from quantity)
+        calculateAndSetAmount();
+
         if (!validate()) {
             return;
         }
@@ -1961,7 +1970,9 @@ public class BillingController implements Initializable {
         }
 
         txtItemName.setText(transaction.getItemName());
-        txtQuantity.setText(String.valueOf(transaction.getQty().intValue()));
+        // Display quantity with decimals if needed, otherwise show as integer
+        float qty = transaction.getQty();
+        txtQuantity.setText(qty == Math.floor(qty) ? String.valueOf((int) qty) : String.valueOf(qty));
         txtPrice.setText(String.valueOf(transaction.getRate()));
         txtAmount.setText(String.format("%.2f", transaction.getAmt()));
     }
@@ -2854,8 +2865,9 @@ public class BillingController implements Initializable {
             alert.showError("Enter Item Name");
             return false;
         }
-        if (txtQuantity.getText().isEmpty() || txtQuantity.getText().equals("-")) {
-            alert.showError("Enter Quantity");
+        String qtyText = txtQuantity.getText().trim();
+        if (qtyText.isEmpty() || qtyText.equals("-") || qtyText.equals(".") || qtyText.equals("-.")) {
+            alert.showError("Enter Valid Quantity");
             txtQuantity.requestFocus();
             return false;
         }
@@ -2864,13 +2876,32 @@ public class BillingController implements Initializable {
             txtPrice.requestFocus();
             return false;
         }
+        if (txtAmount.getText().isEmpty()) {
+            alert.showError("Amount not calculated");
+            return false;
+        }
 
-        // Validate negative quantity - item must exist and resulting qty must be > 0
+        // Validate quantity and rate values
         try {
             float qty = Float.parseFloat(txtQuantity.getText().trim());
             float rate = Float.parseFloat(txtPrice.getText().trim());
             String itemName = txtItemName.getText().trim();
 
+            // Validate quantity is not zero
+            if (qty == 0) {
+                alert.showError("Quantity cannot be zero");
+                txtQuantity.requestFocus();
+                return false;
+            }
+
+            // Validate rate is greater than zero
+            if (rate <= 0) {
+                alert.showError("Rate must be greater than zero");
+                txtPrice.requestFocus();
+                return false;
+            }
+
+            // Validate negative quantity - item must exist and resulting qty must be > 0
             if (qty < 0) {
                 // Check if item exists in table view with same name and rate
                 TempTransaction existingItem = findExistingItemInTableView(itemName, rate);
@@ -2883,7 +2914,7 @@ public class BillingController implements Initializable {
                 // Check if resulting quantity would be valid (> 0)
                 float resultingQty = existingItem.getQty() + qty; // qty is negative, so this subtracts
                 if (resultingQty < 0) {
-                    alert.showError("Cannot reduce by " + Math.abs(qty) + ". Current quantity is only " + existingItem.getQty().intValue());
+                    alert.showError("Cannot reduce by " + Math.abs(qty) + ". Current quantity is only " + existingItem.getQty());
                     txtQuantity.requestFocus();
                     return false;
                 }
