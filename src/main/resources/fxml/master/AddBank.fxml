@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="category-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.master.AddBankController">
+<VBox styleClass="category-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.master.AddBankController">
    <stylesheets>
       <URL value="@../css/category-material.css" />
    </stylesheets>
@@ -49,7 +49,7 @@
       </HBox>
 
       <!-- Main Content - Split Layout with ScrollPane -->
-      <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
          <content>
             <HBox styleClass="category-content">
                <padding>
@@ -57,14 +57,14 @@
                </padding>
                <children>
                   <!-- LEFT SECTION - Form with ScrollPane -->
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" prefWidth="380" style="-fx-background-color: transparent; -fx-background: transparent;">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minWidth="420" prefWidth="420" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                      <HBox.margin>
                         <Insets right="15.0" />
                      </HBox.margin>
                      <content>
                         <VBox spacing="15.0" styleClass="form-section">
                            <padding>
-                              <Insets bottom="20.0" left="5.0" right="15.0" top="5.0" />
+                              <Insets bottom="20.0" left="15.0" right="15.0" top="5.0" />
                            </padding>
                            <children>
                               <!-- Form Header -->
@@ -82,7 +82,7 @@
                                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                        <children>
                                           <FontAwesomeIcon fill="#7E57C2" glyphName="BANK" size="1.2em" styleClass="input-icon" />
-                                          <TextField fx:id="txtBankName" promptText="Enter bank name" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="txtBankName" promptText="ba^Mkocao naava" styleClass="material-input" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -109,7 +109,7 @@
                                           <Label styleClass="input-label" text="ACCOUNT TYPE" />
                                           <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                              <children>
-                                                <ComboBox fx:id="cmbAccountType" promptText="Select type" styleClass="material-combo" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                                                <ComboBox fx:id="cmbAccountType" maxWidth="Infinity" promptText="Select type" styleClass="material-combo" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -134,7 +134,7 @@
                                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                        <children>
                                           <FontAwesomeIcon fill="#7E57C2" glyphName="MAP_MARKER" size="1.2em" styleClass="input-icon" />
-                                          <TextField fx:id="txtBranchName" promptText="Enter branch name" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="txtBranchName" promptText="SaaKaocao naava" styleClass="material-input" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -147,7 +147,7 @@
                                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                        <children>
                                           <FontAwesomeIcon fill="#7E57C2" glyphName="USER" size="1.2em" styleClass="input-icon" />
-                                          <TextField fx:id="txtPersonName" promptText="Enter account holder name" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="txtPersonName" promptText="Kaataodaracao naava" styleClass="material-input" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -166,6 +166,19 @@
                                  </children>
                               </VBox>
 
+                              <!-- UPI ID Field -->
+                              <VBox spacing="5">
+                                 <children>
+                                    <Label styleClass="input-label" text="UPI ID" />
+                                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                                       <children>
+                                          <FontAwesomeIcon fill="#7E57C2" glyphName="MOBILE" size="1.2em" styleClass="input-icon" />
+                                          <TextField fx:id="txtUpiId" promptText="Enter UPI ID (e.g., name@upi)" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+
                               <!-- Bank Address Field -->
                               <VBox spacing="5">
                                  <children>
@@ -173,7 +186,7 @@
                                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                        <children>
                                           <FontAwesomeIcon fill="#7E57C2" glyphName="HOME" size="1.2em" styleClass="input-icon" />
-                                          <TextField fx:id="txtBankAddress" promptText="Enter bank address" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="txtBankAddress" promptText="ba^Mk  pattaa" styleClass="material-input" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -187,6 +200,19 @@
                                        <children>
                                           <FontAwesomeIcon fill="#7E57C2" glyphName="MONEY" size="1.2em" styleClass="input-icon" />
                                           <TextField fx:id="txtBankBalance" promptText="0.00" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+
+                              <!-- Bank Status Field -->
+                              <VBox spacing="5">
+                                 <children>
+                                    <Label styleClass="input-label" text="BANK STATUS" />
+                                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                                       <children>
+                                          <FontAwesomeIcon fill="#7E57C2" glyphName="CHECK_CIRCLE" size="1.2em" styleClass="input-icon" />
+                                          <ComboBox fx:id="cmbBankStatus" maxWidth="Infinity" promptText="Select status" styleClass="material-combo" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -251,7 +277,7 @@
                                           <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-container">
                                              <children>
                                                 <FontAwesomeIcon fill="#9e9e9e" glyphName="SEARCH" size="1.1em" styleClass="search-icon" />
-                                                <TextField fx:id="txtSearch" promptText="Type to search..." styleClass="search-input" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="txtSearch" promptText="ba^Mk naavaanao SaaoQaa" styleClass="search-input" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -276,13 +302,14 @@
                         <!-- Table -->
                         <TableView fx:id="tblBanks" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="colId" styleClass="id-column" text="ID" prefWidth="50" />
-                              <TableColumn fx:id="colBankName" text="Bank Name" prefWidth="150" />
-                              <TableColumn fx:id="colAccountNo" text="Account No" prefWidth="130" />
-                              <TableColumn fx:id="colAccountType" text="Type" prefWidth="80" />
-                              <TableColumn fx:id="colBranch" text="Branch" prefWidth="120" />
-                              <TableColumn fx:id="colBalance" text="Balance" prefWidth="100" />
-                              <TableColumn fx:id="colStatus" text="Status" prefWidth="80" />
+                              <TableColumn fx:id="colId" prefWidth="50" styleClass="id-column" text="ID" />
+                              <TableColumn fx:id="colBankName" prefWidth="150" text="Bank Name" />
+                              <TableColumn fx:id="colAccountNo" prefWidth="120" text="Account No" />
+                              <TableColumn fx:id="colAccountType" prefWidth="70" text="Type" />
+                              <TableColumn fx:id="colBranch" prefWidth="100" text="Branch" />
+                              <TableColumn fx:id="colUpiId" prefWidth="120" text="UPI ID" />
+                              <TableColumn fx:id="colBalance" prefWidth="90" text="Balance" />
+                              <TableColumn fx:id="colStatus" prefWidth="80" text="Status" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

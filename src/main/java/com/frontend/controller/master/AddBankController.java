@@ -65,10 +65,16 @@ public class AddBankController implements Initializable {
     private TextField txtContactNo;
 
     @FXML
+    private TextField txtUpiId;
+
+    @FXML
     private TextField txtBankAddress;
 
     @FXML
     private TextField txtBankBalance;
+
+    @FXML
+    private ComboBox<String> cmbBankStatus;
 
     @FXML
     private Button btnSave;
@@ -110,6 +116,9 @@ public class AddBankController implements Initializable {
     private TableColumn<BankTableData, String> colBranch;
 
     @FXML
+    private TableColumn<BankTableData, String> colUpiId;
+
+    @FXML
     private TableColumn<BankTableData, Double> colBalance;
 
     @FXML
@@ -137,8 +146,12 @@ public class AddBankController implements Initializable {
                 "Savings", "Current", "Fixed Deposit", "Recurring Deposit", "Other"
         ));
 
+        // Setup Bank Status ComboBox
+        cmbBankStatus.setItems(FXCollections.observableArrayList("ACTIVE", "INACTIVE", "HOLD"));
+        cmbBankStatus.setValue("ACTIVE");
+
         // Setup filter ComboBox
-        cmbFilterStatus.setItems(FXCollections.observableArrayList("All Status", "ACTIVE", "INACTIVE"));
+        cmbFilterStatus.setItems(FXCollections.observableArrayList("All Status", "ACTIVE", "INACTIVE", "HOLD"));
         cmbFilterStatus.setValue("All Status");
 
         // Setup filtered list
@@ -157,6 +170,7 @@ public class AddBankController implements Initializable {
         colAccountNo.setCellValueFactory(cellData -> cellData.getValue().accountNoProperty());
         colAccountType.setCellValueFactory(cellData -> cellData.getValue().accountTypeProperty());
         colBranch.setCellValueFactory(cellData -> cellData.getValue().branchNameProperty());
+        colUpiId.setCellValueFactory(cellData -> cellData.getValue().upiIdProperty());
         colBalance.setCellValueFactory(cellData -> cellData.getValue().balanceProperty().asObject());
         colStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
 
@@ -167,6 +181,7 @@ public class AddBankController implements Initializable {
         // Apply 18px font to other columns
         applyAccountNoColumnFont();
         applyAccountTypeColumnFont();
+        applyUpiIdColumnFont();
         applyBalanceColumnFont();
         applyStatusColumnFont();
 
@@ -420,6 +435,27 @@ public class AddBankController implements Initializable {
     }
 
     /**
+     * Apply 18px font to UPI ID column cells
+     */
+    private void applyUpiIdColumnFont() {
+        colUpiId.setCellFactory(column -> {
+            TableCell<BankTableData, String> cell = new TableCell<BankTableData, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item);
+                    }
+                }
+            };
+            cell.setStyle("-fx-font-size: 18px;");
+            return cell;
+        });
+    }
+
+    /**
      * Apply 18px font to Balance column cells
      */
     private void applyBalanceColumnFont() {
@@ -536,6 +572,7 @@ public class AddBankController implements Initializable {
             bank.setBranchName(txtBranchName.getText().trim());
             bank.setPersonName(txtPersonName.getText().trim());
             bank.setContactNo(txtContactNo.getText().trim());
+            bank.setUpiId(txtUpiId.getText().trim());
             bank.setBankAddress(txtBankAddress.getText().trim());
 
             try {
@@ -549,8 +586,11 @@ public class AddBankController implements Initializable {
                 bank.setBankBalance(0.0);
             }
 
+            // Set status from combo box
+            String status = cmbBankStatus.getValue();
+            bank.setStatus(status != null ? status : "ACTIVE");
+
             if (selectedBank == null) {
-                bank.setStatus("ACTIVE");
                 bankService.saveBank(bank);
                 alertNotification.showSuccess("Bank created successfully!");
             } else {
@@ -582,8 +622,10 @@ public class AddBankController implements Initializable {
                 txtBranchName.setText(bank.getBranchName());
                 txtPersonName.setText(bank.getPersonName());
                 txtContactNo.setText(bank.getContactNo());
+                txtUpiId.setText(bank.getUpiId() != null ? bank.getUpiId() : "");
                 txtBankAddress.setText(bank.getBankAddress());
                 txtBankBalance.setText(bank.getBankBalance() != null ? String.format("%.2f", bank.getBankBalance()) : "0.00");
+                cmbBankStatus.setValue(bank.getStatus() != null ? bank.getStatus() : "ACTIVE");
 
                 // Show Update button, hide Save button
                 btnSave.setVisible(false);
@@ -604,8 +646,10 @@ public class AddBankController implements Initializable {
         txtBranchName.clear();
         txtPersonName.clear();
         txtContactNo.clear();
+        txtUpiId.clear();
         txtBankAddress.clear();
         txtBankBalance.setText("0.00");
+        cmbBankStatus.setValue("ACTIVE");
         selectedBank = null;
 
         // Show Save button, hide Update button
@@ -643,6 +687,7 @@ public class AddBankController implements Initializable {
                         bank.getAccountNo(),
                         bank.getAccountType(),
                         bank.getBranchName(),
+                        bank.getUpiId(),
                         bank.getBankBalance(),
                         bank.getStatus()
                 ));
@@ -668,16 +713,18 @@ public class AddBankController implements Initializable {
         private final SimpleStringProperty accountNo;
         private final SimpleStringProperty accountType;
         private final SimpleStringProperty branchName;
+        private final SimpleStringProperty upiId;
         private final SimpleDoubleProperty balance;
         private final SimpleStringProperty status;
 
         public BankTableData(Integer id, String bankName, String accountNo, String accountType,
-                             String branchName, Double balance, String status) {
+                             String branchName, String upiId, Double balance, String status) {
             this.id = new SimpleIntegerProperty(id != null ? id : 0);
             this.bankName = new SimpleStringProperty(bankName != null ? bankName : "");
             this.accountNo = new SimpleStringProperty(accountNo != null ? accountNo : "");
             this.accountType = new SimpleStringProperty(accountType != null ? accountType : "");
             this.branchName = new SimpleStringProperty(branchName != null ? branchName : "");
+            this.upiId = new SimpleStringProperty(upiId != null ? upiId : "");
             this.balance = new SimpleDoubleProperty(balance != null ? balance : 0.0);
             this.status = new SimpleStringProperty(status != null ? status : "ACTIVE");
         }
@@ -720,6 +767,14 @@ public class AddBankController implements Initializable {
 
         public SimpleStringProperty branchNameProperty() {
             return branchName;
+        }
+
+        public String getUpiId() {
+            return upiId.get();
+        }
+
+        public SimpleStringProperty upiIdProperty() {
+            return upiId;
         }
 
         public Double getBalance() {

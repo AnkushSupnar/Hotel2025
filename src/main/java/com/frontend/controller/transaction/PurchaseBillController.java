@@ -195,9 +195,9 @@ public class PurchaseBillController implements Initializable {
             stockCategories.addAll(purchaseCategories);
             LOG.info("Loaded {} purchase categories", stockCategories.size());
 
-            // Load banks for payment mode
-            allBanks = bankService.getAllBanks();
-            LOG.info("Loaded {} banks", allBanks.size());
+            // Load banks for payment mode (only active banks)
+            allBanks = bankService.getActiveBanks();
+            LOG.info("Loaded {} active banks", allBanks.size());
 
         } catch (Exception e) {
             LOG.error("Error loading data: ", e);

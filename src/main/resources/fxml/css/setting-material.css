@@ -1101,3 +1101,204 @@
     -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
 }
+
+/* ========================================
+   COMPACT SINGLE-LINE SETTINGS LAYOUT
+   ======================================== */
+
+/* Settings Container Card */
+.settings-container-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 20, 0, 0, 4);
+    -fx-border-color: #E8E8E8;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 0;
+}
+
+/* Setting Row */
+.setting-row {
+    -fx-padding: 16 24;
+    -fx-background-color: transparent;
+}
+
+.setting-row:hover {
+    -fx-background-color: rgba(102, 126, 234, 0.03);
+}
+
+/* Setting Separator */
+.setting-separator {
+    -fx-background-color: #EEEEEE;
+    -fx-padding: 0;
+}
+
+/* Setting Row Title */
+.setting-row-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #424242;
+}
+
+/* Setting Row Current Value */
+.setting-row-value {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9E9E9E;
+    -fx-wrap-text: true;
+    -fx-max-width: 175;
+}
+
+/* Setting Row Input Field */
+.setting-row-input {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 6;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 10 14;
+    -fx-font-size: 13px;
+    -fx-text-fill: #424242;
+    -fx-prompt-text-fill: #9E9E9E;
+}
+
+.setting-row-input:focused {
+    -fx-background-color: white;
+    -fx-border-color: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.15), 4, 0, 0, 1);
+}
+
+/* Setting Row Dropdown */
+.setting-row-dropdown {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 6;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 2 8;
+    -fx-font-size: 13px;
+    -fx-min-height: 38;
+}
+
+.setting-row-dropdown .list-cell {
+    -fx-text-fill: #424242;
+    -fx-font-size: 13px;
+}
+
+.setting-row-dropdown .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8;
+}
+
+.setting-row-dropdown .arrow-button .arrow {
+    -fx-background-color: #757575;
+}
+
+.setting-row-dropdown:hover {
+    -fx-border-color: #BDBDBD;
+}
+
+.setting-row-dropdown:focused {
+    -fx-background-color: white;
+    -fx-border-color: #667eea;
+}
+
+/* Setting Row Buttons - Purple */
+.setting-row-btn-purple {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #7E57C2 0%, #9575CD 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(126, 87, 194, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-purple:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #6A45A8 0%, #8561BB 100%);
+    -fx-effect: dropshadow(gaussian, rgba(126, 87, 194, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-purple:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Setting Row Buttons - Blue */
+.setting-row-btn-blue {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #42A5F5 0%, #64B5F6 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(66, 165, 245, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-blue:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #2196F3 0%, #42A5F5 100%);
+    -fx-effect: dropshadow(gaussian, rgba(66, 165, 245, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-blue:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Setting Row Buttons - Green */
+.setting-row-btn-green {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #43A047 0%, #66BB6A 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-effect: dropshadow(gaussian, rgba(67, 160, 71, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-green:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #388E3C 0%, #43A047 100%);
+    -fx-effect: dropshadow(gaussian, rgba(67, 160, 71, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-green:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Setting Row Buttons - Orange */
+.setting-row-btn-orange {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #FB8C00 0%, #FFA726 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-effect: dropshadow(gaussian, rgba(251, 140, 0, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-orange:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #F57C00 0%, #FB8C00 100%);
+    -fx-effect: dropshadow(gaussian, rgba(251, 140, 0, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-orange:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Setting Row Buttons - Indigo */
+.setting-row-btn-indigo {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #5C6BC0 0%, #7986CB 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-effect: dropshadow(gaussian, rgba(92, 107, 192, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-indigo:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #3F51B5 0%, #5C6BC0 100%);
+    -fx-effect: dropshadow(gaussian, rgba(92, 107, 192, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-indigo:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}

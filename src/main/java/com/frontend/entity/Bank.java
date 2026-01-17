@@ -45,6 +45,9 @@ public class Bank {
     @Column(name = "contact_no", length = 20)
     private String contactNo;
 
+    @Column(name = "upi_id", length = 100)
+    private String upiId;
+
     @Column(name = "status", length = 20)
     private String status = "ACTIVE";
 
@@ -170,6 +173,14 @@ public class Bank {
         this.contactNo = contactNo;
     }
 
+    public String getUpiId() {
+        return upiId;
+    }
+
+    public void setUpiId(String upiId) {
+        this.upiId = upiId;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -214,6 +225,7 @@ public class Bank {
                 ", bankBalance=" + bankBalance +
                 ", bankCode='" + bankCode + '\'' +
                 ", branchName='" + branchName + '\'' +
+                ", upiId='" + upiId + '\'' +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +

@@ -7,11 +7,13 @@ import com.frontend.service.CustomerService;
 import com.frontend.service.EmployeesService;
 import com.frontend.service.SessionService;
 import com.frontend.service.TableMasterService;
+import com.frontend.util.QRCodeGenerator;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.Desktop;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
@@ -34,6 +37,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 
 /**
  * Bill Print class for thermal printer using iTextPDF
@@ -156,7 +163,7 @@ public class BillPrint {
     }
 
     /**
-     * Generate Bill PDF and save to configured document directory
+     * Generate Bill PDF and save to configured document directory, then print automatically
      */
     public boolean printBill(Bill bill, String tableName) {
         if (bill == null) {
@@ -187,6 +194,10 @@ public class BillPrint {
             }
 
             LOG.info("Bill #{} PDF saved successfully at: {}", bill.getBillNo(), pdfPath);
+
+            // Auto-print the PDF to configured printer
+            printPdfToConfiguredPrinter(pdfPath);
+
             return true;
 
         } catch (Exception e) {
@@ -201,6 +212,303 @@ public class BillPrint {
     public boolean printBillWithDialog(Bill bill, String tableName) {
         // Simply delegate to printBill - no longer showing printer dialog
         return printBill(bill, tableName);
+    }
+
+    /**
+     * Generate Bill PDF with optional QR code for UPI payment
+     * Used when CLOSE button is clicked with QR code option enabled
+     *
+     * @param bill      The bill to print
+     * @param tableName The table name
+     * @param printQR   Whether to print QR code on the bill
+     * @param upiId     The UPI ID to encode in QR code (required if printQR is true)
+     * @param bankName  The bank/payee name for UPI payment
+     * @return true if successful, false otherwise
+     */
+    public boolean printBillWithQR(Bill bill, String tableName, boolean printQR, String upiId, String bankName) {
+        if (bill == null) {
+            LOG.warn("No bill to print");
+            return false;
+        }
+
+        // If no QR requested, use standard print
+        if (!printQR || upiId == null || upiId.trim().isEmpty()) {
+            return printBill(bill, tableName);
+        }
+
+        try {
+            LOG.info("Starting Bill PDF generation with QR code for Bill #{}", bill.getBillNo());
+
+            // Load fonts
+            loadFonts();
+
+            // Get output directory from settings
+            String pdfDir = getPdfOutputDirectory();
+
+            // Ensure output directory exists
+            File outputDir = new File(pdfDir);
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+
+            // Generate PDF with QR code
+            String pdfPath = generateBillPdfWithQR(bill, tableName, upiId, bankName);
+            if (pdfPath == null) {
+                LOG.error("Failed to generate bill PDF with QR");
+                return false;
+            }
+
+            LOG.info("Bill #{} PDF with QR saved successfully at: {}", bill.getBillNo(), pdfPath);
+
+            // Auto-print the PDF to configured printer
+            printPdfToConfiguredPrinter(pdfPath);
+
+            return true;
+
+        } catch (Exception e) {
+            LOG.error("Error generating Bill #{} with QR: {}", bill.getBillNo(), e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * Generate Bill PDF with QR code
+     */
+    private String generateBillPdfWithQR(Bill bill, String tableName, String upiId, String bankName) {
+        try {
+            String waitorName = getWaitorName(bill.getWaitorId());
+
+            // Calculate net amount for QR code
+            double netAmount = bill.getNetAmount() != null ? bill.getNetAmount() :
+                    (bill.getTransactions() != null ?
+                            bill.getTransactions().stream().mapToDouble(t -> t.getAmt()).sum() : 0);
+
+            // Generate QR code image
+            byte[] qrCodeImage = null;
+            try {
+                qrCodeImage = QRCodeGenerator.generateUPIQRCode(upiId, bankName, netAmount);
+                LOG.info("Generated UPI QR code for amount: {}", netAmount);
+            } catch (Exception e) {
+                LOG.error("Failed to generate QR code: {}", e.getMessage());
+                // Continue without QR code
+            }
+
+            // Create items table with QR code
+            PdfPTable itemsTable = createItemsTableWithQR(bill.getTransactions(), tableName, waitorName, qrCodeImage, upiId);
+
+            // Create header table
+            PdfPTable headerTable = createHeaderTable(bill, tableName, waitorName, itemsTable);
+
+            // Calculate document height based on content (add extra for QR code)
+            float height = headerTable.getTotalHeight() + 20f;
+            if (qrCodeImage != null) {
+                height += 100f; // Extra height for QR code section
+            }
+            if (height < 200f) height = 200f;
+
+            // Create page size for thermal printer
+            Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
+            pageSize.setRotation(0);
+
+            // Minimal margins
+            Document document = new Document(pageSize, 3f, 3f, 0f, 2f);
+
+            // Create PDF file path
+            String pdfDir = getPdfOutputDirectory();
+            String pdfPath = pdfDir + File.separator + "bill.pdf";
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
+            document.open();
+
+            // Add header table (which includes items table with QR)
+            document.add(headerTable);
+
+            document.close();
+
+            LOG.info("Bill PDF with QR generated at: {}", pdfPath);
+            return pdfPath;
+
+        } catch (Exception e) {
+            LOG.error("Error generating bill PDF with QR: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Create items table with QR code - adds QR code before footer
+     */
+    private PdfPTable createItemsTableWithQR(List<Transaction> transactions, String tableName, String waitorName, byte[] qrCodeImage, String upiId) throws Exception {
+        // Items table with 4 columns: Item, Qty, Rate, Amount
+        PdfPTable table = new PdfPTable(4);
+        table.setTotalWidth(new float[]{100, 30, 30, 50});
+        table.setLockedWidth(true);
+
+        // Row height for proper text display
+        float rowHeight = 16f;
+
+        // Table header
+        PdfPCell cell = new PdfPCell(new Phrase("tapiSala", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("naga", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("dr", fontMedium));
+        cell.setFixedHeight(rowHeight);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("r@kma", fontMedium));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setFixedHeight(rowHeight);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        table.addCell(cell);
+
+        // Add items with English font for numbers
+        if (transactions != null) {
+            for (Transaction trans : transactions) {
+                // Item name in Marathi font
+                PdfPCell c1 = new PdfPCell(new Phrase(trans.getItemName(), fontMedium));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setNoWrap(false);
+                c1.setPaddingTop(1f);
+                c1.setPaddingBottom(2f);
+                table.addCell(c1);
+
+                // Qty in English font
+                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontEnglishMedium));
+                c2.setBorder(Rectangle.NO_BORDER);
+                c2.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c2.setPaddingTop(1f);
+                c2.setPaddingBottom(2f);
+                table.addCell(c2);
+
+                // Rate in English font
+                PdfPCell c3 = new PdfPCell(new Phrase(String.format("%.0f", trans.getRate()), fontEnglishMedium));
+                c3.setBorder(Rectangle.NO_BORDER);
+                c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c3.setPaddingTop(1f);
+                c3.setPaddingBottom(2f);
+                table.addCell(c3);
+
+                // Amount in English font
+                PdfPCell c4 = new PdfPCell(new Phrase(String.format("%.0f", trans.getAmt()), fontEnglishMedium));
+                c4.setBorder(Rectangle.NO_BORDER);
+                c4.setHorizontalAlignment(Element.ALIGN_CENTER);
+                c4.setPaddingTop(1f);
+                c4.setPaddingBottom(2f);
+                table.addCell(c4);
+            }
+        }
+
+        // Table number and Total row combined
+        Phrase tablePhrase = new Phrase();
+        tablePhrase.add(new Chunk("To naM. ", fontMedium));
+        tablePhrase.add(new Chunk(tableName, fontEnglishMedium));
+        PdfPCell cellTableNo = new PdfPCell(tablePhrase);
+        cellTableNo.setFixedHeight(rowHeight);
+        cellTableNo.setBorder(Rectangle.TOP);
+        cellTableNo.setPaddingTop(1f);
+        cellTableNo.setPaddingBottom(1f);
+        cellTableNo.setColspan(2);
+        table.addCell(cellTableNo);
+
+        // Total label
+        PdfPCell cellTotalLabel = new PdfPCell(new Phrase("ekuNa", fontMedium));
+        cellTotalLabel.setFixedHeight(rowHeight);
+        cellTotalLabel.setBorder(Rectangle.TOP);
+        cellTotalLabel.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellTotalLabel.setPaddingTop(1f);
+        cellTotalLabel.setPaddingBottom(1f);
+        table.addCell(cellTotalLabel);
+
+        // Total amount in English font
+        float totalAmt = transactions != null ?
+                (float) transactions.stream().mapToDouble(t -> t.getAmt()).sum() : 0f;
+        PdfPCell cellTotalAmt = new PdfPCell(new Phrase(String.format("%.0f", totalAmt), fontEnglishMedium));
+        cellTotalAmt.setFixedHeight(rowHeight);
+        cellTotalAmt.setBorder(Rectangle.TOP);
+        cellTotalAmt.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellTotalAmt.setPaddingTop(1f);
+        cellTotalAmt.setPaddingBottom(1f);
+        table.addCell(cellTotalAmt);
+
+        // Waiter row - spans all columns
+        PdfPCell cellWaiter = new PdfPCell(new Phrase("vaoTr :" + waitorName, fontMedium));
+        cellWaiter.setFixedHeight(rowHeight);
+        cellWaiter.setBorder(Rectangle.NO_BORDER);
+        cellWaiter.setPaddingTop(1f);
+        cellWaiter.setPaddingBottom(1f);
+        cellWaiter.setColspan(4);
+        table.addCell(cellWaiter);
+
+        // Add QR code section if available
+        if (qrCodeImage != null && qrCodeImage.length > 0) {
+            // "Scan to Pay" label
+            Font scanFont = new Font(Font.FontFamily.HELVETICA, 9f, Font.BOLD, BaseColor.BLACK);
+            PdfPCell scanLabel = new PdfPCell(new Phrase("Scan to Pay", scanFont));
+            scanLabel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            scanLabel.setBorder(Rectangle.NO_BORDER);
+            scanLabel.setColspan(4);
+            scanLabel.setPaddingTop(2f);
+            scanLabel.setPaddingBottom(1f);
+            table.addCell(scanLabel);
+
+            // QR code image
+            try {
+                Image qrImage = Image.getInstance(qrCodeImage);
+                qrImage.scaleToFit(100f, 100f); // Scale QR code to fit thermal printer
+                PdfPCell qrCell = new PdfPCell(qrImage, false);
+                qrCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                qrCell.setBorder(Rectangle.NO_BORDER);
+                qrCell.setColspan(4);
+                qrCell.setPaddingTop(1f);
+                qrCell.setPaddingBottom(0f);
+                table.addCell(qrCell);
+
+                // UPI ID below QR code
+                if (upiId != null && !upiId.trim().isEmpty()) {
+                    Font upiFont = new Font(Font.FontFamily.HELVETICA, 8f, Font.NORMAL, BaseColor.BLACK);
+                    PdfPCell upiCell = new PdfPCell(new Phrase("UPI: " + upiId, upiFont));
+                    upiCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    upiCell.setBorder(Rectangle.NO_BORDER);
+                    upiCell.setColspan(4);
+                    upiCell.setPaddingTop(0f);
+                    upiCell.setPaddingBottom(3f);
+                    table.addCell(upiCell);
+                }
+            } catch (Exception e) {
+                LOG.error("Error adding QR image to PDF: {}", e.getMessage());
+            }
+        }
+
+        // Thank you footer - compact
+        Font smallFont = new Font(Font.FontFamily.HELVETICA, 7);
+        PdfPCell cellFooter = new PdfPCell(new Phrase(
+                "Thanks for visit.....HAVE A NICE DAY\n________________________________________\nSoftware developed by Ankush Supnar (8329394603)",
+                smallFont));
+        cellFooter.setFixedHeight(32f);
+        cellFooter.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cellFooter.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cellFooter.setBorder(Rectangle.NO_BORDER);
+        cellFooter.setColspan(4);
+        cellFooter.setPaddingTop(3f);
+        table.addCell(cellFooter);
+
+        return table;
     }
 
     /**
@@ -1275,5 +1583,80 @@ public class BillPrint {
         } catch (Exception e) {
             LOG.error("Error opening PDF in default viewer: {}", e.getMessage(), e);
         }
+    }
+
+    /**
+     * Print PDF to configured printer silently (no dialog)
+     * Gets printer name from application_setting 'billing_printer'
+     * If not configured, uses the default system printer
+     */
+    private void printPdfToConfiguredPrinter(String pdfPath) {
+        try {
+            File pdfFile = new File(pdfPath);
+            if (!pdfFile.exists()) {
+                LOG.error("PDF file does not exist for printing: {}", pdfPath);
+                return;
+            }
+
+            // Get configured printer name from application settings
+            String configuredPrinter = SessionService.getApplicationSetting("billing_printer");
+            LOG.info("Configured billing printer: {}", configuredPrinter);
+
+            // Find the print service
+            PrintService printService = null;
+
+            if (configuredPrinter != null && !configuredPrinter.trim().isEmpty()) {
+                // Look for the configured printer
+                PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+                for (PrintService service : printServices) {
+                    if (service.getName().equalsIgnoreCase(configuredPrinter.trim())) {
+                        printService = service;
+                        LOG.info("Found configured printer: {}", service.getName());
+                        break;
+                    }
+                }
+
+                if (printService == null) {
+                    LOG.warn("Configured printer '{}' not found, using default printer", configuredPrinter);
+                }
+            }
+
+            // If no configured printer found, use default
+            if (printService == null) {
+                printService = PrintServiceLookup.lookupDefaultPrintService();
+                if (printService != null) {
+                    LOG.info("Using default printer: {}", printService.getName());
+                } else {
+                    LOG.error("No default printer available");
+                    return;
+                }
+            }
+
+            // Load PDF and print
+            try (PDDocument document = PDDocument.load(pdfFile)) {
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                printerJob.setPrintService(printService);
+                printerJob.setPageable(new PDFPageable(document));
+
+                // Print without showing dialog
+                printerJob.print();
+                LOG.info("Bill PDF sent to printer: {}", printService.getName());
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error printing PDF to printer: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Get list of available printers (useful for settings UI)
+     */
+    public static String[] getAvailablePrinters() {
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        String[] printerNames = new String[printServices.length];
+        for (int i = 0; i < printServices.length; i++) {
+            printerNames[i] = printServices[i].getName();
+        }
+        return printerNames;
     }
 }

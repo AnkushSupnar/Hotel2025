@@ -7,11 +7,11 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1"
@@ -46,306 +46,184 @@
             <Region HBox.hgrow="ALWAYS" />
          </children>
          <padding>
-            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+            <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
          </padding>
       </HBox>
 
       <!-- Main Content Area with ScrollPane -->
       <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
          <content>
-            <VBox alignment="TOP_CENTER" styleClass="setting-content-area">
+            <VBox alignment="TOP_CENTER" spacing="0" style="-fx-background-color: transparent;">
                <padding>
-                  <Insets bottom="40.0" left="50.0" right="50.0" top="40.0" />
+                  <Insets bottom="30.0" left="40.0" right="40.0" top="25.0" />
                </padding>
                <children>
-                  <!-- Row 1: Document Directory & Font File Cards -->
-                  <HBox spacing="30" alignment="TOP_CENTER">
+                  <!-- Settings Container Card -->
+                  <VBox styleClass="settings-container-card" spacing="0">
                      <children>
-                        <!-- Document Directory Card -->
-                        <VBox styleClass="setting-card-modern" spacing="0" HBox.hgrow="ALWAYS">
+
+                        <!-- Setting Row 1: Document Directory -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
                            <children>
-                              <!-- Card Header -->
-                              <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-card-header">
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="FOLDER" size="1.3em" fill="#7E57C2" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
                                  <children>
-                                    <StackPane styleClass="setting-icon-circle" minWidth="48" minHeight="48" maxWidth="48" maxHeight="48">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="FOLDER" size="1.4em" fill="white" />
-                                       </children>
-                                    </StackPane>
-                                    <VBox spacing="2">
-                                       <children>
-                                          <Label text="Document Directory" styleClass="setting-card-title" />
-                                          <Label text="Set the default folder for saving documents" styleClass="setting-card-subtitle" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="24.0" right="24.0" top="24.0" />
-                                 </padding>
-                              </HBox>
-
-                              <!-- Card Body -->
-                              <VBox spacing="16" styleClass="setting-card-body">
-                                 <padding>
-                                    <Insets bottom="24.0" left="24.0" right="24.0" top="20.0" />
-                                 </padding>
-                                 <children>
-                                    <!-- Input Field -->
-                                    <HBox styleClass="modern-input-container" alignment="CENTER_LEFT" spacing="12">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="FOLDER_OPEN" size="1.1em" fill="#9575CD" />
-                                          <TextField fx:id="txtDocumentPath" promptText="Select document directory..."
-                                                     styleClass="modern-input" editable="false" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="btnBrowseDocument" styleClass="browse-btn-modern">
-                                             <graphic>
-                                                <HBox alignment="CENTER" spacing="6">
-                                                   <children>
-                                                      <FontAwesomeIcon glyphName="SEARCH" size="0.9em" fill="white" />
-                                                      <Label text="Browse" styleClass="browse-btn-text" />
-                                                   </children>
-                                                </HBox>
-                                             </graphic>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-
-                                    <!-- Current Value Display -->
-                                    <VBox spacing="6" styleClass="current-value-section">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" spacing="8">
-                                             <children>
-                                                <FontAwesomeIcon glyphName="CHECK_CIRCLE" size="0.9em" fill="#66BB6A" />
-                                                <Label text="Current Setting" styleClass="current-value-label" />
-                                             </children>
-                                          </HBox>
-                                          <Label fx:id="lblCurrentDocument" text="Not configured"
-                                                 styleClass="current-value-text" wrapText="true" />
-                                       </children>
-                                    </VBox>
+                                    <Label text="Document Directory" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentDocument" text="Not configured" styleClass="setting-row-value" />
                                  </children>
                               </VBox>
-                           </children>
-                        </VBox>
-
-                        <!-- Font File Card -->
-                        <VBox styleClass="setting-card-modern" spacing="0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <!-- Card Header -->
-                              <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-card-header-alt">
-                                 <children>
-                                    <StackPane styleClass="setting-icon-circle-alt" minWidth="48" minHeight="48" maxWidth="48" maxHeight="48">
+                              <!-- Input Field -->
+                              <TextField fx:id="txtDocumentPath" promptText="Select document directory..."
+                                         styleClass="setting-row-input" HBox.hgrow="ALWAYS" editable="false" />
+                              <!-- Browse Button -->
+                              <Button fx:id="btnBrowseDocument" styleClass="setting-row-btn-purple">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="5">
                                        <children>
-                                          <FontAwesomeIcon glyphName="FONT" size="1.4em" fill="white" />
-                                       </children>
-                                    </StackPane>
-                                    <VBox spacing="2">
-                                       <children>
-                                          <Label text="Input Font File" styleClass="setting-card-title" />
-                                          <Label text="Choose the font for PDF document generation" styleClass="setting-card-subtitle" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="24.0" right="24.0" top="24.0" />
-                                 </padding>
-                              </HBox>
-
-                              <!-- Card Body -->
-                              <VBox spacing="16" styleClass="setting-card-body">
-                                 <padding>
-                                    <Insets bottom="24.0" left="24.0" right="24.0" top="20.0" />
-                                 </padding>
-                                 <children>
-                                    <!-- Input Field -->
-                                    <HBox styleClass="modern-input-container" alignment="CENTER_LEFT" spacing="12">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="FILE_TEXT" size="1.1em" fill="#42A5F5" />
-                                          <TextField fx:id="txtFontPath" promptText="Select font file (.ttf, .otf)..."
-                                                     styleClass="modern-input" editable="false" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="btnBrowseFont" styleClass="browse-btn-modern-alt">
-                                             <graphic>
-                                                <HBox alignment="CENTER" spacing="6">
-                                                   <children>
-                                                      <FontAwesomeIcon glyphName="SEARCH" size="0.9em" fill="white" />
-                                                      <Label text="Browse" styleClass="browse-btn-text" />
-                                                   </children>
-                                                </HBox>
-                                             </graphic>
-                                          </Button>
+                                          <FontAwesomeIcon glyphName="FOLDER_OPEN" size="0.9em" fill="white" />
+                                          <Label text="Browse" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: 600;" />
                                        </children>
                                     </HBox>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
 
-                                    <!-- Current Value Display -->
-                                    <VBox spacing="6" styleClass="current-value-section">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" spacing="8">
-                                             <children>
-                                                <FontAwesomeIcon glyphName="CHECK_CIRCLE" size="0.9em" fill="#66BB6A" />
-                                                <Label text="Current Setting" styleClass="current-value-label" />
-                                             </children>
-                                          </HBox>
-                                          <Label fx:id="lblCurrentFont" text="Not configured"
-                                                 styleClass="current-value-text" wrapText="true" />
-                                       </children>
-                                    </VBox>
+                        <Separator styleClass="setting-separator" />
+
+                        <!-- Setting Row 2: Font File -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
+                           <children>
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="FONT" size="1.3em" fill="#42A5F5" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
+                                 <children>
+                                    <Label text="Input Font File" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentFont" text="Not configured" styleClass="setting-row-value" />
                                  </children>
                               </VBox>
+                              <!-- Input Field -->
+                              <TextField fx:id="txtFontPath" promptText="Select font file (.ttf, .otf)..."
+                                         styleClass="setting-row-input" HBox.hgrow="ALWAYS" editable="false" />
+                              <!-- Browse Button -->
+                              <Button fx:id="btnBrowseFont" styleClass="setting-row-btn-blue">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="5">
+                                       <children>
+                                          <FontAwesomeIcon glyphName="FILE_TEXT" size="0.9em" fill="white" />
+                                          <Label text="Browse" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: 600;" />
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                              </Button>
                            </children>
-                        </VBox>
+                        </HBox>
+
+                        <Separator styleClass="setting-separator" />
+
+                        <!-- Setting Row 3: Billing Printer -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
+                           <children>
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="PRINT" size="1.3em" fill="#43A047" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
+                                 <children>
+                                    <Label text="Billing Printer" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentBillingPrinter" text="Not configured" styleClass="setting-row-value" />
+                                 </children>
+                              </VBox>
+                              <!-- Dropdown -->
+                              <ComboBox fx:id="cmbBillingPrinter" promptText="Select billing printer..."
+                                        styleClass="setting-row-dropdown" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                              <!-- Refresh Button -->
+                              <Button fx:id="btnRefreshBillingPrinter" styleClass="setting-row-btn-green">
+                                 <graphic>
+                                    <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+
+                        <Separator styleClass="setting-separator" />
+
+                        <!-- Setting Row 4: KOT Printer -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
+                           <children>
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="CUTLERY" size="1.3em" fill="#FB8C00" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
+                                 <children>
+                                    <Label text="KOT Printer" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentKotPrinter" text="Not configured" styleClass="setting-row-value" />
+                                 </children>
+                              </VBox>
+                              <!-- Dropdown -->
+                              <ComboBox fx:id="cmbKotPrinter" promptText="Select KOT printer..."
+                                        styleClass="setting-row-dropdown" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                              <!-- Refresh Button -->
+                              <Button fx:id="btnRefreshKotPrinter" styleClass="setting-row-btn-orange">
+                                 <graphic>
+                                    <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+
+                        <Separator styleClass="setting-separator" />
+
+                        <!-- Setting Row 5: Default Bank for Billing -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
+                           <children>
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="BANK" size="1.3em" fill="#5C6BC0" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
+                                 <children>
+                                    <Label text="Default Bank for Billing" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentDefaultBank" text="Not configured" styleClass="setting-row-value" />
+                                 </children>
+                              </VBox>
+                              <!-- Dropdown -->
+                              <ComboBox fx:id="cmbDefaultBank" promptText="Select default bank..."
+                                        styleClass="setting-row-dropdown" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                              <!-- Refresh Button -->
+                              <Button fx:id="btnRefreshBanks" styleClass="setting-row-btn-indigo">
+                                 <graphic>
+                                    <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+
                      </children>
-                  </HBox>
-
-                  <!-- Row 2: Printer Settings Cards -->
-                  <HBox spacing="30" alignment="TOP_CENTER">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                     <children>
-                        <!-- Billing Printer Card -->
-                        <VBox styleClass="setting-card-modern" spacing="0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <!-- Card Header - Green Theme -->
-                              <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-card-header-green">
-                                 <children>
-                                    <StackPane styleClass="setting-icon-circle-green" minWidth="48" minHeight="48" maxWidth="48" maxHeight="48">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="PRINT" size="1.4em" fill="white" />
-                                       </children>
-                                    </StackPane>
-                                    <VBox spacing="2">
-                                       <children>
-                                          <Label text="Billing Printer" styleClass="setting-card-title" />
-                                          <Label text="Select printer for billing receipts" styleClass="setting-card-subtitle" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="24.0" right="24.0" top="24.0" />
-                                 </padding>
-                              </HBox>
-
-                              <!-- Card Body -->
-                              <VBox spacing="16" styleClass="setting-card-body">
-                                 <padding>
-                                    <Insets bottom="24.0" left="24.0" right="24.0" top="20.0" />
-                                 </padding>
-                                 <children>
-                                    <!-- Printer Dropdown -->
-                                    <HBox styleClass="modern-dropdown-container" alignment="CENTER_LEFT" spacing="12">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="PRINT" size="1.1em" fill="#66BB6A" />
-                                          <ComboBox fx:id="cmbBillingPrinter" promptText="Select billing printer..."
-                                                    styleClass="modern-dropdown" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                                          <Button fx:id="btnRefreshBillingPrinter" styleClass="refresh-btn-green">
-                                             <graphic>
-                                                <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
-                                             </graphic>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-
-                                    <!-- Current Value Display -->
-                                    <VBox spacing="6" styleClass="current-value-section">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" spacing="8">
-                                             <children>
-                                                <FontAwesomeIcon glyphName="CHECK_CIRCLE" size="0.9em" fill="#66BB6A" />
-                                                <Label text="Current Printer" styleClass="current-value-label" />
-                                             </children>
-                                          </HBox>
-                                          <Label fx:id="lblCurrentBillingPrinter" text="Not configured"
-                                                 styleClass="current-value-text" wrapText="true" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-
-                        <!-- KOT Printer Card -->
-                        <VBox styleClass="setting-card-modern" spacing="0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <!-- Card Header - Orange Theme -->
-                              <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-card-header-orange">
-                                 <children>
-                                    <StackPane styleClass="setting-icon-circle-orange" minWidth="48" minHeight="48" maxWidth="48" maxHeight="48">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="CUTLERY" size="1.4em" fill="white" />
-                                       </children>
-                                    </StackPane>
-                                    <VBox spacing="2">
-                                       <children>
-                                          <Label text="KOT Printer" styleClass="setting-card-title" />
-                                          <Label text="Select printer for kitchen order tickets" styleClass="setting-card-subtitle" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="24.0" right="24.0" top="24.0" />
-                                 </padding>
-                              </HBox>
-
-                              <!-- Card Body -->
-                              <VBox spacing="16" styleClass="setting-card-body">
-                                 <padding>
-                                    <Insets bottom="24.0" left="24.0" right="24.0" top="20.0" />
-                                 </padding>
-                                 <children>
-                                    <!-- Printer Dropdown -->
-                                    <HBox styleClass="modern-dropdown-container" alignment="CENTER_LEFT" spacing="12">
-                                       <children>
-                                          <FontAwesomeIcon glyphName="PRINT" size="1.1em" fill="#FF9800" />
-                                          <ComboBox fx:id="cmbKotPrinter" promptText="Select KOT printer..."
-                                                    styleClass="modern-dropdown" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                                          <Button fx:id="btnRefreshKotPrinter" styleClass="refresh-btn-orange">
-                                             <graphic>
-                                                <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
-                                             </graphic>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-
-                                    <!-- Current Value Display -->
-                                    <VBox spacing="6" styleClass="current-value-section">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" spacing="8">
-                                             <children>
-                                                <FontAwesomeIcon glyphName="CHECK_CIRCLE" size="0.9em" fill="#66BB6A" />
-                                                <Label text="Current Printer" styleClass="current-value-label" />
-                                             </children>
-                                          </HBox>
-                                          <Label fx:id="lblCurrentKotPrinter" text="Not configured"
-                                                 styleClass="current-value-text" wrapText="true" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
+                  </VBox>
 
                   <!-- Action Buttons Row -->
-                  <HBox spacing="16" alignment="CENTER">
+                  <HBox spacing="15" alignment="CENTER">
                      <VBox.margin>
-                        <Insets top="30.0" />
+                        <Insets top="25.0" />
                      </VBox.margin>
                      <children>
-                        <Button fx:id="btnSave" styleClass="action-btn-primary" prefWidth="180" prefHeight="48">
+                        <Button fx:id="btnSave" styleClass="action-btn-primary" prefWidth="160" prefHeight="42">
                            <graphic>
-                              <HBox alignment="CENTER" spacing="10">
+                              <HBox alignment="CENTER" spacing="8">
                                  <children>
-                                    <FontAwesomeIcon glyphName="SAVE" size="1.2em" fill="white" />
+                                    <FontAwesomeIcon glyphName="SAVE" size="1.1em" fill="white" />
                                     <Label text="Save Settings" styleClass="action-btn-text" />
                                  </children>
                               </HBox>
                            </graphic>
                         </Button>
-                        <Button fx:id="btnClear" styleClass="action-btn-secondary" prefWidth="150" prefHeight="48">
+                        <Button fx:id="btnClear" styleClass="action-btn-secondary" prefWidth="140" prefHeight="42">
                            <graphic>
-                              <HBox alignment="CENTER" spacing="10">
+                              <HBox alignment="CENTER" spacing="8">
                                  <children>
-                                    <FontAwesomeIcon glyphName="REFRESH" size="1.2em" fill="#667eea" />
+                                    <FontAwesomeIcon glyphName="REFRESH" size="1.1em" fill="#667eea" />
                                     <Label text="Clear Form" styleClass="action-btn-text-secondary" />
                                  </children>
                               </HBox>

@@ -2,7 +2,9 @@ package com.frontend.controller.setting;
 
 import com.frontend.config.SpringFXMLLoader;
 import com.frontend.entity.ApplicationSetting;
+import com.frontend.entity.Bank;
 import com.frontend.service.ApplicationSettingService;
+import com.frontend.service.BankService;
 import com.frontend.service.SessionService;
 import com.frontend.view.AlertNotification;
 import javafx.collections.FXCollections;
@@ -39,12 +41,16 @@ public class ApplicationSettingController implements Initializable {
     private static final String DOCUMENT_PATH_SETTING = "document_directory";
     private static final String BILLING_PRINTER_SETTING = "billing_printer";
     private static final String KOT_PRINTER_SETTING = "kot_printer";
+    private static final String DEFAULT_BANK_SETTING = "default_billing_bank";
 
     @Autowired
     private SpringFXMLLoader loader;
 
     @Autowired
     private ApplicationSettingService applicationSettingService;
+
+    @Autowired
+    private BankService bankService;
 
     @Autowired
     private AlertNotification alertNotification;
@@ -98,11 +104,22 @@ public class ApplicationSettingController implements Initializable {
     @FXML
     private Label lblCurrentKotPrinter;
 
+    // Default Bank components
+    @FXML
+    private ComboBox<String> cmbDefaultBank;
+
+    @FXML
+    private Button btnRefreshBanks;
+
+    @FXML
+    private Label lblCurrentDefaultBank;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
         setupEventHandlers();
         loadAvailablePrinters();
+        loadAvailableBanks();
         loadCurrentSettings();
     }
 
@@ -148,6 +165,9 @@ public class ApplicationSettingController implements Initializable {
         // Printer refresh buttons
         btnRefreshBillingPrinter.setOnAction(e -> refreshPrinters(cmbBillingPrinter));
         btnRefreshKotPrinter.setOnAction(e -> refreshPrinters(cmbKotPrinter));
+
+        // Bank refresh button
+        btnRefreshBanks.setOnAction(e -> refreshBanks());
     }
 
     /**
@@ -213,6 +233,110 @@ public class ApplicationSettingController implements Initializable {
         } catch (Exception e) {
             LOG.error("Error refreshing printer list: ", e);
             alertNotification.showError("Error refreshing printers: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Load all available active banks for the default bank dropdown with custom font
+     */
+    private void loadAvailableBanks() {
+        try {
+            ObservableList<String> bankNames = FXCollections.observableArrayList();
+
+            // Add a "None" option at the beginning
+            bankNames.add("-- None --");
+
+            // Get all active banks only
+            java.util.List<Bank> banks = bankService.getActiveBanks();
+            for (Bank bank : banks) {
+                bankNames.add(bank.getBankName());
+            }
+
+            cmbDefaultBank.setItems(bankNames);
+
+            // Get custom font for bank names (20px size)
+            javafx.scene.text.Font customFont = SessionService.getCustomFont(20.0);
+            final String fontFamily = customFont != null ? customFont.getFamily() : null;
+
+            // Apply custom cell factory for dropdown list with custom font
+            cmbDefaultBank.setCellFactory(param -> {
+                javafx.scene.control.ListCell<String> cell = new javafx.scene.control.ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item);
+                            if (item.equals("-- None --")) {
+                                setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 14px;");
+                            } else if (fontFamily != null) {
+                                setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #424242; -fx-font-size: 20px;");
+                            } else {
+                                setStyle("-fx-text-fill: #424242; -fx-font-size: 20px;");
+                            }
+                        }
+                    }
+                };
+
+                // Add click handler to hide popup after selection
+                cell.setOnMouseClicked(event -> {
+                    if (!cell.isEmpty()) {
+                        cmbDefaultBank.setValue(cell.getItem());
+                        cmbDefaultBank.hide();
+                    }
+                });
+
+                return cell;
+            });
+
+            // Apply custom font to button cell (selected value display)
+            cmbDefaultBank.setButtonCell(new javafx.scene.control.ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        if (item.equals("-- None --")) {
+                            setStyle("-fx-text-fill: #9E9E9E; -fx-font-size: 14px;");
+                        } else if (fontFamily != null) {
+                            setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #424242; -fx-font-size: 20px;");
+                        } else {
+                            setStyle("-fx-text-fill: #424242; -fx-font-size: 20px;");
+                        }
+                    }
+                }
+            });
+
+            LOG.info("Loaded {} active banks for default bank dropdown with custom font: {}", banks.size(), fontFamily);
+        } catch (Exception e) {
+            LOG.error("Error loading available banks: ", e);
+            alertNotification.showError("Error loading banks: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Refresh bank list
+     */
+    private void refreshBanks() {
+        try {
+            String currentSelection = cmbDefaultBank.getValue();
+            loadAvailableBanks();
+
+            // Restore previous selection if still available
+            if (currentSelection != null && cmbDefaultBank.getItems().contains(currentSelection)) {
+                cmbDefaultBank.setValue(currentSelection);
+            }
+
+            alertNotification.showSuccess("Bank list refreshed");
+            LOG.info("Bank list refreshed");
+        } catch (Exception e) {
+            LOG.error("Error refreshing bank list: ", e);
+            alertNotification.showError("Error refreshing banks: " + e.getMessage());
         }
     }
 
@@ -337,6 +461,21 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("KOT printer setting cleared");
             }
 
+            // Save Default Bank for Billing
+            String defaultBank = cmbDefaultBank.getValue();
+            if (defaultBank != null && !defaultBank.equals("-- None --")) {
+                applicationSettingService.saveSetting(DEFAULT_BANK_SETTING, defaultBank);
+                successMessage.append("Default bank saved. ");
+                hasChanges = true;
+                LOG.info("Default bank saved: {}", defaultBank);
+            } else if (defaultBank != null && defaultBank.equals("-- None --")) {
+                // Clear the setting if "None" is selected
+                applicationSettingService.deleteSettingByName(DEFAULT_BANK_SETTING);
+                successMessage.append("Default bank cleared. ");
+                hasChanges = true;
+                LOG.info("Default bank setting cleared");
+            }
+
             if (!hasChanges) {
                 alertNotification.showError("No changes to save. Please configure at least one setting.");
                 return;
@@ -361,6 +500,7 @@ public class ApplicationSettingController implements Initializable {
         txtFontPath.clear();
         cmbBillingPrinter.setValue(null);
         cmbKotPrinter.setValue(null);
+        cmbDefaultBank.setValue(null);
     }
 
     private void loadCurrentSettings() {
@@ -417,12 +557,28 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("No KOT printer setting found");
             }
 
+            // Load Default Bank Setting
+            Optional<ApplicationSetting> defaultBankSetting = applicationSettingService.getSettingByName(DEFAULT_BANK_SETTING);
+            if (defaultBankSetting.isPresent()) {
+                String defaultBank = defaultBankSetting.get().getSettingValue();
+                lblCurrentDefaultBank.setText(defaultBank);
+                // Also select in combo box if available
+                if (cmbDefaultBank.getItems().contains(defaultBank)) {
+                    cmbDefaultBank.setValue(defaultBank);
+                }
+                LOG.info("Loaded current default bank: {}", defaultBank);
+            } else {
+                lblCurrentDefaultBank.setText("Not configured");
+                LOG.info("No default bank setting found");
+            }
+
         } catch (Exception e) {
             LOG.error("Error loading current settings: ", e);
             lblCurrentDocument.setText("Error loading settings");
             lblCurrentFont.setText("Error loading settings");
             lblCurrentBillingPrinter.setText("Error loading settings");
             lblCurrentKotPrinter.setText("Error loading settings");
+            lblCurrentDefaultBank.setText("Error loading settings");
         }
     }
 }

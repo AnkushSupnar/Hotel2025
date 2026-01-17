@@ -244,6 +244,13 @@ public class BillingController implements Initializable {
     @FXML
     private ComboBox<PaymentOption> cmbPaymentMode;
 
+    // Print QR Code checkbox and container (visible when bank with UPI selected)
+    @FXML
+    private VBox hboxPrintQR;
+
+    @FXML
+    private CheckBox chkPrintQR;
+
     /**
      * Inner class to represent payment options (Cash bank or other Banks)
      * Cash is treated as a bank with IFSC code "cash" for unified transaction tracking
@@ -310,6 +317,9 @@ public class BillingController implements Initializable {
 
     // AutoComplete for bill history customer search
     private AutoCompleteTextField billHistoryCustomerAutoComplete;
+
+    // AutoComplete for item name search
+    private AutoCompleteTextField itemNameAutoComplete;
 
     @FXML
     private TableView<Bill> tblBillHistory;
@@ -835,7 +845,7 @@ public class BillingController implements Initializable {
         try {
             allItemNames = itemService.getAllItemNames();
             if (allItemNames != null && !allItemNames.isEmpty()) {
-                new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
+                itemNameAutoComplete = new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
                 LOG.info("Loaded {} items for all items mode", allItemNames.size());
             } else {
                 LOG.warn("No items found in database");
@@ -1019,9 +1029,10 @@ public class BillingController implements Initializable {
     private void handleCodeEnter() {
         String code = txtCode.getText().trim();
         String categoryName = txtCategoryName.getText().trim();
+        boolean itemFound = false;
 
         if (!code.isEmpty() && !categoryName.isEmpty()) {
-            searchItemByCode(code, categoryName);
+            itemFound = searchItemByCode(code, categoryName);
         } else if (!code.isEmpty()) {
             // Search by code only
             try {
@@ -1029,6 +1040,7 @@ public class BillingController implements Initializable {
                 Item item = itemService.getItemByCode(itemCode);
                 if (item != null) {
                     setItem(item);
+                    itemFound = true;
                 } else {
                     showAlert("Item not found with code: " + code);
                 }
@@ -1037,7 +1049,12 @@ public class BillingController implements Initializable {
             }
         }
 
-        txtItemName.requestFocus();
+        // If item found, move to quantity field; otherwise stay on item name field
+        if (itemFound) {
+            txtQuantity.requestFocus();
+        } else {
+            txtItemName.requestFocus();
+        }
     }
 
     private void handleItemNameEnter() {
@@ -1082,7 +1099,7 @@ public class BillingController implements Initializable {
     }
 
     // ============= Helper Methods =============
-    private void searchItemByCode(String code, String categoryName) {
+    private boolean searchItemByCode(String code, String categoryName) {
         try {
             int itemCode = Integer.parseInt(code);
 
@@ -1094,6 +1111,7 @@ public class BillingController implements Initializable {
                     Item item = itemService.findByCategoryIdAndItemCode(category.getId(), itemCode);
                     if (item != null) {
                         setItem(item);
+                        return true;
                     } else {
                         showAlert("Item not found for code " + itemCode + " in category " + categoryName);
                     }
@@ -1105,6 +1123,7 @@ public class BillingController implements Initializable {
                 Item item = itemService.getItemByCode(itemCode);
                 if (item != null) {
                     setItem(item);
+                    return true;
                 } else {
                     showAlert("Item not found with code: " + itemCode);
                 }
@@ -1112,6 +1131,7 @@ public class BillingController implements Initializable {
         } catch (NumberFormatException e) {
             showAlert("Invalid code format: " + code);
         }
+        return false;
     }
 
     private void loadItemsByCategory(String categoryName) {
@@ -1120,7 +1140,7 @@ public class BillingController implements Initializable {
         if (category != null) {
             allItemNames = itemService.getItemNameByCategoryId(category.getId());
             if (allItemNames != null && !allItemNames.isEmpty()) {
-                new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
+                itemNameAutoComplete = new AutoCompleteTextField(txtItemName, allItemNames, kiranFont, txtQuantity);
             }
         } else {
             showAlert("Category not found: " + categoryName);
@@ -1188,7 +1208,13 @@ public class BillingController implements Initializable {
             txtAmount.setText("");
         }
 
-        txtItemName.setText(item.getItemName());
+        // Use AutoCompleteTextField's setText to prevent popup from showing
+        if (itemNameAutoComplete != null) {
+            itemNameAutoComplete.setText(item.getItemName());
+            itemNameAutoComplete.hidePopup();
+        } else {
+            txtItemName.setText(item.getItemName());
+        }
         txtCode.setText(String.valueOf(item.getItemCode()));
         txtPrice.setText(String.valueOf(item.getRate()));
 
@@ -1416,6 +1442,26 @@ public class BillingController implements Initializable {
         // Apply CSS classes based on status
         button.getStyleClass().add("table-button");
         applyTableButtonStatus(button, status);
+
+        // Adjust button width based on table name length to prevent text truncation
+        String tableName = table.getTableName();
+        int nameLength = (tableName != null) ? tableName.length() : 0;
+
+        // Calculate appropriate width based on character count
+        // Base: 58px for 3 chars, add 14px for each additional character
+        int width;
+        if (nameLength <= 3) {
+            width = 58;
+        } else {
+            width = 58 + ((nameLength - 3) * 14);
+        }
+
+        // Use inline style to override CSS (inline styles have highest priority)
+        button.setStyle("-fx-min-width: " + width + "px; -fx-pref-width: " + width + "px;");
+
+        // Prevent text truncation
+        button.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
+        button.setWrapText(false);
 
         // Store button in map for later status updates
         tableButtonMap.put(table.getId(), button);
@@ -1969,12 +2015,41 @@ public class BillingController implements Initializable {
             return;
         }
 
-        txtItemName.setText(transaction.getItemName());
+        // Use AutoCompleteTextField's setText to prevent popup from showing
+        if (itemNameAutoComplete != null) {
+            itemNameAutoComplete.setText(transaction.getItemName());
+            itemNameAutoComplete.hidePopup();
+        } else {
+            txtItemName.setText(transaction.getItemName());
+        }
+
         // Display quantity with decimals if needed, otherwise show as integer
         float qty = transaction.getQty();
         txtQuantity.setText(qty == Math.floor(qty) ? String.valueOf((int) qty) : String.valueOf(qty));
         txtPrice.setText(String.valueOf(transaction.getRate()));
         txtAmount.setText(String.format("%.2f", transaction.getAmt()));
+
+        // Look up item by name to get the item code
+        // Use Platform.runLater to ensure code is set after other UI updates
+        final String itemName = transaction.getItemName();
+        Platform.runLater(() -> {
+            if (itemName != null && !itemName.trim().isEmpty() && itemService != null) {
+                try {
+                    Item item = itemService.getItemByName(itemName.trim()).orElse(null);
+                    if (item != null && item.getItemCode() != null) {
+                        txtCode.setText(String.valueOf(item.getItemCode()));
+                    } else {
+                        txtCode.setText("");
+                        LOG.debug("Item not found for name: {}", itemName);
+                    }
+                } catch (Exception e) {
+                    txtCode.setText("");
+                    LOG.warn("Could not find item code for: {}", itemName, e);
+                }
+            } else {
+                txtCode.setText("");
+            }
+        });
     }
 
     private void processOrder() {
@@ -2071,6 +2146,16 @@ public class BillingController implements Initializable {
                     calculatePayment();
                 }
             });
+
+            // Add ENTER key handler to trigger PAID button
+            txtCashReceived.setOnKeyPressed(event -> {
+                if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
+                    if (btnPaid != null) {
+                        btnPaid.fire();
+                    }
+                    event.consume();
+                }
+            });
         }
 
         // Add listener for Return to Customer field
@@ -2119,34 +2204,46 @@ public class BillingController implements Initializable {
             cmbPaymentMode.setItems(paymentOptions);
 
             // Custom cell factory for dropdown list with custom font and readable colors
-            cmbPaymentMode.setCellFactory(param -> new ListCell<PaymentOption>() {
-                @Override
-                protected void updateItem(PaymentOption item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                        setGraphic(null);
-                        setStyle("");
-                    } else {
-                        setText(item.getDisplayName());
-                        // Style with readable colors - green for cash, blue for banks
-                        if (item.isCash()) {
-                            // Cash bank - green color with custom font
-                            if (fontFamily != null) {
-                                setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
-                            } else {
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
-                            }
+            cmbPaymentMode.setCellFactory(param -> {
+                ListCell<PaymentOption> cell = new ListCell<PaymentOption>() {
+                    @Override
+                    protected void updateItem(PaymentOption item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                            setStyle("");
                         } else {
-                            // Other banks - blue color with custom font
-                            if (fontFamily != null) {
-                                setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                            setText(item.getDisplayName());
+                            // Style with readable colors - green for cash, blue for banks
+                            if (item.isCash()) {
+                                // Cash bank - green color with custom font
+                                if (fontFamily != null) {
+                                    setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                                } else {
+                                    setStyle("-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                                }
                             } else {
-                                setStyle("-fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                                // Other banks - blue color with custom font
+                                if (fontFamily != null) {
+                                    setStyle("-fx-font-family: '" + fontFamily + "'; -fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                                } else {
+                                    setStyle("-fx-text-fill: #1565C0; -fx-font-size: 18px; -fx-background-color: white; -fx-padding: 5 10;");
+                                }
                             }
                         }
                     }
-                }
+                };
+
+                // Add click handler to hide popup after selection
+                cell.setOnMouseClicked(event -> {
+                    if (!cell.isEmpty()) {
+                        cmbPaymentMode.setValue(cell.getItem());
+                        cmbPaymentMode.hide();
+                    }
+                });
+
+                return cell;
             });
 
             // Button cell (what shows when dropdown is closed) with custom font
@@ -2169,14 +2266,39 @@ public class BillingController implements Initializable {
                 }
             });
 
-            // Select cash bank by default, otherwise first option
-            if (cashBankOption != null) {
+            // Check for configured default bank in application settings
+            String defaultBankName = SessionService.getApplicationSetting("default_billing_bank");
+            PaymentOption defaultBankOption = null;
+
+            if (defaultBankName != null && !defaultBankName.trim().isEmpty()) {
+                // Find the configured default bank
+                for (PaymentOption option : paymentOptions) {
+                    if (option.getBank() != null && defaultBankName.equals(option.getBank().getBankName())) {
+                        defaultBankOption = option;
+                        break;
+                    }
+                }
+            }
+
+            // Select default bank if configured, otherwise cash bank, otherwise first option
+            if (defaultBankOption != null) {
+                cmbPaymentMode.getSelectionModel().select(defaultBankOption);
+                LOG.info("Selected configured default bank: {}", defaultBankName);
+            } else if (cashBankOption != null) {
                 cmbPaymentMode.getSelectionModel().select(cashBankOption);
                 LOG.info("Selected cash bank as default payment mode");
             } else if (!paymentOptions.isEmpty()) {
                 cmbPaymentMode.getSelectionModel().selectFirst();
                 LOG.warn("Cash bank (IFSC='cash') not found, selecting first bank as default");
             }
+
+            // Add listener to show/hide Print QR checkbox based on selected payment mode
+            cmbPaymentMode.valueProperty().addListener((observable, oldValue, newValue) -> {
+                updatePrintQRVisibility(newValue);
+            });
+
+            // Initial update for Print QR visibility
+            updatePrintQRVisibility(cmbPaymentMode.getValue());
 
             LOG.info("Payment mode dropdown setup with {} banks (custom font: {})", banks.size(), fontFamily);
 
@@ -2193,6 +2315,66 @@ public class BillingController implements Initializable {
             return cmbPaymentMode.getValue();
         }
         // Return null if nothing selected - caller should handle this
+        return null;
+    }
+
+    /**
+     * Update Print QR checkbox visibility based on selected payment mode
+     * Shows the checkbox only when a bank (not cash) with UPI ID is selected
+     * Auto-selects the checkbox when a bank with UPI ID is selected
+     */
+    private void updatePrintQRVisibility(PaymentOption selectedPayment) {
+        if (hboxPrintQR == null) {
+            return;
+        }
+
+        boolean showQR = false;
+
+        if (selectedPayment != null && selectedPayment.getBank() != null) {
+            Bank bank = selectedPayment.getBank();
+            // Show QR option only for non-cash banks that have a UPI ID
+            if (!selectedPayment.isCash() && bank.getUpiId() != null && !bank.getUpiId().trim().isEmpty()) {
+                showQR = true;
+            }
+        }
+
+        hboxPrintQR.setVisible(showQR);
+        hboxPrintQR.setManaged(showQR);
+
+        // Auto-select checkbox when bank with UPI ID is selected, reset when hidden
+        if (chkPrintQR != null) {
+            chkPrintQR.setSelected(showQR);
+        }
+
+        LOG.debug("Print QR visibility updated: {}, checkbox selected: {}", showQR, showQR);
+    }
+
+    /**
+     * Check if Print QR Code is selected
+     */
+    public boolean isPrintQRSelected() {
+        return chkPrintQR != null && chkPrintQR.isSelected();
+    }
+
+    /**
+     * Get the UPI ID of the currently selected bank (if available)
+     */
+    public String getSelectedBankUpiId() {
+        PaymentOption selectedPayment = getSelectedPaymentOption();
+        if (selectedPayment != null && selectedPayment.getBank() != null) {
+            return selectedPayment.getBank().getUpiId();
+        }
+        return null;
+    }
+
+    /**
+     * Get the name of the currently selected bank (if available)
+     */
+    public String getSelectedBankName() {
+        PaymentOption selectedPayment = getSelectedPaymentOption();
+        if (selectedPayment != null && selectedPayment.getBank() != null) {
+            return selectedPayment.getBank().getBankName();
+        }
         return null;
     }
 
@@ -2709,15 +2891,33 @@ public class BillingController implements Initializable {
         if (lblBalance != null) lblBalance.setText("₹ 0.00");
         if (lblDiscount != null) lblDiscount.setText("₹ 0.00");
         if (lblNetAmount != null) lblNetAmount.setText("₹ 0.00");
-        // Reset payment mode to cash bank
+        // Reset Print QR checkbox
+        if (chkPrintQR != null) {
+            chkPrintQR.setSelected(false);
+        }
+        // Reset payment mode to configured default bank or cash bank
         if (cmbPaymentMode != null && !cmbPaymentMode.getItems().isEmpty()) {
-            // Find and select the cash bank (IFSC="cash")
-            PaymentOption cashOption = cmbPaymentMode.getItems().stream()
-                    .filter(PaymentOption::isCash)
-                    .findFirst()
-                    .orElse(null);
-            if (cashOption != null) {
-                cmbPaymentMode.getSelectionModel().select(cashOption);
+            PaymentOption selectedOption = null;
+
+            // Check for configured default bank
+            String defaultBankName = SessionService.getApplicationSetting("default_billing_bank");
+            if (defaultBankName != null && !defaultBankName.trim().isEmpty()) {
+                selectedOption = cmbPaymentMode.getItems().stream()
+                        .filter(opt -> opt.getBank() != null && defaultBankName.equals(opt.getBank().getBankName()))
+                        .findFirst()
+                        .orElse(null);
+            }
+
+            // Fall back to cash bank if no default configured
+            if (selectedOption == null) {
+                selectedOption = cmbPaymentMode.getItems().stream()
+                        .filter(PaymentOption::isCash)
+                        .findFirst()
+                        .orElse(null);
+            }
+
+            if (selectedOption != null) {
+                cmbPaymentMode.getSelectionModel().select(selectedOption);
             } else {
                 cmbPaymentMode.getSelectionModel().selectFirst();
             }
@@ -3029,10 +3229,22 @@ public class BillingController implements Initializable {
             final Bill billToPrint = savedBill;
             final String tableNameForPrint = tableName;
 
+            // Check if QR code printing is enabled
+            final boolean printQR = isPrintQRSelected();
+            final String upiId = printQR ? getSelectedBankUpiId() : null;
+            final String bankName = printQR ? getSelectedBankName() : null;
+
             // Run printing in background thread to avoid blocking UI
             new Thread(() -> {
                 try {
-                    billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                    if (printQR && upiId != null && !upiId.trim().isEmpty()) {
+                        // Print bill with QR code for UPI payment
+                        billPrint.printBillWithQR(billToPrint, tableNameForPrint, true, upiId, bankName);
+                        LOG.info("Bill #{} printed with QR code for UPI: {}", billToPrint.getBillNo(), upiId);
+                    } else {
+                        // Print bill without QR code
+                        billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                    }
                 } catch (Exception e) {
                     LOG.error("Error printing bill #{}: {}", billToPrint.getBillNo(), e.getMessage(), e);
                 }

@@ -128,6 +128,9 @@ public class AddItemController implements Initializable {
         colItemCode.setCellValueFactory(cellData -> cellData.getValue().itemCodeProperty().asObject());
         colRate.setCellValueFactory(cellData -> cellData.getValue().rateProperty().asObject());
 
+        // Setup responsive column widths - bind to table width
+        setupResponsiveColumnWidths();
+
         // Apply custom font to Item Name and Category columns
         applyItemNameColumnFont();
         applyCategoryColumnFont();
@@ -141,6 +144,26 @@ public class AddItemController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * Setup responsive column widths that adjust based on table width
+     */
+    private void setupResponsiveColumnWidths() {
+        // Bind column widths to percentage of table width
+        // ID: 8%, Item Name: 32%, Category: 25%, Item Code: 15%, Rate: 20%
+        colId.prefWidthProperty().bind(tblItems.widthProperty().multiply(0.08));
+        colItemName.prefWidthProperty().bind(tblItems.widthProperty().multiply(0.32));
+        colCategory.prefWidthProperty().bind(tblItems.widthProperty().multiply(0.25));
+        colItemCode.prefWidthProperty().bind(tblItems.widthProperty().multiply(0.15));
+        colRate.prefWidthProperty().bind(tblItems.widthProperty().multiply(0.18));
+
+        // Disable manual column resizing to maintain proportions
+        colId.setResizable(false);
+        colItemName.setResizable(false);
+        colCategory.setResizable(false);
+        colItemCode.setResizable(false);
+        colRate.setResizable(false);
     }
 
     private void setupEventHandlers() {

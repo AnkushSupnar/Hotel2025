@@ -103,6 +103,23 @@ public class AlertNotification {
         // Apply Material Design styling
         applyMaterialStyling(notice);
 
+        // Set default focus on "No" button
+        Button noButton = (Button) notice.getDialogPane().lookupButton(btnNo);
+        if (noButton != null) {
+            noButton.setDefaultButton(true);
+        }
+        Button yesButton = (Button) notice.getDialogPane().lookupButton(btnYes);
+        if (yesButton != null) {
+            yesButton.setDefaultButton(false);
+        }
+
+        // Request focus on "No" button when dialog is shown
+        notice.setOnShown(event -> {
+            if (noButton != null) {
+                noButton.requestFocus();
+            }
+        });
+
         notice.showAndWait().ifPresent(type -> {
             if (type.getText().equals("Yes")) {
                 result.set(true);
