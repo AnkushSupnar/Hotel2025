@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="750.0" prefWidth="1300.0" styleClass="registration-root" stylesheets="@../css/create_shope.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.CreateShopeController">
 
@@ -77,7 +78,10 @@
                                 <Label style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;" styleClass="input-label" text="RESTAURANT NAME *" />
                                 <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                     <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="🏪" />
-                                    <TextField fx:id="txtShopName" promptText="ha^Tolacao naava" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:id="txtShopName" promptText="ha^Tolacao naava" styleClass="material-input" HBox.hgrow="ALWAYS">
+                              <font>
+                                 <Font name="Kiran" size="20.0" />
+                              </font></TextField>
                                 </HBox>
                             </VBox>
 
@@ -86,7 +90,10 @@
                                 <Label style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;" styleClass="input-label" text="ADDRESS *" />
                                 <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                     <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="📍" />
-                                    <TextField fx:id="txtShopAddress" promptText="pattaa" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:id="txtShopAddress" promptText="pattaa" styleClass="material-input" HBox.hgrow="ALWAYS">
+                              <font>
+                                 <Font name="Kiran" size="20.0" />
+                              </font></TextField>
                                 </HBox>
                             </VBox>
 
@@ -96,6 +103,36 @@
                                 <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                     <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="📞" />
                                     <TextField fx:id="txtShopContact" promptText="Enter contact number" style="-fx-text-fill: #212121;" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+
+                            <!-- Alternate Contact Number -->
+                            <VBox spacing="8">
+                                <Label style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;" styleClass="input-label" text="ALTERNATE CONTACT NUMBER" />
+                                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                                    <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="📱" />
+                                    <TextField fx:id="txtShopContact2" promptText="Enter alternate number (optional)" style="-fx-text-fill: #212121;" styleClass="material-input" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+
+                            <!-- Sub Title / Tagline -->
+                            <VBox spacing="8">
+                                <Label style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;" styleClass="input-label" text="SUB TITLE / TAGLINE" />
+                                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                                    <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="🏷️" />
+                                    <TextField fx:id="txtSubTitle" promptText="iSaYa-k (T^ga laa[na)" styleClass="material-input" HBox.hgrow="ALWAYS">
+                              <font>
+                                 <Font name="Kiran" size="20.0" />
+                              </font></TextField>
+                                </HBox>
+                            </VBox>
+
+                            <!-- GSTIN Number -->
+                            <VBox spacing="8">
+                                <Label style="-fx-text-fill: #5e35b1; -fx-font-size: 12px; -fx-font-weight: 600;" styleClass="input-label" text="GSTIN NUMBER" />
+                                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
+                                    <Label style="-fx-text-fill: #7E57C2; -fx-font-size: 20px;" styleClass="input-icon" text="📄" />
+                                    <TextField fx:id="txtGstinNumber" promptText="Enter GSTIN number (optional)" style="-fx-text-fill: #212121;" styleClass="material-input" HBox.hgrow="ALWAYS" />
                                 </HBox>
                             </VBox>
 

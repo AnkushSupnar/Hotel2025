@@ -123,6 +123,9 @@ public class ShopService {
         existingShop.setRestaurantName(updatedShop.getRestaurantName());
         existingShop.setAddress(updatedShop.getAddress());
         existingShop.setContactNumber(updatedShop.getContactNumber());
+        existingShop.setContactNumber2(updatedShop.getContactNumber2());
+        existingShop.setSubTitle(updatedShop.getSubTitle());
+        existingShop.setGstinNumber(updatedShop.getGstinNumber());
         existingShop.setLicenseKey(updatedShop.getLicenseKey());
         existingShop.setOwnerName(updatedShop.getOwnerName());
 

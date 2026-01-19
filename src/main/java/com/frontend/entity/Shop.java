@@ -27,6 +27,15 @@ public class Shop {
     @Column(name = "contact_number", nullable = false, length = 15)
     private String contactNumber;
 
+    @Column(name = "contact_number2", length = 15)
+    private String contactNumber2;
+
+    @Column(name = "sub_title", length = 200)
+    private String subTitle;
+
+    @Column(name = "gstin_number", length = 20)
+    private String gstinNumber;
+
     @Column(name = "license_key", length = 100)
     private String licenseKey;
 

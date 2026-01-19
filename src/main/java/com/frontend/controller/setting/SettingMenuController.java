@@ -37,6 +37,9 @@ public class SettingMenuController implements Initializable {
     @FXML
     private StackPane userRightsCard;
 
+    @FXML
+    private StackPane shopDetailsCard;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -108,6 +111,23 @@ public class SettingMenuController implements Initializable {
                 LOG.error("Error loading user rights: ", ex);
             }
         });
+
+        // Shop Details
+        shopDetailsCard.setOnMouseClicked(e -> {
+            try {
+                // Only ADMIN can access Shop Details
+                String currentRole = SessionService.getCurrentUserRole();
+                if (!"ADMIN".equalsIgnoreCase(currentRole)) {
+                    alertNotification.showError("Access Denied: Only Administrators can manage shop details");
+                    LOG.warn("User {} with role {} attempted to access Shop Details",
+                            SessionService.getCurrentUsername(), currentRole);
+                    return;
+                }
+                loadShopDetails();
+            } catch (Exception ex) {
+                LOG.error("Error loading shop details: ", ex);
+            }
+        });
     }
 
     private void loadApplicationSettings() {
@@ -125,6 +145,15 @@ public class SettingMenuController implements Initializable {
             Pane pane = loader.getPage("/fxml/setting/UserRights.fxml");
             mainPane.setCenter(pane);
             LOG.info("Loaded User Rights screen");
+        }
+    }
+
+    private void loadShopDetails() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/setting/ShopDetails.fxml");
+            mainPane.setCenter(pane);
+            LOG.info("Loaded Shop Details screen");
         }
     }
 

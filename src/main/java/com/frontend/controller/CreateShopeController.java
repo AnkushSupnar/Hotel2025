@@ -45,7 +45,16 @@ public class CreateShopeController {
     private TextField txtShopContact;
 
     @FXML
+    private TextField txtShopContact2;
+
+    @FXML
     private TextField txtShopName;
+
+    @FXML
+    private TextField txtSubTitle;
+
+    @FXML
+    private TextField txtGstinNumber;
 
     @FXML
     private TextField txtShoplicense;
@@ -128,7 +137,15 @@ public class CreateShopeController {
                     txtWonerName.setFont(kiranFont);
                 });
 
-                LOG.info("Kiran font (20px) applied to Restaurant Name, Address, and Owner Name fields with focus listeners");
+                // Apply font to Sub Title field (for Marathi tagline)
+                txtSubTitle.setFont(kiranFont);
+                txtSubTitle.setStyle(fontStyle);
+                // Maintain font on focus changes
+                txtSubTitle.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    txtSubTitle.setFont(kiranFont);
+                });
+
+                LOG.info("Kiran font (20px) applied to Restaurant Name, Address, Owner Name, and Sub Title fields with focus listeners");
             } else {
                 LOG.error("Failed to load Kiran font from bundled resources");
             }
@@ -158,8 +175,11 @@ public class CreateShopeController {
             // Step 1: Create Shop/Restaurant record
             Shop shop = Shop.builder()
                 .restaurantName(txtShopName.getText().trim())
+                .subTitle(txtSubTitle.getText().trim())
                 .address(txtShopAddress.getText().trim())
                 .contactNumber(txtShopContact.getText().trim())
+                .contactNumber2(txtShopContact2.getText().trim())
+                .gstinNumber(txtGstinNumber.getText().trim())
                 .licenseKey(txtShoplicense.getText().trim())
                 .ownerName(ownerName)
                 .build();
@@ -284,8 +304,11 @@ public class CreateShopeController {
 
     private void clearForm() {
         txtShopName.clear();
+        txtSubTitle.clear();
         txtShopAddress.clear();
         txtShopContact.clear();
+        txtShopContact2.clear();
+        txtGstinNumber.clear();
         txtShoplicense.clear();
         txtWonerName.clear();
         txtWonerContact.clear();

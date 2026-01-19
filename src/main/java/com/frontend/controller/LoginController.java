@@ -276,7 +276,7 @@ public class LoginController {
 
             // Check if this is first-time setup (no users exist)
             boolean isFirstTimeSetup = usernames.isEmpty();
-
+           // isFirstTimeSetup = true;
             if (isFirstTimeSetup) {
                 // Show registration link, hide support text
                 if (linkRegister != null) {

@@ -87,6 +87,23 @@
                         </VBox>
                      </children>
                   </StackPane>
+
+                  <!-- Shop Details Card -->
+                  <StackPane fx:id="shopDetailsCard" styleClass="setting-card, shop-details-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, shop-details-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FF5722" glyphName="BUILDING" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Shop Details" />
+                              <Label styleClass="card-description" text="Manage restaurants and shop information" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
                </children>
             </HBox>
          </children>

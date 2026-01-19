@@ -102,7 +102,7 @@
                             </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="input-container">
                                 <FontAwesomeIcon fill="#90CAF9" glyphName="HOME" size="1.2em" styleClass="field-icon" />
-                                <ComboBox fx:id="cmbShop" maxWidth="Infinity" promptText="Select your restaurant" styleClass="material-combo" HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="cmbShop" maxWidth="Infinity" styleClass="material-combo" HBox.hgrow="ALWAYS" />
                             </HBox>
                         </VBox>
 

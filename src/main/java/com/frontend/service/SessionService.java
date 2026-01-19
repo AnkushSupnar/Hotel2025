@@ -169,6 +169,27 @@ public class SessionService {
     }
 
     /**
+     * Get current restaurant secondary contact
+     */
+    public static String getCurrentRestaurantContact2() {
+        return currentShop != null ? currentShop.getContactNumber2() : null;
+    }
+
+    /**
+     * Get current restaurant subtitle/tagline
+     */
+    public static String getCurrentRestaurantSubTitle() {
+        return currentShop != null ? currentShop.getSubTitle() : null;
+    }
+
+    /**
+     * Get current restaurant GSTIN number
+     */
+    public static String getCurrentRestaurantGstin() {
+        return currentShop != null ? currentShop.getGstinNumber() : null;
+    }
+
+    /**
      * Clear user session (logout)
      */
     public void clearSession() {

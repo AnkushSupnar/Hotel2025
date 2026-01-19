@@ -337,9 +337,13 @@ public class BillPrint {
      * Create items table with QR code - adds QR code before footer
      */
     private PdfPTable createItemsTableWithQR(List<Transaction> transactions, String tableName, String waitorName, byte[] qrCodeImage, String upiId) throws Exception {
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
+        float contentWidth = PAPER_WIDTH - 6f;
+
         // Items table with 4 columns: Item, Qty, Rate, Amount
+        // Column widths: Item=110, Qty=30, Rate=30, Amount=50 = 220 total
         PdfPTable table = new PdfPTable(4);
-        table.setTotalWidth(new float[]{100, 30, 30, 50});
+        table.setTotalWidth(new float[]{110, 30, 30, 50});
         table.setLockedWidth(true);
 
         // Row height for proper text display
@@ -607,52 +611,67 @@ public class BillPrint {
      * Create header table with hotel info
      */
     private PdfPTable createHeaderTable(Bill bill, String tableName, String waitorName, PdfPTable itemsTable) throws Exception {
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
+        float contentWidth = PAPER_WIDTH - 6f;
+
         PdfPTable headerTable = new PdfPTable(1);
-        headerTable.setTotalWidth(new float[]{210});
+        headerTable.setTotalWidth(new float[]{contentWidth});
         headerTable.setLockedWidth(true);
 
-        // Hotel name - "AMjanaI k^fo"
-        PdfPCell cellHead = new PdfPCell(new Phrase("AMjanaI k^fo", fontLarge));
+        // Hotel name - dynamic from SessionService
+        PdfPCell cellHead = new PdfPCell(new Phrase(getRestaurantName(), fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
         cellHead.setPaddingTop(0f); // Cut to cut from top
         cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
-        // Sub-title - "f^imalaI rosTa^rMT"
-        cellHead = new PdfPCell(new Phrase("f^imalaI rosTa^rMT", fontMedium));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Sub-title - dynamic from SessionService
+        String subTitle = getRestaurantSubTitle();
+        if (!subTitle.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase(subTitle, fontMedium));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // Address
-        cellHead = new PdfPCell(new Phrase("mau.paosT.saaonaJ-.ta.naovaasaa.ija.Ahmadnagar", fontSmall));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Address - dynamic from SessionService
+        String address = getRestaurantAddress();
+        if (!address.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase(address, fontSmall));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // Phone numbers - Marathi label + English numbers
-        Phrase phonePhrase = new Phrase();
-        phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
-        phonePhrase.add(new Chunk("9860419230   8552803030", fontEnglishSmall));
-        cellHead = new PdfPCell(phonePhrase);
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Phone numbers - Marathi label + dynamic numbers from SessionService
+        String contacts = getRestaurantContacts();
+        if (!contacts.isEmpty()) {
+            Phrase phonePhrase = new Phrase();
+            phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
+            phonePhrase.add(new Chunk(contacts, fontEnglishSmall));
+            cellHead = new PdfPCell(phonePhrase);
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // GSTIN
-        cellHead = new PdfPCell(new Phrase("GSTIN:- 27AGKPL2419AIZR", fontEnglishSmall));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.BOTTOM);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(2f);
-        headerTable.addCell(cellHead);
+        // GSTIN - dynamic from SessionService
+        String gstin = getRestaurantGstin();
+        if (!gstin.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase("GSTIN:- " + gstin, fontEnglishSmall));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.BOTTOM);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(2f);
+            headerTable.addCell(cellHead);
+        }
 
         // Bill type (Cash/Credit)
         String mode = "";
@@ -737,9 +756,13 @@ public class BillPrint {
      * Create items table - Compact and professional layout
      */
     private PdfPTable createItemsTable(List<Transaction> transactions, String tableName, String waitorName) throws Exception {
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
+        float contentWidth = PAPER_WIDTH - 6f;
+
         // Items table with 4 columns: Item, Qty, Rate, Amount
+        // Column widths: Item=110, Qty=30, Rate=30, Amount=50 = 220 total
         PdfPTable table = new PdfPTable(4);
-        table.setTotalWidth(new float[]{100, 30, 30, 50});
+        table.setTotalWidth(new float[]{110, 30, 30, 50});
         table.setLockedWidth(true);
 
         // Row height for proper text display
@@ -872,6 +895,63 @@ public class BillPrint {
         return table;
     }
 
+    // ============== Dynamic Restaurant Info Helper Methods ==============
+
+    /**
+     * Get restaurant name from session (with fallback)
+     */
+    private String getRestaurantName() {
+        String name = SessionService.getCurrentRestaurantName();
+        return (name != null && !name.trim().isEmpty()) ? name : "Restaurant";
+    }
+
+    /**
+     * Get restaurant subtitle from session (with fallback)
+     */
+    private String getRestaurantSubTitle() {
+        String subTitle = SessionService.getCurrentRestaurantSubTitle();
+        return (subTitle != null && !subTitle.trim().isEmpty()) ? subTitle : "";
+    }
+
+    /**
+     * Get restaurant address from session (with fallback)
+     */
+    private String getRestaurantAddress() {
+        String address = SessionService.getCurrentRestaurantAddress();
+        return (address != null && !address.trim().isEmpty()) ? address : "";
+    }
+
+    /**
+     * Get restaurant contact numbers formatted for bill
+     * Returns both contact numbers separated by spaces if both exist
+     */
+    private String getRestaurantContacts() {
+        String contact1 = SessionService.getCurrentRestaurantContact();
+        String contact2 = SessionService.getCurrentRestaurantContact2();
+
+        StringBuilder contacts = new StringBuilder();
+        if (contact1 != null && !contact1.trim().isEmpty()) {
+            contacts.append(contact1.trim());
+        }
+        if (contact2 != null && !contact2.trim().isEmpty()) {
+            if (contacts.length() > 0) {
+                contacts.append("   ");
+            }
+            contacts.append(contact2.trim());
+        }
+        return contacts.toString();
+    }
+
+    /**
+     * Get restaurant GSTIN from session (with fallback)
+     */
+    private String getRestaurantGstin() {
+        String gstin = SessionService.getCurrentRestaurantGstin();
+        return (gstin != null && !gstin.trim().isEmpty()) ? gstin : "";
+    }
+
+    // ============== End Dynamic Restaurant Info Helper Methods ==============
+
     /**
      * Get waiter name by ID
      */
@@ -978,43 +1058,55 @@ public class BillPrint {
         PdfPTable headerTable = new PdfPTable(1);
         headerTable.setWidthPercentage(100);
 
-        // Hotel Name - Marathi font
-        PdfPCell cell = new PdfPCell(new Phrase("AMjanaI k^fo", a4TitleFont));
+        // Hotel Name - dynamic from SessionService
+        PdfPCell cell = new PdfPCell(new Phrase(getRestaurantName(), a4TitleFont));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setPaddingBottom(5f);
         headerTable.addCell(cell);
 
-        // Subtitle - Marathi font
-        cell = new PdfPCell(new Phrase("f^imalaI rosTa^rMT", a4SubtitleFont));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPaddingBottom(5f);
-        headerTable.addCell(cell);
+        // Subtitle - dynamic from SessionService
+        String subTitle = getRestaurantSubTitle();
+        if (!subTitle.isEmpty()) {
+            cell = new PdfPCell(new Phrase(subTitle, a4SubtitleFont));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setPaddingBottom(5f);
+            headerTable.addCell(cell);
+        }
 
-        // Address - Marathi font
-        cell = new PdfPCell(new Phrase("mau.paosT.saaonaJ-.ta.naovaasaa.ija.Ahmadnagar", a4AddressFont));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPaddingBottom(3f);
-        headerTable.addCell(cell);
+        // Address - dynamic from SessionService
+        String address = getRestaurantAddress();
+        if (!address.isEmpty()) {
+            cell = new PdfPCell(new Phrase(address, a4AddressFont));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setPaddingBottom(3f);
+            headerTable.addCell(cell);
+        }
 
-        // Phone - Marathi label + English numbers
-        Phrase phonePhrase = new Phrase();
-        phonePhrase.add(new Chunk("maaobaa[la naM. ", a4AddressFont));
-        phonePhrase.add(new Chunk("9860419230 | 8552803030", new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.DARK_GRAY)));
-        cell = new PdfPCell(phonePhrase);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPaddingBottom(3f);
-        headerTable.addCell(cell);
+        // Phone - Marathi label + dynamic numbers from SessionService
+        String contacts = getRestaurantContacts();
+        if (!contacts.isEmpty()) {
+            Phrase phonePhrase = new Phrase();
+            phonePhrase.add(new Chunk("maaobaa[la naM. ", a4AddressFont));
+            phonePhrase.add(new Chunk(contacts.replace("   ", " | "), new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.DARK_GRAY)));
+            cell = new PdfPCell(phonePhrase);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setPaddingBottom(3f);
+            headerTable.addCell(cell);
+        }
 
-        // GSTIN - English font
-        cell = new PdfPCell(new Phrase("GSTIN: 27AGKPL2419AIZR", new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BaseColor.DARK_GRAY)));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPaddingBottom(10f);
-        headerTable.addCell(cell);
+        // GSTIN - dynamic from SessionService
+        String gstin = getRestaurantGstin();
+        if (!gstin.isEmpty()) {
+            cell = new PdfPCell(new Phrase("GSTIN: " + gstin, new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BaseColor.DARK_GRAY)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setPaddingBottom(10f);
+            headerTable.addCell(cell);
+        }
 
         document.add(headerTable);
 
@@ -1296,48 +1388,60 @@ public class BillPrint {
         headerTable.setTotalWidth(new float[]{260});
         headerTable.setLockedWidth(true);
 
-        // Hotel name - "AMjanaI k^fo"
-        PdfPCell cellHead = new PdfPCell(new Phrase("AMjanaI k^fo", fontLarge));
+        // Hotel name - dynamic from SessionService
+        PdfPCell cellHead = new PdfPCell(new Phrase(getRestaurantName(), fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
         cellHead.setPaddingTop(0f);
         cellHead.setPaddingBottom(0f);
         headerTable.addCell(cellHead);
 
-        // Sub-title - "f^imalaI rosTa^rMT"
-        cellHead = new PdfPCell(new Phrase("f^imalaI rosTa^rMT", fontMedium));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Sub-title - dynamic from SessionService
+        String subTitle = getRestaurantSubTitle();
+        if (!subTitle.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase(subTitle, fontMedium));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // Address
-        cellHead = new PdfPCell(new Phrase("mau.paosT.saaonaJ-.ta.naovaasaa.ija.Ahmadnagar", fontSmall));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Address - dynamic from SessionService
+        String address = getRestaurantAddress();
+        if (!address.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase(address, fontSmall));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // Phone numbers - Marathi label + English numbers
-        Phrase phonePhrase = new Phrase();
-        phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
-        phonePhrase.add(new Chunk("9860419230   8552803030", fontEnglishSmall));
-        cellHead = new PdfPCell(phonePhrase);
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
-        headerTable.addCell(cellHead);
+        // Phone numbers - Marathi label + dynamic numbers from SessionService
+        String contacts = getRestaurantContacts();
+        if (!contacts.isEmpty()) {
+            Phrase phonePhrase = new Phrase();
+            phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
+            phonePhrase.add(new Chunk(contacts, fontEnglishSmall));
+            cellHead = new PdfPCell(phonePhrase);
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.NO_BORDER);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(0f);
+            headerTable.addCell(cellHead);
+        }
 
-        // GSTIN
-        cellHead = new PdfPCell(new Phrase("GSTIN:- 27AGKPL2419AIZR", fontEnglishSmall));
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellHead.setBorder(Rectangle.BOTTOM);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(2f);
-        headerTable.addCell(cellHead);
+        // GSTIN - dynamic from SessionService
+        String gstin = getRestaurantGstin();
+        if (!gstin.isEmpty()) {
+            cellHead = new PdfPCell(new Phrase("GSTIN:- " + gstin, fontEnglishSmall));
+            cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellHead.setBorder(Rectangle.BOTTOM);
+            cellHead.setPaddingTop(0f);
+            cellHead.setPaddingBottom(2f);
+            headerTable.addCell(cellHead);
+        }
 
         // Bill type (Cash/Credit)
         String mode = "";

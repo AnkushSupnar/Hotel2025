@@ -60,7 +60,9 @@ public enum ScreenPermission {
     APPLICATION_SETTINGS("Application Settings", "/fxml/setting/ApplicationSetting.fxml", "SETTINGS",
             "Access to configure application settings"),
     USER_RIGHTS("User Rights", "/fxml/setting/UserRights.fxml", "SETTINGS",
-            "Access to manage user role permissions");
+            "Access to manage user role permissions"),
+    SHOP_DETAILS("Shop Details", "/fxml/setting/ShopDetails.fxml", "SETTINGS",
+            "Access to manage restaurant and shop information");
 
     private final String displayName;
     private final String fxmlPath;

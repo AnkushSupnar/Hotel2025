@@ -428,6 +428,17 @@
     -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F3E5F5 0%, #E1BEE7 100%);
 }
 
+/* Shop Details Card */
+.shop-details-card:hover {
+    -fx-border-color: #FF5722;
+    -fx-border-width: 2;
+    -fx-border-radius: 16;
+}
+
+.shop-details-icon-bg {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FBE9E7 0%, #FFCCBC 100%);
+}
+
 /* Permissions Header */
 .permissions-header {
     -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
