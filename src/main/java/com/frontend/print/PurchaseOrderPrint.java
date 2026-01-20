@@ -41,7 +41,7 @@ public class PurchaseOrderPrint {
     private static final BaseColor HEADER_BG = BaseColor.WHITE;
     private static final BaseColor HEADER_TEXT = BaseColor.BLACK;
     private static final BaseColor TABLE_HEADER_BG = new BaseColor(224, 242, 241); // Light teal
-    private static final BaseColor BORDER_COLOR = new BaseColor(189, 189, 189);
+    private static final BaseColor BORDER_COLOR = BaseColor.BLACK;
 
     @Autowired
     private SupplierService supplierService;

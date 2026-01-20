@@ -40,6 +40,9 @@ public class SettingMenuController implements Initializable {
     @FXML
     private StackPane shopDetailsCard;
 
+    @FXML
+    private StackPane sectionSequenceCard;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -128,6 +131,15 @@ public class SettingMenuController implements Initializable {
                 LOG.error("Error loading shop details: ", ex);
             }
         });
+
+        // Section Sequence
+        sectionSequenceCard.setOnMouseClicked(e -> {
+            try {
+                loadSectionSequence();
+            } catch (Exception ex) {
+                LOG.error("Error loading section sequence: ", ex);
+            }
+        });
     }
 
     private void loadApplicationSettings() {
@@ -154,6 +166,15 @@ public class SettingMenuController implements Initializable {
             Pane pane = loader.getPage("/fxml/setting/ShopDetails.fxml");
             mainPane.setCenter(pane);
             LOG.info("Loaded Shop Details screen");
+        }
+    }
+
+    private void loadSectionSequence() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/setting/SectionSequence.fxml");
+            mainPane.setCenter(pane);
+            LOG.info("Loaded Table Section Sequence screen");
         }
     }
 

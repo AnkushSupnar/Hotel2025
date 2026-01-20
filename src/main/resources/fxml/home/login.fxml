@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -76,11 +77,12 @@
                 </VBox>
             </VBox>
 
-            <!-- Right Panel - Login Form -->
-            <VBox alignment="CENTER" minWidth="400.0" styleClass="form-panel" HBox.hgrow="ALWAYS">
+            <!-- Right Panel - Login Form with ScrollPane for smaller screens -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" styleClass="form-scroll-pane" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER" minWidth="400.0" styleClass="form-panel">
 
-                <!-- Login Card -->
-                <VBox maxWidth="420" spacing="0" styleClass="login-card">
+                    <!-- Login Card -->
+                    <VBox maxWidth="420" spacing="0" styleClass="login-card">
 
                     <!-- Card Header -->
                     <VBox alignment="CENTER" spacing="8" styleClass="card-header">
@@ -92,7 +94,7 @@
                     </VBox>
 
                     <!-- Form Body -->
-                    <VBox spacing="20" styleClass="card-body">
+                    <VBox spacing="15" styleClass="card-body">
 
                         <!-- Restaurant Selection -->
                         <VBox spacing="6" styleClass="form-group">
@@ -184,13 +186,14 @@
 
                 </VBox>
 
-                <!-- Copyright -->
-                <Label styleClass="copyright-text" text="© 2025 Hotel Management System. All rights reserved.">
-                    <VBox.margin>
-                        <Insets top="30" />
-                    </VBox.margin>
-                </Label>
-            </VBox>
+                    <!-- Copyright -->
+                    <Label styleClass="copyright-text" text="© 2025 Hotel Management System. All rights reserved.">
+                        <VBox.margin>
+                            <Insets top="20" />
+                        </VBox.margin>
+                    </Label>
+                </VBox>
+            </ScrollPane>
         </HBox>
     </StackPane>
 </AnchorPane>

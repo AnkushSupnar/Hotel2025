@@ -1,5 +1,8 @@
 package com.frontend.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.frontend.entity.ApplicationSetting;
 import com.frontend.entity.TableMaster;
 import com.frontend.repository.TableMasterRepository;
 import org.slf4j.Logger;
@@ -8,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Service for TableMaster operations
@@ -17,9 +24,15 @@ import java.util.List;
 public class TableMasterService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TableMasterService.class);
+    private static final String SECTION_SEQUENCE_SETTING = "section_sequence";
 
     @Autowired
     private TableMasterRepository tableMasterRepository;
+
+    @Autowired
+    private ApplicationSettingService applicationSettingService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Get all tables
@@ -204,5 +217,59 @@ public class TableMasterService {
             LOG.error("Error fetching tables for description: {}", description, e);
             throw new RuntimeException("Error fetching tables: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Get all unique descriptions (sections) ordered by configured sequence
+     * Falls back to alphabetical order if no sequence is configured
+     */
+    public List<String> getUniqueDescriptionsOrdered() {
+        try {
+            LOG.info("Fetching unique descriptions ordered by sequence");
+            List<String> sections = tableMasterRepository.findDistinctDescriptions();
+
+            // Load sequence settings
+            Map<String, Integer> sequenceMap = loadSectionSequences();
+
+            if (sequenceMap.isEmpty()) {
+                LOG.info("No section sequence configured, using default alphabetical order");
+                return sections;
+            }
+
+            // Sort sections by sequence
+            sections.sort(Comparator.comparingInt(section ->
+                sequenceMap.getOrDefault(section, Integer.MAX_VALUE)));
+
+            LOG.info("Sections ordered by sequence: {}", sections);
+            return sections;
+
+        } catch (Exception e) {
+            LOG.error("Error fetching ordered descriptions", e);
+            // Fallback to default method
+            return getUniqueDescriptions();
+        }
+    }
+
+    /**
+     * Load section sequence settings from database
+     */
+    private Map<String, Integer> loadSectionSequences() {
+        Map<String, Integer> sequences = new HashMap<>();
+
+        try {
+            Optional<ApplicationSetting> settingOpt = applicationSettingService.getSettingByName(SECTION_SEQUENCE_SETTING);
+
+            if (settingOpt.isPresent()) {
+                String jsonValue = settingOpt.get().getSettingValue();
+                if (jsonValue != null && !jsonValue.trim().isEmpty()) {
+                    sequences = objectMapper.readValue(jsonValue, new TypeReference<Map<String, Integer>>() {});
+                    LOG.info("Loaded section sequences: {}", sequences);
+                }
+            }
+        } catch (Exception e) {
+            LOG.warn("Error loading section sequences: {}", e.getMessage());
+        }
+
+        return sequences;
     }
 }

@@ -1295,8 +1295,8 @@ public class BillingController implements Initializable {
             mainContainer.setSpacing(8);
             mainContainer.setStyle("-fx-background-color: transparent;");
 
-            // Get all sections and their tables
-            List<String> sections = tableMasterService.getUniqueDescriptions();
+            // Get all sections and their tables (ordered by configured sequence)
+            List<String> sections = tableMasterService.getUniqueDescriptionsOrdered();
             int totalTables = 0;
 
             for (int i = 0; i < sections.size(); i++) {

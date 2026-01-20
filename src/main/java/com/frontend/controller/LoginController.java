@@ -253,11 +253,9 @@ public class LoginController {
                     }
                 });
 
-                // Auto-select if only one shop exists
-                if (shops.size() == 1) {
-                    cmbShop.getSelectionModel().selectFirst();
-                    System.out.println("Auto-selected single restaurant: " + shops.get(0).getRestaurantName());
-                }
+                // Auto-select first shop from the list
+                cmbShop.getSelectionModel().selectFirst();
+                System.out.println("Auto-selected restaurant: " + shops.get(0).getRestaurantName());
 
                 System.out.println("Loaded " + shops.size() + " restaurant(s) into dropdown");
             } else {

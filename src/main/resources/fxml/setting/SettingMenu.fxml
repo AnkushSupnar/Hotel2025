@@ -106,6 +106,28 @@
                   </StackPane>
                </children>
             </HBox>
+
+            <!-- Second Row of Cards -->
+            <HBox alignment="CENTER" spacing="25.0" maxWidth="1200">
+               <children>
+                  <!-- Table Section Sequence Card -->
+                  <StackPane fx:id="sectionSequenceCard" styleClass="setting-card, section-sequence-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, section-sequence-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#26A69A" glyphName="TH_LARGE" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Table Section Sequence" />
+                              <Label styleClass="card-description" text="Drag and drop to reorder table sections" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

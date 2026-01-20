@@ -69,15 +69,15 @@ public class StageManager {
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
 
-        // All screens open in full screen mode
-        showFullScreen();
-
-        if(!title.equals("Login"))
-        {
-            primaryStage.setOnCloseRequest(e->e.consume());
-        } else {
+        if(title.equals("Login")) {
+            // Login screen: centered, proportional to screen size
+            showLoginCentered();
             // Allow closing for Login screen
             primaryStage.setOnCloseRequest(null);
+        } else {
+            // All other screens open in full screen mode
+            showFullScreen();
+            primaryStage.setOnCloseRequest(e->e.consume());
         }
 
         try {
@@ -85,6 +85,54 @@ public class StageManager {
         } catch (Exception exception) {
             logAndExit ("Unable to show scene for title" + title,  exception);
         }
+    }
+
+    public void showCentered(double width, double height) {
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
+
+        // Center the window on screen
+        double centerX = bounds.getMinX() + (bounds.getWidth() - width) / 2;
+        double centerY = bounds.getMinY() + (bounds.getHeight() - height) / 2;
+
+        primaryStage.setX(centerX);
+        primaryStage.setY(centerY);
+    }
+
+    /**
+     * Show login screen centered with proportional sizing based on screen dimensions.
+     * Adapts to different screen sizes while maintaining proper aspect ratio.
+     */
+    public void showLoginCentered() {
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+
+        // Calculate proportional size (70% of screen, with min/max bounds)
+        double width = Math.min(Math.max(screenWidth * 0.7, 850), 1200);
+        double height = Math.min(Math.max(screenHeight * 0.8, 650), 900);
+
+        // Ensure minimum height for login card content
+        if (height < 700 && screenHeight >= 800) {
+            height = 700;
+        }
+
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
+
+        // Center the window on screen
+        double centerX = bounds.getMinX() + (screenWidth - width) / 2;
+        double centerY = bounds.getMinY() + (screenHeight - height) / 2;
+
+        primaryStage.setX(centerX);
+        primaryStage.setY(centerY);
+
+        System.out.println("Login screen size: " + width + "x" + height + " (Screen: " + screenWidth + "x" + screenHeight + ")");
     }
 
     private Scene prepareScene(Parent rootnode) {
