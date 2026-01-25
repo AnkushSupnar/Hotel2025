@@ -487,6 +487,9 @@ public class UserRightsController implements Initializable {
             case "CASHIER":
                 info = "Cashier role - focused on billing and payment operations.";
                 break;
+            case "CAPTAIN":
+                info = "Captain role - for order taking, billing and sales reporting.";
+                break;
             case "WAITER":
                 info = "Waiter role - primarily for taking orders and basic billing access.";
                 break;

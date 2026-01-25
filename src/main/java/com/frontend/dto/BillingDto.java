@@ -40,7 +40,60 @@ public class BillingDto {
     }
 
     /**
-     * DTO for adding item to order
+     * DTO for a single item in an order
+     */
+    public static class OrderItemDto {
+        private String itemName;
+        private Float quantity;
+        private Float rate;  // Optional - will be fetched from DB if not provided
+
+        public OrderItemDto() {}
+
+        public OrderItemDto(String itemName, Float quantity) {
+            this.itemName = itemName;
+            this.quantity = quantity;
+        }
+
+        public OrderItemDto(String itemName, Float quantity, Float rate) {
+            this.itemName = itemName;
+            this.quantity = quantity;
+            this.rate = rate;
+        }
+
+        public String getItemName() { return itemName; }
+        public void setItemName(String itemName) { this.itemName = itemName; }
+        public Float getQuantity() { return quantity; }
+        public void setQuantity(Float quantity) { this.quantity = quantity; }
+        public Float getRate() { return rate; }
+        public void setRate(Float rate) { this.rate = rate; }
+    }
+
+    /**
+     * DTO for adding multiple items to order (bulk request)
+     * Works like desktop application:
+     * - If item with same name and rate exists, quantity is ADDED to existing
+     * - If item doesn't exist, new transaction is created
+     * - Negative quantity reduces the existing item
+     * - If KOT already printed and item is reduced, it tracks in reduced_item table
+     */
+    public static class AddItemsRequest {
+        private Integer waitorId;
+        private Integer userId;       // User ID for tracking reduced items
+        private String userName;      // Username for tracking reduced items
+        private List<OrderItemDto> items;
+
+        public Integer getWaitorId() { return waitorId; }
+        public void setWaitorId(Integer waitorId) { this.waitorId = waitorId; }
+        public Integer getUserId() { return userId; }
+        public void setUserId(Integer userId) { this.userId = userId; }
+        public String getUserName() { return userName; }
+        public void setUserName(String userName) { this.userName = userName; }
+        public List<OrderItemDto> getItems() { return items; }
+        public void setItems(List<OrderItemDto> items) { this.items = items; }
+    }
+
+    /**
+     * DTO for adding single item to order (kept for backward compatibility)
      */
     public static class AddItemRequest {
         private Integer tableId;

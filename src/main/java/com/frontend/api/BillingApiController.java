@@ -182,57 +182,146 @@ public class BillingApiController {
 
     /**
      * POST /api/billing/tables/{tableId}/transactions
-     * Add item to table order
+     * Add multiple items to table order (works like desktop application)
+     *
+     * Behavior:
+     * - If item with same name and rate exists: quantity is ADDED to existing
+     * - If item doesn't exist: new transaction is created
+     * - Negative quantity: reduces existing item (use for removing items)
+     * - If quantity becomes 0 or less: item is deleted
+     * - If KOT already printed and item is reduced: tracks in reduced_item table
+     *
+     * Example request:
+     * {
+     *   "waitorId": 3,
+     *   "userId": 1,
+     *   "userName": "admin",
+     *   "items": [
+     *     { "itemName": "Chicken Biryani", "quantity": 2 },
+     *     { "itemName": "Cold Drink", "quantity": 3 },
+     *     { "itemName": "Naan", "quantity": -1 }  // Reduces existing Naan by 1
+     *   ]
+     * }
      */
-    @Operation(summary = "Add item to order", description = "Add an item to a table's order")
+    @Operation(summary = "Add/Update items to order",
+               description = "Add multiple items to a table's order. If item exists, quantity is added. " +
+                       "Negative quantity reduces item and tracks kitchen items in reduced_item table.")
     @PostMapping("/tables/{tableId}/transactions")
-    public ResponseEntity<ApiResponse> addItemToTable(
+    public ResponseEntity<ApiResponse> addItemsToTable(
             @Parameter(description = "Table ID") @PathVariable Integer tableId,
-            @RequestBody AddItemRequest request) {
+            @RequestBody AddItemsRequest request) {
         try {
             // Validate request
-            if (request.getItemName() == null || request.getItemName().trim().isEmpty()) {
-                return ResponseEntity.badRequest()
-                        .body(new ApiResponse("Item name is required", false));
-            }
-            if (request.getQuantity() == null || request.getQuantity() == 0) {
-                return ResponseEntity.badRequest()
-                        .body(new ApiResponse("Valid quantity is required", false));
-            }
             if (request.getWaitorId() == null) {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse("Waiter ID is required", false));
             }
+            if (request.getItems() == null || request.getItems().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("At least one item is required", false));
+            }
 
-            // Get item rate if not provided
-            Float rate = request.getRate();
-            if (rate == null) {
-                Optional<Item> item = itemService.getItemByName(request.getItemName());
-                if (item.isPresent()) {
-                    rate = item.get().getRate();
+            List<TransactionItemDto> processedItems = new ArrayList<>();
+            List<String> errors = new ArrayList<>();
+            int reducedItemsTracked = 0;
+
+            // Process each item
+            for (OrderItemDto item : request.getItems()) {
+                // Validate item
+                if (item.getItemName() == null || item.getItemName().trim().isEmpty()) {
+                    errors.add("Item name is required");
+                    continue;
+                }
+                if (item.getQuantity() == null || item.getQuantity() == 0) {
+                    errors.add("Valid quantity is required for: " + item.getItemName());
+                    continue;
+                }
+
+                // Get item rate if not provided
+                Float rate = item.getRate();
+                if (rate == null) {
+                    Optional<Item> dbItem = itemService.getItemByName(item.getItemName());
+                    if (dbItem.isPresent()) {
+                        rate = dbItem.get().getRate();
+                    } else {
+                        errors.add("Item not found: " + item.getItemName());
+                        continue;
+                    }
+                }
+
+                // Create temp transaction
+                TempTransaction tempTransaction = new TempTransaction();
+                tempTransaction.setTableNo(tableId);
+                tempTransaction.setItemName(item.getItemName());
+                tempTransaction.setQty(item.getQuantity());
+                tempTransaction.setRate(rate);
+                tempTransaction.setAmt(item.getQuantity() * rate);
+                tempTransaction.setWaitorId(request.getWaitorId());
+                tempTransaction.setPrintQty(item.getQuantity() > 0 ? item.getQuantity() : 0f);
+
+                TempTransaction saved;
+
+                // Use tracking method for negative quantities (reducing items)
+                // This tracks kitchen items (already printed KOT) in reduced_item table
+                if (item.getQuantity() < 0) {
+                    saved = tempTransactionService.addOrUpdateTransactionWithTracking(
+                            tempTransaction,
+                            request.getUserId(),
+                            request.getUserName()
+                    );
+                    reducedItemsTracked++;
+                    LOG.info("Reduced item {} for table {} (qty: {}) - tracked for kitchen",
+                            item.getItemName(), tableId, item.getQuantity());
                 } else {
-                    return ResponseEntity.badRequest()
-                            .body(new ApiResponse("Item not found: " + request.getItemName(), false));
+                    // Positive quantity - use normal method
+                    saved = tempTransactionService.addOrUpdateTransaction(tempTransaction);
+                    LOG.info("Added item {} for table {} (qty: {})",
+                            item.getItemName(), tableId, item.getQuantity());
+                }
+
+                if (saved != null) {
+                    processedItems.add(convertToTransactionDto(saved));
+                } else {
+                    LOG.info("Item {} removed from table {} (qty became 0)",
+                            item.getItemName(), tableId);
                 }
             }
 
-            // Create temp transaction
-            TempTransaction tempTransaction = new TempTransaction();
-            tempTransaction.setTableNo(tableId);
-            tempTransaction.setItemName(request.getItemName());
-            tempTransaction.setQty(request.getQuantity());
-            tempTransaction.setRate(rate);
-            tempTransaction.setAmt(request.getQuantity() * rate);
-            tempTransaction.setWaitorId(request.getWaitorId());
-            tempTransaction.setPrintQty(request.getQuantity() > 0 ? request.getQuantity() : 0f);
+            // Get all current transactions for the table
+            List<TempTransaction> allTransactions = tempTransactionService.getTransactionsByTableNo(tableId);
+            List<TransactionItemDto> allItems = new ArrayList<>();
+            for (TempTransaction trans : allTransactions) {
+                allItems.add(convertToTransactionDto(trans));
+            }
 
-            // Save to database
-            TempTransaction saved = tempTransactionService.addOrUpdateTransaction(tempTransaction);
+            // Calculate totals
+            Float totalAmount = tempTransactionService.getTotalAmount(tableId);
+            Float totalQuantity = tempTransactionService.getTotalQuantity(tableId);
 
-            LOG.info("Added item {} to table {}", request.getItemName(), tableId);
-            return ResponseEntity.ok(new ApiResponse("Item added successfully", true, convertToTransactionDto(saved)));
+            // Build response
+            java.util.Map<String, Object> result = new java.util.HashMap<>();
+            result.put("transactions", allItems);
+            result.put("totalAmount", totalAmount);
+            result.put("totalQuantity", totalQuantity);
+            result.put("itemCount", allItems.size());
+            if (reducedItemsTracked > 0) {
+                result.put("reducedItemsTracked", reducedItemsTracked);
+            }
+            if (!errors.isEmpty()) {
+                result.put("errors", errors);
+            }
+
+            String message = errors.isEmpty()
+                    ? "Items processed successfully"
+                    : "Items processed with some errors";
+
+            LOG.info("Processed {} items for table {}. Total: {} items, Amount: {}, Reduced tracked: {}",
+                    request.getItems().size(), tableId, allItems.size(), totalAmount, reducedItemsTracked);
+
+            return ResponseEntity.ok(new ApiResponse(message, errors.isEmpty(), result));
+
         } catch (Exception e) {
-            LOG.error("Error adding item to table {}: {}", tableId, e.getMessage());
+            LOG.error("Error adding items to table {}: {}", tableId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error: " + e.getMessage(), false));
         }

@@ -126,6 +126,23 @@
                         </VBox>
                      </children>
                   </StackPane>
+
+                  <!-- Mobile App Settings Card -->
+                  <StackPane fx:id="mobileAppSettingCard" styleClass="setting-card, mobile-app-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, mobile-app-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#4CAF50" glyphName="MOBILE" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Mobile App Settings" />
+                              <Label styleClass="card-description" text="Configure mobile app access, JWT tokens and features" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
                </children>
             </HBox>
          </children>

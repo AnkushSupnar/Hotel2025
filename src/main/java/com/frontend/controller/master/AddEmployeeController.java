@@ -177,7 +177,7 @@ public class AddEmployeeController implements Initializable {
 
         // Setup designation combo box with common designations
         cmbDesignation.setItems(FXCollections.observableArrayList(
-                "Waiter", "Chef", "Manager", "Receptionist", "Cleaner", "Cashier",
+                "Waiter", "Chef", "Manager","Captain", "Receptionist", "Cleaner", "Cashier",
                 "Supervisor", "Helper", "Cook", "Delivery Boy", "Security"));
 
         // Set default date to today

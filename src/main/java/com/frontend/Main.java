@@ -89,7 +89,7 @@ public class Main extends Application {
 
 	/**
 	 * Initialize default role permissions on application startup
-	 * Creates predefined roles (ADMIN, MANAGER, CASHIER, WAITER, USER) if they don't exist
+	 * Creates predefined roles (ADMIN, MANAGER, CASHIER, CAPTAIN, WAITER, USER) if they don't exist
 	 */
 	private void initializeRolePermissions() {
 		try {

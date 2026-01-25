@@ -290,6 +290,9 @@ public class RoleService {
         createRoleIfNotExists("CASHIER",
                 "DASHBOARD,BILLING,RECEIVE_PAYMENT,SALES_REPORT,PAYMENT_RECEIVED_REPORT");
 
+        // CAPTAIN - Order taking and billing + Dashboard
+        createRoleIfNotExists("CAPTAIN", "DASHBOARD,BILLING,SALES_REPORT");
+
         // WAITER - Billing only + Dashboard
         createRoleIfNotExists("WAITER", "DASHBOARD,BILLING");
 
@@ -313,6 +316,6 @@ public class RoleService {
      * @return list of predefined role names
      */
     public List<String> getPredefinedRoleNames() {
-        return Arrays.asList("ADMIN", "MANAGER", "CASHIER", "WAITER", "USER");
+        return Arrays.asList("ADMIN", "MANAGER", "CASHIER", "CAPTAIN", "WAITER", "USER");
     }
 }

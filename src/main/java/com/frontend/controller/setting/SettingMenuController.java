@@ -43,6 +43,9 @@ public class SettingMenuController implements Initializable {
     @FXML
     private StackPane sectionSequenceCard;
 
+    @FXML
+    private StackPane mobileAppSettingCard;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -140,6 +143,25 @@ public class SettingMenuController implements Initializable {
                 LOG.error("Error loading section sequence: ", ex);
             }
         });
+
+        // Mobile App Settings
+        if (mobileAppSettingCard != null) {
+            mobileAppSettingCard.setOnMouseClicked(e -> {
+                try {
+                    // Only ADMIN can access Mobile App Settings
+                    String currentRole = SessionService.getCurrentUserRole();
+                    if (!"ADMIN".equalsIgnoreCase(currentRole)) {
+                        alertNotification.showError("Access Denied: Only Administrators can manage mobile app settings");
+                        LOG.warn("User {} with role {} attempted to access Mobile App Settings",
+                                SessionService.getCurrentUsername(), currentRole);
+                        return;
+                    }
+                    loadMobileAppSettings();
+                } catch (Exception ex) {
+                    LOG.error("Error loading mobile app settings: ", ex);
+                }
+            });
+        }
     }
 
     private void loadApplicationSettings() {
@@ -175,6 +197,15 @@ public class SettingMenuController implements Initializable {
             Pane pane = loader.getPage("/fxml/setting/SectionSequence.fxml");
             mainPane.setCenter(pane);
             LOG.info("Loaded Table Section Sequence screen");
+        }
+    }
+
+    private void loadMobileAppSettings() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            Pane pane = loader.getPage("/fxml/setting/MobileAppSetting.fxml");
+            mainPane.setCenter(pane);
+            LOG.info("Loaded Mobile App Settings screen");
         }
     }
 

@@ -74,7 +74,7 @@ public class AddUserController implements Initializable {
     private User selectedUser = null;
 
     // Available roles
-    private static final String[] ROLES = {"ADMIN", "MANAGER", "CASHIER", "WAITER", "USER"};
+    private static final String[] ROLES = {"ADMIN", "MANAGER", "CASHIER","CAPTAIN", "WAITER", "USER"};
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
