@@ -1,0 +1,226 @@
+================================================================================
+                    HOTEL MANAGEMENT SYSTEM - BUILD INSTRUCTIONS
+================================================================================
+
+This document explains how to build and run the Hotel Management application.
+There are two versions:
+  1. SERVER - Desktop application WITH REST API (for main computer/server)
+  2. CLIENT - Desktop application WITHOUT API (for additional computers)
+
+Both versions connect to the SAME database.
+
+================================================================================
+                              PREREQUISITES
+================================================================================
+
+1. JAVA JDK 17 or higher
+   - Download: https://adoptium.net/temurin/releases/
+   - After installation, verify by running: java -version
+
+2. APACHE MAVEN 3.6 or higher
+   - Download: https://maven.apache.org/download.cgi
+   - After installation, verify by running: mvn -version
+
+3. MYSQL DATABASE
+   - Make sure MySQL is running
+   - Update database connection in: src/main/resources/application.properties
+     - spring.datasource.url
+     - spring.datasource.username
+     - spring.datasource.password
+
+4. FOR EXE CREATION ONLY - WiX Toolset 3.x (Windows)
+   - Download: https://wixtoolset.org/releases/
+   - Install and add to system PATH
+
+================================================================================
+                         ALL MAVEN COMMANDS (QUICK REFERENCE)
+================================================================================
+
+    +---------------------------+----------------------------------------------+
+    | WHAT YOU WANT             | MAVEN COMMAND                                |
+    +---------------------------+----------------------------------------------+
+    | Run Server (development)  | mvn spring-boot:run -Prun-server             |
+    | Run Client (development)  | mvn spring-boot:run -Prun-client             |
+    | Build Server JAR          | mvn clean package -Pserver -DskipTests       |
+    | Build Client JAR          | mvn clean package -Pclient -DskipTests       |
+    | Build Server EXE          | mvn clean install -Pserver-exe -DskipTests   |
+    | Build Client EXE          | mvn clean install -Pclient-exe -DskipTests   |
+    +---------------------------+----------------------------------------------+
+
+================================================================================
+                       RUN DIRECTLY (WITHOUT BUILDING JAR)
+================================================================================
+
+Open Command Prompt or Terminal in the project folder (hotel-frontend)
+
+------ RUN SERVER MODE (Desktop + API) ------
+
+    mvn spring-boot:run -Prun-server
+
+    This will:
+    - Compile and run the application directly
+    - Start the desktop application
+    - Start the API server on port 8081
+    - Swagger UI available at: http://localhost:8081/swagger-ui.html
+
+
+------ RUN CLIENT MODE (Desktop Only) ------
+
+    mvn spring-boot:run -Prun-client
+
+    This will:
+    - Compile and run the application directly
+    - Start the desktop application only
+    - No API server (saves resources)
+
+================================================================================
+                            BUILDING JAR FILES
+================================================================================
+
+------ BUILD SERVER JAR (Desktop + API) ------
+
+    mvn clean package -Pserver -DskipTests
+
+    Output: target/hotel-server-1.0.0.jar
+
+
+------ BUILD CLIENT JAR (Desktop Only) ------
+
+    mvn clean package -Pclient -DskipTests
+
+    Output: target/hotel-client-1.0.0.jar
+
+
+------ BUILD BOTH JARS ------
+
+    mvn clean package -Pserver -DskipTests
+    mvn clean package -Pclient -DskipTests
+
+================================================================================
+                            RUNNING JAR FILES
+================================================================================
+
+------ RUN SERVER FROM JAR ------
+
+    java -jar target/hotel-server-1.0.0.jar
+
+    This will:
+    - Start the desktop application
+    - Start the API server on port 8081
+    - Swagger UI available at: http://localhost:8081/swagger-ui.html
+
+
+------ RUN CLIENT FROM JAR ------
+
+    java -jar target/hotel-client-1.0.0.jar
+
+    This will:
+    - Start the desktop application only
+    - No API server (saves resources)
+
+================================================================================
+                         BUILDING EXE INSTALLERS
+================================================================================
+
+NOTE: Requires WiX Toolset to be installed (see Prerequisites)
+
+------ BUILD SERVER EXE ------
+
+    mvn clean install -Pserver-exe -DskipTests
+
+    Output: target/installer/HotelServer-1.0.0.exe
+
+
+------ BUILD CLIENT EXE ------
+
+    mvn clean install -Pclient-exe -DskipTests
+
+    Output: target/installer/HotelClient-1.0.0.exe
+
+================================================================================
+                         INSTALLING EXE FILES
+================================================================================
+
+1. Double-click the .exe file (HotelServer-1.0.0.exe or HotelClient-1.0.0.exe)
+2. Follow the installation wizard
+3. Choose installation directory
+4. After installation:
+   - Desktop shortcut will be created
+   - Start Menu entry under "Hotel Management" folder
+
+================================================================================
+                              QUICK START GUIDE
+================================================================================
+
+SCENARIO: One server computer + Multiple client computers
+
+STEP 1: On the SERVER computer
+   - Build and install HotelServer
+   - Run HotelServer application
+   - Note down the server's IP address (e.g., 192.168.1.100)
+
+STEP 2: On each CLIENT computer
+   - Build and install HotelClient
+   - Make sure the database connection in application.properties
+     points to the same MySQL database
+   - Run HotelClient application
+
+================================================================================
+                            TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "mvn" command not found
+SOLUTION: Install Maven and add it to your system PATH
+
+PROBLEM: "java" command not found
+SOLUTION: Install JDK 17+ and add JAVA_HOME to your system PATH
+
+PROBLEM: Build fails with "jpackage" error
+SOLUTION: Make sure you have JDK 17+ (not just JRE) and WiX Toolset installed
+
+PROBLEM: Application cannot connect to database
+SOLUTION: Check application.properties for correct database URL, username, password
+
+PROBLEM: EXE build fails with WiX error
+SOLUTION:
+   1. Download WiX Toolset 3.x from https://wixtoolset.org/releases/
+   2. Install it
+   3. Add WiX bin folder to system PATH (e.g., C:\Program Files (x86)\WiX Toolset v3.11\bin)
+   4. Restart Command Prompt and try again
+
+================================================================================
+                              FILE LOCATIONS
+================================================================================
+
+Source Code:           src/main/java/com/frontend/
+Resources:             src/main/resources/
+Database Config:       src/main/resources/application.properties
+Server Config:         src/main/resources/application-server.properties
+Client Config:         src/main/resources/application-client.properties
+Built JARs:            target/
+Built EXE Installers:  target/installer/
+
+================================================================================
+                              BUILD SUMMARY
+================================================================================
+
+| What You Want                  | Command                              |
+|--------------------------------|--------------------------------------|
+| Server JAR                     | mvn clean package -Pserver -DskipTests |
+| Client JAR                     | mvn clean package -Pclient -DskipTests |
+| Server EXE Installer           | mvn clean install -Pserver-exe -DskipTests |
+| Client EXE Installer           | mvn clean install -Pclient-exe -DskipTests |
+
+================================================================================
+                                  NOTES
+================================================================================
+
+- SERVER version runs the embedded web server (Tomcat) on port 8081
+- CLIENT version does NOT run any web server (lighter, uses less memory)
+- Both versions use the SAME database
+- Both versions have the SAME desktop UI features
+- API documentation (Swagger) only available on SERVER version
+
+================================================================================
+                            END OF INSTRUCTIONS
+================================================================================

@@ -28,7 +28,8 @@ import java.io.InputStream;
 		"com.frontend.repository",
 		"com.frontend.entity",
 		"com.frontend.print",
-		"com.frontend.enums"
+		"com.frontend.enums",
+		"com.frontend.api"
 })
 public class Main extends Application {
 	private ConfigurableApplicationContext springContext;

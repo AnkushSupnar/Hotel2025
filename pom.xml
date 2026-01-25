@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<!-- Default profile (overridden by Maven profiles) -->
+		<active.profile>server</active.profile>
 	</properties>
 	<dependencies>
 
@@ -178,10 +180,33 @@
 			<version>11.17.0</version>
 		</dependency>
 
+		<!-- SpringDoc OpenAPI with Swagger UI -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 
 	</dependencies>
 
 	<build>
+		<!-- Enable resource filtering to inject profile into application.properties -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>application.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>application.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -204,5 +229,240 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- ========================================== -->
+	<!-- MAVEN PROFILES FOR SERVER AND CLIENT JARS -->
+	<!-- ========================================== -->
+	<!--
+		AVAILABLE MAVEN COMMANDS:
+		=========================
+
+		BUILD JAR FILES:
+		  mvn clean package -Pserver -DskipTests    (builds hotel-server-1.0.0.jar)
+		  mvn clean package -Pclient -DskipTests    (builds hotel-client-1.0.0.jar)
+
+		RUN APPLICATION DIRECTLY:
+		  mvn spring-boot:run -Prun-server          (runs server mode)
+		  mvn spring-boot:run -Prun-client          (runs client mode)
+
+		BUILD EXE INSTALLERS:
+		  mvn clean install -Pserver-exe -DskipTests  (builds HotelServer-1.0.0.exe)
+		  mvn clean install -Pclient-exe -DskipTests  (builds HotelClient-1.0.0.exe)
+	-->
+	<profiles>
+		<!-- ========================================== -->
+		<!-- RUN PROFILES (Run directly without building JAR) -->
+		<!-- ========================================== -->
+
+		<!-- RUN SERVER: mvn spring-boot:run -Prun-server -->
+		<profile>
+			<id>run-server</id>
+			<properties>
+				<active.profile>server</active.profile>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+							<arguments>
+								<argument>--spring.profiles.active=server</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- RUN CLIENT: mvn spring-boot:run -Prun-client -->
+		<profile>
+			<id>run-client</id>
+			<properties>
+				<active.profile>client</active.profile>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+							<arguments>
+								<argument>--spring.profiles.active=client</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- ========================================== -->
+		<!-- BUILD JAR PROFILES -->
+		<!-- ========================================== -->
+
+		<!-- SERVER PROFILE: mvn clean package -Pserver -DskipTests -->
+		<profile>
+			<id>server</id>
+			<properties>
+				<active.profile>server</active.profile>
+			</properties>
+			<build>
+				<finalName>hotel-server-${project.version}</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+							<arguments>
+								<argument>--spring.profiles.active=server</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- CLIENT PROFILE: mvn clean package -Pclient -DskipTests -->
+		<profile>
+			<id>client</id>
+			<properties>
+				<active.profile>client</active.profile>
+			</properties>
+			<build>
+				<finalName>hotel-client-${project.version}</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+							<arguments>
+								<argument>--spring.profiles.active=client</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- ========================================== -->
+		<!-- JPACKAGE PROFILES FOR CREATING .EXE FILES -->
+		<!-- ========================================== -->
+
+		<!-- SERVER EXE: Build JAR first, then create installer -->
+		<profile>
+			<id>server-exe</id>
+			<properties>
+				<active.profile>server</active.profile>
+			</properties>
+			<build>
+				<finalName>hotel-server-${project.version}</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.panteleyev</groupId>
+						<artifactId>jpackage-maven-plugin</artifactId>
+						<version>1.6.5</version>
+						<configuration>
+							<name>HotelServer</name>
+							<appVersion>${project.version}</appVersion>
+							<vendor>Hotel Management System</vendor>
+							<description>Hotel Management Server - Desktop Application with REST API</description>
+							<destination>${project.build.directory}/installer</destination>
+							<input>${project.build.directory}</input>
+							<mainJar>hotel-server-${project.version}.jar</mainJar>
+							<mainClass>com.frontend.Main</mainClass>
+							<javaOptions>
+								<option>-Dspring.profiles.active=server</option>
+								<option>-Dfile.encoding=UTF-8</option>
+								<option>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</option>
+								<option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
+							</javaOptions>
+							<type>EXE</type>
+							<winDirChooser>true</winDirChooser>
+							<winShortcut>true</winShortcut>
+							<winMenu>true</winMenu>
+							<winMenuGroup>Hotel Management</winMenuGroup>
+							<winConsole>false</winConsole>
+						</configuration>
+						<executions>
+							<execution>
+								<id>jpackage-server</id>
+								<phase>install</phase>
+								<goals>
+									<goal>jpackage</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- CLIENT EXE: Build JAR first, then create installer -->
+		<profile>
+			<id>client-exe</id>
+			<properties>
+				<active.profile>client</active.profile>
+			</properties>
+			<build>
+				<finalName>hotel-client-${project.version}</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.frontend.Main</mainClass>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.panteleyev</groupId>
+						<artifactId>jpackage-maven-plugin</artifactId>
+						<version>1.6.5</version>
+						<configuration>
+							<name>HotelClient</name>
+							<appVersion>${project.version}</appVersion>
+							<vendor>Hotel Management System</vendor>
+							<description>Hotel Management Client - Desktop Application Only</description>
+							<destination>${project.build.directory}/installer</destination>
+							<input>${project.build.directory}</input>
+							<mainJar>hotel-client-${project.version}.jar</mainJar>
+							<mainClass>com.frontend.Main</mainClass>
+							<javaOptions>
+								<option>-Dspring.profiles.active=client</option>
+								<option>-Dfile.encoding=UTF-8</option>
+								<option>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</option>
+								<option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
+							</javaOptions>
+							<type>EXE</type>
+							<winDirChooser>true</winDirChooser>
+							<winShortcut>true</winShortcut>
+							<winMenu>true</winMenu>
+							<winMenuGroup>Hotel Management</winMenuGroup>
+							<winConsole>false</winConsole>
+						</configuration>
+						<executions>
+							<execution>
+								<id>jpackage-client</id>
+								<phase>install</phase>
+								<goals>
+									<goal>jpackage</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

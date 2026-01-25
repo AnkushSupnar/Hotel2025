@@ -291,6 +291,13 @@ public class TempTransactionService {
     }
 
     /**
+     * Get a transaction by ID
+     */
+    public TempTransaction getTransactionById(Integer id) {
+        return tempTransactionRepository.findById(id).orElse(null);
+    }
+
+    /**
      * Delete a transaction by ID
      */
     @Transactional
