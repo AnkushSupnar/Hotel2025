@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 import java.awt.Desktop;
 import java.awt.print.PrinterJob;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ import java.util.Set;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.Orientation;
 import org.apache.pdfbox.printing.PDFPageable;
 
 /**
@@ -54,8 +56,9 @@ public class BillPrint {
     // Default PDF output directory (fallback if not configured in settings)
     private static final String DEFAULT_BILL_PDF_DIR = "D:" + File.separator + "Hotel Software";
 
-    // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm ≈ 3.15 inches)
-    private static final float PAPER_WIDTH = 226f;
+    // 80mm paper roll (8cm), 72mm actual printable area (7.2cm)
+    // 72mm = (72 / 25.4) * 72 ≈ 204 points
+    private static final float PAPER_WIDTH = 204f;
 
     @Autowired
     private EmployeesService employeesService;
@@ -304,14 +307,16 @@ public class BillPrint {
             if (qrCodeImage != null) {
                 height += 100f; // Extra height for QR code section
             }
-            if (height < 200f) height = 200f;
+            // Minimum height must be greater than PAPER_WIDTH to ensure portrait orientation
+            if (height < PAPER_WIDTH + 74f) height = PAPER_WIDTH + 74f;
 
-            // Create page size for thermal printer
+            // Create page size for thermal printer - portrait orientation
+            // Height is always > width to guarantee portrait
             Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
             pageSize.setRotation(0);
 
-            // Minimal margins
-            Document document = new Document(pageSize, 3f, 3f, 0f, 2f);
+            // Left/right margins to keep content centered and away from edges (left, right, top, bottom)
+            Document document = new Document(pageSize, 12f, 12f, 0f, 2f);
 
             // Create PDF file path
             String pdfDir = getPdfOutputDirectory();
@@ -337,13 +342,13 @@ public class BillPrint {
      * Create items table with QR code - adds QR code before footer
      */
     private PdfPTable createItemsTableWithQR(List<Transaction> transactions, String tableName, String waitorName, byte[] qrCodeImage, String upiId) throws Exception {
-        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
-        float contentWidth = PAPER_WIDTH - 6f;
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 204 - 12 - 12 = 180)
+        float contentWidth = PAPER_WIDTH - 24f;
 
         // Items table with 4 columns: Item, Qty, Rate, Amount
-        // Column widths: Item=110, Qty=30, Rate=30, Amount=50 = 220 total
+        // Column widths: Item=78, Qty=27, Rate=27, Amount=48 = 180 total
         PdfPTable table = new PdfPTable(4);
-        table.setTotalWidth(new float[]{110, 30, 30, 50});
+        table.setTotalWidth(new float[]{78, 27, 27, 48});
         table.setLockedWidth(true);
 
         // Row height for proper text display
@@ -576,16 +581,16 @@ public class BillPrint {
 
             // Calculate document height based on content
             float height = headerTable.getTotalHeight() + 20f;
-            if (height < 200f) height = 200f;
+            // Minimum height must be greater than PAPER_WIDTH to ensure portrait orientation
+            if (height < PAPER_WIDTH + 74f) height = PAPER_WIDTH + 74f;
 
             // Create page size for thermal printer - portrait orientation
-            // For iText, we need to ensure width < height for portrait
-            // Use lower-left corner at (0,0) and upper-right at (width, height)
+            // Height is always > width to guarantee portrait
             Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
-            pageSize.setRotation(0); // Ensure no rotation
+            pageSize.setRotation(0);
 
-            // Minimal margins - cut to cut from top (left, right, top, bottom)
-            Document document = new Document(pageSize, 3f, 3f, 0f, 2f);
+            // Left/right margins to keep content centered and away from edges (left, right, top, bottom)
+            Document document = new Document(pageSize, 12f, 12f, 0f, 2f);
 
             // Create PDF file path using configured document directory
             String pdfDir = getPdfOutputDirectory();
@@ -608,15 +613,138 @@ public class BillPrint {
     }
 
     /**
+     * Generate Bill PDF as byte array (for API responses).
+     * Same layout as the thermal receipt PDF but writes to memory instead of a file.
+     *
+     * @param bill      The bill with transactions loaded
+     * @param tableName The table name
+     * @return PDF bytes, or null on failure
+     */
+    public byte[] generateBillPdfBytes(Bill bill, String tableName) {
+        if (bill == null) {
+            LOG.warn("No bill to generate PDF bytes for");
+            return null;
+        }
+        try {
+            loadFonts();
+
+            String waitorName = getWaitorName(bill.getWaitorId());
+
+            // Create items table
+            PdfPTable itemsTable = createItemsTable(bill.getTransactions(), tableName, waitorName);
+
+            // Create header table
+            PdfPTable headerTable = createHeaderTable(bill, tableName, waitorName, itemsTable);
+
+            // Calculate document height based on content
+            float height = headerTable.getTotalHeight() + 20f;
+            if (height < PAPER_WIDTH + 74f) height = PAPER_WIDTH + 74f;
+
+            Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
+            pageSize.setRotation(0);
+
+            Document document = new Document(pageSize, 12f, 12f, 0f, 2f);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+            document.add(headerTable);
+            document.close();
+
+            LOG.info("Bill #{} PDF bytes generated ({} bytes)", bill.getBillNo(), baos.size());
+            return baos.toByteArray();
+
+        } catch (Exception e) {
+            LOG.error("Error generating bill PDF bytes: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Generate Bill PDF as byte array with optional QR code for UPI payment.
+     * Same layout as the thermal receipt but includes a QR code section when upiId is provided.
+     *
+     * @param bill      The bill with transactions loaded
+     * @param tableName The table name
+     * @param upiId     UPI ID to encode in QR code (if null/empty, falls back to plain PDF)
+     * @param bankName  Bank/payee name for UPI payment
+     * @return PDF bytes, or null on failure
+     */
+    public byte[] generateBillPdfBytesWithQR(Bill bill, String tableName, String upiId, String bankName) {
+        if (bill == null) {
+            LOG.warn("No bill to generate PDF bytes for");
+            return null;
+        }
+
+        // If no UPI ID provided, fall back to plain PDF
+        if (upiId == null || upiId.trim().isEmpty()) {
+            return generateBillPdfBytes(bill, tableName);
+        }
+
+        try {
+            loadFonts();
+
+            String waitorName = getWaitorName(bill.getWaitorId());
+
+            // Calculate net amount for QR code
+            double netAmount = bill.getNetAmount() != null ? bill.getNetAmount() :
+                    (bill.getTransactions() != null ?
+                            bill.getTransactions().stream().mapToDouble(t -> t.getAmt()).sum() : 0);
+
+            // Generate QR code image
+            byte[] qrCodeImage = null;
+            try {
+                qrCodeImage = QRCodeGenerator.generateUPIQRCode(upiId, bankName, netAmount);
+                LOG.info("Generated UPI QR code for amount: {}", netAmount);
+            } catch (Exception e) {
+                LOG.error("Failed to generate QR code: {}", e.getMessage());
+                // Continue without QR code
+            }
+
+            // Create items table with QR code
+            PdfPTable itemsTable = createItemsTableWithQR(bill.getTransactions(), tableName, waitorName, qrCodeImage, upiId);
+
+            // Create header table
+            PdfPTable headerTable = createHeaderTable(bill, tableName, waitorName, itemsTable);
+
+            // Calculate document height based on content (add extra for QR code)
+            float height = headerTable.getTotalHeight() + 20f;
+            if (qrCodeImage != null) {
+                height += 100f; // Extra height for QR code section
+            }
+            if (height < PAPER_WIDTH + 74f) height = PAPER_WIDTH + 74f;
+
+            Rectangle pageSize = new Rectangle(0, 0, PAPER_WIDTH, height);
+            pageSize.setRotation(0);
+
+            Document document = new Document(pageSize, 12f, 12f, 0f, 2f);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+            document.add(headerTable);
+            document.close();
+
+            LOG.info("Bill #{} PDF bytes with QR generated ({} bytes)", bill.getBillNo(), baos.size());
+            return baos.toByteArray();
+
+        } catch (Exception e) {
+            LOG.error("Error generating bill PDF bytes with QR: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
      * Create header table with hotel info
      */
     private PdfPTable createHeaderTable(Bill bill, String tableName, String waitorName, PdfPTable itemsTable) throws Exception {
-        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
-        float contentWidth = PAPER_WIDTH - 6f;
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 204 - 12 - 12 = 180)
+        float contentWidth = PAPER_WIDTH - 24f;
 
         PdfPTable headerTable = new PdfPTable(1);
         headerTable.setTotalWidth(new float[]{contentWidth});
         headerTable.setLockedWidth(true);
+        headerTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         // Hotel name - dynamic from SessionService
         PdfPCell cellHead = new PdfPCell(new Phrase(getRestaurantName(), fontLarge));
@@ -690,8 +818,10 @@ public class BillPrint {
         cellHead.setPaddingBottom(2f);
         headerTable.addCell(cellHead);
 
-        // Bill number and date in nested table
+        // Bill number and date in nested table - locked to content width
         PdfPTable nestedTable = new PdfPTable(2);
+        nestedTable.setTotalWidth(contentWidth);
+        nestedTable.setLockedWidth(true);
         nestedTable.setWidths(new float[]{50, 50});
 
         // Bill number: Marathi label + English value
@@ -703,6 +833,7 @@ public class BillPrint {
         cellBill.setBorder(Rectangle.NO_BORDER);
         cellBill.setPaddingTop(2f);
         cellBill.setPaddingBottom(2f);
+        cellBill.setPaddingLeft(3f);
         nestedTable.addCell(cellBill);
 
         // Date: Marathi label + English value
@@ -714,13 +845,12 @@ public class BillPrint {
         cellDate.setBorder(Rectangle.NO_BORDER);
         cellDate.setPaddingTop(2f);
         cellDate.setPaddingBottom(2f);
+        cellDate.setPaddingRight(3f);
         nestedTable.addCell(cellDate);
 
         cellHead = new PdfPCell(nestedTable);
-        cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
+        cellHead.setPadding(0f);
         headerTable.addCell(cellHead);
 
         // Add customer name for CREDIT bills
@@ -745,7 +875,7 @@ public class BillPrint {
         cellHead = new PdfPCell(itemsTable);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
+        cellHead.setPadding(0f);
         cellHead.setPaddingBottom(5f);
         headerTable.addCell(cellHead);
 
@@ -756,13 +886,13 @@ public class BillPrint {
      * Create items table - Compact and professional layout
      */
     private PdfPTable createItemsTable(List<Transaction> transactions, String tableName, String waitorName) throws Exception {
-        // Use full content width (PAPER_WIDTH - left margin - right margin = 226 - 3 - 3 = 220)
-        float contentWidth = PAPER_WIDTH - 6f;
+        // Use full content width (PAPER_WIDTH - left margin - right margin = 204 - 12 - 12 = 180)
+        float contentWidth = PAPER_WIDTH - 24f;
 
         // Items table with 4 columns: Item, Qty, Rate, Amount
-        // Column widths: Item=110, Qty=30, Rate=30, Amount=50 = 220 total
+        // Column widths: Item=78, Qty=27, Rate=27, Amount=48 = 180 total
         PdfPTable table = new PdfPTable(4);
-        table.setTotalWidth(new float[]{110, 30, 30, 50});
+        table.setTotalWidth(new float[]{78, 27, 27, 48});
         table.setLockedWidth(true);
 
         // Row height for proper text display
@@ -1736,11 +1866,11 @@ public class BillPrint {
                 }
             }
 
-            // Load PDF and print
+            // Load PDF and print in portrait orientation
             try (PDDocument document = PDDocument.load(pdfFile)) {
                 PrinterJob printerJob = PrinterJob.getPrinterJob();
                 printerJob.setPrintService(printService);
-                printerJob.setPageable(new PDFPageable(document));
+                printerJob.setPageable(new PDFPageable(document, Orientation.PORTRAIT));
 
                 // Print without showing dialog
                 printerJob.print();

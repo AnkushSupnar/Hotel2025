@@ -49,8 +49,9 @@ public class KOTOrderPrint {
     // KOT PDF filename
     private static final String KOT_PDF_FILENAME = "KOT.pdf";
 
-    // Paper width for 80mm thermal printer (in points, 1 inch = 72 points, 80mm = 3.15 inches)
-    private static final float PAPER_WIDTH = 226f;
+    // 80mm paper roll, 72mm actual printable area (7.2cm)
+    // 72mm = (72 / 25.4) * 72 ≈ 204 points
+    private static final float PAPER_WIDTH = 204f;
 
     // Setting key for KOT printer
     private static final String KOT_PRINTER_SETTING = "kot_printer";
@@ -303,8 +304,8 @@ public class KOTOrderPrint {
 
             float height = headerHeight + itemsHeaderHeight + (items.size() * itemRowHeight) + footerHeight + margins;
 
-            // Ensure minimum height for proper display
-            if (height < 250f) height = 250f;
+            // Minimum height must be greater than PAPER_WIDTH to ensure portrait orientation
+            if (height < PAPER_WIDTH + 74f) height = PAPER_WIDTH + 74f;
 
             // Create document with default page size first
             Document document = new Document();
@@ -315,8 +316,8 @@ public class KOTOrderPrint {
             // Set custom page size before opening - this is the correct way
             Rectangle pageSize = new Rectangle(PAPER_WIDTH, height);
             document.setPageSize(pageSize);
-            // Minimal margins - cut to cut from top (left, right, top, bottom)
-            document.setMargins(3f, 3f, 0f, 2f);
+            // Left/right margins to keep content centered and away from edges (left, right, top, bottom)
+            document.setMargins(12f, 12f, 0f, 2f);
 
             document.open();
 
@@ -345,8 +346,9 @@ public class KOTOrderPrint {
      */
     private PdfPTable createHeaderTable(String tableName, String waitorName, List<TempTransaction> items, PdfPTable itemsTable) throws Exception {
         PdfPTable headerTable = new PdfPTable(1);
-        headerTable.setTotalWidth(new float[]{210});
+        headerTable.setTotalWidth(new float[]{180});
         headerTable.setLockedWidth(true);
+        headerTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         // Hotel name - "ha^Tola AMjanaI"
         PdfPCell cellHead = new PdfPCell(new Phrase("ha^Tola AMjanaI", fontLarge));
@@ -390,15 +392,14 @@ public class KOTOrderPrint {
 
         cellHead = new PdfPCell(infoTable);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
+        cellHead.setPadding(0f);
         headerTable.addCell(cellHead);
 
         // Add items table
         cellHead = new PdfPCell(itemsTable);
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
+        cellHead.setPadding(0f);
         cellHead.setPaddingBottom(2f);
         headerTable.addCell(cellHead);
 
@@ -417,7 +418,7 @@ public class KOTOrderPrint {
         // Total items: Marathi label + English value
         Phrase totalPhrase = new Phrase();
         totalPhrase.add(new Chunk("ekUNa Aa[Tma : ", fontSmall));
-        totalPhrase.add(new Chunk(String.valueOf(items.size()), fontEnglishBold));
+        totalPhrase.add(new Chunk(String.valueOf(items.size()), fontEnglishSmall));
         PdfPCell cellTotal = new PdfPCell(totalPhrase);
         cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellTotal.setBorder(Rectangle.TOP);
@@ -427,8 +428,7 @@ public class KOTOrderPrint {
 
         cellHead = new PdfPCell(footerTable);
         cellHead.setBorder(Rectangle.NO_BORDER);
-        cellHead.setPaddingTop(0f);
-        cellHead.setPaddingBottom(0f);
+        cellHead.setPadding(0f);
         headerTable.addCell(cellHead);
 
         return headerTable;
@@ -439,8 +439,9 @@ public class KOTOrderPrint {
      */
     private PdfPTable createItemsTable(List<TempTransaction> items) throws Exception {
         // Items table with 3 columns: Sr.No, Item, Qty
+        // Column widths: Sr=25, Item=115, Qty=40 = 180 total
         PdfPTable table = new PdfPTable(3);
-        table.setTotalWidth(new float[]{25, 145, 40});
+        table.setTotalWidth(new float[]{25, 115, 40});
         table.setLockedWidth(true);
 
         float rowHeight = 18f;
@@ -472,8 +473,8 @@ public class KOTOrderPrint {
         // Add items
         int srNo = 1;
         for (TempTransaction item : items) {
-            // Sr. No in English font
-            PdfPCell c1 = new PdfPCell(new Phrase(String.valueOf(srNo++), fontEnglishBold));
+            // Sr. No in smaller plain English font
+            PdfPCell c1 = new PdfPCell(new Phrase(String.valueOf(srNo++), fontEnglishSmall));
             c1.setBorder(Rectangle.NO_BORDER);
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             c1.setPaddingTop(2f);

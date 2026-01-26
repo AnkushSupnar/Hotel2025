@@ -1,0 +1,229 @@
+/* ========================================
+   STOCK REPORT - STYLES
+   ======================================== */
+
+/* ========================================
+   FILTER SECTION
+   ======================================== */
+.filter-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* ========================================
+   PERIOD / FILTER BUTTONS
+   ======================================== */
+.period-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #555;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 15;
+    -fx-background-radius: 20;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+}
+
+.period-button:hover {
+    -fx-background-color: #E0F2F1;
+    -fx-border-color: #00897B;
+}
+
+.period-button:selected {
+    -fx-background-color: linear-gradient(to bottom, #00897B, #00695C);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+/* Clear Button */
+.clear-button {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #f44336;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+}
+
+.clear-button:hover {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+/* ========================================
+   TABLE CONTAINER
+   ======================================== */
+.table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Stock Table */
+.stock-table {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: #f0f0f0;
+}
+
+.stock-table .column-header {
+    -fx-background-color: linear-gradient(to bottom, #00897B, #00695C);
+    -fx-padding: 12 5;
+}
+
+.stock-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.stock-table .table-row-cell {
+    -fx-cell-size: 42px;
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.stock-table .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.stock-table .table-row-cell:hover {
+    -fx-background-color: #E0F2F1;
+}
+
+.stock-table .table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, #00897B, #00695C);
+    -fx-background-insets: 0;
+}
+
+.stock-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.stock-table .table-row-cell:selected:hover {
+    -fx-background-color: linear-gradient(to right, #00796B, #004D40);
+}
+
+.stock-table .table-row-cell:selected:odd {
+    -fx-background-color: linear-gradient(to right, #00897B, #00695C);
+}
+
+/* Focused selection */
+.stock-table:focused .table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, #00897B, #00695C);
+    -fx-effect: dropshadow(gaussian, rgba(0, 137, 123, 0.4), 8, 0, 0, 2);
+}
+
+.stock-table .table-cell {
+    -fx-padding: 8 10;
+    -fx-alignment: CENTER-LEFT;
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+/* ========================================
+   FOOTER SECTION
+   ======================================== */
+.footer-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8;
+    -fx-border-color: #e8e8e8;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* ========================================
+   SUMMARY CARDS
+   ======================================== */
+.summary-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0, 0.1), 10, 0, 0, 3);
+    -fx-min-width: 150;
+    -fx-pref-width: 165;
+}
+
+.summary-card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgb(0, 137, 123, 0.3), 15, 0, 0, 5);
+}
+
+.summary-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a237e;
+}
+
+.summary-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #757575;
+    -fx-font-weight: 500;
+}
+
+/* Card-specific border accents */
+.stock-total-card {
+    -fx-border-color: #00897B;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.stock-instock-card {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.stock-low-card {
+    -fx-border-color: #FF9800;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.stock-out-card {
+    -fx-border-color: #F44336;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+.stock-qty-card {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-radius: 10;
+}
+
+/* ========================================
+   DATE PICKER & TEXT FIELD
+   ======================================== */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+}
+
+.date-picker:focused {
+    -fx-border-color: #00897B;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+.text-field:focused {
+    -fx-border-color: #00897B;
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+}
+
+.combo-box:focused {
+    -fx-border-color: #00897B;
+}

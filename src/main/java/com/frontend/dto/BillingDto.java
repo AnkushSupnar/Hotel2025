@@ -229,6 +229,7 @@ public class BillingDto {
         private Integer bankId;
         private String bankName;
         private List<TransactionItemDto> items;
+        private String pdfBase64;
 
         public Integer getBillNo() { return billNo; }
         public void setBillNo(Integer billNo) { this.billNo = billNo; }
@@ -266,6 +267,8 @@ public class BillingDto {
         public void setBankName(String bankName) { this.bankName = bankName; }
         public List<TransactionItemDto> getItems() { return items; }
         public void setItems(List<TransactionItemDto> items) { this.items = items; }
+        public String getPdfBase64() { return pdfBase64; }
+        public void setPdfBase64(String pdfBase64) { this.pdfBase64 = pdfBase64; }
     }
 
     /**

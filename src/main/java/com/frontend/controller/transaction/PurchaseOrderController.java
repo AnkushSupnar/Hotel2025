@@ -124,6 +124,7 @@ public class PurchaseOrderController implements Initializable {
     @FXML private Button btnPrintOrder;
     @FXML private Button btnCopyOrder;
     @FXML private Button btnCreateInvoice;
+    @FXML private Button btnDeleteOrder;
     @FXML private Button btnClearSearch;
 
     @FXML private TableView<ExistingOrderData> tblExistingOrders;
@@ -384,6 +385,7 @@ public class PurchaseOrderController implements Initializable {
         btnPrintOrder.setOnAction(e -> printSelectedOrder());
         btnCopyOrder.setOnAction(e -> copySelectedOrder());
         btnCreateInvoice.setOnAction(e -> createInvoiceFromOrder());
+        btnDeleteOrder.setOnAction(e -> deleteSelectedOrder());
         btnClearSearch.setOnAction(e -> clearSearch());
 
         txtQty.setOnAction(e -> addItem());
@@ -854,6 +856,37 @@ public class PurchaseOrderController implements Initializable {
             LOG.error("Error navigating to invoice screen: ", e);
             alertNotification.showError("Error: " + e.getMessage());
         }
+    }
+
+    private void deleteSelectedOrder() {
+        ExistingOrderData selected = tblExistingOrders.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alertNotification.showWarning("Please select an order to delete");
+            return;
+        }
+
+        if (!"PENDING".equals(selected.getStatus())) {
+            alertNotification.showWarning("Only PENDING orders can be deleted. This order is " + selected.getStatus());
+            return;
+        }
+
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Delete Purchase Order");
+        confirmDialog.setHeaderText("Delete Order #" + selected.getOrderNo());
+        confirmDialog.setContentText("Are you sure you want to delete this pending purchase order?");
+
+        confirmDialog.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    purchaseOrderService.deleteOrder(selected.getOrderNo());
+                    alertNotification.showSuccess("Order #" + selected.getOrderNo() + " deleted successfully!");
+                    loadExistingOrders();
+                } catch (Exception e) {
+                    LOG.error("Error deleting order: ", e);
+                    alertNotification.showError("Error deleting order: " + e.getMessage());
+                }
+            }
+        });
     }
 
     private void loadOrderForEditing(Integer orderNo) {

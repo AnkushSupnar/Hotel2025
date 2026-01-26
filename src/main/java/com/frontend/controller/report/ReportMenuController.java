@@ -39,17 +39,21 @@ public class ReportMenuController implements Initializable {
     @FXML private HBox chipSales;
     @FXML private HBox chipPurchase;
     @FXML private HBox chipMiscellaneous;
+    @FXML private HBox chipStock;
     @FXML private FontAwesomeIcon iconSales;
     @FXML private FontAwesomeIcon iconPurchase;
     @FXML private FontAwesomeIcon iconMiscellaneous;
+    @FXML private FontAwesomeIcon iconStock;
     @FXML private Label lblSales;
     @FXML private Label lblPurchase;
     @FXML private Label lblMiscellaneous;
+    @FXML private Label lblStock;
 
     // Content Areas
     @FXML private VBox salesContent;
     @FXML private VBox purchaseContent;
     @FXML private VBox miscellaneousContent;
+    @FXML private VBox stockContent;
 
     // Report Cards
     @FXML private StackPane salesReportCard;
@@ -58,6 +62,8 @@ public class ReportMenuController implements Initializable {
     @FXML private StackPane payReceiptReportCard;
     @FXML private StackPane reducedItemReportCard;
     @FXML private StackPane billSearchReportCard;
+    @FXML private StackPane stockReportCard;
+    @FXML private StackPane lowStockAlertCard;
 
     // Report Buttons
     @FXML private Button btnViewSalesReport;
@@ -66,8 +72,10 @@ public class ReportMenuController implements Initializable {
     @FXML private Button btnViewPayReceipt;
     @FXML private Button btnViewReducedItemReport;
     @FXML private Button btnViewBillSearch;
+    @FXML private Button btnViewStockReport;
+    @FXML private Button btnViewLowStockAlert;
 
-    // Track active tab (0=Sales, 1=Purchase, 2=Miscellaneous)
+    // Track active tab (0=Sales, 1=Purchase, 2=Miscellaneous, 3=Stock)
     private int activeTab = 0;
 
     @Override
@@ -76,6 +84,25 @@ public class ReportMenuController implements Initializable {
         setupBackButton();
         setupTabChips();
         setupReportCards();
+        restoreActiveTab();
+    }
+
+    /**
+     * Restore the previously active tab after FXML reload.
+     * Since this controller is a Spring singleton, activeTab persists across reloads.
+     * The FXML always starts with Sales chip styled as active, so we must
+     * programmatically switch to the correct tab to keep UI and state in sync.
+     */
+    private void restoreActiveTab() {
+        int tabToRestore = activeTab;
+        // Reset to force the switch methods to work (they check activeTab != X)
+        activeTab = -1;
+        switch (tabToRestore) {
+            case 1: switchToPurchaseTab(); break;
+            case 2: switchToMiscellaneousTab(); break;
+            case 3: switchToStockTab(); break;
+            default: switchToSalesTab(); break;
+        }
     }
 
     private void setupBackButton() {
@@ -94,14 +121,17 @@ public class ReportMenuController implements Initializable {
         chipSales.setPickOnBounds(true);
         chipPurchase.setPickOnBounds(true);
         chipMiscellaneous.setPickOnBounds(true);
+        chipStock.setPickOnBounds(true);
 
         // Make child elements (icons and labels) mouse transparent so clicks go to parent
         iconSales.setMouseTransparent(true);
         iconPurchase.setMouseTransparent(true);
         iconMiscellaneous.setMouseTransparent(true);
+        iconStock.setMouseTransparent(true);
         lblSales.setMouseTransparent(true);
         lblPurchase.setMouseTransparent(true);
         lblMiscellaneous.setMouseTransparent(true);
+        lblStock.setMouseTransparent(true);
 
         // Sales Tab Click - use event filter to ensure we receive the event
         chipSales.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
@@ -123,6 +153,14 @@ public class ReportMenuController implements Initializable {
         chipMiscellaneous.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
             if (activeTab != 2) {
                 switchToMiscellaneousTab();
+            }
+            e.consume();
+        });
+
+        // Stock Tab Click
+        chipStock.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
+            if (activeTab != 3) {
+                switchToStockTab();
             }
             e.consume();
         });
@@ -209,114 +247,122 @@ public class ReportMenuController implements Initializable {
             chipMiscellaneous.setScaleX(1.0);
             chipMiscellaneous.setScaleY(1.0);
         });
+
+        // Stock chip hover and press effects
+        chipStock.setOnMouseEntered(e -> {
+            if (activeTab != 3) {
+                chipStock.setStyle("-fx-background-color: #B2DFDB; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 137, 123, 0.3), 10, 0, 0, 4);");
+            }
+        });
+        chipStock.setOnMouseExited(e -> {
+            if (activeTab != 3) {
+                chipStock.setStyle("-fx-background-color: #E8EAF6; " +
+                        "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
+            }
+        });
+        chipStock.setOnMousePressed(e -> {
+            if (activeTab != 3) {
+                chipStock.setScaleX(0.95);
+                chipStock.setScaleY(0.95);
+            }
+        });
+        chipStock.setOnMouseReleased(e -> {
+            chipStock.setScaleX(1.0);
+            chipStock.setScaleY(1.0);
+        });
+    }
+
+    private static final String INACTIVE_CHIP_STYLE = "-fx-background-color: #E8EAF6; " +
+            "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+            "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);";
+
+    private void resetAllChips() {
+        chipSales.setStyle(INACTIVE_CHIP_STYLE);
+        chipPurchase.setStyle(INACTIVE_CHIP_STYLE);
+        chipMiscellaneous.setStyle(INACTIVE_CHIP_STYLE);
+        chipStock.setStyle(INACTIVE_CHIP_STYLE);
+
+        iconSales.setFill(Color.valueOf("#4CAF50"));
+        iconPurchase.setFill(Color.valueOf("#7B1FA2"));
+        iconMiscellaneous.setFill(Color.valueOf("#E65100"));
+        iconStock.setFill(Color.valueOf("#00897B"));
+
+        lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
+        lblStock.setStyle("-fx-text-fill: #00897B; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        salesContent.setVisible(false);
+        salesContent.setManaged(false);
+        purchaseContent.setVisible(false);
+        purchaseContent.setManaged(false);
+        miscellaneousContent.setVisible(false);
+        miscellaneousContent.setManaged(false);
+        stockContent.setVisible(false);
+        stockContent.setManaged(false);
     }
 
     private void switchToSalesTab() {
         LOG.info("Switching to Sales tab");
         activeTab = 0;
+        resetAllChips();
 
-        // Update chip styles using inline styles for proper rendering
         chipSales.setStyle("-fx-background-color: linear-gradient(to right, #4CAF50, #388E3C); " +
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);");
-
-        chipPurchase.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        chipMiscellaneous.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        // Update icons
         iconSales.setFill(Color.WHITE);
-        iconPurchase.setFill(Color.valueOf("#7B1FA2"));
-        iconMiscellaneous.setFill(Color.valueOf("#E65100"));
-
-        // Update labels
         lblSales.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // Show/Hide content
         salesContent.setVisible(true);
         salesContent.setManaged(true);
-        purchaseContent.setVisible(false);
-        purchaseContent.setManaged(false);
-        miscellaneousContent.setVisible(false);
-        miscellaneousContent.setManaged(false);
     }
 
     private void switchToPurchaseTab() {
         LOG.info("Switching to Purchase tab");
         activeTab = 1;
+        resetAllChips();
 
-        // Update chip styles using inline styles for proper rendering
         chipPurchase.setStyle("-fx-background-color: linear-gradient(to right, #7B1FA2, #6A1B9A); " +
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.4), 8, 0, 0, 3);");
-
-        chipSales.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        chipMiscellaneous.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        // Update icons
         iconPurchase.setFill(Color.WHITE);
-        iconSales.setFill(Color.valueOf("#4CAF50"));
-        iconMiscellaneous.setFill(Color.valueOf("#E65100"));
-
-        // Update labels
         lblPurchase.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // Show/Hide content
         purchaseContent.setVisible(true);
         purchaseContent.setManaged(true);
-        salesContent.setVisible(false);
-        salesContent.setManaged(false);
-        miscellaneousContent.setVisible(false);
-        miscellaneousContent.setManaged(false);
     }
 
     private void switchToMiscellaneousTab() {
         LOG.info("Switching to Miscellaneous tab");
         activeTab = 2;
+        resetAllChips();
 
-        // Update chip styles using inline styles for proper rendering
         chipMiscellaneous.setStyle("-fx-background-color: linear-gradient(to right, #E65100, #BF360C); " +
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.4), 8, 0, 0, 3);");
-
-        chipSales.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        chipPurchase.setStyle("-fx-background-color: #E8EAF6; " +
-                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);");
-
-        // Update icons
         iconMiscellaneous.setFill(Color.WHITE);
-        iconSales.setFill(Color.valueOf("#4CAF50"));
-        iconPurchase.setFill(Color.valueOf("#7B1FA2"));
-
-        // Update labels
         lblMiscellaneous.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // Show/Hide content
         miscellaneousContent.setVisible(true);
         miscellaneousContent.setManaged(true);
-        salesContent.setVisible(false);
-        salesContent.setManaged(false);
-        purchaseContent.setVisible(false);
-        purchaseContent.setManaged(false);
+    }
+
+    private void switchToStockTab() {
+        LOG.info("Switching to Stock tab");
+        activeTab = 3;
+        resetAllChips();
+
+        chipStock.setStyle("-fx-background-color: linear-gradient(to right, #00897B, #00695C); " +
+                "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 137, 123, 0.4), 8, 0, 0, 3);");
+        iconStock.setFill(Color.WHITE);
+        lblStock.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        stockContent.setVisible(true);
+        stockContent.setManaged(true);
     }
 
     private void setupReportCards() {
@@ -350,6 +396,16 @@ public class ReportMenuController implements Initializable {
             billSearchReportCard.setOnMouseClicked(e -> loadBillSearchReport());
         }
 
+        // Stock Report Card
+        if (stockReportCard != null) {
+            stockReportCard.setOnMouseClicked(e -> loadStockReport());
+        }
+
+        // Low Stock Alert Card
+        if (lowStockAlertCard != null) {
+            lowStockAlertCard.setOnMouseClicked(e -> loadStockReport());
+        }
+
         // Button handlers
         if (btnViewSalesReport != null) {
             btnViewSalesReport.setOnAction(e -> loadSalesReport());
@@ -373,6 +429,14 @@ public class ReportMenuController implements Initializable {
 
         if (btnViewBillSearch != null) {
             btnViewBillSearch.setOnAction(e -> loadBillSearchReport());
+        }
+
+        if (btnViewStockReport != null) {
+            btnViewStockReport.setOnAction(e -> loadStockReport());
+        }
+
+        if (btnViewLowStockAlert != null) {
+            btnViewLowStockAlert.setOnAction(e -> loadStockReport());
         }
     }
 
@@ -421,6 +485,14 @@ public class ReportMenuController implements Initializable {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/BillSearch.fxml");
+        }
+    }
+
+    private void loadStockReport() {
+        LOG.info("Loading Stock Report");
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/report/StockReport.fxml");
         }
     }
 

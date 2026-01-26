@@ -225,6 +225,11 @@
                         <FontAwesomeIcon fill="white" glyphName="FILE_TEXT" size="0.9em" />
                     </graphic>
                 </Button>
+                <Button fx:id="btnDeleteOrder" prefHeight="28" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 14;" text="Delete">
+                    <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="TRASH" size="0.9em" />
+                    </graphic>
+                </Button>
                 <Button fx:id="btnClearSearch" prefHeight="28" style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 5 10;">
                     <graphic>
                         <FontAwesomeIcon fill="white" glyphName="TIMES" size="0.9em" />

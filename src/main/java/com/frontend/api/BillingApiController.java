@@ -2,7 +2,10 @@ package com.frontend.api;
 
 import com.frontend.dto.ApiResponse;
 import com.frontend.dto.BillingDto.*;
+import com.frontend.dto.CategoryMasterDto;
 import com.frontend.entity.*;
+import com.frontend.print.BillPrint;
+import com.frontend.print.KOTOrderPrint;
 import com.frontend.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +63,15 @@ public class BillingApiController {
 
     @Autowired
     private BankService bankService;
+
+    @Autowired
+    private BankTransactionService bankTransactionService;
+
+    @Autowired
+    private KOTOrderPrint kotOrderPrint;
+
+    @Autowired
+    private BillPrint billPrint;
 
     // ==================== TABLE ENDPOINTS ====================
 
@@ -159,7 +173,7 @@ public class BillingApiController {
             if (closedBill != null) {
                 List<Transaction> closedTransactions = billService.getTransactionsForBill(closedBill.getBillNo());
                 for (Transaction trans : closedTransactions) {
-                    TransactionItemDto dto = convertToTransactionDto(trans, tableId);
+                    TransactionItemDto dto = convertToTransactionDto(trans, tableId, closedBill.getWaitorId());
                     dto.setId(-trans.getId()); // Negative ID for closed bill items
                     items.add(dto);
                 }
@@ -237,17 +251,21 @@ public class BillingApiController {
                     continue;
                 }
 
-                // Get item rate if not provided
+                // Get item from database (needed for rate and category-based printQty)
+                Optional<Item> dbItemOpt = itemService.getItemByName(item.getItemName());
+                if (dbItemOpt.isEmpty()) {
+                    errors.add("Item not found: " + item.getItemName());
+                    continue;
+                }
+                Item dbItem = dbItemOpt.get();
+
                 Float rate = item.getRate();
                 if (rate == null) {
-                    Optional<Item> dbItem = itemService.getItemByName(item.getItemName());
-                    if (dbItem.isPresent()) {
-                        rate = dbItem.get().getRate();
-                    } else {
-                        errors.add("Item not found: " + item.getItemName());
-                        continue;
-                    }
+                    rate = dbItem.getRate();
                 }
+
+                // Calculate printQty based on category stock setting (matches desktop logic)
+                Float printQty = calculatePrintQty(dbItem, item.getQuantity());
 
                 // Create temp transaction
                 TempTransaction tempTransaction = new TempTransaction();
@@ -257,7 +275,7 @@ public class BillingApiController {
                 tempTransaction.setRate(rate);
                 tempTransaction.setAmt(item.getQuantity() * rate);
                 tempTransaction.setWaitorId(request.getWaitorId());
-                tempTransaction.setPrintQty(item.getQuantity() > 0 ? item.getQuantity() : 0f);
+                tempTransaction.setPrintQty(printQty);
 
                 TempTransaction saved;
 
@@ -298,12 +316,51 @@ public class BillingApiController {
             Float totalAmount = tempTransactionService.getTotalAmount(tableId);
             Float totalQuantity = tempTransactionService.getTotalQuantity(tableId);
 
+            // Auto-print KOT to server printer (mirrors desktop "Order" button behavior)
+            boolean kotPrinted = false;
+            int kotItemsPrinted = 0;
+            String kotPrintError = null;
+            try {
+                TableMaster table = tableMasterService.getTableById(tableId);
+                List<TempTransaction> printableItems = tempTransactionService.getPrintableItemsByTableNo(tableId);
+
+                if (table != null && !printableItems.isEmpty()) {
+                    Integer waitorId = request.getWaitorId();
+                    LOG.info("Auto-printing KOT for table {} with {} items", table.getTableName(), printableItems.size());
+
+                    kotOrderPrint.clearLastPrintError();
+                    boolean printSuccess = kotOrderPrint.printKOT(table.getTableName(), tableId, printableItems, waitorId);
+
+                    if (printSuccess) {
+                        tempTransactionService.resetPrintQtyForTable(tableId);
+                        kotPrinted = true;
+                        kotItemsPrinted = printableItems.size();
+                        LOG.info("KOT auto-printed successfully for table {} - {} items sent to kitchen",
+                                table.getTableName(), printableItems.size());
+                    } else {
+                        kotPrintError = kotOrderPrint.getLastPrintError();
+                        LOG.warn("KOT auto-print failed for table {}: {}",
+                                table.getTableName(), kotPrintError != null ? kotPrintError : "unknown error");
+                    }
+                }
+            } catch (Exception printEx) {
+                kotPrintError = printEx.getMessage();
+                LOG.warn("KOT auto-print error for table {}: {}", tableId, printEx.getMessage());
+            }
+
             // Build response
             java.util.Map<String, Object> result = new java.util.HashMap<>();
             result.put("transactions", allItems);
             result.put("totalAmount", totalAmount);
             result.put("totalQuantity", totalQuantity);
             result.put("itemCount", allItems.size());
+            result.put("kotPrinted", kotPrinted);
+            if (kotPrinted) {
+                result.put("kotItemsPrinted", kotItemsPrinted);
+            }
+            if (kotPrintError != null) {
+                result.put("kotPrintError", kotPrintError);
+            }
             if (reducedItemsTracked > 0) {
                 result.put("reducedItemsTracked", reducedItemsTracked);
             }
@@ -314,9 +371,12 @@ public class BillingApiController {
             String message = errors.isEmpty()
                     ? "Items processed successfully"
                     : "Items processed with some errors";
+            if (kotPrinted) {
+                message += ". KOT printed (" + kotItemsPrinted + " items sent to kitchen)";
+            }
 
-            LOG.info("Processed {} items for table {}. Total: {} items, Amount: {}, Reduced tracked: {}",
-                    request.getItems().size(), tableId, allItems.size(), totalAmount, reducedItemsTracked);
+            LOG.info("Processed {} items for table {}. Total: {} items, Amount: {}, Reduced tracked: {}, KOT printed: {}",
+                    request.getItems().size(), tableId, allItems.size(), totalAmount, reducedItemsTracked, kotPrinted);
 
             return ResponseEntity.ok(new ApiResponse(message, errors.isEmpty(), result));
 
@@ -378,6 +438,70 @@ public class BillingApiController {
         }
     }
 
+    // ==================== KOT PRINT ENDPOINT ====================
+
+    /**
+     * POST /api/billing/tables/{tableId}/print-kot
+     * Print KOT (Kitchen Order Ticket) for items that haven't been sent to kitchen yet
+     * Only prints items with printQty > 0 and resets printQty after successful print
+     */
+    @Operation(summary = "Print KOT", description = "Print Kitchen Order Ticket for new/unprintd items on a table")
+    @PostMapping("/tables/{tableId}/print-kot")
+    public ResponseEntity<ApiResponse> printKOT(
+            @Parameter(description = "Table ID") @PathVariable Integer tableId) {
+        try {
+            // Get table name
+            TableMaster table = tableMasterService.getTableById(tableId);
+            if (table == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Table not found", false));
+            }
+
+            // Get items with printQty > 0 (items that need kitchen printing)
+            List<TempTransaction> printableItems = tempTransactionService.getPrintableItemsByTableNo(tableId);
+            if (printableItems.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("No new items to print. All items have already been sent to kitchen.", false));
+            }
+
+            // Get waiter ID from first transaction
+            Integer waitorId = printableItems.get(0).getWaitorId();
+
+            LOG.info("Printing KOT for table {} with {} items", table.getTableName(), printableItems.size());
+
+            // Print KOT to configured thermal printer (no dialog for API calls)
+            kotOrderPrint.clearLastPrintError();
+            boolean printSuccess = kotOrderPrint.printKOT(table.getTableName(), tableId, printableItems, waitorId);
+
+            if (printSuccess) {
+                // Reset printQty to 0 after successful print
+                tempTransactionService.resetPrintQtyForTable(tableId);
+
+                java.util.Map<String, Object> result = new java.util.HashMap<>();
+                result.put("tableName", table.getTableName());
+                result.put("itemsPrinted", printableItems.size());
+
+                LOG.info("KOT printed successfully for table {} - {} items sent to kitchen",
+                        table.getTableName(), printableItems.size());
+                return ResponseEntity.ok(new ApiResponse("KOT printed successfully! " +
+                        printableItems.size() + " items sent to kitchen.", true, result));
+            } else {
+                String printError = kotOrderPrint.getLastPrintError();
+                String errorMsg = printError != null && !printError.isEmpty()
+                        ? "KOT print failed: " + printError
+                        : "KOT print failed";
+                LOG.error("KOT print failed for table {}: {}", table.getTableName(), errorMsg);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ApiResponse(errorMsg, false));
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error printing KOT for table {}: {}", tableId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error printing KOT: " + e.getMessage(), false));
+        }
+    }
+
     // ==================== BILL ENDPOINTS ====================
 
     /**
@@ -420,6 +544,17 @@ public class BillingApiController {
             }
 
             BillResponseDto responseDto = convertToBillResponseDto(savedBill);
+
+            // Generate PDF bytes (with QR code if default bank has UPI ID) and attach as Base64
+            try {
+                byte[] pdfBytes = generateBillPdfWithDefaultBank(savedBill, responseDto.getTableName());
+                if (pdfBytes != null) {
+                    responseDto.setPdfBase64(java.util.Base64.getEncoder().encodeToString(pdfBytes));
+                }
+            } catch (Exception pdfEx) {
+                LOG.warn("Could not generate bill PDF for bill #{}: {}", savedBill.getBillNo(), pdfEx.getMessage());
+            }
+
             return ResponseEntity.ok(new ApiResponse("Table closed successfully", true, responseDto));
         } catch (Exception e) {
             LOG.error("Error closing table {}: {}", tableId, e.getMessage());
@@ -448,17 +583,98 @@ public class BillingApiController {
                         .body(new ApiResponse("Bank ID is required", false));
             }
 
+            // Validate bill exists
+            Bill existingBill = billService.getBillByBillNo(billNo);
+            if (existingBill == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Bill not found: " + billNo, false));
+            }
+
+            // Validate bill status - must be CLOSE (same as desktop Pay button)
+            if ("PAID".equalsIgnoreCase(existingBill.getStatus())) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Bill already PAID", false));
+            }
+            if ("CREDIT".equalsIgnoreCase(existingBill.getStatus())) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Bill already marked as CREDIT", false));
+            }
+            if (!"CLOSE".equalsIgnoreCase(existingBill.getStatus())) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Only closed bills can be processed. Current status: " + existingBill.getStatus(), false));
+            }
+
+            // Calculate payment values same as desktop Pay button
+            float cashReceived = request.getCashReceived();
+            float returnToCustomer = request.getReturnAmount() != null ? request.getReturnAmount() : 0f;
+            float billAmount = existingBill.getBillAmt();
+            String paymode = request.getPaymode() != null ? request.getPaymode() : "CASH";
+            Integer bankId = request.getBankId();
+
+            // Auto-calculate discount same as desktop:
+            // netReceived = cashReceived - returnToCustomer
+            // discount = billAmount - netReceived (when netReceived < billAmount)
+            float netReceived = cashReceived - returnToCustomer;
+            if (netReceived < 0) netReceived = 0;
+            float discount = 0f;
+            if (netReceived < billAmount) {
+                discount = billAmount - netReceived;
+            }
+
+            // Mark bill as PAID (also reduces stock for sale inside service)
             Bill bill = billService.markBillAsPaid(
                     billNo,
-                    request.getCashReceived(),
-                    request.getReturnAmount() != null ? request.getReturnAmount() : 0f,
-                    request.getDiscount() != null ? request.getDiscount() : 0f,
-                    request.getPaymode() != null ? request.getPaymode() : "CASH",
-                    request.getBankId()
+                    cashReceived,
+                    returnToCustomer,
+                    discount,
+                    paymode,
+                    bankId
             );
 
-            LOG.info("Bill #{} marked as PAID", billNo);
+            // Record bank transaction (same as desktop Pay button)
+            if (bankId != null && netReceived > 0) {
+                try {
+                    // Get table name for bank transaction particulars
+                    String tableName = null;
+                    if (bill.getTableNo() != null) {
+                        try {
+                            TableMaster table = tableMasterService.getTableById(bill.getTableNo());
+                            if (table != null) {
+                                tableName = table.getTableName();
+                            }
+                        } catch (Exception te) {
+                            LOG.warn("Could not get table name for bill #{}: {}", billNo, te.getMessage());
+                        }
+                    }
+                    bankTransactionService.recordBillPayment(
+                            bankId,
+                            bill.getBillNo(),
+                            (double) netReceived,
+                            tableName
+                    );
+                    LOG.info("Bank transaction recorded: Bill #{}, Bank ID {}, Amount ₹{}",
+                            bill.getBillNo(), bankId, netReceived);
+                } catch (Exception e) {
+                    LOG.error("Bill saved but bank transaction recording failed: ", e);
+                    // Bill is already saved, don't fail the whole operation
+                }
+            }
+
+            LOG.info("Bill #{} marked as PAID ({}). Net: ₹{}, Discount: ₹{}",
+                    billNo, paymode, bill.getNetAmount(), discount);
             BillResponseDto responseDto = convertToBillResponseDto(bill);
+
+            // Generate bill PDF (same as desktop Pay button prints the bill)
+            try {
+                String tblName = responseDto.getTableName();
+                byte[] pdfBytes = generateBillPdfWithDefaultBank(bill, tblName);
+                if (pdfBytes != null) {
+                    responseDto.setPdfBase64(java.util.Base64.getEncoder().encodeToString(pdfBytes));
+                }
+            } catch (Exception pdfEx) {
+                LOG.warn("Could not generate bill PDF for bill #{}: {}", bill.getBillNo(), pdfEx.getMessage());
+            }
+
             return ResponseEntity.ok(new ApiResponse("Bill marked as paid successfully", true, responseDto));
         } catch (Exception e) {
             LOG.error("Error marking bill {} as paid: {}", billNo, e.getMessage());
@@ -518,6 +734,49 @@ public class BillingApiController {
             return ResponseEntity.ok(new ApiResponse("Bill retrieved successfully", true, responseDto));
         } catch (Exception e) {
             LOG.error("Error retrieving bill {}: {}", billNo, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * GET /api/billing/bills/{billNo}/pdf
+     * Download bill as a thermal-receipt PDF
+     */
+    @Operation(summary = "Download bill PDF", description = "Generate and download the thermal-receipt PDF for a bill")
+    @GetMapping(value = "/bills/{billNo}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<?> getBillPdf(
+            @Parameter(description = "Bill Number") @PathVariable Integer billNo) {
+        try {
+            Bill bill = billService.getBillWithTransactions(billNo);
+            if (bill == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Bill not found", false));
+            }
+
+            String tableName = "";
+            if (bill.getTableNo() != null) {
+                TableMaster table = tableMasterService.getTableById(bill.getTableNo());
+                if (table != null) {
+                    tableName = table.getTableName();
+                }
+            }
+
+            byte[] pdfBytes = generateBillPdfWithDefaultBank(bill, tableName);
+            if (pdfBytes == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ApiResponse("Failed to generate PDF", false));
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "bill_" + billNo + ".pdf");
+            headers.setContentLength(pdfBytes.length);
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            LOG.error("Error generating PDF for bill {}: {}", billNo, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error: " + e.getMessage(), false));
         }
@@ -727,6 +986,33 @@ public class BillingApiController {
 
     // ==================== HELPER METHODS ====================
 
+    /**
+     * Calculate printQty based on item's category stock setting.
+     * Mirrors desktop BillingController.calculatePrintQty logic:
+     * - If category stock = 'N': item needs kitchen print → printQty = qty
+     * - If category stock = 'Y': item has stock tracking, no kitchen print → printQty = 0
+     */
+    private Float calculatePrintQty(Item dbItem, Float qty) {
+        if (qty <= 0) {
+            return 0f;
+        }
+        try {
+            Integer categoryId = dbItem.getCategoryId();
+            if (categoryId != null) {
+                CategoryMasterDto category = categoryApiService.getCategoryById(categoryId);
+                if (category != null && "N".equalsIgnoreCase(category.getStock())) {
+                    return qty;
+                } else {
+                    return 0f;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error calculating printQty for item: {}", dbItem.getItemName(), e);
+        }
+        // Default to qty if unable to determine
+        return qty;
+    }
+
     private String calculateTableStatus(Integer tableId) {
         boolean hasTempTransactions = tempTransactionService.hasTransactions(tableId);
         boolean hasClosedBill = billService.hasClosedBill(tableId);
@@ -753,7 +1039,7 @@ public class BillingApiController {
         return dto;
     }
 
-    private TransactionItemDto convertToTransactionDto(Transaction trans, Integer tableNo) {
+    private TransactionItemDto convertToTransactionDto(Transaction trans, Integer tableNo, Integer waitorId) {
         TransactionItemDto dto = new TransactionItemDto();
         dto.setId(trans.getId());
         dto.setItemName(trans.getItemName());
@@ -761,6 +1047,8 @@ public class BillingApiController {
         dto.setRate(trans.getRate());
         dto.setAmount(trans.getAmt());
         dto.setTableNo(tableNo);
+        dto.setWaitorId(waitorId);
+        dto.setPrintQty(0f);
         return dto;
     }
 
@@ -793,7 +1081,7 @@ public class BillingApiController {
         }
 
         // Get customer name
-        if (bill.getCustomerId() != null) {
+        if (bill.getCustomerId() != null && bill.getCustomerId() > 0) {
             try {
                 Customer customer = customerService.getCustomerById(bill.getCustomerId());
                 if (customer != null) {
@@ -805,7 +1093,7 @@ public class BillingApiController {
         }
 
         // Get waiter name
-        if (bill.getWaitorId() != null) {
+        if (bill.getWaitorId() != null && bill.getWaitorId() > 0) {
             try {
                 Employees waiter = employeesService.getEmployeeById(bill.getWaitorId());
                 if (waiter != null) {
@@ -817,7 +1105,7 @@ public class BillingApiController {
         }
 
         // Get bank name
-        if (bill.getBankId() != null) {
+        if (bill.getBankId() != null && bill.getBankId() > 0) {
             try {
                 bankService.getBankById(bill.getBankId()).ifPresent(bank -> {
                     dto.setBankName(bank.getBankName());
@@ -831,11 +1119,88 @@ public class BillingApiController {
         if (bill.getTransactions() != null && !bill.getTransactions().isEmpty()) {
             List<TransactionItemDto> items = new ArrayList<>();
             for (Transaction trans : bill.getTransactions()) {
-                items.add(convertToTransactionDto(trans, bill.getTableNo()));
+                items.add(convertToTransactionDto(trans, bill.getTableNo(), bill.getWaitorId()));
             }
             dto.setItems(items);
         }
 
         return dto;
+    }
+
+    /**
+     * Resolve the default bank configured in application settings.
+     * Exactly mirrors desktop BillingController.setupPaymentMode() logic:
+     * 1. Read "default_billing_bank" from application settings
+     * 2. Search through ALL active banks (same as desktop getActiveBanks())
+     * 3. Case-sensitive match on bank name (same as desktop line 2276: equals, not equalsIgnoreCase)
+     * If no configured default found, falls back to cash bank (IFSC="cash").
+     */
+    private Bank resolveDefaultBank() {
+        try {
+            List<Bank> activeBanks = bankService.getActiveBanks();
+            if (activeBanks == null || activeBanks.isEmpty()) {
+                LOG.warn("No active banks found");
+                return null;
+            }
+
+            String defaultBankName = SessionService.getApplicationSetting("default_billing_bank");
+            Bank defaultBank = null;
+            Bank cashBank = null;
+
+            for (Bank bank : activeBanks) {
+                // Track cash bank (IFSC="cash") as fallback - same as desktop
+                if ("cash".equalsIgnoreCase(bank.getIfsc())) {
+                    cashBank = bank;
+                }
+                // Match configured default bank by name (case-sensitive, same as desktop)
+                if (defaultBankName != null && !defaultBankName.trim().isEmpty()
+                        && defaultBankName.equals(bank.getBankName())) {
+                    defaultBank = bank;
+                }
+            }
+
+            // Return configured default bank, otherwise cash bank, otherwise first bank
+            if (defaultBank != null) {
+                LOG.info("Resolved configured default bank: '{}'", defaultBank.getBankName());
+                return defaultBank;
+            } else if (cashBank != null) {
+                LOG.info("No configured default bank found, using cash bank");
+                return cashBank;
+            } else if (!activeBanks.isEmpty()) {
+                LOG.warn("No cash bank found, using first active bank");
+                return activeBanks.get(0);
+            }
+        } catch (Exception e) {
+            LOG.warn("Could not resolve default bank: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Generate bill PDF bytes, including QR code if applicable.
+     * Exactly mirrors desktop BillingController.closeTable() + updatePrintQRVisibility() logic:
+     * - QR code is included ONLY when the default bank is non-cash (IFSC != "cash")
+     *   AND has a non-empty UPI ID (same as desktop line 2336)
+     */
+    private byte[] generateBillPdfWithDefaultBank(Bill bill, String tableName) {
+        Bank defaultBank = resolveDefaultBank();
+        if (defaultBank != null) {
+            // Mirror desktop updatePrintQRVisibility(): QR only for non-cash banks with UPI ID
+            boolean isCash = "cash".equalsIgnoreCase(defaultBank.getIfsc());
+            boolean hasUpi = defaultBank.getUpiId() != null && !defaultBank.getUpiId().trim().isEmpty();
+
+            if (!isCash && hasUpi) {
+                LOG.info("Default bank '{}' is non-cash with UPI ID '{}', generating PDF with QR code",
+                        defaultBank.getBankName(), defaultBank.getUpiId());
+                return billPrint.generateBillPdfBytesWithQR(bill, tableName,
+                        defaultBank.getUpiId(), defaultBank.getBankName());
+            } else {
+                LOG.info("Default bank '{}' (cash={}, hasUpi={}) - generating PDF without QR",
+                        defaultBank.getBankName(), isCash, hasUpi);
+            }
+        } else {
+            LOG.warn("No default bank resolved - generating PDF without QR");
+        }
+        return billPrint.generateBillPdfBytes(bill, tableName);
     }
 }
