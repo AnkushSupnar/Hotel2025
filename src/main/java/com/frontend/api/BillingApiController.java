@@ -7,6 +7,7 @@ import com.frontend.entity.*;
 import com.frontend.print.BillPrint;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.service.*;
+import java.time.format.DateTimeFormatter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,6 +73,12 @@ public class BillingApiController {
 
     @Autowired
     private BillPrint billPrint;
+
+    @Autowired
+    private KitchenOrderService kitchenOrderService;
+
+    @Autowired
+    private com.frontend.repository.KitchenOrderRepository kitchenOrderRepository;
 
     // ==================== TABLE ENDPOINTS ====================
 
@@ -332,9 +339,17 @@ public class BillingApiController {
                     boolean printSuccess = kotOrderPrint.printKOT(table.getTableName(), tableId, printableItems, waitorId);
 
                     if (printSuccess) {
-                        tempTransactionService.resetPrintQtyForTable(tableId);
                         kotPrinted = true;
                         kotItemsPrinted = printableItems.size();
+                        // Create KitchenOrder BEFORE resetting printQty — the entities are
+                        // JPA-managed, so resetPrintQtyForTable would zero out printQty on the
+                        // same in-memory objects, causing kitchen order items to store qty=0.
+                        try {
+                            kitchenOrderService.createKitchenOrder(tableId, table.getTableName(), waitorId, printableItems);
+                        } catch (Exception kotEx) {
+                            LOG.warn("Failed to create KitchenOrder for table {}: {}", tableId, kotEx.getMessage());
+                        }
+                        tempTransactionService.resetPrintQtyForTable(tableId);
                         LOG.info("KOT auto-printed successfully for table {} - {} items sent to kitchen",
                                 table.getTableName(), printableItems.size());
                     } else {
@@ -474,7 +489,15 @@ public class BillingApiController {
             boolean printSuccess = kotOrderPrint.printKOT(table.getTableName(), tableId, printableItems, waitorId);
 
             if (printSuccess) {
-                // Reset printQty to 0 after successful print
+                // Create KitchenOrder BEFORE resetting printQty — the entities are
+                // JPA-managed, so resetPrintQtyForTable would zero out printQty on the
+                // same in-memory objects, causing kitchen order items to store qty=0.
+                try {
+                    kitchenOrderService.createKitchenOrder(tableId, table.getTableName(), waitorId, printableItems);
+                } catch (Exception kotEx) {
+                    LOG.warn("Failed to create KitchenOrder for table {}: {}", tableId, kotEx.getMessage());
+                }
+
                 tempTransactionService.resetPrintQtyForTable(tableId);
 
                 java.util.Map<String, Object> result = new java.util.HashMap<>();
@@ -664,6 +687,15 @@ public class BillingApiController {
                     billNo, paymode, bill.getNetAmount(), discount);
             BillResponseDto responseDto = convertToBillResponseDto(bill);
 
+            // Clear kitchen orders for this table
+            if (bill.getTableNo() != null) {
+                try {
+                    kitchenOrderService.clearKitchenOrdersForTable(bill.getTableNo());
+                } catch (Exception kotEx) {
+                    LOG.warn("Failed to clear KitchenOrders for table {}: {}", bill.getTableNo(), kotEx.getMessage());
+                }
+            }
+
             // Generate bill PDF (same as desktop Pay button prints the bill)
             try {
                 String tblName = responseDto.getTableName();
@@ -709,6 +741,16 @@ public class BillingApiController {
 
             LOG.info("Bill #{} marked as CREDIT for customer {}", billNo, request.getCustomerId());
             BillResponseDto responseDto = convertToBillResponseDto(bill);
+
+            // Clear kitchen orders for this table
+            if (bill.getTableNo() != null) {
+                try {
+                    kitchenOrderService.clearKitchenOrdersForTable(bill.getTableNo());
+                } catch (Exception kotEx) {
+                    LOG.warn("Failed to clear KitchenOrders for table {}: {}", bill.getTableNo(), kotEx.getMessage());
+                }
+            }
+
             return ResponseEntity.ok(new ApiResponse("Bill marked as credit successfully", true, responseDto));
         } catch (Exception e) {
             LOG.error("Error marking bill {} as credit: {}", billNo, e.getMessage());
@@ -897,6 +939,16 @@ public class BillingApiController {
                 billService.shiftBillToTable(closedBill.getBillNo(), request.getTargetTableId());
             }
 
+            // Shift kitchen orders
+            try {
+                TableMaster targetTable = tableMasterService.getTableById(request.getTargetTableId());
+                kitchenOrderService.shiftKitchenOrders(
+                        request.getSourceTableId(), request.getTargetTableId(),
+                        targetTable != null ? targetTable.getTableName() : "");
+            } catch (Exception kotEx) {
+                LOG.warn("Failed to shift KitchenOrders: {}", kotEx.getMessage());
+            }
+
             LOG.info("Shifted items from table {} to table {}", request.getSourceTableId(), request.getTargetTableId());
             return ResponseEntity.ok(new ApiResponse("Table shift completed successfully", true));
         } catch (Exception e) {
@@ -979,6 +1031,290 @@ public class BillingApiController {
             return ResponseEntity.ok(new ApiResponse("Closed bill retrieved successfully", true, responseDto));
         } catch (Exception e) {
             LOG.error("Error getting closed bill for table {}: {}", tableId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    // ==================== KITCHEN ORDER ENDPOINTS ====================
+    //
+    // Status flow: SENT → READY → SERVE
+    //   SENT  = Order sent to kitchen, cooking in progress
+    //   READY = Kitchen has finished cooking, waiting for pickup
+    //   SERVE = Food has been served to the customer
+    //
+    // KitchenOrderDto fields:
+    //   id, tableNo, tableName, waitorId, status, itemCount, totalQty,
+    //   sentAt (yyyy-MM-dd HH:mm:ss), readyAt, items[]
+    //
+    // KitchenOrderItemDto fields:
+    //   id, itemId, itemName, qty, rate
+
+    /**
+     * GET /api/billing/kitchen-orders/pending
+     * Returns all KOTs with status=SENT, grouped by table name.
+     */
+    @Operation(
+        summary = "Get all pending kitchen orders grouped by table",
+        description = "Returns all kitchen order tickets (KOTs) with status SENT across all tables, "
+                + "grouped by table name. Each table group contains the table number, table name, order count, "
+                + "and list of KOTs with their items, quantities, and timestamps. "
+                + "Useful for kitchen display screens and mobile dashboards to track what needs to be cooked."
+    )
+    @GetMapping("/kitchen-orders/pending")
+    public ResponseEntity<ApiResponse> getPendingKitchenOrders() {
+        try {
+            List<KitchenOrder> orders = kitchenOrderService.getAllPendingKitchenOrders();
+            List<KitchenOrdersByTableDto> grouped = groupKitchenOrdersByTable(orders);
+            LOG.info("Retrieved {} pending kitchen orders across {} tables", orders.size(), grouped.size());
+            return ResponseEntity.ok(new ApiResponse("Pending kitchen orders retrieved", true, grouped));
+        } catch (Exception e) {
+            LOG.error("Error retrieving pending kitchen orders: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * GET /api/billing/kitchen-orders/ready
+     * Returns all KOTs with status=READY, grouped by table name.
+     */
+    @Operation(
+        summary = "Get all ready kitchen orders grouped by table",
+        description = "Returns all kitchen order tickets (KOTs) with status READY across all tables, "
+                + "grouped by table name. Each table group contains the table number, table name, order count, "
+                + "and list of KOTs with their items. "
+                + "Useful for waiters to see which orders are ready for pickup and serving."
+    )
+    @GetMapping("/kitchen-orders/ready")
+    public ResponseEntity<ApiResponse> getReadyKitchenOrders() {
+        try {
+            List<KitchenOrder> orders = kitchenOrderService.getAllReadyKitchenOrders();
+            List<KitchenOrdersByTableDto> grouped = groupKitchenOrdersByTable(orders);
+            LOG.info("Retrieved {} ready kitchen orders across {} tables", orders.size(), grouped.size());
+            return ResponseEntity.ok(new ApiResponse("Ready kitchen orders retrieved", true, grouped));
+        } catch (Exception e) {
+            LOG.error("Error retrieving ready kitchen orders: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * GET /api/billing/kitchen-orders
+     * Returns ALL KOTs (SENT + READY + SERVE) across every table, grouped by table name.
+     */
+    @Operation(
+        summary = "Get all kitchen orders grouped by table",
+        description = "Returns all kitchen order tickets (KOTs) across all tables regardless of status (SENT, READY, SERVE), "
+                + "grouped by table name. Each table group contains the table number, table name, order count, "
+                + "and list of KOTs with their items, quantities, and timestamps. "
+                + "Useful for a full overview dashboard on the mobile app."
+    )
+    @GetMapping("/kitchen-orders")
+    public ResponseEntity<ApiResponse> getAllKitchenOrders() {
+        try {
+            List<KitchenOrder> orders = kitchenOrderService.getAllKitchenOrders();
+            List<KitchenOrdersByTableDto> grouped = groupKitchenOrdersByTable(orders);
+            LOG.info("Retrieved {} total kitchen orders across {} tables", orders.size(), grouped.size());
+            return ResponseEntity.ok(new ApiResponse("All kitchen orders retrieved", true, grouped));
+        } catch (Exception e) {
+            LOG.error("Error retrieving all kitchen orders: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * GET /api/billing/tables/{tableId}/kitchen-orders
+     * Returns all KOTs (SENT + READY + SERVE) for one table.
+     */
+    @Operation(
+        summary = "Get kitchen orders for a table",
+        description = "Returns all kitchen order tickets for a specific table, regardless of status (SENT, READY, SERVE). "
+                + "Each KOT includes the full item list with names, quantities, and rates. "
+                + "Use this when a waiter taps on a specific table in the mobile app."
+    )
+    @GetMapping("/tables/{tableId}/kitchen-orders")
+    public ResponseEntity<ApiResponse> getKitchenOrdersForTable(
+            @Parameter(description = "Table ID (primary key of table_master)") @PathVariable Integer tableId) {
+        try {
+            List<KitchenOrder> orders = kitchenOrderService.getKitchenOrdersForTable(tableId);
+            List<KitchenOrderDto> dtos = new ArrayList<>();
+            for (KitchenOrder ko : orders) {
+                dtos.add(convertToKitchenOrderDto(ko));
+            }
+            LOG.info("Retrieved {} kitchen orders for table {}", dtos.size(), tableId);
+            return ResponseEntity.ok(new ApiResponse("Kitchen orders retrieved", true, dtos));
+        } catch (Exception e) {
+            LOG.error("Error retrieving kitchen orders for table {}: {}", tableId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * POST /api/billing/tables/{tableId}/kitchen-orders/complete
+     * Bulk: marks ALL SENT KOTs for a table as READY.
+     */
+    @Operation(
+        summary = "Mark all SENT orders as READY for a table",
+        description = "Bulk operation: transitions every KOT with status=SENT to READY for the given table. "
+                + "Sets the readyAt timestamp. Returns the updated list of all KOTs for the table. "
+                + "Use when the kitchen signals that all dishes for a table are done."
+    )
+    @PostMapping("/tables/{tableId}/kitchen-orders/complete")
+    public ResponseEntity<ApiResponse> completeKitchenOrders(
+            @Parameter(description = "Table ID (primary key of table_master)") @PathVariable Integer tableId) {
+        try {
+            kitchenOrderService.markAllAsReadyForTable(tableId);
+            List<KitchenOrder> orders = kitchenOrderService.getKitchenOrdersForTable(tableId);
+            List<KitchenOrderDto> dtos = new ArrayList<>();
+            for (KitchenOrder ko : orders) {
+                dtos.add(convertToKitchenOrderDto(ko));
+            }
+            LOG.info("Marked all SENT kitchen orders as READY for table {}", tableId);
+            return ResponseEntity.ok(new ApiResponse("Kitchen orders marked as ready", true, dtos));
+        } catch (Exception e) {
+            LOG.error("Error completing kitchen orders for table {}: {}", tableId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * POST /api/billing/tables/{tableId}/kitchen-orders/serve
+     * Bulk: marks ALL READY KOTs for a table as SERVE.
+     */
+    @Operation(
+        summary = "Mark all READY orders as SERVE for a table",
+        description = "Bulk operation: transitions every KOT with status=READY to SERVE for the given table. "
+                + "Returns the updated list of all KOTs for the table. "
+                + "Use when the waiter has served all ready dishes to the customer."
+    )
+    @PostMapping("/tables/{tableId}/kitchen-orders/serve")
+    public ResponseEntity<ApiResponse> serveKitchenOrders(
+            @Parameter(description = "Table ID (primary key of table_master)") @PathVariable Integer tableId) {
+        try {
+            kitchenOrderService.markAllAsServedForTable(tableId);
+            List<KitchenOrder> orders = kitchenOrderService.getKitchenOrdersForTable(tableId);
+            List<KitchenOrderDto> dtos = new ArrayList<>();
+            for (KitchenOrder ko : orders) {
+                dtos.add(convertToKitchenOrderDto(ko));
+            }
+            LOG.info("Marked all READY kitchen orders as SERVE for table {}", tableId);
+            return ResponseEntity.ok(new ApiResponse("Kitchen orders marked as served", true, dtos));
+        } catch (Exception e) {
+            LOG.error("Error serving kitchen orders for table {}: {}", tableId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * PUT /api/billing/kitchen-orders/{kotId}/status
+     * Update the status of a single KOT. Accepts: READY, SERVE.
+     * Mobile users call this to transition a KOT through the workflow.
+     */
+    @Operation(
+        summary = "Update kitchen order status",
+        description = "Update the status of a single kitchen order ticket. "
+                + "Valid status transitions: SENT → READY (kitchen finished cooking), READY → SERVE (waiter served to table). "
+                + "Request body: { \"status\": \"READY\" } or { \"status\": \"SERVE\" }. "
+                + "Returns the updated KOT with all items."
+    )
+    @PutMapping("/kitchen-orders/{kotId}/status")
+    public ResponseEntity<ApiResponse> updateKotStatus(
+            @Parameter(description = "Kitchen Order ID (KOT ID)") @PathVariable Integer kotId,
+            @RequestBody java.util.Map<String, String> body) {
+        try {
+            String newStatus = body != null ? body.get("status") : null;
+            if (newStatus == null || newStatus.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Status is required. Valid values: READY, SERVE", false));
+            }
+            newStatus = newStatus.trim().toUpperCase();
+
+            KitchenOrder ko;
+            switch (newStatus) {
+                case "READY":
+                    ko = kitchenOrderService.markAsReady(kotId);
+                    break;
+                case "SERVE":
+                    ko = kitchenOrderService.markAsServed(kotId);
+                    break;
+                default:
+                    return ResponseEntity.badRequest()
+                            .body(new ApiResponse("Invalid status: " + newStatus + ". Valid values: READY, SERVE", false));
+            }
+
+            KitchenOrderDto dto = convertToKitchenOrderDto(ko);
+            LOG.info("KOT #{} status updated to {}", kotId, newStatus);
+            return ResponseEntity.ok(new ApiResponse("Kitchen order status updated to " + newStatus, true, dto));
+        } catch (RuntimeException e) {
+            LOG.error("Error updating KOT #{} status: {}", kotId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), false));
+        } catch (Exception e) {
+            LOG.error("Error updating KOT #{} status: {}", kotId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * PUT /api/billing/kitchen-orders/{kotId}/ready
+     * Mark a single KOT as READY.
+     */
+    @Operation(
+        summary = "Mark a single KOT as READY",
+        description = "Transitions one specific kitchen order ticket from SENT to READY. "
+                + "Sets the readyAt timestamp. Returns the updated KOT with items. "
+                + "Use when the kitchen finishes cooking one particular order batch."
+    )
+    @PutMapping("/kitchen-orders/{kotId}/ready")
+    public ResponseEntity<ApiResponse> markSingleKotReady(
+            @Parameter(description = "Kitchen Order ID (KOT ID)") @PathVariable Integer kotId) {
+        try {
+            KitchenOrder ko = kitchenOrderService.markAsReady(kotId);
+            KitchenOrderDto dto = convertToKitchenOrderDto(ko);
+            LOG.info("KOT #{} marked as READY", kotId);
+            return ResponseEntity.ok(new ApiResponse("Kitchen order marked as ready", true, dto));
+        } catch (RuntimeException e) {
+            LOG.error("Error marking KOT #{} as ready: {}", kotId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), false));
+        } catch (Exception e) {
+            LOG.error("Error marking KOT #{} as ready: {}", kotId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * PUT /api/billing/kitchen-orders/{kotId}/serve
+     * Mark a single KOT as SERVE.
+     */
+    @Operation(
+        summary = "Mark a single KOT as SERVE",
+        description = "Transitions one specific kitchen order ticket from READY to SERVE. "
+                + "Returns the updated KOT with items. "
+                + "Use when the waiter picks up and serves one particular order to the table."
+    )
+    @PutMapping("/kitchen-orders/{kotId}/serve")
+    public ResponseEntity<ApiResponse> markSingleKotServed(
+            @Parameter(description = "Kitchen Order ID (KOT ID)") @PathVariable Integer kotId) {
+        try {
+            KitchenOrder ko = kitchenOrderService.markAsServed(kotId);
+            KitchenOrderDto dto = convertToKitchenOrderDto(ko);
+            LOG.info("KOT #{} marked as SERVE", kotId);
+            return ResponseEntity.ok(new ApiResponse("Kitchen order marked as served", true, dto));
+        } catch (RuntimeException e) {
+            LOG.error("Error marking KOT #{} as served: {}", kotId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), false));
+        } catch (Exception e) {
+            LOG.error("Error marking KOT #{} as served: {}", kotId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error: " + e.getMessage(), false));
         }
@@ -1202,5 +1538,60 @@ public class BillingApiController {
             LOG.warn("No default bank resolved - generating PDF without QR");
         }
         return billPrint.generateBillPdfBytes(bill, tableName);
+    }
+
+    /**
+     * Group a list of KitchenOrders by tableNo, returning a list of KitchenOrdersByTableDto.
+     * Each group contains the table info and all KOTs for that table.
+     */
+    private List<KitchenOrdersByTableDto> groupKitchenOrdersByTable(List<KitchenOrder> orders) {
+        java.util.LinkedHashMap<Integer, List<KitchenOrder>> byTable = new java.util.LinkedHashMap<>();
+        for (KitchenOrder ko : orders) {
+            byTable.computeIfAbsent(ko.getTableNo(), k -> new ArrayList<>()).add(ko);
+        }
+
+        List<KitchenOrdersByTableDto> result = new ArrayList<>();
+        for (java.util.Map.Entry<Integer, List<KitchenOrder>> entry : byTable.entrySet()) {
+            List<KitchenOrderDto> kotDtos = new ArrayList<>();
+            String tableName = null;
+            for (KitchenOrder ko : entry.getValue()) {
+                kotDtos.add(convertToKitchenOrderDto(ko));
+                if (tableName == null) {
+                    tableName = ko.getTableName();
+                }
+            }
+            result.add(new KitchenOrdersByTableDto(entry.getKey(), tableName, kotDtos));
+        }
+        return result;
+    }
+
+    private KitchenOrderDto convertToKitchenOrderDto(KitchenOrder ko) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        KitchenOrderDto dto = new KitchenOrderDto();
+        dto.setId(ko.getId());
+        dto.setTableNo(ko.getTableNo());
+        dto.setTableName(ko.getTableName());
+        dto.setWaitorId(ko.getWaitorId());
+        dto.setStatus(ko.getStatus());
+        dto.setItemCount(ko.getItemCount());
+        dto.setTotalQty(ko.getTotalQty());
+        dto.setSentAt(ko.getSentAt() != null ? ko.getSentAt().format(fmt) : null);
+        dto.setReadyAt(ko.getReadyAt() != null ? ko.getReadyAt().format(fmt) : null);
+
+        if (ko.getItems() != null) {
+            List<KitchenOrderItemDto> itemDtos = new ArrayList<>();
+            for (KitchenOrderItem item : ko.getItems()) {
+                KitchenOrderItemDto itemDto = new KitchenOrderItemDto();
+                itemDto.setId(item.getId());
+                itemDto.setItemId(item.getItemId());
+                itemDto.setItemName(item.getItemName());
+                itemDto.setQty(item.getQty());
+                itemDto.setRate(item.getRate());
+                itemDtos.add(itemDto);
+            }
+            dto.setItems(itemDtos);
+        }
+
+        return dto;
     }
 }

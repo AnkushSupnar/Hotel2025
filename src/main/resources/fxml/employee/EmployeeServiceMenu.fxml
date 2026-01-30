@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.employee.EmployeeServiceMenuController">
+   <stylesheets>
+      <URL value="@../css/master-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="master-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="master-title" text="Employee Service" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Scrollable Content Area with Cards -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox spacing="25.0" styleClass="master-content">
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+               </padding>
+               <children>
+
+                  <!-- First Row of Cards -->
+                  <HBox alignment="CENTER_LEFT" spacing="25.0">
+                     <children>
+                        <!-- Employee Attendance Card -->
+                        <StackPane fx:id="attendanceCard" prefWidth="280" styleClass="master-card, employee-card">
+                           <children>
+                              <VBox alignment="CENTER" spacing="15.0">
+                                 <children>
+                                    <StackPane styleClass="card-icon-container, employee-icon-bg">
+                                       <children>
+                                          <FontAwesomeIcon fill="#FF5722" glyphName="CALENDAR_CHECK_ALT" size="2.5em" styleClass="card-icon" />
+                                       </children>
+                                    </StackPane>
+                                    <Label fx:id="lblAttendanceTitle" styleClass="card-title" text="Employee Attendance" />
+                                    <Label styleClass="card-description" text="Mark daily employee attendance and absences" textAlignment="CENTER" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

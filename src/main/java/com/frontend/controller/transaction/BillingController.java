@@ -25,6 +25,8 @@ import com.frontend.entity.Transaction;
 import com.frontend.print.BillPrint;
 import com.frontend.service.BankService;
 import com.frontend.service.BankTransactionService;
+import com.frontend.service.KitchenOrderService;
+import com.frontend.entity.KitchenOrder;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.view.AlertNotification;
 
@@ -106,6 +108,9 @@ public class BillingController implements Initializable {
     private BankTransactionService bankTransactionService;
 
     @Autowired
+    private KitchenOrderService kitchenOrderService;
+
+    @Autowired
     AlertNotification alert;
 
     @FXML
@@ -181,6 +186,9 @@ public class BillingController implements Initializable {
 
     @FXML
     private Button btnClear;
+
+    @FXML
+    private Button btnKitchenStatus;
 
     // Bill Action Buttons
     @FXML
@@ -383,6 +391,9 @@ public class BillingController implements Initializable {
     private boolean isEditBillMode = false;
     private Bill billBeingEdited = null;
 
+    // Kitchen status dialog reference (to refresh if open)
+    private javafx.stage.Stage kitchenStatusStage;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Billing screen initialized");
@@ -407,6 +418,7 @@ public class BillingController implements Initializable {
         btnRemove.setOnAction(e -> removeSelectedItem());
         btnClear.setOnAction(e -> clearItemForm());
         btnOrder.setOnAction(e -> processOrder());
+        btnKitchenStatus.setOnAction(e -> showKitchenStatusDialog());
 
         // Bill Action Buttons
         btnClose.setOnAction(e -> {
@@ -1352,6 +1364,7 @@ public class BillingController implements Initializable {
 
                         // Load existing transactions for this table from database
                         loadTransactionsForTable(table.getId());
+                        refreshKotStatusPanel(table.getId());
                         LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
 
                         // If table is fresh (no transactions), focus on waiter dropdown
@@ -2101,8 +2114,17 @@ public class BillingController implements Initializable {
                 // Reset printQty to 0 after successful print
                 tempTransactionService.resetPrintQtyForTable(tableId);
 
+                // Create KitchenOrder record
+                try {
+                    kitchenOrderService.createKitchenOrder(tableId, tableName, waitorId, printableItems);
+                } catch (Exception kotEx) {
+                    LOG.error("Failed to create KitchenOrder: {}", kotEx.getMessage());
+                }
+
                 // Reload transactions to reflect updated printQty
                 loadTransactionsForTable(tableId);
+
+                refreshKotStatusPanel(tableId);
 
                 alert.showInfo("KOT printed successfully! " + printableItems.size() + " items sent to kitchen.");
                 LOG.info("KOT printed and printQty reset for table {}", tableName);
@@ -3344,6 +3366,13 @@ public class BillingController implements Initializable {
                 LOG.info("Shifted closed bill #{} to table {}", closedBill.getBillNo(), targetTableName);
             }
 
+            // 2b. Shift kitchen orders
+            try {
+                kitchenOrderService.shiftKitchenOrders(shiftSourceTableId, targetTableId, targetTableName);
+            } catch (Exception e) {
+                LOG.error("Failed to shift KitchenOrders: {}", e.getMessage());
+            }
+
             // 3. Update source table button status
             updateTableButtonStatus(shiftSourceTableId);
 
@@ -3353,6 +3382,7 @@ public class BillingController implements Initializable {
             // 5. Select and load the target table
             txtTableNumber.setText(targetTableName);
             loadTransactionsForTable(targetTableId);
+            refreshKotStatusPanel(targetTableId);
 
             alert.showInfo("Successfully shifted items from " + shiftSourceTableName + " to " + targetTableName);
             LOG.info("Table shift completed successfully");
@@ -3379,6 +3409,221 @@ public class BillingController implements Initializable {
         btnShiftTable.setText("SHIFT");
 
         LOG.info("Shift table mode cancelled");
+    }
+
+    /**
+     * Show the Kitchen Status popup dialog for the currently selected table.
+     */
+    private void showKitchenStatusDialog() {
+        if (txtTableNumber.getText().isEmpty()) {
+            alert.showWarning("Please select a table first");
+            return;
+        }
+
+        try {
+            String tableName = txtTableNumber.getText();
+            Integer tableId = tableMasterService.getTableByName(tableName).getId();
+            openKitchenStatusDialog(tableId, tableName);
+        } catch (Exception e) {
+            LOG.error("Error opening kitchen status dialog", e);
+            alert.showError("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Open (or refresh) the Kitchen Status popup dialog.
+     */
+    private void openKitchenStatusDialog(Integer tableNo, String tableName) {
+        Platform.runLater(() -> {
+            try {
+                List<KitchenOrder> orders = kitchenOrderService.getKitchenOrdersForTable(tableNo);
+
+                // Build dialog content with system font
+                VBox content = new VBox();
+                content.setSpacing(10);
+                content.setStyle("-fx-padding: 16; -fx-font-family: 'System';");
+                content.setPrefWidth(460);
+
+                if (orders == null || orders.isEmpty()) {
+                    Label emptyLabel = new Label("No kitchen orders for this table.");
+                    emptyLabel.setStyle("-fx-font-family: 'System'; -fx-font-size: 14px; -fx-text-fill: #757575; -fx-padding: 20 0;");
+                    content.getChildren().add(emptyLabel);
+                } else {
+                    // Header with status summary
+                    long sentCount = orders.stream()
+                            .filter(o -> KitchenOrderService.STATUS_SENT.equals(o.getStatus())).count();
+                    long readyCount = orders.stream()
+                            .filter(o -> KitchenOrderService.STATUS_READY.equals(o.getStatus())).count();
+                    long serveCount = orders.stream()
+                            .filter(o -> KitchenOrderService.STATUS_SERVE.equals(o.getStatus())).count();
+                    StringBuilder headerText = new StringBuilder("Kitchen Orders: " + orders.size());
+                    if (sentCount > 0) headerText.append("  |  Sent: ").append(sentCount);
+                    if (readyCount > 0) headerText.append("  |  Ready: ").append(readyCount);
+                    if (serveCount > 0) headerText.append("  |  Served: ").append(serveCount);
+                    Label header = new Label(headerText.toString());
+                    header.setStyle("-fx-font-family: 'System'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #424242;");
+                    content.getChildren().add(header);
+
+                    Region sep = new Region();
+                    sep.setMinHeight(1);
+                    sep.setMaxHeight(1);
+                    sep.setStyle("-fx-background-color: #E0E0E0;");
+                    content.getChildren().add(sep);
+
+                    // Get custom font for item names (20px as requested)
+                    Font itemFont = SessionService.getCustomFont(20.0);
+
+                    java.time.format.DateTimeFormatter timeFmt =
+                            java.time.format.DateTimeFormatter.ofPattern("HH:mm");
+
+                    for (KitchenOrder ko : orders) {
+                        VBox kotBlock = new VBox();
+                        kotBlock.setSpacing(4);
+                        kotBlock.setStyle("-fx-padding: 6; -fx-background-color: #FAFAFA; -fx-background-radius: 4; -fx-border-color: #E0E0E0; -fx-border-radius: 4;");
+
+                        // Top row: KOT info + badge + action button
+                        HBox topRow = new HBox();
+                        topRow.setSpacing(10);
+                        topRow.setAlignment(Pos.CENTER_LEFT);
+
+                        String timeStr = ko.getSentAt() != null ? ko.getSentAt().format(timeFmt) : "";
+                        Label infoLabel = new Label("KOT #" + ko.getId() + "   " + timeStr);
+                        infoLabel.setStyle("-fx-font-family: 'System'; -fx-font-size: 12px; -fx-text-fill: #424242; -fx-font-weight: bold;");
+                        infoLabel.setMinWidth(140);
+                        topRow.getChildren().add(infoLabel);
+
+                        // Status badge: SENT=orange, READY=green, SERVE=blue
+                        String status = ko.getStatus();
+                        Label badge = new Label(status);
+                        String badgeColor;
+                        if (KitchenOrderService.STATUS_SENT.equals(status)) {
+                            badgeColor = "#FF9800";
+                        } else if (KitchenOrderService.STATUS_READY.equals(status)) {
+                            badgeColor = "#4CAF50";
+                        } else {
+                            badgeColor = "#2196F3";
+                        }
+                        badge.setStyle("-fx-font-family: 'System'; -fx-background-color: " + badgeColor + "; -fx-text-fill: white; "
+                                + "-fx-padding: 2 10; -fx-background-radius: 10; -fx-font-size: 10px; -fx-font-weight: bold;");
+                        topRow.getChildren().add(badge);
+
+                        Region spacer = new Region();
+                        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                        topRow.getChildren().add(spacer);
+
+                        // Action button: SENT→READY, READY→SERVE
+                        if (KitchenOrderService.STATUS_SENT.equals(status)) {
+                            Button readyBtn = new Button("READY");
+                            readyBtn.setStyle("-fx-font-family: 'System'; -fx-background-color: #4CAF50; -fx-text-fill: white; "
+                                    + "-fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 3 12; "
+                                    + "-fx-background-radius: 4; -fx-cursor: hand;");
+                            final Integer kotId = ko.getId();
+                            readyBtn.setOnAction(e -> {
+                                try {
+                                    kitchenOrderService.markAsReady(kotId);
+                                    openKitchenStatusDialog(tableNo, tableName);
+                                } catch (Exception ex) {
+                                    LOG.error("Failed to mark KOT #{} as ready: {}", kotId, ex.getMessage());
+                                }
+                            });
+                            topRow.getChildren().add(readyBtn);
+                        } else if (KitchenOrderService.STATUS_READY.equals(status)) {
+                            Button serveBtn = new Button("SERVE");
+                            serveBtn.setStyle("-fx-font-family: 'System'; -fx-background-color: #2196F3; -fx-text-fill: white; "
+                                    + "-fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 3 12; "
+                                    + "-fx-background-radius: 4; -fx-cursor: hand;");
+                            final Integer kotId = ko.getId();
+                            serveBtn.setOnAction(e -> {
+                                try {
+                                    kitchenOrderService.markAsServed(kotId);
+                                    openKitchenStatusDialog(tableNo, tableName);
+                                } catch (Exception ex) {
+                                    LOG.error("Failed to mark KOT #{} as served: {}", kotId, ex.getMessage());
+                                }
+                            });
+                            topRow.getChildren().add(serveBtn);
+                        }
+
+                        kotBlock.getChildren().add(topRow);
+
+                        // Item rows: show each item name in custom font with qty
+                        if (ko.getItems() != null && !ko.getItems().isEmpty()) {
+                            for (com.frontend.entity.KitchenOrderItem koItem : ko.getItems()) {
+                                HBox itemRow = new HBox();
+                                itemRow.setSpacing(8);
+                                itemRow.setAlignment(Pos.CENTER_LEFT);
+                                itemRow.setStyle("-fx-padding: 1 0 1 16;");
+
+                                // Item name in custom font (20px)
+                                String itemName = koItem.getItemName() != null ? koItem.getItemName() : "Unknown";
+                                Label nameLabel = new Label(itemName);
+                                if (itemFont != null) {
+                                    nameLabel.setFont(itemFont);
+                                    nameLabel.setStyle("-fx-text-fill: #333333;");
+                                } else {
+                                    nameLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: #333333;");
+                                }
+                                nameLabel.setMinWidth(220);
+
+                                // Qty
+                                Label qtyLabel = new Label("x " + koItem.getQty().intValue());
+                                qtyLabel.setStyle("-fx-font-family: 'System'; -fx-font-size: 12px; -fx-text-fill: #757575;");
+
+                                itemRow.getChildren().addAll(nameLabel, qtyLabel);
+                                kotBlock.getChildren().add(itemRow);
+                            }
+                        }
+
+                        content.getChildren().add(kotBlock);
+                    }
+                }
+
+                // Create or reuse the stage
+                if (kitchenStatusStage == null || !kitchenStatusStage.isShowing()) {
+                    kitchenStatusStage = new javafx.stage.Stage();
+                    kitchenStatusStage.initModality(javafx.stage.Modality.NONE);
+                    kitchenStatusStage.initOwner(tblTransaction.getScene().getWindow());
+                    kitchenStatusStage.setTitle("Kitchen Status - " + tableName);
+
+                    javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(content);
+                    scrollPane.setFitToWidth(true);
+                    scrollPane.setStyle("-fx-background-color: white; -fx-font-family: 'System';");
+                    javafx.scene.Scene scene = new javafx.scene.Scene(scrollPane, 480, 400);
+                    scene.getRoot().setStyle("-fx-font-family: 'System';");
+                    kitchenStatusStage.setScene(scene);
+                    kitchenStatusStage.setResizable(true);
+                    kitchenStatusStage.show();
+                } else {
+                    kitchenStatusStage.setTitle("Kitchen Status - " + tableName);
+                    javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(content);
+                    scrollPane.setFitToWidth(true);
+                    scrollPane.setStyle("-fx-background-color: white; -fx-font-family: 'System';");
+                    kitchenStatusStage.getScene().setRoot(scrollPane);
+                    kitchenStatusStage.getScene().getRoot().setStyle("-fx-font-family: 'System';");
+                }
+
+            } catch (Exception e) {
+                LOG.error("Error building kitchen status dialog: {}", e.getMessage());
+                alert.showError("Error loading kitchen orders: " + e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Refresh the kitchen status dialog if it is currently open.
+     */
+    /**
+     * Refresh the kitchen status dialog if open, or close it if tableNo is null.
+     */
+    private void refreshKotStatusPanel(Integer tableNo) {
+        if (kitchenStatusStage != null && kitchenStatusStage.isShowing()) {
+            if (tableNo != null) {
+                String tableName = txtTableNumber.getText();
+                openKitchenStatusDialog(tableNo, tableName);
+            } else {
+                kitchenStatusStage.close();
+            }
+        }
     }
 
     /**
@@ -3613,6 +3858,14 @@ public class BillingController implements Initializable {
             tempTransactionList.clear();
             currentClosedBill = null;
             updateTotals();
+
+            // Clear kitchen orders for this table
+            try {
+                kitchenOrderService.clearKitchenOrdersForTable(tableId);
+            } catch (Exception e) {
+                LOG.error("Failed to clear KitchenOrders for table {}: {}", tableId, e.getMessage());
+            }
+            refreshKotStatusPanel(null);
 
             // Update table button status to Available
             updateTableButtonStatus(tableId);

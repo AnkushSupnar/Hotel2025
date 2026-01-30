@@ -44,6 +44,10 @@ public enum ScreenPermission {
     BANK("Bank Management", "/fxml/master/AddBank.fxml", "MASTER",
             "Access to create and manage bank accounts"),
 
+    // Employee Service screens
+    EMPLOYEE_ATTENDANCE("Employee Attendance", "/fxml/employee/EmployeeAttendance.fxml", "EMPLOYEE_SERVICE",
+            "Access to mark daily employee attendance and absences"),
+
     // Report screens
     SALES_REPORT("Sales Report", "/fxml/report/SalesReport.fxml", "REPORTS",
             "Access to view and export sales reports"),

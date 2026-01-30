@@ -352,4 +352,96 @@ public class BillingDto {
         public Integer getBankId() { return bankId; }
         public void setBankId(Integer bankId) { this.bankId = bankId; }
     }
+
+    /**
+     * DTO for kitchen order (KOT) response
+     */
+    public static class KitchenOrderDto {
+        private Integer id;
+        private Integer tableNo;
+        private String tableName;
+        private Integer waitorId;
+        private String status;
+        private Integer itemCount;
+        private Float totalQty;
+        private String sentAt;
+        private String readyAt;
+        private List<KitchenOrderItemDto> items;
+
+        public KitchenOrderDto() {}
+
+        public Integer getId() { return id; }
+        public void setId(Integer id) { this.id = id; }
+        public Integer getTableNo() { return tableNo; }
+        public void setTableNo(Integer tableNo) { this.tableNo = tableNo; }
+        public String getTableName() { return tableName; }
+        public void setTableName(String tableName) { this.tableName = tableName; }
+        public Integer getWaitorId() { return waitorId; }
+        public void setWaitorId(Integer waitorId) { this.waitorId = waitorId; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public Integer getItemCount() { return itemCount; }
+        public void setItemCount(Integer itemCount) { this.itemCount = itemCount; }
+        public Float getTotalQty() { return totalQty; }
+        public void setTotalQty(Float totalQty) { this.totalQty = totalQty; }
+        public String getSentAt() { return sentAt; }
+        public void setSentAt(String sentAt) { this.sentAt = sentAt; }
+        public String getReadyAt() { return readyAt; }
+        public void setReadyAt(String readyAt) { this.readyAt = readyAt; }
+        public List<KitchenOrderItemDto> getItems() { return items; }
+        public void setItems(List<KitchenOrderItemDto> items) { this.items = items; }
+    }
+
+    /**
+     * DTO that groups kitchen orders by table.
+     * Used by mobile app to show orders separated by table name.
+     */
+    public static class KitchenOrdersByTableDto {
+        private Integer tableNo;
+        private String tableName;
+        private Integer orderCount;
+        private List<KitchenOrderDto> orders;
+
+        public KitchenOrdersByTableDto() {}
+
+        public KitchenOrdersByTableDto(Integer tableNo, String tableName, List<KitchenOrderDto> orders) {
+            this.tableNo = tableNo;
+            this.tableName = tableName;
+            this.orders = orders;
+            this.orderCount = orders != null ? orders.size() : 0;
+        }
+
+        public Integer getTableNo() { return tableNo; }
+        public void setTableNo(Integer tableNo) { this.tableNo = tableNo; }
+        public String getTableName() { return tableName; }
+        public void setTableName(String tableName) { this.tableName = tableName; }
+        public Integer getOrderCount() { return orderCount; }
+        public void setOrderCount(Integer orderCount) { this.orderCount = orderCount; }
+        public List<KitchenOrderDto> getOrders() { return orders; }
+        public void setOrders(List<KitchenOrderDto> orders) { this.orders = orders; }
+    }
+
+    /**
+     * DTO for a single item within a kitchen order
+     */
+    public static class KitchenOrderItemDto {
+        private Integer id;
+        private Integer itemId;
+        private String itemName;
+        private Float qty;
+        private Float rate;
+
+        public KitchenOrderItemDto() {}
+
+        public Integer getId() { return id; }
+        public void setId(Integer id) { this.id = id; }
+        public Integer getItemId() { return itemId; }
+        public void setItemId(Integer itemId) { this.itemId = itemId; }
+        public String getItemName() { return itemName; }
+        public void setItemName(String itemName) { this.itemName = itemName; }
+        public Float getQty() { return qty; }
+        public void setQty(Float qty) { this.qty = qty; }
+        public Float getRate() { return rate; }
+        public void setRate(Float rate) { this.rate = rate; }
+    }
 }

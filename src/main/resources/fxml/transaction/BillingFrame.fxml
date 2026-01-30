@@ -317,6 +317,16 @@
                                           <Font name="Kiran" size="12.0" />
                                        </font>
                                     </Button>
+
+                                    <!-- Kitchen Status Button -->
+                                    <Button fx:id="btnKitchenStatus" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="KITCHEN">
+                                       <graphic>
+                                          <FontAwesomeIcon fill="white" glyphName="CUTLERY" size="0.9em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="Kiran" size="12.0" />
+                                       </font>
+                                    </Button>
                                  </children>
                               </HBox>
                            </children>

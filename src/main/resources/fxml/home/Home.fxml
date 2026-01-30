@@ -101,6 +101,19 @@
                               <Region HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
+
+                        <!-- Employee Service Menu -->
+                        <HBox fx:id="menuEmployeeService" alignment="CENTER_LEFT" styleClass="menu-item">
+                           <children>
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="ID_BADGE" size="1.5em" styleClass="menu-icon" />
+                              <Text styleClass="menu-text" text="EMPLOYEE SERVICE">
+                                 <HBox.margin>
+                                    <Insets left="15.0" />
+                                 </HBox.margin>
+                              </Text>
+                              <Region HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />

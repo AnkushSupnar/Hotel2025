@@ -55,6 +55,7 @@ public class HomeController implements Initializable {
     @FXML private HBox menuPurchase;
     @FXML private HBox menuMaster;
     @FXML private HBox menuReport;
+    @FXML private HBox menuEmployeeService;
     @FXML private HBox menuSettings;
     @FXML private Text txtUserName;
     @FXML private Text txtDesignation;
@@ -170,6 +171,15 @@ public class HomeController implements Initializable {
                 mainPane.setCenter(pane);
             } catch (Exception ex) {
                 LOG.error("Error loading master: ", ex);
+            }
+        });
+
+        menuEmployeeService.setOnMouseClicked(e -> {
+            try {
+                pane = loader.getPage("/fxml/employee/EmployeeServiceMenu.fxml");
+                mainPane.setCenter(pane);
+            } catch (Exception ex) {
+                LOG.error("Error loading employee service: ", ex);
             }
         });
 

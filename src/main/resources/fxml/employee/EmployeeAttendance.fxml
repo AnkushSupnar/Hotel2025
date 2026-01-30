@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="item-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.employee.EmployeeAttendanceController">
+   <stylesheets>
+      <URL value="@../css/employee-attendance.css" />
+   </stylesheets>
+   <children>
+
+      <!-- Header Bar -->
+      <HBox alignment="CENTER_LEFT" styleClass="item-header">
+         <children>
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER" spacing="10">
+               <children>
+                  <FontAwesomeIcon fill="white" glyphName="CALENDAR_CHECK_ALT" size="1.8em" />
+                  <Label styleClass="item-title" text="Employee Attendance" />
+               </children>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+      </HBox>
+
+      <!-- Date Row + Summary Bar -->
+      <HBox alignment="CENTER_LEFT" spacing="20">
+         <padding>
+            <Insets bottom="10.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+         <children>
+            <!-- Date Selection -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="date-section">
+               <children>
+                  <FontAwesomeIcon fill="#667eea" glyphName="CALENDAR" size="1.3em" />
+                  <Label text="Date:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                  <DatePicker fx:id="dpAttendanceDate" prefWidth="170" />
+                  <Button fx:id="btnLoadDate" styleClass="btn-secondary" text="LOAD">
+                     <graphic>
+                        <FontAwesomeIcon fill="white" glyphName="REFRESH" size="1em" />
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Summary Bar -->
+            <HBox alignment="CENTER" spacing="5" styleClass="summary-bar">
+               <children>
+                  <VBox alignment="CENTER" styleClass="summary-item">
+                     <children>
+                        <Label styleClass="summary-label" text="Total" />
+                        <Label fx:id="lblTotalEmployees" styleClass="summary-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" styleClass="summary-item">
+                     <children>
+                        <Label styleClass="summary-label" text="Present" />
+                        <Label fx:id="lblPresentCount" styleClass="present-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" styleClass="summary-item">
+                     <children>
+                        <Label styleClass="summary-label" text="Absent" />
+                        <Label fx:id="lblAbsentCount" styleClass="absent-value" text="0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+
+      <!-- Search Bar -->
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <padding>
+            <Insets bottom="5.0" left="25.0" right="25.0" top="5.0" />
+         </padding>
+         <children>
+            <Label fx:id="lblSearchLabel" style="-fx-text-fill: #1a237e; -fx-font-weight: bold;" text="Employee Name" />
+            <TextField fx:id="txtSearch" prefHeight="40" prefWidth="350" promptText="Search by employee name..." style="-fx-background-color: #FAFAFA; -fx-border-color: #1a237e; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnClearSearch" prefHeight="40" styleClass="btn-secondary" text="X" />
+         </children>
+      </HBox>
+
+      <!-- Table View -->
+      <TableView fx:id="tblAttendance" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets bottom="10.0" left="25.0" right="25.0" top="10.0" />
+         </VBox.margin>
+         <columns>
+            <TableColumn fx:id="colId" text="ID" minWidth="60" />
+            <TableColumn fx:id="colEmployeeName" text="Employee Name" minWidth="180" />
+            <TableColumn fx:id="colDesignation" text="Designation" minWidth="130" />
+            <TableColumn fx:id="colMobile" text="Mobile" minWidth="120" />
+            <TableColumn fx:id="colAbsent" text="Absent" minWidth="80" />
+            <TableColumn fx:id="colReason" text="Reason" minWidth="200" />
+         </columns>
+      </TableView>
+
+      <!-- Save Button -->
+      <HBox alignment="CENTER_RIGHT">
+         <padding>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="5.0" />
+         </padding>
+         <children>
+            <Button fx:id="btnSave" styleClass="btn-primary" text="SAVE ATTENDANCE">
+               <graphic>
+                  <FontAwesomeIcon fill="white" glyphName="CHECK" size="1.2em" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+
+   </children>
+</VBox>

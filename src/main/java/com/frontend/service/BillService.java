@@ -46,6 +46,9 @@ public class BillService {
     @Autowired
     private ItemStockService itemStockService;
 
+    @Autowired
+    private KitchenOrderService kitchenOrderService;
+
     /**
      * Create and save a new bill from temp transactions with CLOSE status
      *
@@ -207,6 +210,13 @@ public class BillService {
             // Clear temp transactions for this table
             tempTransactionService.clearTransactionsForTable(tableNo);
 
+            // Clear kitchen orders for this table
+            try {
+                kitchenOrderService.clearKitchenOrdersForTable(tableNo);
+            } catch (Exception kotEx) {
+                LOG.warn("Failed to clear KitchenOrders for table {}: {}", tableNo, kotEx.getMessage());
+            }
+
             return savedBill;
 
         } catch (Exception e) {
@@ -289,6 +299,13 @@ public class BillService {
 
             // Clear temp transactions for this table
             tempTransactionService.clearTransactionsForTable(tableNo);
+
+            // Clear kitchen orders for this table
+            try {
+                kitchenOrderService.clearKitchenOrdersForTable(tableNo);
+            } catch (Exception kotEx) {
+                LOG.warn("Failed to clear KitchenOrders for table {}: {}", tableNo, kotEx.getMessage());
+            }
 
             return savedBill;
 
