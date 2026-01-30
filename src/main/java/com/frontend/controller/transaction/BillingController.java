@@ -545,6 +545,18 @@ public class BillingController implements Initializable {
                 txtPrice.setPromptText("Rate");
                 txtAmount.setPromptText("Amount");
 
+                // Apply Kiran font to Bill History customer search field (smaller size for compact layout)
+                if (txtSearchCustomer != null) {
+                    Font kiranFont16 = SessionService.getCustomFont(16.0);
+                    if (kiranFont16 != null) {
+                        String searchFontStyle = String.format(
+                                "-fx-font-family: '%s'; -fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: transparent;",
+                                fontFamily);
+                        txtSearchCustomer.setFont(kiranFont16);
+                        txtSearchCustomer.setStyle(searchFontStyle);
+                    }
+                }
+
                 LOG.info("Kiran font applied to category/item fields, English font (18px) applied to code/numeric fields");
             }
         } catch (Exception e) {
@@ -2444,7 +2456,7 @@ public class BillingController implements Initializable {
                         if (empty) {
                             setText(null);
                             setStyle("");
-                        } else if (customerId != null) {
+                        } else if (customerId != null && customerId > 0) {
                             Customer customer = customerService.getCustomerById(customerId);
                             String customerName = customer != null ? customer.getFullName() : "";
                             setText(customerName);

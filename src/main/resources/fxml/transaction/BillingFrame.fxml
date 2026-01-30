@@ -22,10 +22,10 @@
 
     <left>
         <!-- Left Panel - TABLE SECTIONS (30% width - ~430px) -->
-        <VBox prefHeight="700.0" prefWidth="430.0" styleClass="table-panel-left" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
+        <VBox prefHeight="700.0" prefWidth="430.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" styleClass="table-panel-left">
 
             <!-- Panel Header with Refresh -->
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-panel-header" style="-fx-background-color: linear-gradient(to right, #1976D2, #1565C0); -fx-padding: 8 12;">
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: linear-gradient(to right, #1976D2, #1565C0); -fx-padding: 8 12;" styleClass="table-panel-header">
                 <FontAwesomeIcon fill="white" glyphName="TH_LARGE" size="1.2em" />
                 <Label style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="TABLES" />
                 <Region HBox.hgrow="ALWAYS" />
@@ -42,7 +42,7 @@
                     <Region style="-fx-background-color: #FF8A65; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 2;" />
                     <Label style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;" text="Billed" />
                 </HBox>
-                <Button fx:id="btnRefreshTables" styleClass="refresh-btn-compact" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 4 10;">
+                <Button fx:id="btnRefreshTables" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 4 10;" styleClass="refresh-btn-compact">
                     <graphic>
                         <FontAwesomeIcon fill="white" glyphName="REFRESH" size="0.9em" />
                     </graphic>
@@ -50,7 +50,7 @@
             </HBox>
 
             <!-- ScrollPane for table buttons grid -->
-            <ScrollPane fitToWidth="true" styleClass="table-scroll-pane" style="-fx-background-color: #FAFAFA; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #FAFAFA; -fx-border-color: transparent;" styleClass="table-scroll-pane" VBox.vgrow="ALWAYS">
                 <VBox fx:id="sectionsContainer" spacing="0" style="-fx-background-color: #FAFAFA; -fx-padding: 8;" />
             </ScrollPane>
         </VBox>
@@ -478,7 +478,7 @@
             </VBox>
 
             <!-- Right Side of Split - Bill History (20%) - Modern Design -->
-            <VBox fx:id="orderDetailsContainer" spacing="0" styleClass="bill-history-panel" style="-fx-background-color: #FFFFFF;">
+            <VBox fx:id="orderDetailsContainer" spacing="0" style="-fx-background-color: #FFFFFF;" styleClass="bill-history-panel">
 
                 <!-- Panel Header - Gradient -->
                 <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: linear-gradient(to right, #7B1FA2, #9C27B0); -fx-padding: 10 12;">
@@ -511,13 +511,16 @@
                     <HBox alignment="CENTER_LEFT" spacing="8">
                         <FontAwesomeIcon fill="#7B1FA2" glyphName="USER" size="1em" />
                         <HBox fx:id="billHistoryCustomerSearchContainer" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                            <TextField fx:id="txtSearchCustomer" prefHeight="32" promptText="Customer Name" style="-fx-font-size: 11px; -fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS" />
+                            <TextField fx:id="txtSearchCustomer" prefHeight="32" promptText="ga`ahkacao naava" style="-fx-font-size: 11px; -fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS">
+                        <font>
+                           <Font name="Kiran" size="20.0" />
+                        </font></TextField>
                         </HBox>
                     </HBox>
 
                     <!-- Action Buttons -->
                     <HBox alignment="CENTER" spacing="8">
-                        <Button fx:id="btnSearchBills" prefHeight="30" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 6 16;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        <Button fx:id="btnSearchBills" maxWidth="Infinity" prefHeight="30" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 6 16;" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <FontAwesomeIcon fill="white" glyphName="SEARCH" size="0.9em" />
                             </graphic>
@@ -532,7 +535,7 @@
                 </VBox>
 
                 <!-- Bills Table -->
-                <TableView fx:id="tblBillHistory" fixedCellSize="26" styleClass="bill-history-table" style="-fx-font-size: 11px; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tblBillHistory" fixedCellSize="26" style="-fx-font-size: 11px; -fx-background-color: white;" styleClass="bill-history-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colBillNo" minWidth="45" prefWidth="50" text="#" />
                         <TableColumn fx:id="colBillDate" minWidth="70" prefWidth="75" text="Date" />
