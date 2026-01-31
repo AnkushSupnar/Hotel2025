@@ -6,6 +6,7 @@ import com.frontend.entity.Bill;
 import com.frontend.entity.Customer;
 import com.frontend.entity.TableMaster;
 import com.frontend.print.BillPrint;
+import com.frontend.print.BillPrintWithLogo;
 import com.frontend.service.BillService;
 import com.frontend.service.CustomerService;
 import com.frontend.service.SessionService;
@@ -72,6 +73,9 @@ public class BillSearchController implements Initializable {
 
     @Autowired
     private BillPrint billPrint;
+
+    @Autowired
+    private BillPrintWithLogo billPrintWithLogo;
 
     // Header buttons
     @FXML private Button btnBack;
@@ -688,7 +692,11 @@ public class BillSearchController implements Initializable {
         try {
             LOG.info("Printing bill #{}", selectedBill.getBillNo());
             String tableName = getTableName(selectedBill.getTableNo());
-            billPrint.printBill(selectedBill, tableName);
+            if (SessionService.isUseBillLogo()) {
+                billPrintWithLogo.printBill(selectedBill, tableName);
+            } else {
+                billPrint.printBill(selectedBill, tableName);
+            }
             showAlert(Alert.AlertType.INFORMATION, "Print", "Bill #" + selectedBill.getBillNo() + " sent to printer.");
         } catch (Exception e) {
             LOG.error("Error printing bill", e);
@@ -716,7 +724,12 @@ public class BillSearchController implements Initializable {
             String tableName = getTableName(fullBill.getTableNo());
 
             // Generate A4 PDF and open in default viewer
-            boolean success = billPrint.printBillA4(fullBill, tableName);
+            boolean success;
+            if (SessionService.isUseBillLogo()) {
+                success = billPrintWithLogo.printBillA4(fullBill, tableName);
+            } else {
+                success = billPrint.printBillA4(fullBill, tableName);
+            }
 
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "A4 Print", "Bill #" + fullBill.getBillNo() + " PDF generated and opened.");
@@ -759,7 +772,12 @@ public class BillSearchController implements Initializable {
             }
 
             // Generate A4 PDF with multiple bills
-            boolean success = billPrint.printMultipleBillsA4(billsWithTransactions, tableNameMap);
+            boolean success;
+            if (SessionService.isUseBillLogo()) {
+                success = billPrintWithLogo.printMultipleBillsA4(billsWithTransactions, tableNameMap);
+            } else {
+                success = billPrint.printMultipleBillsA4(billsWithTransactions, tableNameMap);
+            }
 
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "PDF Generated",

@@ -136,7 +136,7 @@
                         </HBox>
                         
                         <!-- Support Menu -->
-                        <HBox alignment="CENTER_LEFT" styleClass="menu-item">
+                        <HBox fx:id="menuSupport" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="PHONE" size="1.5em" styleClass="menu-icon" />
                               <Text styleClass="menu-text" text="SUPPORT">
@@ -206,77 +206,121 @@
    <center>
       <StackPane styleClass="main-content-area">
          <children>
-            <!-- Dashboard Content -->
-            <VBox alignment="CENTER" spacing="40.0" styleClass="dashboard-container">
+            <VBox alignment="TOP_CENTER" spacing="24.0" styleClass="dashboard-container">
                <children>
-                  <!-- Welcome Section -->
-                  <VBox alignment="CENTER" spacing="15.0" styleClass="welcome-card">
+
+                  <!-- ===== Welcome Banner ===== -->
+                  <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="welcome-banner">
                      <children>
-                        <Label styleClass="welcome-title" text="Welcome to Hotel Management System" />
-                        <Label styleClass="welcome-description" text="Manage your hotel operations efficiently with our comprehensive system" />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Dashboard Stats -->
-                  <HBox alignment="CENTER" spacing="30.0" styleClass="stats-row">
-                     <children>
-                        <!-- Revenue Card -->
-                        <VBox alignment="CENTER" spacing="12.0" styleClass="stats-card, revenue-card">
+                        <VBox alignment="CENTER" styleClass="welcome-icon-box">
                            <children>
-                              <FontAwesomeIcon fill="#4CAF50" glyphName="MONEY" size="3em" styleClass="stats-icon" />
-                              <Label styleClass="stats-label" text="Today's Revenue" />
-                              <Label fx:id="lblTodayRevenue" styleClass="stats-value, revenue-value" text="₹0.00" />
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2.2em" />
                            </children>
                         </VBox>
-                        
-                        <!-- Orders Card -->
-                        <VBox alignment="CENTER" spacing="12.0" styleClass="stats-card, orders-card">
+                        <VBox alignment="CENTER_LEFT" spacing="4.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <FontAwesomeIcon fill="#2196F3" glyphName="SHOPPING_CART" size="3em" styleClass="stats-icon" />
-                              <Label styleClass="stats-label" text="Today's Orders" />
-                              <Label fx:id="lblTodayOrders" styleClass="stats-value, orders-value" text="0" />
-                           </children>
-                        </VBox>
-                        
-                        <!-- Tables Card -->
-                        <VBox alignment="CENTER" spacing="12.0" styleClass="stats-card, tables-card">
-                           <children>
-                              <FontAwesomeIcon fill="#FF9800" glyphName="USERS" size="3em" styleClass="stats-icon" />
-                              <Label styleClass="stats-label" text="Active Tables" />
-                              <Label fx:id="lblActiveTables" styleClass="stats-value, tables-value" text="0" />
+                              <Label styleClass="welcome-title" text="Welcome to Hotel Management System" />
+                              <Label styleClass="welcome-description" text="Real-time table overview and daily performance at a glance" />
                            </children>
                         </VBox>
                      </children>
                   </HBox>
-                  
-                  <!-- Quick Actions -->
-                  <VBox alignment="CENTER" spacing="20.0" styleClass="quick-actions">
+
+                  <!-- ===== Section Header ===== -->
+                  <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
                      <children>
-                        <Label styleClass="section-title" text="Quick Actions" />
-                        <HBox alignment="CENTER" spacing="20.0">
+                        <FontAwesomeIcon fill="#455A64" glyphName="TH_LARGE" size="1.1em" />
+                        <Label styleClass="section-title" text="Table Overview" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label styleClass="section-subtitle" text="Live Status" />
+                        <FontAwesomeIcon fill="#4CAF50" glyphName="CIRCLE" size="0.6em" />
+                        <HBox fx:id="btnRefreshDashboard" alignment="CENTER" spacing="6.0" styleClass="refresh-btn">
                            <children>
-                              <VBox alignment="CENTER" spacing="10.0" styleClass="quick-action-card">
-                                 <children>
-                                    <FontAwesomeIcon fill="#1976D2" glyphName="PLUS_CIRCLE" size="2em" />
-                                    <Label styleClass="quick-action-text" text="New Order" />
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" spacing="10.0" styleClass="quick-action-card">
-                                 <children>
-                                    <FontAwesomeIcon fill="#1976D2" glyphName="SEARCH" size="2em" />
-                                    <Label styleClass="quick-action-text" text="Search Order" />
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" spacing="10.0" styleClass="quick-action-card">
-                                 <children>
-                                    <FontAwesomeIcon fill="#1976D2" glyphName="PRINT" size="2em" />
-                                    <Label styleClass="quick-action-text" text="Print Bill" />
-                                 </children>
-                              </VBox>
+                              <FontAwesomeIcon fx:id="refreshIcon" fill="#1976D2" glyphName="REFRESH" size="1.1em" />
+                              <Label styleClass="refresh-btn-text" text="Refresh" />
                            </children>
+                           <HBox.margin>
+                              <Insets left="12.0" />
+                           </HBox.margin>
                         </HBox>
                      </children>
-                  </VBox>
+                  </HBox>
+
+                  <!-- ===== Row 1: Total, Active, Closed Bill ===== -->
+                  <HBox alignment="CENTER" spacing="24.0">
+                     <children>
+                        <!-- Total Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-blue, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="TH" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblTotalTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Total Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Active Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-orange, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="FIRE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblActiveTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Active Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Closed Bill Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-red, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="FILE_TEXT" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblClosedBillTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Closed Bill" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- ===== Row 2: Available, Today's Completed ===== -->
+                  <HBox alignment="CENTER" spacing="24.0">
+                     <children>
+                        <!-- Available Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-green, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="CHECK_CIRCLE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblAvailableTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Available Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Today's Completed -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-purple, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="CHECK_SQUARE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblTodayCompleted" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Completed Today" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
                </children>
             </VBox>
          </children>

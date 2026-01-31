@@ -23,6 +23,7 @@ import com.frontend.entity.Bank;
 import com.frontend.entity.Bill;
 import com.frontend.entity.Transaction;
 import com.frontend.print.BillPrint;
+import com.frontend.print.BillPrintWithLogo;
 import com.frontend.service.BankService;
 import com.frontend.service.BankTransactionService;
 import com.frontend.service.KitchenOrderService;
@@ -100,6 +101,9 @@ public class BillingController implements Initializable {
 
     @Autowired
     private BillPrint billPrint;
+
+    @Autowired
+    private BillPrintWithLogo billPrintWithLogo;
 
     @Autowired
     private BankService bankService;
@@ -3273,11 +3277,19 @@ public class BillingController implements Initializable {
                 try {
                     if (printQR && upiId != null && !upiId.trim().isEmpty()) {
                         // Print bill with QR code for UPI payment
-                        billPrint.printBillWithQR(billToPrint, tableNameForPrint, true, upiId, bankName);
+                        if (SessionService.isUseBillLogo()) {
+                            billPrintWithLogo.printBillWithQR(billToPrint, tableNameForPrint, true, upiId, bankName);
+                        } else {
+                            billPrint.printBillWithQR(billToPrint, tableNameForPrint, true, upiId, bankName);
+                        }
                         LOG.info("Bill #{} printed with QR code for UPI: {}", billToPrint.getBillNo(), upiId);
                     } else {
                         // Print bill without QR code
-                        billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                        if (SessionService.isUseBillLogo()) {
+                            billPrintWithLogo.printBillWithDialog(billToPrint, tableNameForPrint);
+                        } else {
+                            billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                        }
                     }
                 } catch (Exception e) {
                     LOG.error("Error printing bill #{}: {}", billToPrint.getBillNo(), e.getMessage(), e);
@@ -3847,7 +3859,11 @@ public class BillingController implements Initializable {
                 // Run printing in background thread
                 new Thread(() -> {
                     try {
-                        billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                        if (SessionService.isUseBillLogo()) {
+                            billPrintWithLogo.printBillWithDialog(billToPrint, tableNameForPrint);
+                        } else {
+                            billPrint.printBillWithDialog(billToPrint, tableNameForPrint);
+                        }
                     } catch (Exception e) {
                         LOG.error("Error printing bill #{}: {}", billToPrint.getBillNo(), e.getMessage(), e);
                     }
@@ -3968,7 +3984,11 @@ public class BillingController implements Initializable {
 
             new Thread(() -> {
                 try {
-                    billPrint.printBillWithDialog(finalBill, finalTableName);
+                    if (SessionService.isUseBillLogo()) {
+                        billPrintWithLogo.printBillWithDialog(finalBill, finalTableName);
+                    } else {
+                        billPrint.printBillWithDialog(finalBill, finalTableName);
+                    }
                 } catch (Exception e) {
                     LOG.error("Error printing bill #{}: {}", finalBill.getBillNo(), e.getMessage(), e);
                 }

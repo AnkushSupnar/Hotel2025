@@ -236,4 +236,10 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
      */
     @Query("SELECT COUNT(DISTINCT b.tableNo) FROM Bill b WHERE b.status = :status AND b.tableNo IS NOT NULL")
     Long countDistinctActiveTablesByStatus(@Param("status") String status);
+
+    /**
+     * Count distinct tables with given status for a specific date
+     */
+    @Query("SELECT COUNT(DISTINCT b.tableNo) FROM Bill b WHERE b.billDate = :billDate AND b.status = :status AND b.tableNo IS NOT NULL")
+    Long countDistinctTablesByDateAndStatus(@Param("billDate") String billDate, @Param("status") String status);
 }

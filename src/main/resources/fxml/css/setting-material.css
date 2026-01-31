@@ -1293,6 +1293,55 @@
     -fx-scale-y: 0.97;
 }
 
+/* Setting Row Checkbox */
+.setting-row-checkbox {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #424242;
+    -fx-cursor: hand;
+}
+
+.setting-row-checkbox .box {
+    -fx-background-color: white;
+    -fx-border-color: #26A69A;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+}
+
+.setting-row-checkbox:hover .box {
+    -fx-border-color: #00897B;
+}
+
+.setting-row-checkbox:selected .box {
+    -fx-background-color: #26A69A;
+    -fx-border-color: #26A69A;
+}
+
+.setting-row-checkbox:selected .mark {
+    -fx-background-color: white;
+}
+
+/* Setting Row Buttons - Teal */
+.setting-row-btn-teal {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #26A69A 0%, #4DB6AC 100%);
+    -fx-background-radius: 6;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(38, 166, 154, 0.25), 4, 0, 0, 1);
+}
+
+.setting-row-btn-teal:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #00897B 0%, #26A69A 100%);
+    -fx-effect: dropshadow(gaussian, rgba(38, 166, 154, 0.35), 6, 0, 0, 2);
+}
+
+.setting-row-btn-teal:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
 /* Setting Row Buttons - Indigo */
 .setting-row-btn-indigo {
     -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #5C6BC0 0%, #7986CB 100%);

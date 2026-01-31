@@ -5,6 +5,7 @@ import com.frontend.dto.BillingDto.*;
 import com.frontend.dto.CategoryMasterDto;
 import com.frontend.entity.*;
 import com.frontend.print.BillPrint;
+import com.frontend.print.BillPrintWithLogo;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.service.*;
 import java.time.format.DateTimeFormatter;
@@ -73,6 +74,9 @@ public class BillingApiController {
 
     @Autowired
     private BillPrint billPrint;
+
+    @Autowired
+    private BillPrintWithLogo billPrintWithLogo;
 
     @Autowired
     private KitchenOrderService kitchenOrderService;
@@ -1528,14 +1532,22 @@ public class BillingApiController {
             if (!isCash && hasUpi) {
                 LOG.info("Default bank '{}' is non-cash with UPI ID '{}', generating PDF with QR code",
                         defaultBank.getBankName(), defaultBank.getUpiId());
-                return billPrint.generateBillPdfBytesWithQR(bill, tableName,
-                        defaultBank.getUpiId(), defaultBank.getBankName());
+                if (SessionService.isUseBillLogo()) {
+                    return billPrintWithLogo.generateBillPdfBytesWithQR(bill, tableName,
+                            defaultBank.getUpiId(), defaultBank.getBankName());
+                } else {
+                    return billPrint.generateBillPdfBytesWithQR(bill, tableName,
+                            defaultBank.getUpiId(), defaultBank.getBankName());
+                }
             } else {
                 LOG.info("Default bank '{}' (cash={}, hasUpi={}) - generating PDF without QR",
                         defaultBank.getBankName(), isCash, hasUpi);
             }
         } else {
             LOG.warn("No default bank resolved - generating PDF without QR");
+        }
+        if (SessionService.isUseBillLogo()) {
+            return billPrintWithLogo.generateBillPdfBytes(bill, tableName);
         }
         return billPrint.generateBillPdfBytes(bill, tableName);
     }

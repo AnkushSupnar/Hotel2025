@@ -41,6 +41,9 @@ public class SessionService {
     // Cached font family name for creating fonts with different sizes
     private static String cachedFontFamily;
 
+    // Whether to use bill logo in bill printing
+    private static boolean useBillLogo = false;
+
     // Multiplier to match Swing font size appearance in JavaFX
     private static final double JAVAFX_FONT_SIZE_MULTIPLIER = 1.33;
 
@@ -202,6 +205,7 @@ public class SessionService {
         applicationSettings = null;
         customFont = null;
         cachedFontFamily = null;
+        useBillLogo = false;
     }
 
     /**
@@ -217,6 +221,11 @@ public class SessionService {
             }
 
             LOG.info("Loaded {} application settings into session", applicationSettings.size());
+
+            // Load use bill logo setting
+            String useBillLogoValue = applicationSettings.get("use_bill_logo");
+            useBillLogo = "true".equalsIgnoreCase(useBillLogoValue);
+            LOG.info("Use bill logo: {}", useBillLogo);
 
             // Load custom font after loading settings
             loadCustomFont();
@@ -350,6 +359,21 @@ public class SessionService {
      */
     public static String getDocumentDirectory() {
         return getApplicationSetting("document_directory");
+    }
+
+    /**
+     * Check if bill logo should be used in bill printing
+     */
+    public static boolean isUseBillLogo() {
+        return useBillLogo;
+    }
+
+    /**
+     * Set whether to use bill logo in bill printing
+     */
+    public static void setUseBillLogo(boolean value) {
+        useBillLogo = value;
+        LOG.info("Use bill logo set to: {}", value);
     }
 
     /**

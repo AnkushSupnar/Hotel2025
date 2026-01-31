@@ -16,7 +16,16 @@
       "WebFetch(domain:www.manualowl.com)",
       "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\" /s /b)",
       "Bash(findstr:*)",
-      "Bash(mvn package:*)"
+      "Bash(mvn package:*)",
+      "Bash(mvn compiler:compile:*)",
+      "Bash(mvn spring-boot:run:*)",
+      "Bash(mvn javafx:run:*)",
+      "Bash(java -jar:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd.exe /c \"taskkill /PID 6864 /F\")",
+      "Bash(cmd.exe /c \"taskkill /F /PID 6864\")",
+      "Bash(powershell -Command:*)"
     ],
     "deny": []
   }

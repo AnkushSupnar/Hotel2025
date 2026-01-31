@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,6 +28,9 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -42,6 +46,8 @@ public class ApplicationSettingController implements Initializable {
     private static final String BILLING_PRINTER_SETTING = "billing_printer";
     private static final String KOT_PRINTER_SETTING = "kot_printer";
     private static final String DEFAULT_BANK_SETTING = "default_billing_bank";
+    private static final String BILL_LOGO_SETTING = "bill_logo_image";
+    private static final String USE_BILL_LOGO_SETTING = "use_bill_logo";
 
     @Autowired
     private SpringFXMLLoader loader;
@@ -114,6 +120,22 @@ public class ApplicationSettingController implements Initializable {
     @FXML
     private Label lblCurrentDefaultBank;
 
+    // Bill Logo components
+    @FXML
+    private TextField txtBillLogoPath;
+
+    @FXML
+    private Button btnBrowseBillLogo;
+
+    @FXML
+    private Button btnUploadBillLogo;
+
+    @FXML
+    private Label lblCurrentBillLogo;
+
+    @FXML
+    private CheckBox chkUseBillLogo;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -168,6 +190,13 @@ public class ApplicationSettingController implements Initializable {
 
         // Bank refresh button
         btnRefreshBanks.setOnAction(e -> refreshBanks());
+
+        // Bill Logo buttons
+        btnBrowseBillLogo.setOnAction(e -> browseBillLogo());
+        btnUploadBillLogo.setOnAction(e -> uploadBillLogo());
+
+        // Use Bill Logo checkbox
+        chkUseBillLogo.selectedProperty().addListener((obs, oldVal, newVal) -> saveUseBillLogoSetting(newVal));
     }
 
     /**
@@ -391,6 +420,110 @@ public class ApplicationSettingController implements Initializable {
         }
     }
 
+    private void browseBillLogo() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Bill Logo Image");
+
+            // Set extension filters for image files
+            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter(
+                    "Image Files", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif", "*.PNG", "*.JPG", "*.JPEG", "*.BMP", "*.GIF");
+            FileChooser.ExtensionFilter allFilter = new FileChooser.ExtensionFilter(
+                    "All Files", "*.*");
+            fileChooser.getExtensionFilters().addAll(imageFilter, allFilter);
+
+            // Set initial directory to user's home
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+
+            // Show open file dialog
+            File selectedFile = fileChooser.showOpenDialog(btnBrowseBillLogo.getScene().getWindow());
+
+            if (selectedFile != null) {
+                String absolutePath = selectedFile.getAbsolutePath();
+                txtBillLogoPath.setText(absolutePath);
+                LOG.info("Bill logo image selected: {}", absolutePath);
+            }
+        } catch (Exception e) {
+            LOG.error("Error browsing bill logo image: ", e);
+            alertNotification.showError("Error selecting bill logo image: " + e.getMessage());
+        }
+    }
+
+    private void uploadBillLogo() {
+        try {
+            String selectedFilePath = txtBillLogoPath.getText();
+            if (selectedFilePath == null || selectedFilePath.trim().isEmpty()) {
+                alertNotification.showError("Please browse and select a bill logo image first.");
+                return;
+            }
+
+            File sourceFile = new File(selectedFilePath);
+            if (!sourceFile.exists() || !sourceFile.isFile()) {
+                alertNotification.showError("Selected bill logo image file does not exist.");
+                return;
+            }
+
+            // Validate file is an image
+            String fileName = sourceFile.getName().toLowerCase();
+            if (!fileName.endsWith(".png") && !fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg")
+                    && !fileName.endsWith(".bmp") && !fileName.endsWith(".gif")) {
+                alertNotification.showError("Please select a valid image file (.png, .jpg, .jpeg, .bmp, .gif)");
+                return;
+            }
+
+            // Get document directory from settings
+            Optional<ApplicationSetting> documentSetting = applicationSettingService.getSettingByName(DOCUMENT_PATH_SETTING);
+            if (!documentSetting.isPresent() || documentSetting.get().getSettingValue() == null
+                    || documentSetting.get().getSettingValue().trim().isEmpty()) {
+                alertNotification.showError("Document Directory is not configured. Please set the Document Directory first and save settings.");
+                return;
+            }
+
+            String documentDirectory = documentSetting.get().getSettingValue();
+            File docDir = new File(documentDirectory);
+            if (!docDir.exists() || !docDir.isDirectory()) {
+                alertNotification.showError("Document Directory does not exist: " + documentDirectory);
+                return;
+            }
+
+            // Copy file to document directory, renamed to "billlogo" with original extension
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            Path sourcePath = sourceFile.toPath();
+            Path destinationPath = new File(docDir, "billlogo" + extension).toPath();
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Save the setting with the destination file path
+            String destinationFilePath = destinationPath.toString();
+            applicationSettingService.saveSetting(BILL_LOGO_SETTING, destinationFilePath);
+
+            // Reload settings in session
+            sessionService.reloadApplicationSettings();
+
+            // Update the UI
+            lblCurrentBillLogo.setText(destinationFilePath);
+            txtBillLogoPath.clear();
+
+            alertNotification.showSuccess("Bill logo image uploaded successfully to: " + destinationFilePath);
+            LOG.info("Bill logo image uploaded to: {}", destinationFilePath);
+
+        } catch (Exception e) {
+            LOG.error("Error uploading bill logo image: ", e);
+            alertNotification.showError("Error uploading bill logo image: " + e.getMessage());
+        }
+    }
+
+    private void saveUseBillLogoSetting(boolean useLogo) {
+        try {
+            applicationSettingService.saveSetting(USE_BILL_LOGO_SETTING, String.valueOf(useLogo));
+            SessionService.setUseBillLogo(useLogo);
+            sessionService.reloadApplicationSettings();
+            LOG.info("Use bill logo setting saved: {}", useLogo);
+        } catch (Exception e) {
+            LOG.error("Error saving use bill logo setting: ", e);
+            alertNotification.showError("Error saving use bill logo setting: " + e.getMessage());
+        }
+    }
+
     private void saveSettings() {
         try {
             boolean hasChanges = false;
@@ -501,6 +634,8 @@ public class ApplicationSettingController implements Initializable {
         cmbBillingPrinter.setValue(null);
         cmbKotPrinter.setValue(null);
         cmbDefaultBank.setValue(null);
+        txtBillLogoPath.clear();
+        chkUseBillLogo.setSelected(false);
     }
 
     private void loadCurrentSettings() {
@@ -572,6 +707,28 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("No default bank setting found");
             }
 
+            // Load Bill Logo Setting
+            Optional<ApplicationSetting> billLogoSetting = applicationSettingService.getSettingByName(BILL_LOGO_SETTING);
+            if (billLogoSetting.isPresent()) {
+                String billLogoPath = billLogoSetting.get().getSettingValue();
+                lblCurrentBillLogo.setText(billLogoPath);
+                LOG.info("Loaded current bill logo: {}", billLogoPath);
+            } else {
+                lblCurrentBillLogo.setText("Not configured");
+                LOG.info("No bill logo setting found");
+            }
+
+            // Load Use Bill Logo checkbox
+            Optional<ApplicationSetting> useBillLogoSetting = applicationSettingService.getSettingByName(USE_BILL_LOGO_SETTING);
+            if (useBillLogoSetting.isPresent()) {
+                boolean useLogo = "true".equalsIgnoreCase(useBillLogoSetting.get().getSettingValue());
+                chkUseBillLogo.setSelected(useLogo);
+                LOG.info("Loaded use bill logo setting: {}", useLogo);
+            } else {
+                chkUseBillLogo.setSelected(false);
+                LOG.info("No use bill logo setting found, defaulting to false");
+            }
+
         } catch (Exception e) {
             LOG.error("Error loading current settings: ", e);
             lblCurrentDocument.setText("Error loading settings");
@@ -579,6 +736,7 @@ public class ApplicationSettingController implements Initializable {
             lblCurrentBillingPrinter.setText("Error loading settings");
             lblCurrentKotPrinter.setText("Error loading settings");
             lblCurrentDefaultBank.setText("Error loading settings");
+            lblCurrentBillLogo.setText("Error loading settings");
         }
     }
 }

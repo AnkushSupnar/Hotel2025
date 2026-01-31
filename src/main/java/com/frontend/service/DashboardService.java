@@ -239,36 +239,43 @@ public class DashboardService {
         Map<String, Long> status = new HashMap<>();
         try {
             long total = tableMasterRepository.count();
+            String today = LocalDate.now().format(DATE_FORMATTER);
 
-            // Get tables with temp transactions (orders in progress, bill not yet created)
+            // Tables with temp transactions (orders in progress, bill not yet created)
             List<Integer> tempActiveTables = tempTransactionRepository.findDistinctActiveTableNumbers();
             Set<Integer> activeTableSet = new HashSet<>(tempActiveTables != null ? tempActiveTables : Collections.emptyList());
 
-            // Also get tables with open bills (status = CLOSE means bill created but not paid)
-            Long billActiveTables = billRepository.countDistinctActiveTablesByStatus("CLOSE");
-
-            // For bill tables, we need to get the actual table numbers to merge with temp tables
-            // But since we just need count, let's use a combined approach
-            // Actually, let's get distinct count properly by fetching both sets
-
-            // Get table numbers from bills with CLOSE status
+            // Tables with CLOSE status bills (bill created but not paid)
             List<Bill> closeBills = billRepository.findByStatus("CLOSE");
+            Set<Integer> closedBillTableSet = new HashSet<>();
             for (Bill bill : closeBills) {
                 if (bill.getTableNo() != null) {
-                    activeTableSet.add(bill.getTableNo());
+                    closedBillTableSet.add(bill.getTableNo());
                 }
             }
 
+            // Combined active = temp ordering + closed bill tables
+            Set<Integer> allOccupied = new HashSet<>(activeTableSet);
+            allOccupied.addAll(closedBillTableSet);
             long active = activeTableSet.size();
+            long closedBill = closedBillTableSet.size();
+            long available = Math.max(0, total - allOccupied.size());
+
+            // Today's completed tables (PAID bills today)
+            Long todayCompleted = billRepository.countDistinctTablesByDateAndStatus(today, "PAID");
 
             status.put("total", total);
             status.put("active", active);
-            status.put("available", Math.max(0, total - active));
+            status.put("closedBill", closedBill);
+            status.put("available", available);
+            status.put("todayCompleted", todayCompleted != null ? todayCompleted : 0L);
         } catch (Exception e) {
             LOG.error("Error getting table status: ", e);
             status.put("total", 0L);
             status.put("active", 0L);
+            status.put("closedBill", 0L);
             status.put("available", 0L);
+            status.put("todayCompleted", 0L);
         }
         return status;
     }

@@ -4,6 +4,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -197,6 +198,51 @@
                                     <FontAwesomeIcon glyphName="REFRESH" size="1em" fill="white" />
                                  </graphic>
                               </Button>
+                           </children>
+                        </HBox>
+
+                        <Separator styleClass="setting-separator" />
+
+                        <!-- Setting Row 6: Bill Logo Image -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="setting-row">
+                           <children>
+                              <!-- Icon -->
+                              <FontAwesomeIcon glyphName="IMAGE" size="1.3em" fill="#26A69A" />
+                              <!-- Label Section -->
+                              <VBox spacing="2" minWidth="180" maxWidth="180">
+                                 <children>
+                                    <Label text="Bill Logo Image" styleClass="setting-row-title" />
+                                    <Label fx:id="lblCurrentBillLogo" text="Not configured" styleClass="setting-row-value" />
+                                 </children>
+                              </VBox>
+                              <!-- Input Field (smaller width) -->
+                              <TextField fx:id="txtBillLogoPath" promptText="Select bill logo image..."
+                                         styleClass="setting-row-input" editable="false"
+                                         prefWidth="200" maxWidth="200" />
+                              <!-- Browse Button -->
+                              <Button fx:id="btnBrowseBillLogo" styleClass="setting-row-btn-blue">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="5">
+                                       <children>
+                                          <FontAwesomeIcon glyphName="FOLDER_OPEN" size="0.9em" fill="white" />
+                                          <Label text="Browse" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: 600;" />
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                              </Button>
+                              <!-- Upload Button -->
+                              <Button fx:id="btnUploadBillLogo" styleClass="setting-row-btn-teal">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="5">
+                                       <children>
+                                          <FontAwesomeIcon glyphName="UPLOAD" size="0.9em" fill="white" />
+                                          <Label text="Upload" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: 600;" />
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                              </Button>
+                              <!-- Use Logo Checkbox -->
+                              <CheckBox fx:id="chkUseBillLogo" text="Use Logo" styleClass="setting-row-checkbox" />
                            </children>
                         </HBox>
 
