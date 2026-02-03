@@ -25,7 +25,16 @@
       "Bash(taskkill:*)",
       "Bash(cmd.exe /c \"taskkill /PID 6864 /F\")",
       "Bash(cmd.exe /c \"taskkill /F /PID 6864\")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\\\\entity\" /b)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\\\\service\" /b)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\\\\api\" /b)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\\\\dto\" /b)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\\\\repository\" /b)",
+      "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\" /ad)",
+      "Bash(dir:*)",
+      "Bash(mvn test:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

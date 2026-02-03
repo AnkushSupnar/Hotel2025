@@ -5,6 +5,8 @@ import com.frontend.repository.BankRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,7 @@ public class BankService {
     /**
      * Get all active banks
      */
+    @Cacheable("banks")
     public List<Bank> getActiveBanks() {
         return bankRepository.findActiveBanks();
     }
@@ -76,6 +79,7 @@ public class BankService {
      * Save bank
      */
     @Transactional
+    @CacheEvict(value = "banks", allEntries = true)
     public Bank saveBank(Bank bank) {
         try {
             // Check for duplicate account number

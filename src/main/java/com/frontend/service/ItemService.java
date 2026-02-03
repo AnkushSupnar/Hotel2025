@@ -6,6 +6,8 @@ import com.frontend.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class ItemService {
     /**
      * Get all items with categories
      */
+    @Cacheable("items")
     public List<ItemDto> getAllItems() {
         try {
             LOG.info("Fetching all items with categories");
@@ -129,6 +132,7 @@ public class ItemService {
      * Create new item
      */
     @Transactional
+    @CacheEvict(value = "items", allEntries = true)
     public ItemDto createItem(ItemDto itemDto) {
         try {
             LOG.info("Creating new item: {}", itemDto.getItemName());
@@ -159,6 +163,7 @@ public class ItemService {
      * Update existing item
      */
     @Transactional
+    @CacheEvict(value = "items", allEntries = true)
     public ItemDto updateItem(Integer id, ItemDto itemDto) {
         try {
             LOG.info("Updating item with ID: {}", id);
@@ -201,6 +206,7 @@ public class ItemService {
      * Delete item by ID
      */
     @Transactional
+    @CacheEvict(value = "items", allEntries = true)
     public void deleteItem(Integer id) {
         try {
             LOG.info("Deleting item with ID: {}", id);

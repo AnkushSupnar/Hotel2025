@@ -64,11 +64,28 @@
                                  <children>
                                     <StackPane styleClass="card-icon-container, employee-icon-bg">
                                        <children>
-                                          <FontAwesomeIcon fill="#FF5722" glyphName="CALENDAR_CHECK_ALT" size="2.5em" styleClass="card-icon" />
+                                          <FontAwesomeIcon fill="#FF5722" glyphName="CALENDAR" size="2.5em" styleClass="card-icon" />
                                        </children>
                                     </StackPane>
-                                    <Label fx:id="lblAttendanceTitle" styleClass="card-title" text="Employee Attendance" />
+                                    <Label fx:id="lblAttendanceTitle" styleClass="card-title" text="kamagaar hjaorI" />
                                     <Label styleClass="card-description" text="Mark daily employee attendance and absences" textAlignment="CENTER" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </StackPane>
+
+                        <!-- Employee Salary Card -->
+                        <StackPane fx:id="salaryCard" prefWidth="280" styleClass="master-card, employee-card">
+                           <children>
+                              <VBox alignment="CENTER" spacing="15.0">
+                                 <children>
+                                    <StackPane styleClass="card-icon-container, employee-icon-bg">
+                                       <children>
+                                          <FontAwesomeIcon fill="#2e7d32" glyphName="MONEY" size="2.5em" styleClass="card-icon" />
+                                       </children>
+                                    </StackPane>
+                                    <Label fx:id="lblSalaryTitle" styleClass="card-title" text="pgaar" />
+                                    <Label styleClass="card-description" text="View monthly attendance and pay employee salary" textAlignment="CENTER" />
                                  </children>
                               </VBox>
                            </children>

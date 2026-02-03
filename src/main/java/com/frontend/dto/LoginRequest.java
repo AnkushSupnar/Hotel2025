@@ -1,10 +1,15 @@
 package com.frontend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * DTO for login request to backend API
  */
 public class LoginRequest {
+    @NotBlank(message = "Username is required")
     private String username;
+
+    @NotBlank(message = "Password is required")
     private String password;
     private String appVersion;  // Client mobile app version
     private String deviceId;    // Optional: device identifier

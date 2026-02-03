@@ -8,6 +8,8 @@ import com.frontend.repository.TableMasterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class TableMasterService {
     /**
      * Get all tables
      */
+    @Cacheable("tables")
     public List<TableMaster> getAllTables() {
         try {
             LOG.info("Fetching all tables");
@@ -105,6 +108,7 @@ public class TableMasterService {
      * Create new table
      */
     @Transactional
+    @CacheEvict(value = "tables", allEntries = true)
     public TableMaster createTable(TableMaster tableMaster) {
         try {
             LOG.info("Creating new table: {}", tableMaster.getTableName());
@@ -129,6 +133,7 @@ public class TableMasterService {
      * Update existing table
      */
     @Transactional
+    @CacheEvict(value = "tables", allEntries = true)
     public TableMaster updateTable(Integer id, TableMaster tableMaster) {
         try {
             LOG.info("Updating table with ID: {}", id);
@@ -162,6 +167,7 @@ public class TableMasterService {
      * Delete table by ID
      */
     @Transactional
+    @CacheEvict(value = "tables", allEntries = true)
     public void deleteTable(Integer id) {
         try {
             LOG.info("Deleting table with ID: {}", id);

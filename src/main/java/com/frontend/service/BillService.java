@@ -49,6 +49,12 @@ public class BillService {
     @Autowired
     private KitchenOrderService kitchenOrderService;
 
+    @Autowired
+    private AuditLogService auditLogService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     /**
      * Create and save a new bill from temp transactions with CLOSE status
      *
@@ -125,6 +131,17 @@ public class BillService {
             // Clear temp transactions for this table
             tempTransactionService.clearTransactionsForTable(tableNo);
             LOG.info("Temp transactions cleared for table {}", tableNo);
+
+            // Audit log
+            auditLogService.logAsync("Bill", String.valueOf(savedBill.getBillNo()), "CREATE",
+                    String.format("Closed bill created for table %d, amount=%.2f, items=%d",
+                            tableNo, totalAmt, consolidatedTransactions.size()),
+                    userId != null ? "user:" + userId : "system");
+
+            // WebSocket notification
+            if (notificationService != null) {
+                notificationService.notifyTableStatusChange(tableNo, "Closed");
+            }
 
             return savedBill;
 
@@ -361,6 +378,21 @@ public class BillService {
 
             LOG.info("Bill {} marked as PAID ({}) at {} with {} transactions", billNo, paymode, bill.getBillTime(), updatedBill.getTransactions().size());
 
+            // Audit log
+            auditLogService.logAsync("Bill", String.valueOf(billNo), "PAID",
+                    String.format("Bill marked as PAID. Amount=%.2f, Received=%.2f, Discount=%.2f, Paymode=%s",
+                            bill.getBillAmt(), cashReceived, discount != null ? discount : 0f, paymode),
+                    "system");
+
+            // WebSocket notification
+            if (notificationService != null) {
+                notificationService.notifyTableStatusChange(bill.getTableNo(), "Available");
+                java.util.Map<String, Object> dashData = new java.util.HashMap<>();
+                dashData.put("billNo", billNo);
+                dashData.put("amount", bill.getNetAmount());
+                notificationService.notifyDashboardUpdate("BILL_PAID", dashData);
+            }
+
             return updatedBill;
 
         } catch (Exception e) {
@@ -421,6 +453,22 @@ public class BillService {
             LOG.info("Bill {} marked as CREDIT at {} for customer {}. Amount: ₹{}, Paid: ₹{}, Credit Balance: ₹{}",
                     billNo, bill.getBillTime(), customerId, bill.getNetAmount(),
                     (bill.getCashReceived() - bill.getReturnAmount()), creditBalance);
+
+            // Audit log
+            auditLogService.logAsync("Bill", String.valueOf(billNo), "CREDIT",
+                    String.format("Bill marked as CREDIT for customer %d. Amount=%.2f, CreditBalance=%.2f",
+                            customerId, bill.getNetAmount(), creditBalance),
+                    "system");
+
+            // WebSocket notification
+            if (notificationService != null) {
+                notificationService.notifyTableStatusChange(bill.getTableNo(), "Available");
+                java.util.Map<String, Object> dashData = new java.util.HashMap<>();
+                dashData.put("billNo", billNo);
+                dashData.put("amount", bill.getNetAmount());
+                dashData.put("customerId", customerId);
+                notificationService.notifyDashboardUpdate("BILL_CREDIT", dashData);
+            }
 
             return updatedBill;
 
@@ -570,6 +618,8 @@ public class BillService {
     public void deleteBill(Integer billNo) {
         billRepository.deleteById(billNo);
         LOG.info("Bill {} deleted", billNo);
+        auditLogService.logAsync("Bill", String.valueOf(billNo), "DELETE",
+                "Bill deleted", "system");
     }
 
     /**
@@ -1028,6 +1078,12 @@ public class BillService {
 
             LOG.info("Bill #{} updated successfully with {} transactions, status={}",
                     savedBill.getBillNo(), savedBill.getTransactions().size(), newStatus);
+
+            // Audit log
+            auditLogService.logAsync("Bill", String.valueOf(billNo), "UPDATE",
+                    String.format("Bill updated with %d transactions, status=%s, amount=%.2f",
+                            savedBill.getTransactions().size(), newStatus, totalAmt),
+                    "system");
 
             return savedBill;
 

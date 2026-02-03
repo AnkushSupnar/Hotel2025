@@ -37,7 +37,13 @@ public class EmployeeServiceMenuController implements Initializable {
     private StackPane attendanceCard;
 
     @FXML
+    private StackPane salaryCard;
+
+    @FXML
     private Label lblAttendanceTitle;
+
+    @FXML
+    private Label lblSalaryTitle;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -91,12 +97,27 @@ public class EmployeeServiceMenuController implements Initializable {
                 LOG.error("Error loading attendance management: ", ex);
             }
         });
+
+        salaryCard.setOnMouseClicked(e -> {
+            try {
+                loadSalaryManagement();
+            } catch (Exception ex) {
+                LOG.error("Error loading salary management: ", ex);
+            }
+        });
     }
 
     private void loadAttendanceManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {
             navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/employee/EmployeeAttendance.fxml");
+        }
+    }
+
+    private void loadSalaryManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/employee/EmployeeSalary.fxml");
         }
     }
 
@@ -119,6 +140,7 @@ public class EmployeeServiceMenuController implements Initializable {
             String fontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: #1a237e;";
 
             if (lblAttendanceTitle != null) lblAttendanceTitle.setStyle(fontStyle);
+            if (lblSalaryTitle != null) lblSalaryTitle.setStyle(fontStyle);
 
             LOG.info("Applied custom font '{}' to card titles", fontFamily);
         }

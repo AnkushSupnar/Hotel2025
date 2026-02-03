@@ -368,22 +368,8 @@ public class LoginController {
                 // Store user session with selected shop
                 sessionService.setUserSession(user, selectedShop);
 
-                // Build success message
-                StringBuilder successMessage = new StringBuilder();
-                successMessage.append("Login Successful!\n\n");
-                successMessage.append("Restaurant: ").append(selectedShop.getRestaurantName()).append("\n");
-                successMessage.append("User: ").append(user.getUsername());
-                successMessage.append(" (").append(user.getRole()).append(")");
-
-                // Add employee info if available
-                if (user.getEmployee() != null) {
-                    successMessage.append("\n").append(user.getEmployee().getFullName());
-                    if (user.getEmployee().getDesignation() != null) {
-                        successMessage.append(" - ").append(user.getEmployee().getDesignation());
-                    }
-                }
-
-                alertNotification.showSuccess(successMessage.toString());
+                // Show login success dialog with custom font for username
+                showLoginSuccessDialog(user, selectedShop);
 
                 // Navigate to MaterialFX Demo (temporary for demo purposes)
                 // stageManager.switchScene(FxmlView.MATERIALFX_DEMO);
@@ -399,6 +385,61 @@ public class LoginController {
         } catch (Exception e) {
             alertNotification.showError("An unexpected error occurred: " + e.getMessage());
         }
+    }
+
+    /**
+     * Show login success dialog with username in custom font
+     */
+    private void showLoginSuccessDialog(User user, Shop selectedShop) {
+        javafx.scene.control.Alert successAlert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        successAlert.setTitle("Login Successful");
+        successAlert.setHeaderText(null);
+
+        javafx.scene.layout.VBox contentBox = new javafx.scene.layout.VBox(8);
+
+        // Title label
+        javafx.scene.control.Label lblTitle = new javafx.scene.control.Label("Login Successful!");
+        lblTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4caf50;");
+
+        // Restaurant name with custom font
+        javafx.scene.control.Label lblRestaurant = new javafx.scene.control.Label(selectedShop.getRestaurantName());
+        if (customFont != null) {
+            lblRestaurant.setFont(Font.font(customFont.getFamily(), 20));
+            lblRestaurant.setStyle("-fx-text-fill: #1a237e;");
+        } else {
+            lblRestaurant.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;");
+        }
+        lblRestaurant.setWrapText(true);
+
+        // Username with custom font
+        javafx.scene.control.Label lblUsername = new javafx.scene.control.Label(user.getUsername());
+        if (customFont != null) {
+            lblUsername.setFont(Font.font(customFont.getFamily(), 20));
+            lblUsername.setStyle("-fx-text-fill: #1a237e;");
+        } else {
+            lblUsername.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;");
+        }
+        lblUsername.setWrapText(true);
+
+        // Role detail
+        javafx.scene.control.Label lblDetails = new javafx.scene.control.Label("Role: " + user.getRole());
+        lblDetails.setStyle("-fx-font-size: 14px; -fx-text-fill: #424242;");
+        lblDetails.setWrapText(true);
+
+        contentBox.getChildren().addAll(lblTitle, lblRestaurant, lblUsername, lblDetails);
+        successAlert.getDialogPane().setContent(contentBox);
+
+        // Apply Material Design styling
+        javafx.scene.control.DialogPane dialogPane = successAlert.getDialogPane();
+        dialogPane.setStyle(
+                "-fx-background-color: white; " +
+                "-fx-background-radius: 8; " +
+                "-fx-border-radius: 8; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5); " +
+                "-fx-padding: 20;"
+        );
+
+        successAlert.showAndWait();
     }
 
     private void closeApplication() {

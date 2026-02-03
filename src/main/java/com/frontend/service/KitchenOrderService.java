@@ -31,6 +31,12 @@ public class KitchenOrderService {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private AuditLogService auditLogService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     /**
      * Create a KitchenOrder record from a list of printable TempTransactions.
      * Looks up item ID by name and stores the ID.
@@ -68,6 +74,9 @@ public class KitchenOrderService {
         KitchenOrder saved = kitchenOrderRepository.save(ko);
         LOG.info("Created KitchenOrder #{} for table {} ({}) with {} items",
                 saved.getId(), tableNo, tableName, printableItems.size());
+        auditLogService.logAsync("KitchenOrder", String.valueOf(saved.getId()), "CREATE",
+                String.format("KOT created for table %s with %d items", tableName, printableItems.size()),
+                "system");
         return saved;
     }
 
@@ -82,6 +91,11 @@ public class KitchenOrderService {
         ko.setReadyAt(LocalDateTime.now());
         kitchenOrderRepository.save(ko);
         LOG.info("KitchenOrder #{} marked as READY", kotId);
+        auditLogService.logAsync("KitchenOrder", String.valueOf(kotId), "STATUS_CHANGE",
+                "Status changed: SENT -> READY", "system");
+        if (notificationService != null) {
+            notificationService.notifyKitchenOrderUpdate(kotId, STATUS_READY, ko.getTableNo());
+        }
         return kitchenOrderRepository.findByIdWithItems(kotId).orElse(ko);
     }
 
@@ -95,6 +109,11 @@ public class KitchenOrderService {
         ko.setStatus(STATUS_SERVE);
         kitchenOrderRepository.save(ko);
         LOG.info("KitchenOrder #{} marked as SERVE", kotId);
+        auditLogService.logAsync("KitchenOrder", String.valueOf(kotId), "STATUS_CHANGE",
+                "Status changed: READY -> SERVE", "system");
+        if (notificationService != null) {
+            notificationService.notifyKitchenOrderUpdate(kotId, STATUS_SERVE, ko.getTableNo());
+        }
         return kitchenOrderRepository.findByIdWithItems(kotId).orElse(ko);
     }
 

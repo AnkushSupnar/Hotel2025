@@ -6,6 +6,7 @@ import com.frontend.repository.CategoryMasterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class CategoryApiService {
     /**
      * Get all categories from database
      */
+    @Cacheable("categories")
     public List<CategoryMasterDto> getAllCategories() {
         LOG.debug("Fetching all categories from database");
 

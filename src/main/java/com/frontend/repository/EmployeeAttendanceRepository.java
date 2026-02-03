@@ -47,4 +47,16 @@ public interface EmployeeAttendanceRepository extends JpaRepository<EmployeeAtte
      */
     @Query("SELECT ea FROM EmployeeAttendance ea WHERE ea.attendanceDate BETWEEN :startDate AND :endDate ORDER BY ea.attendanceDate, ea.employee.firstName")
     List<EmployeeAttendance> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    /**
+     * Count absences for a specific employee within a date range (for salary calculation)
+     */
+    @Query("SELECT COUNT(ea) FROM EmployeeAttendance ea WHERE ea.employee.employeeId = :employeeId AND ea.attendanceDate BETWEEN :startDate AND :endDate")
+    long countByEmployeeIdAndDateRange(@Param("employeeId") Integer employeeId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    /**
+     * Find absences for a specific employee within a date range
+     */
+    @Query("SELECT ea FROM EmployeeAttendance ea WHERE ea.employee.employeeId = :employeeId AND ea.attendanceDate BETWEEN :startDate AND :endDate ORDER BY ea.attendanceDate")
+    List<EmployeeAttendance> findByEmployeeIdAndDateRange(@Param("employeeId") Integer employeeId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

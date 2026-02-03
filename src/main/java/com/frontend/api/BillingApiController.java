@@ -8,10 +8,10 @@ import com.frontend.print.BillPrint;
 import com.frontend.print.BillPrintWithLogo;
 import com.frontend.print.KOTOrderPrint;
 import com.frontend.service.*;
-import java.time.format.DateTimeFormatter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,7 @@ import java.util.Optional;
  * Only active in 'server' profile
  */
 @RestController
-@RequestMapping("/api/billing")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1/billing")
 @Tag(name = "Billing", description = "Billing operations - Tables, Orders, and Bills management")
 @Profile("server")
 public class BillingApiController {
@@ -234,7 +233,7 @@ public class BillingApiController {
     @PostMapping("/tables/{tableId}/transactions")
     public ResponseEntity<ApiResponse> addItemsToTable(
             @Parameter(description = "Table ID") @PathVariable Integer tableId,
-            @RequestBody AddItemsRequest request) {
+            @Valid @RequestBody AddItemsRequest request) {
         try {
             // Validate request
             if (request.getWaitorId() == null) {
@@ -539,7 +538,7 @@ public class BillingApiController {
     @PostMapping("/tables/{tableId}/close")
     public ResponseEntity<ApiResponse> closeTable(
             @Parameter(description = "Table ID") @PathVariable Integer tableId,
-            @RequestBody CloseTableRequest request) {
+            @Valid @RequestBody CloseTableRequest request) {
         try {
             // Get temp transactions for the table
             List<TempTransaction> tempTransactions = tempTransactionService.getTransactionsByTableNo(tableId);
@@ -598,7 +597,7 @@ public class BillingApiController {
     @PostMapping("/bills/{billNo}/pay")
     public ResponseEntity<ApiResponse> markBillAsPaid(
             @Parameter(description = "Bill Number") @PathVariable Integer billNo,
-            @RequestBody PayBillRequest request) {
+            @Valid @RequestBody PayBillRequest request) {
         try {
             // Validate request
             if (request.getCashReceived() == null) {
@@ -727,7 +726,7 @@ public class BillingApiController {
     @PostMapping("/bills/{billNo}/credit")
     public ResponseEntity<ApiResponse> markBillAsCredit(
             @Parameter(description = "Bill Number") @PathVariable Integer billNo,
-            @RequestBody CreditBillRequest request) {
+            @Valid @RequestBody CreditBillRequest request) {
         try {
             // Validate request
             if (request.getCustomerId() == null) {

@@ -38,8 +38,8 @@ public class OpenApiConfig {
 
         Info info = new Info()
                 .title("Hotel Management System API")
-                .version("1.0.0")
-                .description("REST API for Hotel Management System - Billing, Tables, Orders, Customers, Items, and more")
+                .version("1.1.0")
+                .description("REST API for Hotel Management System - Billing, Tables, Orders, Customers, Items, and more. API version: v1")
                 .contact(contact)
                 .license(license);
 

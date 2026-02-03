@@ -27,8 +27,7 @@ import java.util.Optional;
  * Only active in 'server' profile
  */
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1")
 @Tag(name = "Master Data", description = "Master data management - Customers, Items, Categories, Employees, Banks")
 @Profile("server")
 public class MasterDataApiController {
@@ -160,14 +159,35 @@ public class MasterDataApiController {
     // ==================== ITEM ENDPOINTS ====================
 
     /**
-     * GET /api/items
-     * Get all items
+     * GET /api/v1/items
+     * Get all items with optional pagination.
+     * Without page/size parameters: returns all items (backward compatible).
+     * With page & size parameters: returns paginated results.
      */
-    @Operation(summary = "Get all items", description = "Retrieve all menu items")
+    @Operation(summary = "Get all items", description = "Retrieve all menu items. Supports optional pagination with page & size parameters.")
     @GetMapping("/items")
-    public ResponseEntity<ApiResponse> getAllItems() {
+    public ResponseEntity<ApiResponse> getAllItems(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
         try {
             List<ItemDto> items = itemService.getAllItems();
+
+            if (page != null && size != null && size > 0) {
+                int start = page * size;
+                int end = Math.min(start + size, items.size());
+                if (start >= items.size()) {
+                    return ResponseEntity.ok(new ApiResponse("Items retrieved successfully", true,
+                            java.util.Map.of("content", java.util.Collections.emptyList(),
+                                    "page", page, "size", size, "totalElements", items.size(),
+                                    "totalPages", (int) Math.ceil((double) items.size() / size))));
+                }
+                List<ItemDto> paged = items.subList(start, end);
+                return ResponseEntity.ok(new ApiResponse("Items retrieved successfully", true,
+                        java.util.Map.of("content", paged,
+                                "page", page, "size", size, "totalElements", items.size(),
+                                "totalPages", (int) Math.ceil((double) items.size() / size))));
+            }
+
             LOG.info("Retrieved {} items", items.size());
             return ResponseEntity.ok(new ApiResponse("Items retrieved successfully", true, items));
         } catch (Exception e) {

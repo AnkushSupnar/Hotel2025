@@ -1,5 +1,9 @@
 package com.frontend.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 /**
@@ -77,9 +81,12 @@ public class BillingDto {
      * - If KOT already printed and item is reduced, it tracks in reduced_item table
      */
     public static class AddItemsRequest {
+        @NotNull(message = "Waiter ID is required")
         private Integer waitorId;
         private Integer userId;       // User ID for tracking reduced items
         private String userName;      // Username for tracking reduced items
+        @NotEmpty(message = "At least one item is required")
+        @Valid
         private List<OrderItemDto> items;
 
         public Integer getWaitorId() { return waitorId; }
@@ -153,6 +160,7 @@ public class BillingDto {
     public static class CloseTableRequest {
         private Integer tableId;
         private Integer customerId;
+        @NotNull(message = "Waiter ID is required")
         private Integer waitorId;
         private Integer userId;
 
@@ -170,10 +178,12 @@ public class BillingDto {
      * DTO for mark bill as paid request
      */
     public static class PayBillRequest {
+        @NotNull(message = "Cash received is required")
         private Float cashReceived;
         private Float returnAmount;
         private Float discount;
         private String paymode; // CASH or BANK
+        @NotNull(message = "Bank ID is required")
         private Integer bankId;
 
         public Float getCashReceived() { return cashReceived; }
@@ -192,6 +202,7 @@ public class BillingDto {
      * DTO for mark bill as credit request
      */
     public static class CreditBillRequest {
+        @NotNull(message = "Customer ID is required for credit bills")
         private Integer customerId;
         private Float cashReceived;
         private Float returnAmount;

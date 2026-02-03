@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,7 @@ import java.util.List;
  * Only active in 'server' profile
  */
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication and authorization endpoints")
 @Profile("server")
 public class AuthController {
@@ -60,7 +60,7 @@ public class AuthController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Mobile access disabled")
     })
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LOG.info("API Login attempt for user: {} (app version: {}, platform: {})",
                 loginRequest.getUsername(), loginRequest.getAppVersion(), loginRequest.getPlatform());
 
