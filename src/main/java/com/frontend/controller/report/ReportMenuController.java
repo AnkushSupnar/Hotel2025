@@ -3,6 +3,7 @@ package com.frontend.controller.report;
 import com.frontend.config.SpringFXMLLoader;
 import com.frontend.util.NavigationGuard;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -10,9 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,25 +56,29 @@ public class ReportMenuController implements Initializable {
     @FXML private VBox miscellaneousContent;
     @FXML private VBox stockContent;
 
-    // Report Cards
-    @FXML private StackPane salesReportCard;
-    @FXML private StackPane purchaseReportCard;
-    @FXML private StackPane paymentReceivedCard;
-    @FXML private StackPane payReceiptReportCard;
-    @FXML private StackPane reducedItemReportCard;
-    @FXML private StackPane billSearchReportCard;
-    @FXML private StackPane stockReportCard;
-    @FXML private StackPane lowStockAlertCard;
+    // Report Card Title Labels
+    @FXML private Label lblSalesReportTitle;
+    @FXML private Label lblPaymentReceivedTitle;
+    @FXML private Label lblPurchaseReportTitle;
+    @FXML private Label lblPayReceiptReportTitle;
+    @FXML private Label lblBillSearchTitle;
+    @FXML private Label lblReducedItemTitle;
+    @FXML private Label lblStockReportTitle;
+    @FXML private Label lblLowStockTitle;
 
-    // Report Buttons
-    @FXML private Button btnViewSalesReport;
-    @FXML private Button btnViewPurchaseReport;
-    @FXML private Button btnViewPaymentReceived;
-    @FXML private Button btnViewPayReceipt;
-    @FXML private Button btnViewReducedItemReport;
-    @FXML private Button btnViewBillSearch;
-    @FXML private Button btnViewStockReport;
-    @FXML private Button btnViewLowStockAlert;
+    // Kiran font family name (set during applyKiranFont, used by tab switch methods)
+    private String kiranFontFamily;
+    private Font kiranFont25;
+
+    // Report Cards
+    @FXML private VBox salesReportCard;
+    @FXML private VBox purchaseReportCard;
+    @FXML private VBox paymentReceivedCard;
+    @FXML private VBox payReceiptReportCard;
+    @FXML private VBox reducedItemReportCard;
+    @FXML private VBox billSearchReportCard;
+    @FXML private VBox stockReportCard;
+    @FXML private VBox lowStockAlertCard;
 
     // Track active tab (0=Sales, 1=Purchase, 2=Miscellaneous, 3=Stock)
     private int activeTab = 0;
@@ -82,6 +87,7 @@ public class ReportMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Initializing ReportMenuController");
         setupBackButton();
+        applyKiranFont();
         setupTabChips();
         setupReportCards();
         restoreActiveTab();
@@ -102,6 +108,46 @@ public class ReportMenuController implements Initializable {
             case 2: switchToMiscellaneousTab(); break;
             case 3: switchToStockTab(); break;
             default: switchToSalesTab(); break;
+        }
+    }
+
+    private void applyKiranFont() {
+        try {
+            kiranFont25 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 25);
+            if (kiranFont25 != null) {
+                kiranFontFamily = kiranFont25.getFamily();
+                String cardFontStyle = "-fx-font-family: '" + kiranFontFamily + "'; -fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;";
+
+                // Apply to all card title labels
+                Label[] cardLabels = {lblSalesReportTitle, lblPaymentReceivedTitle,
+                        lblPurchaseReportTitle, lblPayReceiptReportTitle,
+                        lblBillSearchTitle, lblReducedItemTitle,
+                        lblStockReportTitle, lblLowStockTitle};
+                for (Label lbl : cardLabels) {
+                    if (lbl != null) {
+                        lbl.setFont(kiranFont25);
+                        lbl.setStyle(cardFontStyle);
+                        Platform.runLater(() -> {
+                            lbl.setFont(kiranFont25);
+                            lbl.setStyle(cardFontStyle);
+                        });
+                    }
+                }
+
+                // Apply to tab chip labels (their styles are managed by switchTo*Tab methods too)
+                Label[] tabLabels = {lblSales, lblPurchase, lblMiscellaneous, lblStock};
+                for (Label lbl : tabLabels) {
+                    if (lbl != null) {
+                        lbl.setFont(kiranFont25);
+                    }
+                }
+
+                LOG.info("Applied Kiran font '{}' (25px) to report labels", kiranFontFamily);
+            } else {
+                LOG.warn("Could not load Kiran font from /fonts/kiran.ttf");
+            }
+        } catch (Exception e) {
+            LOG.error("Error applying Kiran font: ", e);
         }
     }
 
@@ -290,10 +336,11 @@ public class ReportMenuController implements Initializable {
         iconMiscellaneous.setFill(Color.valueOf("#E65100"));
         iconStock.setFill(Color.valueOf("#00897B"));
 
-        lblSales.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblPurchase.setStyle("-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblMiscellaneous.setStyle("-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;");
-        lblStock.setStyle("-fx-text-fill: #00897B; -fx-font-size: 14px; -fx-font-weight: bold;");
+        String fontPart = kiranFontFamily != null ? "-fx-font-family: '" + kiranFontFamily + "'; " : "";
+        lblSales.setStyle(fontPart + "-fx-text-fill: #5E35B1; -fx-font-size: 25px; -fx-font-weight: bold;");
+        lblPurchase.setStyle(fontPart + "-fx-text-fill: #5E35B1; -fx-font-size: 25px; -fx-font-weight: bold;");
+        lblMiscellaneous.setStyle(fontPart + "-fx-text-fill: #E65100; -fx-font-size: 25px; -fx-font-weight: bold;");
+        lblStock.setStyle(fontPart + "-fx-text-fill: #00897B; -fx-font-size: 25px; -fx-font-weight: bold;");
 
         salesContent.setVisible(false);
         salesContent.setManaged(false);
@@ -314,7 +361,8 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);");
         iconSales.setFill(Color.WHITE);
-        lblSales.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        String fp = kiranFontFamily != null ? "-fx-font-family: '" + kiranFontFamily + "'; " : "";
+        lblSales.setStyle(fp + "-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
 
         salesContent.setVisible(true);
         salesContent.setManaged(true);
@@ -329,7 +377,8 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(123, 31, 162, 0.4), 8, 0, 0, 3);");
         iconPurchase.setFill(Color.WHITE);
-        lblPurchase.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        String fp1 = kiranFontFamily != null ? "-fx-font-family: '" + kiranFontFamily + "'; " : "";
+        lblPurchase.setStyle(fp1 + "-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
 
         purchaseContent.setVisible(true);
         purchaseContent.setManaged(true);
@@ -344,7 +393,8 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.4), 8, 0, 0, 3);");
         iconMiscellaneous.setFill(Color.WHITE);
-        lblMiscellaneous.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        String fp2 = kiranFontFamily != null ? "-fx-font-family: '" + kiranFontFamily + "'; " : "";
+        lblMiscellaneous.setStyle(fp2 + "-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
 
         miscellaneousContent.setVisible(true);
         miscellaneousContent.setManaged(true);
@@ -359,85 +409,64 @@ public class ReportMenuController implements Initializable {
                 "-fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0, 137, 123, 0.4), 8, 0, 0, 3);");
         iconStock.setFill(Color.WHITE);
-        lblStock.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        String fp3 = kiranFontFamily != null ? "-fx-font-family: '" + kiranFontFamily + "'; " : "";
+        lblStock.setStyle(fp3 + "-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
 
         stockContent.setVisible(true);
         stockContent.setManaged(true);
     }
 
     private void setupReportCards() {
-        // Sales Report Card - loads SalesReport.fxml
-        if (salesReportCard != null) {
-            salesReportCard.setOnMouseClicked(e -> loadSalesReport());
-        }
+        // Sales tab cards
+        setupCard(salesReportCard, "rgba(76, 175, 80, 0.4)", "rgba(76, 175, 80, 0.55)", this::loadSalesReport);
+        setupCard(paymentReceivedCard, "rgba(46, 216, 182, 0.4)", "rgba(46, 216, 182, 0.55)", this::loadPaymentReceivedReport);
 
-        // Purchase Report Card - loads PurchaseReport.fxml
-        if (purchaseReportCard != null) {
-            purchaseReportCard.setOnMouseClicked(e -> loadPurchaseReport());
-        }
+        // Purchase tab cards
+        setupCard(purchaseReportCard, "rgba(124, 77, 255, 0.4)", "rgba(124, 77, 255, 0.55)", this::loadPurchaseReport);
+        setupCard(payReceiptReportCard, "rgba(255, 152, 0, 0.4)", "rgba(255, 152, 0, 0.55)", this::loadPayReceiptReport);
 
-        // Payment Received Card - loads PaymentReceivedReport.fxml
-        if (paymentReceivedCard != null) {
-            paymentReceivedCard.setOnMouseClicked(e -> loadPaymentReceivedReport());
-        }
+        // Miscellaneous tab cards
+        setupCard(billSearchReportCard, "rgba(230, 81, 0, 0.4)", "rgba(230, 81, 0, 0.55)", this::loadBillSearchReport);
+        setupCard(reducedItemReportCard, "rgba(255, 83, 112, 0.4)", "rgba(255, 83, 112, 0.55)", this::loadReducedItemReport);
 
-        // Pay Receipt Report Card - loads PayReceiptReport.fxml
-        if (payReceiptReportCard != null) {
-            payReceiptReportCard.setOnMouseClicked(e -> loadPayReceiptReport());
-        }
+        // Stock tab cards
+        setupCard(stockReportCard, "rgba(0, 137, 123, 0.4)", "rgba(0, 137, 123, 0.55)", this::loadStockReport);
+        setupCard(lowStockAlertCard, "rgba(255, 160, 0, 0.4)", "rgba(255, 160, 0, 0.55)", this::loadStockReport);
+    }
 
-        // Reduced Item Report Card - loads ReducedItemReport.fxml
-        if (reducedItemReportCard != null) {
-            reducedItemReportCard.setOnMouseClicked(e -> loadReducedItemReport());
-        }
+    private void setupCard(VBox card, String normalShadowColor, String hoverShadowColor, Runnable action) {
+        if (card == null) return;
+        card.setOnMouseClicked(e -> action.run());
+        addCardHoverEffect(card, normalShadowColor, hoverShadowColor);
+    }
 
-        // Bill Search Report Card - loads BillSearch.fxml
-        if (billSearchReportCard != null) {
-            billSearchReportCard.setOnMouseClicked(e -> loadBillSearchReport());
-        }
+    private void addCardHoverEffect(VBox card, String normalShadowColor, String hoverShadowColor) {
+        String normalEffect = "-fx-effect: dropshadow(three-pass-box, " + normalShadowColor + ", 12, 0, 0, 4);";
+        String hoverEffect = "-fx-effect: dropshadow(three-pass-box, " + hoverShadowColor + ", 18, 0, 0, 6);";
 
-        // Stock Report Card
-        if (stockReportCard != null) {
-            stockReportCard.setOnMouseClicked(e -> loadStockReport());
-        }
+        card.setOnMouseEntered(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", hoverEffect);
+            card.setStyle(style);
+        });
 
-        // Low Stock Alert Card
-        if (lowStockAlertCard != null) {
-            lowStockAlertCard.setOnMouseClicked(e -> loadStockReport());
-        }
+        card.setOnMouseExited(e -> {
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", normalEffect);
+            card.setStyle(style);
+        });
 
-        // Button handlers
-        if (btnViewSalesReport != null) {
-            btnViewSalesReport.setOnAction(e -> loadSalesReport());
-        }
+        card.setOnMousePressed(e -> {
+            card.setScaleX(0.95);
+            card.setScaleY(0.95);
+        });
 
-        if (btnViewPurchaseReport != null) {
-            btnViewPurchaseReport.setOnAction(e -> loadPurchaseReport());
-        }
-
-        if (btnViewPaymentReceived != null) {
-            btnViewPaymentReceived.setOnAction(e -> loadPaymentReceivedReport());
-        }
-
-        if (btnViewPayReceipt != null) {
-            btnViewPayReceipt.setOnAction(e -> loadPayReceiptReport());
-        }
-
-        if (btnViewReducedItemReport != null) {
-            btnViewReducedItemReport.setOnAction(e -> loadReducedItemReport());
-        }
-
-        if (btnViewBillSearch != null) {
-            btnViewBillSearch.setOnAction(e -> loadBillSearchReport());
-        }
-
-        if (btnViewStockReport != null) {
-            btnViewStockReport.setOnAction(e -> loadStockReport());
-        }
-
-        if (btnViewLowStockAlert != null) {
-            btnViewLowStockAlert.setOnAction(e -> loadStockReport());
-        }
+        card.setOnMouseReleased(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+        });
     }
 
     private void loadSalesReport() {

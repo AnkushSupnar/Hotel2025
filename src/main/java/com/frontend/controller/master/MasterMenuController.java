@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,28 +34,28 @@ public class MasterMenuController implements Initializable {
     private Button btnBack;
 
     @FXML
-    private StackPane categoryCard;
+    private VBox categoryCard;
 
     @FXML
-    private StackPane itemCard;
+    private VBox itemCard;
 
     @FXML
-    private StackPane tableCard;
+    private VBox tableCard;
 
     @FXML
-    private StackPane customerCard;
+    private VBox customerCard;
 
     @FXML
-    private StackPane employeeCard;
+    private VBox employeeCard;
 
     @FXML
-    private StackPane supplierCard;
+    private VBox supplierCard;
 
     @FXML
-    private StackPane userCard;
+    private VBox userCard;
 
     @FXML
-    private StackPane bankCard;
+    private VBox bankCard;
 
     // Card title labels
     @FXML
@@ -86,6 +86,7 @@ public class MasterMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
         setupMenuActions();
+        setupCardEffects();
         applyCustomFonts();
     }
 
@@ -202,6 +203,47 @@ public class MasterMenuController implements Initializable {
         });
     }
     
+    private void setupCardEffects() {
+        addCardHoverEffect(categoryCard, "rgba(233, 30, 99, 0.4)", "rgba(233, 30, 99, 0.55)");
+        addCardHoverEffect(itemCard, "rgba(255, 152, 0, 0.4)", "rgba(255, 152, 0, 0.55)");
+        addCardHoverEffect(tableCard, "rgba(244, 67, 54, 0.4)", "rgba(244, 67, 54, 0.55)");
+        addCardHoverEffect(customerCard, "rgba(76, 175, 80, 0.4)", "rgba(76, 175, 80, 0.55)");
+        addCardHoverEffect(employeeCard, "rgba(156, 39, 176, 0.4)", "rgba(156, 39, 176, 0.55)");
+        addCardHoverEffect(supplierCard, "rgba(33, 150, 243, 0.4)", "rgba(33, 150, 243, 0.55)");
+        addCardHoverEffect(userCard, "rgba(0, 188, 212, 0.4)", "rgba(0, 188, 212, 0.55)");
+        addCardHoverEffect(bankCard, "rgba(96, 125, 139, 0.4)", "rgba(96, 125, 139, 0.55)");
+    }
+
+    private void addCardHoverEffect(VBox card, String normalShadowColor, String hoverShadowColor) {
+        if (card == null) return;
+        String normalEffect = "-fx-effect: dropshadow(three-pass-box, " + normalShadowColor + ", 12, 0, 0, 4);";
+        String hoverEffect = "-fx-effect: dropshadow(three-pass-box, " + hoverShadowColor + ", 18, 0, 0, 6);";
+
+        card.setOnMouseEntered(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", hoverEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", normalEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMousePressed(e -> {
+            card.setScaleX(0.95);
+            card.setScaleY(0.95);
+        });
+
+        card.setOnMouseReleased(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+        });
+    }
+
     private void loadCategoryManagement() {
         BorderPane mainPane = getMainPane();
         if (mainPane != null) {

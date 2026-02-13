@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +34,10 @@ public class EmployeeServiceMenuController implements Initializable {
     private Button btnBack;
 
     @FXML
-    private StackPane attendanceCard;
+    private VBox attendanceCard;
 
     @FXML
-    private StackPane salaryCard;
+    private VBox salaryCard;
 
     @FXML
     private Label lblAttendanceTitle;
@@ -49,6 +49,7 @@ public class EmployeeServiceMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
         setupMenuActions();
+        setupCardEffects();
         applyCustomFonts();
     }
 
@@ -121,6 +122,41 @@ public class EmployeeServiceMenuController implements Initializable {
         }
     }
 
+    private void setupCardEffects() {
+        addCardHoverEffect(attendanceCard, "rgba(255, 87, 34, 0.4)", "rgba(255, 87, 34, 0.55)");
+        addCardHoverEffect(salaryCard, "rgba(46, 125, 50, 0.4)", "rgba(46, 125, 50, 0.55)");
+    }
+
+    private void addCardHoverEffect(VBox card, String normalShadowColor, String hoverShadowColor) {
+        if (card == null) return;
+        String normalEffect = "-fx-effect: dropshadow(three-pass-box, " + normalShadowColor + ", 12, 0, 0, 4);";
+        String hoverEffect = "-fx-effect: dropshadow(three-pass-box, " + hoverShadowColor + ", 18, 0, 0, 6);";
+
+        card.setOnMouseEntered(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", hoverEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", normalEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMousePressed(e -> {
+            card.setScaleX(0.95);
+            card.setScaleY(0.95);
+        });
+
+        card.setOnMouseReleased(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+        });
+    }
+
     private BorderPane getMainPane() {
         try {
             return (BorderPane) attendanceCard.getScene().lookup("#mainPane");
@@ -137,7 +173,7 @@ public class EmployeeServiceMenuController implements Initializable {
         Font customFont = SessionService.getCustomFont();
         if (customFont != null) {
             String fontFamily = customFont.getFamily();
-            String fontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: #1a237e;";
+            String fontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;";
 
             if (lblAttendanceTitle != null) lblAttendanceTitle.setStyle(fontStyle);
             if (lblSalaryTitle != null) lblSalaryTitle.setStyle(fontStyle);

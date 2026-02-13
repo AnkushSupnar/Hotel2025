@@ -670,10 +670,10 @@ public class HomeController implements Initializable {
         try {
             // Load Kiran fonts with different sizes
             Font kiranFont28 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 28);
-            Font kiranFont20 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 20);
+            Font kiranFont30 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 30);
             Font kiranFont16 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 16);
 
-            if (kiranFont28 != null && kiranFont20 != null && kiranFont16 != null) {
+            if (kiranFont28 != null && kiranFont30 != null && kiranFont16 != null) {
                 String fontFamily = kiranFont28.getFamily();
                 LOG.info("Kiran font loaded successfully, family: {}", fontFamily);
 
@@ -683,10 +683,10 @@ public class HomeController implements Initializable {
                     lblShopeeName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1565C0;");
                 }
 
-                // Apply to sidebar shop name (20px)
+                // Apply to sidebar shop name (30px)
                 if (lblSidebarShopName != null) {
-                    lblSidebarShopName.setFont(kiranFont20);
-                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
+                    lblSidebarShopName.setFont(kiranFont30);
+                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 30px; -fx-text-fill: white; -fx-font-weight: bold;");
                 }
 
                 // Apply Kiran font to user name only (16px)
@@ -700,12 +700,44 @@ public class HomeController implements Initializable {
                     txtDesignation.setStyle("-fx-font-family: 'Segoe UI', 'Arial', sans-serif; -fx-font-size: 12px; -fx-fill: #757575;");
                 }
 
-                LOG.info("Kiran font applied to lblShopeeName (28px), lblSidebarShopName (20px), txtUserName (16px). English font for txtDesignation.");
+                // Apply Kiran font to sidebar menu text items (inline style overrides CSS on hover)
+                String menuFontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 30px; -fx-font-weight: 600; -fx-fill: #FFFFFF;";
+                applyFontToMenuText(menuSales, kiranFont30, menuFontStyle);
+                applyFontToMenuText(menuPurchase, kiranFont30, menuFontStyle);
+                applyFontToMenuText(menuMaster, kiranFont30, menuFontStyle);
+                applyFontToMenuText(menuReport, kiranFont30, menuFontStyle);
+                applyFontToMenuText(menuEmployeeService, kiranFont30, menuFontStyle);
+
+                LOG.info("Kiran font applied to lblShopeeName (28px), lblSidebarShopName (30px), txtUserName (16px), menu items (30px). English font for txtDesignation.");
             } else {
                 LOG.warn("Could not load Kiran font from bundled resources");
             }
         } catch (Exception e) {
             LOG.error("Error applying Kiran font: ", e);
+        }
+    }
+
+    /**
+     * Apply Kiran font to the Text node inside a menu HBox.
+     * Note: FontAwesomeIcon extends GlyphIcon extends Text, so we must check
+     * for the "menu-text" styleClass to target the actual label, not the icon.
+     * Uses both setFont() and inline style to ensure font persists through CSS hover state changes.
+     * Platform.runLater() re-applies after initial CSS processing to prevent override.
+     */
+    private void applyFontToMenuText(HBox menu, Font font, String inlineStyle) {
+        if (menu == null) return;
+        for (javafx.scene.Node child : menu.getChildren()) {
+            if (child instanceof Text && child.getStyleClass().contains("menu-text")) {
+                Text textNode = (Text) child;
+                textNode.setFont(font);
+                textNode.setStyle(inlineStyle);
+                // Re-apply after CSS processing to ensure font persists
+                Platform.runLater(() -> {
+                    textNode.setFont(font);
+                    textNode.setStyle(inlineStyle);
+                });
+                break;
+            }
         }
     }
 

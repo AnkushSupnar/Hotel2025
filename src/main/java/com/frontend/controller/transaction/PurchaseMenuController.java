@@ -2,12 +2,16 @@ package com.frontend.controller.transaction;
 
 import com.frontend.config.SpringFXMLLoader;
 import com.frontend.util.NavigationGuard;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,28 +39,29 @@ public class PurchaseMenuController implements Initializable {
     private Button btnBack;
 
     @FXML
-    private Button btnPurchaseOrder;
+    private VBox btnPurchaseOrder;
 
     @FXML
-    private Button btnViewOrders;
+    private VBox btnPurchaseInvoice;
 
     @FXML
-    private Button btnPurchaseInvoice;
+    private VBox btnPayReceipt;
 
     @FXML
-    private Button btnViewInvoices;
+    private Label lblPurchaseOrderTitle;
 
     @FXML
-    private Button btnPayReceipt;
+    private Label lblPurchaseInvoiceTitle;
 
     @FXML
-    private Button btnViewPayments;
+    private Label lblPayReceiptTitle;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Initializing PurchaseMenuController");
         setupBackButton();
         setupEventHandlers();
+        applyKiranFont();
     }
 
     private void setupBackButton() {
@@ -94,28 +99,54 @@ public class PurchaseMenuController implements Initializable {
 
     private void setupEventHandlers() {
         if (btnPurchaseOrder != null) {
-            btnPurchaseOrder.setOnAction(e -> navigateToPurchaseOrder());
-        }
-
-        if (btnViewOrders != null) {
-            btnViewOrders.setOnAction(e -> navigateToPurchaseOrder());
+            btnPurchaseOrder.setOnMouseClicked(e -> navigateToPurchaseOrder());
+            addCardHoverEffect(btnPurchaseOrder,
+                "rgba(255, 152, 0, 0.4)",
+                "rgba(255, 152, 0, 0.55)");
         }
 
         if (btnPurchaseInvoice != null) {
-            btnPurchaseInvoice.setOnAction(e -> navigateToPurchaseInvoice());
-        }
-
-        if (btnViewInvoices != null) {
-            btnViewInvoices.setOnAction(e -> navigateToPurchaseInvoice());
+            btnPurchaseInvoice.setOnMouseClicked(e -> navigateToPurchaseInvoice());
+            addCardHoverEffect(btnPurchaseInvoice,
+                "rgba(124, 77, 255, 0.4)",
+                "rgba(124, 77, 255, 0.55)");
         }
 
         if (btnPayReceipt != null) {
-            btnPayReceipt.setOnAction(e -> navigateToPayReceipt());
+            btnPayReceipt.setOnMouseClicked(e -> navigateToPayReceipt());
+            addCardHoverEffect(btnPayReceipt,
+                "rgba(255, 83, 112, 0.4)",
+                "rgba(255, 83, 112, 0.55)");
         }
+    }
 
-        if (btnViewPayments != null) {
-            btnViewPayments.setOnAction(e -> navigateToPayReceipt());
-        }
+    private void addCardHoverEffect(VBox card, String normalShadowColor, String hoverShadowColor) {
+        String normalEffect = "-fx-effect: dropshadow(three-pass-box, " + normalShadowColor + ", 12, 0, 0, 4);";
+        String hoverEffect = "-fx-effect: dropshadow(three-pass-box, " + hoverShadowColor + ", 18, 0, 0, 6);";
+
+        card.setOnMouseEntered(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", hoverEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+            String style = card.getStyle().replaceAll("-fx-effect:[^;]+;", normalEffect);
+            card.setStyle(style);
+        });
+
+        card.setOnMousePressed(e -> {
+            card.setScaleX(0.95);
+            card.setScaleY(0.95);
+        });
+
+        card.setOnMouseReleased(e -> {
+            card.setScaleX(1.05);
+            card.setScaleY(1.05);
+        });
     }
 
     private void navigateToPurchaseOrder() {
@@ -142,6 +173,33 @@ public class PurchaseMenuController implements Initializable {
         }
     }
 
+    private void applyKiranFont() {
+        try {
+            Font kiranFont25 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 25);
+            if (kiranFont25 != null) {
+                String fontFamily = kiranFont25.getFamily();
+                String fontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;";
+
+                Label[] labels = {lblPurchaseOrderTitle, lblPurchaseInvoiceTitle, lblPayReceiptTitle};
+                for (Label lbl : labels) {
+                    if (lbl != null) {
+                        lbl.setFont(kiranFont25);
+                        lbl.setStyle(fontStyle);
+                        Platform.runLater(() -> {
+                            lbl.setFont(kiranFont25);
+                            lbl.setStyle(fontStyle);
+                        });
+                    }
+                }
+                LOG.info("Applied Kiran font '{}' (25px) to card titles", fontFamily);
+            } else {
+                LOG.warn("Could not load Kiran font from /fonts/kiran.ttf");
+            }
+        } catch (Exception e) {
+            LOG.error("Error applying Kiran font: ", e);
+        }
+    }
+
     private BorderPane getMainPane() {
         try {
             if (btnBack != null && btnBack.getScene() != null) {
@@ -152,12 +210,6 @@ public class PurchaseMenuController implements Initializable {
                 return (BorderPane) btnPurchaseInvoice.getScene().lookup("#mainPane");
             } else if (btnPayReceipt != null && btnPayReceipt.getScene() != null) {
                 return (BorderPane) btnPayReceipt.getScene().lookup("#mainPane");
-            } else if (btnViewPayments != null && btnViewPayments.getScene() != null) {
-                return (BorderPane) btnViewPayments.getScene().lookup("#mainPane");
-            } else if (btnViewOrders != null && btnViewOrders.getScene() != null) {
-                return (BorderPane) btnViewOrders.getScene().lookup("#mainPane");
-            } else if (btnViewInvoices != null && btnViewInvoices.getScene() != null) {
-                return (BorderPane) btnViewInvoices.getScene().lookup("#mainPane");
             }
         } catch (Exception e) {
             LOG.warn("Could not find main pane, navigation might not work properly");

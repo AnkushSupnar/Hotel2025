@@ -5,7 +5,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -45,168 +44,104 @@
          </padding>
       </HBox>
 
-      <!-- Scrollable Content Area with Cards -->
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
-         <content>
-            <VBox spacing="25.0" styleClass="master-content">
-               <padding>
-                  <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
-               </padding>
+      <!-- Cards Content Area -->
+      <VBox alignment="TOP_CENTER" spacing="25" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+
+            <!-- First Row: Category, Item, Table -->
+            <HBox alignment="CENTER" spacing="25">
                <children>
+                  <!-- Category Card - Pink (#E91E63) -->
+                  <VBox fx:id="categoryCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #E91E63, #F06292); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(233, 30, 99, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="SITEMAP" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblCategoryTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="k^TogaIrI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Category Master" />
+                  </VBox>
 
-                  <!-- First Row of Cards -->
-                  <HBox alignment="CENTER" spacing="25.0">
-                     <children>
-                        <!-- Category Management Card -->
-                        <StackPane fx:id="categoryCard" styleClass="master-card, category-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, category-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#E91E63" glyphName="SITEMAP" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblCategoryTitle" styleClass="card-title" text="k^TogaIrI maasTr" />
-                                    <Label styleClass="card-description" text="Manage food categories and menu sections" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
+                  <!-- Item Card - Orange (#FF9800) -->
+                  <VBox fx:id="itemCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #FF9800, #FFB74D); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 152, 0, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblItemTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="AayaTma" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Item Master" />
+                  </VBox>
 
-                        <!-- Item Management Card -->
-                        <StackPane fx:id="itemCard" styleClass="master-card, item-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, item-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#FF9800" glyphName="CUTLERY" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblItemTitle" styleClass="card-title" text="AayaTma maasTr" />
-                                    <Label styleClass="card-description" text="Manage menu items and dishes" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
+                  <!-- Table Card - Red (#F44336) -->
+                  <VBox fx:id="tableCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #F44336, #E57373); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(244, 67, 54, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="TABLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblTableTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="Tobala" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Table Master" />
+                  </VBox>
 
-                        <!-- Table Management Card -->
-                        <StackPane fx:id="tableCard" styleClass="master-card, table-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, table-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#F44336" glyphName="TABLE" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblTableTitle" styleClass="card-title" text="Tobala maasTr" />
-                                    <Label styleClass="card-description" text="Manage restaurant tables" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-                     </children>
-                  </HBox>
-
-                  <!-- Second Row of Cards -->
-                  <HBox alignment="CENTER" spacing="25.0">
-                     <children>
-                        <!-- Customer Management Card -->
-                        <StackPane fx:id="customerCard" styleClass="master-card, customer-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, customer-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#4CAF50" glyphName="USERS" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblCustomerTitle" styleClass="card-title" text="ksTmar maasTr" />
-                                    <Label styleClass="card-description" text="Manage customer information" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-
-                        <!-- Employee Management Card -->
-                        <StackPane fx:id="employeeCard" styleClass="master-card, employee-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, employee-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#9C27B0" glyphName="USER_CIRCLE" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblEmployeeTitle" styleClass="card-title" text="kamagaar maasTr" />
-                                    <Label styleClass="card-description" text="Manage employee records" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-
-                        <!-- Supplier Management Card -->
-                        <StackPane fx:id="supplierCard" styleClass="master-card, supplier-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, supplier-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#2196F3" glyphName="TRUCK" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblSupplierTitle" styleClass="card-title" text="paurvazadar maasTr" />
-                                    <Label styleClass="card-description" text="Manage supplier details" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-
-                        <!-- User Management Card -->
-                        <StackPane fx:id="userCard" styleClass="master-card, user-card" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, user-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#00BCD4" glyphName="USER_PLUS" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblUserTitle" styleClass="card-title" text="yaujar maasTr" />
-                                    <Label styleClass="card-description" text="Manage system users and access" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-                     </children>
-                  </HBox>
-
-                  <!-- Third Row of Cards -->
-                  <HBox alignment="CENTER_LEFT" spacing="25.0">
-                     <children>
-                        <!-- Bank Management Card -->
-                        <StackPane fx:id="bankCard" prefWidth="280" styleClass="master-card, bank-card">
-                           <children>
-                              <VBox alignment="CENTER" spacing="15.0">
-                                 <children>
-                                    <StackPane styleClass="card-icon-container, bank-icon-bg">
-                                       <children>
-                                          <FontAwesomeIcon fill="#607D8B" glyphName="BANK" size="2.5em" styleClass="card-icon" />
-                                       </children>
-                                    </StackPane>
-                                    <Label fx:id="lblBankTitle" styleClass="card-title" text="ba^Mk maasTr" />
-                                    <Label styleClass="card-description" text="Manage bank accounts" textAlignment="CENTER" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </StackPane>
-                     </children>
-                  </HBox>
+                  <!-- Customer Card - Green (#4CAF50) -->
+                  <VBox fx:id="customerCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #4CAF50, #81C784); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(76, 175, 80, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USERS" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblCustomerTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="ksTmar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Customer Master" />
+                  </VBox>
                </children>
-            </VBox>
-         </content>
-      </ScrollPane>
+            </HBox>
+
+            <!-- Second Row: Employee, Supplier, User, Bank -->
+            <HBox alignment="CENTER" spacing="25">
+               <children>
+                  <!-- Employee Card - Purple (#9C27B0) -->
+                  <VBox fx:id="employeeCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #9C27B0, #CE93D8); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(156, 39, 176, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USER_CIRCLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblEmployeeTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="kamagaar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Employee Master" />
+                  </VBox>
+
+                  <!-- Supplier Card - Blue (#2196F3) -->
+                  <VBox fx:id="supplierCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #2196F3, #64B5F6); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblSupplierTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="paurvazadar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Supplier Master" />
+                  </VBox>
+
+                  <!-- User Card - Cyan (#00BCD4) -->
+                  <VBox fx:id="userCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #00BCD4, #4DD0E1); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(0, 188, 212, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USER_PLUS" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblUserTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="yaujar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="User Master" />
+                  </VBox>
+
+                  <!-- Bank Card - Blue Grey (#607D8B) -->
+                  <VBox fx:id="bankCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #607D8B, #90A4AE); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(96, 125, 139, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="BANK" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblBankTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="ba^Mk" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Bank Master" />
+                  </VBox>
+               </children>
+            </HBox>
+
+         </children>
+      </VBox>
    </children>
 </VBox>

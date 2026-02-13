@@ -21,8 +21,8 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1443.0" style="-fx-background-color: #ECEFF1;" stylesheets="@../css/billing-material.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
 
     <left>
-        <!-- Left Panel - TABLE SECTIONS (30% width - ~430px) -->
-        <VBox prefHeight="700.0" prefWidth="430.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" styleClass="table-panel-left">
+        <!-- Left Panel - TABLE SECTIONS (35% width - ~505px) -->
+        <VBox prefHeight="700.0" prefWidth="505.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" styleClass="table-panel-left">
 
             <!-- Panel Header with Refresh -->
             <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: linear-gradient(to right, #1976D2, #1565C0); -fx-padding: 8 12;" styleClass="table-panel-header">
@@ -51,14 +51,14 @@
 
             <!-- ScrollPane for table buttons grid -->
             <ScrollPane fitToWidth="true" style="-fx-background-color: #FAFAFA; -fx-border-color: transparent;" styleClass="table-scroll-pane" VBox.vgrow="ALWAYS">
-                <VBox fx:id="sectionsContainer" spacing="0" style="-fx-background-color: #FAFAFA; -fx-padding: 8;" />
+                <VBox fx:id="sectionsContainer" spacing="0" style="-fx-background-color: #FAFAFA; -fx-padding: 4;" />
             </ScrollPane>
         </VBox>
     </left>
 
     <center>
-        <!-- Split Pane for Menu Items and Order Details (50:20 ratio = 0.714) -->
-        <SplitPane dividerPositions="0.714" prefHeight="700.0" prefWidth="1013.0" BorderPane.alignment="TOP_CENTER">
+        <!-- Split Pane for Menu Items and Order Details (45:20 ratio = 0.692) -->
+        <SplitPane dividerPositions="0.692" prefHeight="700.0" prefWidth="938.0" BorderPane.alignment="TOP_CENTER">
 
             <!-- Left Side of Split - Customer & Menu Items (60%) -->
             <VBox style="-fx-background-color: #FAFAFA;">

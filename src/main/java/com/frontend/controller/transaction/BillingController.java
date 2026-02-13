@@ -49,6 +49,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
@@ -1320,7 +1321,7 @@ public class BillingController implements Initializable {
 
             // Main container for all sections
             VBox mainContainer = new VBox();
-            mainContainer.setSpacing(8);
+            mainContainer.setSpacing(4);
             mainContainer.setStyle("-fx-background-color: transparent;");
 
             // Get all sections and their tables (ordered by configured sequence)
@@ -1333,14 +1334,17 @@ public class BillingController implements Initializable {
 
                 if (tables.isEmpty()) continue;
 
+                // Get section color from Material palette
+                String sectionColor = getMaterialColorForSection(section);
+
                 // Create TilePane for this section's tables
                 TilePane tilePane = new TilePane();
-                tilePane.setHgap(5);
-                tilePane.setVgap(5);
-                tilePane.setPrefColumns(7); // 7 columns for wider buttons
+                tilePane.setHgap(3);
+                tilePane.setVgap(3);
+                tilePane.setPrefColumns(7);
                 tilePane.setTileAlignment(Pos.CENTER);
                 tilePane.setAlignment(Pos.TOP_LEFT);
-                tilePane.setStyle("-fx-background-color: transparent; -fx-padding: 2 0;");
+                tilePane.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 
                 for (TableMaster table : tables) {
                     Button tableButton = createTableButton(table);
@@ -1385,16 +1389,36 @@ public class BillingController implements Initializable {
                     totalTables++;
                 }
 
-                mainContainer.getChildren().add(tilePane);
+                // --- Swing-style TitledBorder using StackPane ---
+                // Inner content box with border (top padding leaves room for the title label)
+                VBox borderedBox = new VBox();
+                borderedBox.getChildren().add(tilePane);
+                borderedBox.setStyle(
+                    "-fx-border-color: " + sectionColor + ";" +
+                    "-fx-border-width: 1.5;" +
+                    "-fx-border-radius: 4;" +
+                    "-fx-background-color: #FAFAFA;" +
+                    "-fx-background-radius: 4;" +
+                    "-fx-padding: 16 4 4 4;"
+                );
 
-                // Add separator line between sections (not after the last one)
-                if (i < sections.size() - 1) {
-                    Region separator = new Region();
-                    separator.setMinHeight(1);
-                    separator.setMaxHeight(1);
-                    separator.setStyle("-fx-background-color: #E0E0E0;");
-                    mainContainer.getChildren().add(separator);
-                }
+                // Title label that sits on top of the border line
+                Label titleLabel = new Label("  " + section + " (" + tables.size() + ")  ");
+                titleLabel.setStyle(
+                    "-fx-background-color: #FAFAFA;" +
+                    "-fx-text-fill: " + sectionColor + ";" +
+                    "-fx-font-size: 11px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-padding: 0 6;"
+                );
+
+                // StackPane to overlay the title on the border
+                StackPane titledPane = new StackPane();
+                titledPane.getChildren().addAll(borderedBox, titleLabel);
+                StackPane.setAlignment(titleLabel, Pos.TOP_LEFT);
+                StackPane.setMargin(titleLabel, new Insets(-7, 0, 0, 10));
+
+                mainContainer.getChildren().add(titledPane);
             }
 
             final int count = totalTables;
@@ -1477,12 +1501,12 @@ public class BillingController implements Initializable {
         int nameLength = (tableName != null) ? tableName.length() : 0;
 
         // Calculate appropriate width based on character count
-        // Base: 58px for 3 chars, add 14px for each additional character
+        // Base: 65px for 3 chars, add 14px for each additional character
         int width;
         if (nameLength <= 3) {
-            width = 58;
+            width = 65;
         } else {
-            width = 58 + ((nameLength - 3) * 14);
+            width = 65 + ((nameLength - 3) * 14);
         }
 
         // Use inline style to override CSS (inline styles have highest priority)

@@ -34,7 +34,12 @@
       "Bash(dir \"C:\\\\Claude_workspace\\\\Hotel2025\\\\hotel-frontend\\\\src\\\\main\\\\java\\\\com\\\\frontend\" /ad)",
       "Bash(dir:*)",
       "Bash(mvn test:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:mvnrepository.com)",
+      "WebFetch(domain:javadoc.io)",
+      "WebFetch(domain:jar-download.com)",
+      "WebFetch(domain:www.jensd.de)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": []
   }

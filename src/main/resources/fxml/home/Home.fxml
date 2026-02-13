@@ -4,7 +4,6 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -13,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="mainPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.HomeController">
+<BorderPane fx:id="mainPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.HomeController">
    <stylesheets>
       <URL value="@../css/home-material.css" />
    </stylesheets>
@@ -25,7 +24,7 @@
             <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <!-- Restaurant Header Section -->
-                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="80.0" prefWidth="280.0" styleClass="sidebar-header" spacing="8.0">
+                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="80.0" prefWidth="280.0" spacing="8.0" styleClass="sidebar-header">
                      <children>
                         <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2em" />
                         <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
@@ -52,7 +51,7 @@
                         <HBox fx:id="menuSales" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="SALES">
+                              <Text styleClass="menu-text" text="ivak`I">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
@@ -66,7 +65,7 @@
                         <HBox fx:id="menuPurchase" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="PURCHASE">
+                              <Text styleClass="menu-text" text="KarodI">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
@@ -80,7 +79,7 @@
                         <HBox fx:id="menuMaster" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="DATABASE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="MASTER DATA">
+                              <Text styleClass="menu-text" text="maasTr DoTa">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
@@ -93,7 +92,7 @@
                         <HBox fx:id="menuReport" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
                               <FontAwesomeIcon fill="#FFFFFF" glyphName="BAR_CHART" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="REPORTS">
+                              <Text styleClass="menu-text" text="irpaaoT-">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
@@ -105,8 +104,8 @@
                         <!-- Employee Service Menu -->
                         <HBox fx:id="menuEmployeeService" alignment="CENTER_LEFT" styleClass="menu-item">
                            <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="ID_BADGE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="EMPLOYEE SERVICE">
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="BRIEFCASE" size="1.5em" styleClass="menu-icon" />
+                              <Text styleClass="menu-text" text="kamagaar maonau">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
@@ -176,26 +175,13 @@
             <!-- Spacer -->
             <Region HBox.hgrow="ALWAYS" />
 
-            <!-- Quick Search Bar -->
-            <HBox alignment="CENTER" spacing="8.0" styleClass="search-container">
+            <!-- User Info - Single Line -->
+            <HBox alignment="CENTER_RIGHT" spacing="8.0" styleClass="user-info-container">
                <children>
-                  <FontAwesomeIcon fill="#9E9E9E" glyphName="SEARCH" size="1.2em" />
-                  <TextField fx:id="txtGlobalSearch" prefWidth="200" promptText="Search..." styleClass="global-search-field" />
-               </children>
-            </HBox>
-
-            <Region prefWidth="20" />
-
-            <!-- User Info -->
-            <HBox alignment="CENTER_RIGHT" spacing="12.0" styleClass="user-info-container">
-               <children>
-                  <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="1.8em" />
-                  <VBox alignment="CENTER_RIGHT" spacing="2.0">
-                     <children>
-                        <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
-                        <Text fx:id="txtDesignation" styleClass="designation-text" text="Designation" />
-                     </children>
-                  </VBox>
+                  <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="1.5em" />
+                  <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
+                  <Text styleClass="designation-text" text="|" />
+                  <Text fx:id="txtDesignation" styleClass="designation-text" text="Designation" />
                </children>
             </HBox>
          </children>

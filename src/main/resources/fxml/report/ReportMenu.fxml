@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
-<VBox styleClass="report-menu-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.ReportMenuController">
+<VBox styleClass="report-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.report.ReportMenuController">
    <stylesheets>
       <URL value="@../css/master-material.css" />
       <URL value="@../css/report-menu.css" />
@@ -24,7 +23,7 @@
                <graphic>
                   <HBox alignment="CENTER" spacing="8">
                      <children>
-                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" fill="white" />
+                        <FontAwesomeIcon fill="white" glyphName="ARROW_LEFT" size="1.5em" />
                         <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="BACK" />
                      </children>
                   </HBox>
@@ -55,266 +54,154 @@
          </padding>
          <children>
             <!-- Sales Tab Chip -->
-            <HBox fx:id="chipSales" alignment="CENTER" spacing="10"
-                  style="-fx-background-color: linear-gradient(to right, #4CAF50, #388E3C); -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);">
+            <HBox fx:id="chipSales" alignment="CENTER" spacing="10" style="-fx-background-color: linear-gradient(to right, #4CAF50, #388E3C); -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 8, 0, 0, 3);">
                <children>
                   <FontAwesomeIcon fx:id="iconSales" fill="white" glyphName="LINE_CHART" size="1.3em" />
-                  <Label fx:id="lblSales" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="SALES" />
+                  <Label fx:id="lblSales" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="ivak`I" />
                </children>
             </HBox>
 
             <!-- Purchase Tab Chip -->
-            <HBox fx:id="chipPurchase" alignment="CENTER" spacing="10"
-                  style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
+            <HBox fx:id="chipPurchase" alignment="CENTER" spacing="10" style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
                <children>
                   <FontAwesomeIcon fx:id="iconPurchase" fill="#7B1FA2" glyphName="TRUCK" size="1.3em" />
-                  <Label fx:id="lblPurchase" style="-fx-text-fill: #5E35B1; -fx-font-size: 14px; -fx-font-weight: bold;" text="PURCHASE" />
+                  <Label fx:id="lblPurchase" style="-fx-text-fill: #5E35B1; -fx-font-size: 25px; -fx-font-weight: bold;" text="KarodI" />
                </children>
             </HBox>
 
             <!-- Miscellaneous Tab Chip -->
-            <HBox fx:id="chipMiscellaneous" alignment="CENTER" spacing="10"
-                  style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
+            <HBox fx:id="chipMiscellaneous" alignment="CENTER" spacing="10" style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
                <children>
                   <FontAwesomeIcon fx:id="iconMiscellaneous" fill="#E65100" glyphName="COG" size="1.3em" />
-                  <Label fx:id="lblMiscellaneous" style="-fx-text-fill: #E65100; -fx-font-size: 14px; -fx-font-weight: bold;" text="MISCELLANEOUS" />
+                  <Label fx:id="lblMiscellaneous" style="-fx-text-fill: #E65100; -fx-font-size: 25px; -fx-font-weight: bold;" text="[tar" />
                </children>
             </HBox>
 
             <!-- Stock Tab Chip -->
-            <HBox fx:id="chipStock" alignment="CENTER" spacing="10"
-                  style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
+            <HBox fx:id="chipStock" alignment="CENTER" spacing="10" style="-fx-background-color: #E8EAF6; -fx-background-radius: 25; -fx-padding: 12 35; -fx-cursor: hand; -fx-min-width: 160; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);">
                <children>
                   <FontAwesomeIcon fx:id="iconStock" fill="#00897B" glyphName="CUBES" size="1.3em" />
-                  <Label fx:id="lblStock" style="-fx-text-fill: #00897B; -fx-font-size: 14px; -fx-font-weight: bold;" text="STOCK" />
+                  <Label fx:id="lblStock" style="-fx-text-fill: #00897B; -fx-font-size: 25px; -fx-font-weight: bold;" text="sTa^k " />
                </children>
             </HBox>
          </children>
       </HBox>
 
-      <!-- Content Area - Sales Reports (shown by default) -->
+      <!-- Content Area - Sales Reports -->
       <VBox fx:id="salesContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" VBox.vgrow="ALWAYS">
          <padding>
             <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
          </padding>
          <children>
-            <!-- Sales Reports Grid -->
             <HBox alignment="CENTER" spacing="30">
                <children>
-                  <!-- Sales Report Card -->
-                  <StackPane fx:id="salesReportCard" styleClass="report-card, sales-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, sales-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#4CAF50" glyphName="LINE_CHART" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Sales Report" />
-                              <Label styleClass="card-description" text="View sales data with date filters and export options" />
-                              <Button fx:id="btnViewSalesReport" styleClass="card-button, sales-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Sales Report Card - Green -->
+                  <VBox fx:id="salesReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #4CAF50, #81C784); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(76, 175, 80, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="LINE_CHART" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblSalesReportTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="ivak`I" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Sales Report" />
+                  </VBox>
 
-                  <!-- Payment Received Report Card -->
-                  <StackPane fx:id="paymentReceivedCard" styleClass="report-card, sales-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, sales-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#4CAF50" glyphName="MONEY" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Payment Received" />
-                              <Label styleClass="card-description" text="View all payment receipts from customers" />
-                              <Button fx:id="btnViewPaymentReceived" styleClass="card-button, sales-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Payment Received Card - Teal -->
+                  <VBox fx:id="paymentReceivedCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #2ed8b6, #59e0c5); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(46, 216, 182, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="MONEY" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblPaymentReceivedTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="jamaa pavataI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Payment Received" />
+                  </VBox>
                </children>
             </HBox>
          </children>
       </VBox>
 
-      <!-- Content Area - Purchase Reports (hidden by default) -->
-      <VBox fx:id="purchaseContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" visible="false" managed="false" VBox.vgrow="ALWAYS">
+      <!-- Content Area - Purchase Reports -->
+      <VBox fx:id="purchaseContent" alignment="TOP_CENTER" managed="false" spacing="20" styleClass="tab-content" visible="false" VBox.vgrow="ALWAYS">
          <padding>
             <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
          </padding>
          <children>
-            <!-- Purchase Reports Grid -->
             <HBox alignment="CENTER" spacing="30">
                <children>
-                  <!-- Purchase Report Card -->
-                  <StackPane fx:id="purchaseReportCard" styleClass="report-card, purchase-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, purchase-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#7B1FA2" glyphName="TRUCK" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Purchase Report" />
-                              <Label styleClass="card-description" text="View purchase data with date filters and export options" />
-                              <Button fx:id="btnViewPurchaseReport" styleClass="card-button, purchase-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Purchase Report Card - Purple -->
+                  <VBox fx:id="purchaseReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #7C4DFF, #B388FF); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(124, 77, 255, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblPurchaseReportTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="KarodI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Purchase Report" />
+                  </VBox>
 
-                  <!-- Pay Receipt Report Card -->
-                  <StackPane fx:id="payReceiptReportCard" styleClass="report-card, purchase-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, purchase-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#7B1FA2" glyphName="CREDIT_CARD" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Pay Receipt Report" />
-                              <Label styleClass="card-description" text="View all payments made to suppliers" />
-                              <Button fx:id="btnViewPayReceipt" styleClass="card-button, purchase-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Pay Receipt Report Card - Orange -->
+                  <VBox fx:id="payReceiptReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #FF9800, #FFB74D); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 152, 0, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CREDIT_CARD" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblPayReceiptReportTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="BarNaa pavataI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Pay Receipt Report" />
+                  </VBox>
                </children>
             </HBox>
          </children>
       </VBox>
 
-      <!-- Content Area - Miscellaneous Reports (hidden by default) -->
-      <VBox fx:id="miscellaneousContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" visible="false" managed="false" VBox.vgrow="ALWAYS">
+      <!-- Content Area - Miscellaneous Reports -->
+      <VBox fx:id="miscellaneousContent" alignment="TOP_CENTER" managed="false" spacing="20" styleClass="tab-content" visible="false" VBox.vgrow="ALWAYS">
          <padding>
             <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
          </padding>
          <children>
-            <!-- Miscellaneous Reports Grid -->
             <HBox alignment="CENTER" spacing="30">
                <children>
-                  <!-- Bill Search Report Card -->
-                  <StackPane fx:id="billSearchReportCard" styleClass="report-card, misc-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, misc-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#E65100" glyphName="SEARCH" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Bill Search" />
-                              <Label styleClass="card-description" text="Search bills by number, customer, date" />
-                              <Button fx:id="btnViewBillSearch" styleClass="card-button, misc-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Bill Search Card - Deep Orange -->
+                  <VBox fx:id="billSearchReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #E65100, #FF8A65); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(230, 81, 0, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="SEARCH" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblBillSearchTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="ibala SaaoQaa" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Bill Search" />
+                  </VBox>
 
-                  <!-- Reduced Item Report Card -->
-                  <StackPane fx:id="reducedItemReportCard" styleClass="report-card, misc-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, misc-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#E65100" glyphName="MINUS_CIRCLE" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Reduced Item Report" />
-                              <Label styleClass="card-description" text="View reduced/cancelled kitchen items" />
-                              <Button fx:id="btnViewReducedItemReport" styleClass="card-button, misc-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Reduced Item Card - Red -->
+                  <VBox fx:id="reducedItemReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #FF5370, #ff869a); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 83, 112, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="MINUS_CIRCLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblReducedItemTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="kmaI kolaolao" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Reduced Item Report" />
+                  </VBox>
                </children>
             </HBox>
          </children>
       </VBox>
 
-      <!-- Content Area - Stock Reports (hidden by default) -->
-      <VBox fx:id="stockContent" alignment="TOP_CENTER" spacing="20" styleClass="tab-content" visible="false" managed="false" VBox.vgrow="ALWAYS">
+      <!-- Content Area - Stock Reports -->
+      <VBox fx:id="stockContent" alignment="TOP_CENTER" managed="false" spacing="20" styleClass="tab-content" visible="false" VBox.vgrow="ALWAYS">
          <padding>
             <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
          </padding>
          <children>
-            <!-- Stock Reports Grid -->
             <HBox alignment="CENTER" spacing="30">
                <children>
-                  <!-- Stock Report Card -->
-                  <StackPane fx:id="stockReportCard" styleClass="report-card, stock-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, stock-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#00897B" glyphName="CUBES" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Stock Report" />
-                              <Label styleClass="card-description" text="View current stock levels and movement history" />
-                              <Button fx:id="btnViewStockReport" styleClass="card-button, stock-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Stock Report Card - Teal -->
+                  <VBox fx:id="stockReportCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #00897B, #4DB6AC); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(0, 137, 123, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CUBES" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblStockReportTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="sTa^k" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Stock Report" />
+                  </VBox>
 
-                  <!-- Low Stock Alert Card -->
-                  <StackPane fx:id="lowStockAlertCard" styleClass="report-card, stock-card">
-                     <children>
-                        <VBox alignment="CENTER" spacing="15">
-                           <children>
-                              <StackPane styleClass="card-icon-container, stock-icon-bg">
-                                 <children>
-                                    <FontAwesomeIcon fill="#00897B" glyphName="EXCLAMATION_TRIANGLE" size="2.5em" />
-                                 </children>
-                              </StackPane>
-                              <Label styleClass="card-title" text="Low Stock Alerts" />
-                              <Label styleClass="card-description" text="View items with low or zero stock levels" />
-                              <Button fx:id="btnViewLowStockAlert" styleClass="card-button, stock-button" text="VIEW REPORT">
-                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="ARROW_RIGHT" size="1em" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <!-- Low Stock Alert Card - Amber -->
+                  <VBox fx:id="lowStockAlertCard" alignment="CENTER" spacing="8" style="-fx-background-color: linear-gradient(to bottom right, #FFA000, #FFCA28); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 160, 0, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="EXCLAMATION_TRIANGLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblLowStockTitle" style="-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;" text="kmaI sTa^k" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Low Stock Alerts" />
+                  </VBox>
                </children>
             </HBox>
          </children>

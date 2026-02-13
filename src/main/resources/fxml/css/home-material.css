@@ -108,7 +108,7 @@
 
 .header-bar {
     -fx-background-color: #FFFFFF;
-    -fx-padding: 15 30;
+    -fx-padding: 8 30;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
     -fx-border-color: #E0E0E0;
     -fx-border-width: 0 0 1 0;
