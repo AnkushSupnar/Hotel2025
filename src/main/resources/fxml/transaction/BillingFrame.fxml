@@ -13,36 +13,37 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1443.0" style="-fx-background-color: #ECEFF1;" stylesheets="@../css/billing-material.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
+<BorderPane fx:id="rootPane" prefHeight="700.0" prefWidth="1443.0" styleClass="billing-root" stylesheets="@../css/billing-material.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.transaction.BillingController">
 
     <left>
-        <!-- Left Panel - TABLE SECTIONS (35% width - ~505px) -->
-        <VBox prefHeight="700.0" prefWidth="505.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" styleClass="table-panel-left">
+        <!-- Left Panel - TABLE SECTIONS (responsive width bound in controller) -->
+        <VBox fx:id="leftPanel" styleClass="table-panel-left">
 
             <!-- Panel Header with Refresh -->
-            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: linear-gradient(to right, #1976D2, #1565C0); -fx-padding: 8 12;" styleClass="table-panel-header">
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-panel-header">
                 <FontAwesomeIcon fill="white" glyphName="TH_LARGE" size="1.2em" />
-                <Label style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="TABLES" />
+                <Label styleClass="panel-header-title" text="TABLES" />
                 <Region HBox.hgrow="ALWAYS" />
                 <!-- Status Legend inline -->
                 <HBox alignment="CENTER_LEFT" spacing="4">
-                    <Region style="-fx-background-color: #FFFFFF; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 2;" />
-                    <Label style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;" text="Open" />
+                    <Region styleClass="legend-dot, legend-dot-open" />
+                    <Label styleClass="legend-label" text="Open" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="4">
-                    <Region style="-fx-background-color: #81C784; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 2;" />
-                    <Label style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;" text="Running" />
+                    <Region styleClass="legend-dot, legend-dot-running" />
+                    <Label styleClass="legend-label" text="Running" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="4">
-                    <Region style="-fx-background-color: #FF8A65; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 2;" />
-                    <Label style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;" text="Billed" />
+                    <Region styleClass="legend-dot, legend-dot-billed" />
+                    <Label styleClass="legend-label" text="Billed" />
                 </HBox>
-                <Button fx:id="btnRefreshTables" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 4 10;" styleClass="refresh-btn-compact">
+                <Button fx:id="btnRefreshTables" styleClass="refresh-btn-compact">
                     <graphic>
                         <FontAwesomeIcon fill="white" glyphName="REFRESH" size="0.9em" />
                     </graphic>
@@ -50,35 +51,35 @@
             </HBox>
 
             <!-- ScrollPane for table buttons grid -->
-            <ScrollPane fitToWidth="true" style="-fx-background-color: #FAFAFA; -fx-border-color: transparent;" styleClass="table-scroll-pane" VBox.vgrow="ALWAYS">
-                <VBox fx:id="sectionsContainer" spacing="0" style="-fx-background-color: #FAFAFA; -fx-padding: 4;" />
+            <ScrollPane fitToWidth="true" styleClass="table-scroll-pane" VBox.vgrow="ALWAYS">
+                <VBox fx:id="sectionsContainer" spacing="0" styleClass="sections-container" />
             </ScrollPane>
         </VBox>
     </left>
 
     <center>
-        <!-- Split Pane for Menu Items and Order Details (45:20 ratio = 0.692) -->
-        <SplitPane dividerPositions="0.692" prefHeight="700.0" prefWidth="938.0" BorderPane.alignment="TOP_CENTER">
+        <!-- Split Pane for Menu Items and Order Details (responsive ratio) -->
+        <SplitPane fx:id="mainSplitPane" dividerPositions="0.692" BorderPane.alignment="TOP_CENTER">
 
-            <!-- Left Side of Split - Customer & Menu Items (60%) -->
-            <VBox style="-fx-background-color: #FAFAFA;">
+            <!-- Left Side of Split - Customer & Menu Items -->
+            <VBox styleClass="center-panel">
                 <padding>
                     <Insets bottom="8.0" left="8.0" right="8.0" />
                 </padding>
 
                 <!-- Top Bar: Customer Search + Table Number -->
-                <HBox alignment="CENTER_LEFT" maxHeight="80" prefHeight="80" spacing="12" style="-fx-padding: 0;">
+                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
                     <!-- Customer Search Section -->
-                    <VBox spacing="6" style="-fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 1); -fx-background-radius: 4; -fx-padding: 8;" HBox.hgrow="ALWAYS">
+                    <VBox spacing="6" styleClass="customer-search-card" HBox.hgrow="ALWAYS">
                         <!-- Search Box with Icon -->
-                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #F5F5F5; -fx-background-radius: 4; -fx-padding: 4 8; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 4;">
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-input-row">
                             <FontAwesomeIcon fill="#757575" glyphName="SEARCH" size="1em" />
-                            <TextField fx:id="txtCustomerSearch" promptText="ga`ahkacao naava" style="-fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS">
+                            <TextField fx:id="txtCustomerSearch" promptText="ga`ahkacao naava" styleClass="search-field" HBox.hgrow="ALWAYS">
                                 <font>
                                     <Font name="Kiran" size="14.0" />
                                 </font>
                             </TextField>
-                            <Button fx:id="btnAddNewCustomer" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 4; -fx-cursor: hand;" text="ADD NEW">
+                            <Button fx:id="btnAddNewCustomer" styleClass="add-customer-btn" text="ADD NEW">
                                 <graphic>
                                     <FontAwesomeIcon fill="white" glyphName="USER_PLUS" size="0.9em" />
                                 </graphic>
@@ -89,21 +90,21 @@
                         </HBox>
 
                         <!-- Selected Customer Display - Material Chip Style -->
-                        <HBox fx:id="selectedCustomerDisplay" alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #E3F2FD; -fx-border-color: #1976D2; -fx-border-width: 1; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 12;" visible="false">
+                        <HBox fx:id="selectedCustomerDisplay" alignment="CENTER_LEFT" spacing="8" styleClass="selected-customer-chip" visible="false">
                             <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="0.9em" />
-                            <Label fx:id="lblCustomerName" text="-">
+                            <Label fx:id="lblCustomerName" styleClass="customer-name-label" text="-">
                                 <font>
                                     <Font name="Kiran" size="12.0" />
                                 </font>
                             </Label>
-                            <Label style="-fx-text-fill: #90CAF9; -fx-font-size: 10px;" text="•" />
-                            <Label fx:id="lblCustomerMobile" text="-">
+                            <Label styleClass="chip-separator" text="&#x2022;" />
+                            <Label fx:id="lblCustomerMobile" styleClass="customer-mobile-label" text="-">
                                 <font>
                                     <Font name="Kiran" size="12.0" />
                                 </font>
                             </Label>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnClearCustomer" style="-fx-background-color: transparent; -fx-text-fill: #D32F2F; -fx-cursor: hand; -fx-font-size: 9px; -fx-padding: 2 4; -fx-background-radius: 12;" text="✕">
+                            <Button fx:id="btnClearCustomer" styleClass="remove-customer-btn" text="&#x2715;">
                                 <font>
                                     <Font name="Kiran" size="9.0" />
                                 </font>
@@ -112,13 +113,13 @@
                     </VBox>
 
                     <!-- Table/Booking Number Display -->
-                    <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom, #1976D2, #1565C0); -fx-background-radius: 6; -fx-padding: 12 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2); -fx-min-width: 140; -fx-max-width: 140;">
-                        <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 9px; -fx-font-weight: bold; -fx-letter-spacing: 1px;" text="TABLE NO">
+                    <VBox alignment="CENTER" spacing="4" styleClass="table-number-badge">
+                        <Label styleClass="table-number-label" text="TABLE NO">
                             <font>
                                 <Font name="Arial Bold" size="10.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="txtTableNumber" alignment="CENTER" editable="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-insets: 0; -fx-padding: 0; -fx-cursor: default;">
+                        <TextField fx:id="txtTableNumber" alignment="CENTER" editable="false" styleClass="table-number-value">
                             <font>
                                 <Font name="Arial Bold" size="24.0" />
                             </font>
@@ -127,32 +128,30 @@
                 </HBox>
 
                 <!-- Content area for menu items -->
-                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox spacing="8" style="-fx-padding: 4;">
+                <VBox spacing="8" styleClass="content-area" VBox.vgrow="ALWAYS">
                      <children>
-                        <!-- First Row: Category Name and Waiter Name - Using MaterialFX -->
-                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0;">
+                        <!-- First Row: Category Name and Waiter Name -->
+                        <HBox alignment="CENTER_LEFT" spacing="8">
                            <children>
                               <!-- Category Name with All Items Checkbox -->
-                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);" HBox.hgrow="ALWAYS">
+                              <VBox spacing="4" styleClass="input-group" HBox.hgrow="ALWAYS">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" spacing="10">
                                        <children>
-                                          <Label style="-fx-text-fill: #616161;" text="k^TogaIrIcao naava">
+                                          <Label styleClass="input-label" text="k^TogaIrIcao naava">
                                              <font>
                                                 <Font name="Kiran" size="25.0" />
                                              </font>
                                           </Label>
                                           <Region HBox.hgrow="ALWAYS" />
-                                          <CheckBox fx:id="chkAllItems" style="-fx-font-size: 14px; -fx-text-fill: #1976D2;" text="All Items">
+                                          <CheckBox fx:id="chkAllItems" styleClass="all-items-checkbox" text="All Items">
                                              <font>
                                                 <Font name="Kiran" size="20.0" />
                                              </font>
                                           </CheckBox>
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtCategoryName" prefHeight="36.0" promptText="k^TogaIrIcao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;" HBox.hgrow="ALWAYS">
+                                    <TextField fx:id="txtCategoryName" prefHeight="36.0" promptText="k^TogaIrIcao naava" styleClass="billing-input-field" HBox.hgrow="ALWAYS">
                                         <font>
                                             <Font name="Kiran" size="25.0" />
                                         </font>
@@ -161,14 +160,14 @@
                               </VBox>
 
                               <!-- Waiter Name Dropdown -->
-                              <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 180;" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="4" styleClass="input-group, waiter-field" HBox.hgrow="SOMETIMES">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="vaoTrcao naava">
+                                    <Label styleClass="input-label" text="vaoTrcao naava">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <ComboBox fx:id="cmbWaitorName" prefHeight="36.0" prefWidth="170.0" promptText="vaoTrcao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3;">
+                                    <ComboBox fx:id="cmbWaitorName" maxWidth="Infinity" prefHeight="36.0" promptText="vaoTrcao naava" styleClass="billing-input-field">
                                         <opaqueInsets>
                                             <Insets />
                                         </opaqueInsets>
@@ -178,18 +177,18 @@
                            </children>
                         </HBox>
 
-                        <!-- Second Row: Code, Item Name, Quantity, Price, Amount - Using MaterialFX -->
-                        <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0;">
+                        <!-- Second Row: Code, Item Name, Quantity, Price, Amount -->
+                        <HBox alignment="CENTER_LEFT" spacing="6">
                            <children>
                               <!-- Code Field -->
-                              <VBox style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 90; -fx-max-width: 110;">
+                              <VBox styleClass="input-group, field-code" HBox.hgrow="SOMETIMES">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="kaoD">
+                                    <Label styleClass="input-label" text="kaoD">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtCode" prefHeight="36.0" promptText="kaoD" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtCode" prefHeight="36.0" promptText="kaoD" styleClass="billing-input-field">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
@@ -198,14 +197,14 @@
                               </VBox>
 
                               <!-- Item Name Field -->
-                              <VBox style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);" HBox.hgrow="ALWAYS">
+                              <VBox styleClass="input-group" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="maalaacao naava">
+                                    <Label styleClass="input-label" text="maalaacao naava">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtItemName" prefHeight="36.0" promptText="maalaacao naava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtItemName" prefHeight="36.0" promptText="maalaacao naava" styleClass="billing-input-field">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
@@ -214,14 +213,14 @@
                               </VBox>
 
                               <!-- Quantity Field -->
-                              <VBox style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 80; -fx-max-width: 100;">
+                              <VBox styleClass="input-group, field-qty" HBox.hgrow="SOMETIMES">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="naga">
+                                    <Label styleClass="input-label" text="naga">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtQuantity" prefHeight="36.0" promptText="naga" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtQuantity" prefHeight="36.0" promptText="naga" styleClass="billing-input-field">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
@@ -230,14 +229,14 @@
                               </VBox>
 
                               <!-- Price Field -->
-                              <VBox style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 90; -fx-max-width: 110;">
+                              <VBox styleClass="input-group, field-price" HBox.hgrow="SOMETIMES">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="Baava">
+                                    <Label styleClass="input-label" text="Baava">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtPrice" prefHeight="36.0" promptText="Baava" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtPrice" prefHeight="36.0" promptText="Baava" styleClass="billing-input-field">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
@@ -246,14 +245,14 @@
                               </VBox>
 
                               <!-- Amount Field -->
-                              <VBox style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-min-width: 100; -fx-max-width: 120;">
+                              <VBox styleClass="input-group, field-amount" HBox.hgrow="SOMETIMES">
                                  <children>
-                                    <Label style="-fx-text-fill: #616161;" text="r@kma">
+                                    <Label styleClass="input-label" text="r@kma">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtAmount" editable="false" prefHeight="36.0" promptText="r@kma" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-padding: 6 8;">
+                                    <TextField fx:id="txtAmount" editable="false" prefHeight="36.0" promptText="r@kma" styleClass="billing-input-field">
                                        <font>
                                           <Font name="Kiran" size="25.0" />
                                        </font>
@@ -264,12 +263,12 @@
                         </HBox>
 
                         <!-- Action Buttons Row -->
-                        <VBox spacing="4" style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);">
+                        <VBox spacing="4" styleClass="action-buttons-container">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="10">
+                              <HBox alignment="CENTER_LEFT" spacing="10" styleClass="action-buttons-row">
                                  <children>
                                     <!-- Add Button -->
-                                    <Button fx:id="btnAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="ADD">
+                                    <Button fx:id="btnAdd" maxWidth="Infinity" styleClass="action-button, btn-add" text="ADD" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="PLUS" size="0.9em" />
                                        </graphic>
@@ -279,7 +278,7 @@
                                     </Button>
 
                                     <!-- Order Button -->
-                                    <Button fx:id="btnOrder" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="ORDER">
+                                    <Button fx:id="btnOrder" maxWidth="Infinity" styleClass="action-button, btn-order" text="ORDER" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="SHOPPING_CART" size="0.9em" />
                                        </graphic>
@@ -289,7 +288,7 @@
                                     </Button>
 
                                     <!-- Edit Button -->
-                                    <Button fx:id="btnEdit" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="EDIT">
+                                    <Button fx:id="btnEdit" maxWidth="Infinity" styleClass="action-button, btn-edit" text="EDIT" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="EDIT" size="0.9em" />
                                        </graphic>
@@ -299,7 +298,7 @@
                                     </Button>
 
                                     <!-- Remove Button -->
-                                    <Button fx:id="btnRemove" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="REMOVE">
+                                    <Button fx:id="btnRemove" maxWidth="Infinity" styleClass="action-button, btn-remove" text="REMOVE" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="TRASH" size="0.9em" />
                                        </graphic>
@@ -309,7 +308,7 @@
                                     </Button>
 
                                     <!-- Clear Button -->
-                                    <Button fx:id="btnClear" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="CLEAR">
+                                    <Button fx:id="btnClear" maxWidth="Infinity" styleClass="action-button, btn-clear" text="CLEAR" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="TIMES_CIRCLE" size="0.9em" />
                                        </graphic>
@@ -319,7 +318,7 @@
                                     </Button>
 
                                     <!-- Kitchen Status Button -->
-                                    <Button fx:id="btnKitchenStatus" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 95; -fx-cursor: hand;" text="KITCHEN">
+                                    <Button fx:id="btnKitchenStatus" maxWidth="Infinity" styleClass="action-button, btn-kitchen" text="KITCHEN" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="CUTLERY" size="0.9em" />
                                        </graphic>
@@ -331,12 +330,13 @@
                               </HBox>
                            </children>
                         </VBox>
+
                         <!-- Transaction Table Section -->
-                        <VBox spacing="0" styleClass="transaction-table-container">
+                        <VBox spacing="0" styleClass="transaction-table-container" VBox.vgrow="ALWAYS">
                            <children>
 
-                              <!-- Table View - Fixed height for 7 rows (30px each + 28px header = 238px) -->
-                              <TableView fx:id="tblTransaction" fixedCellSize="30" maxHeight="238.0" minHeight="238.0" prefHeight="238.0" styleClass="transaction-table">
+                              <!-- Table View - Responsive height -->
+                              <TableView fx:id="tblTransaction" fixedCellSize="30" styleClass="transaction-table" VBox.vgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="colSrNo" minWidth="45.0" prefWidth="50.0" styleClass="col-srno" text="Sr.No" />
                                   <TableColumn fx:id="colItemName" minWidth="150.0" prefWidth="200.0" styleClass="col-item-name" text="Item Name" />
@@ -350,130 +350,103 @@
                               </TableView>
 
                               <!-- Payment/Cash Counter Section - Two Row Compact Design -->
-                              <VBox spacing="0" style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-width: 1 0;">
+                              <VBox spacing="0" styleClass="payment-section">
                                  <children>
                                     <!-- Row 1: Bill Summary - Qty, Total, Discount, Net Amount -->
-                                    <HBox alignment="CENTER" spacing="20" style="-fx-padding: 6 15;">
-                                       <children>
-                                          <HBox alignment="CENTER" spacing="6" style="-fx-background-color: #E3F2FD; -fx-background-radius: 4; -fx-padding: 5 14;">
-                                             <children>
-                                                <Label style="-fx-font-size: 11px; -fx-text-fill: #1976D2;" text="Qty:" />
-                                                <Label fx:id="lblTotalQuantity" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1565C0;" text="0" />
-                                             </children>
+                                    <FlowPane alignment="CENTER" hgap="10" vgap="6" styleClass="bill-summary-row">
+                                          <HBox alignment="CENTER" spacing="6" styleClass="summary-pill, pill-qty">
+                                             <Label styleClass="pill-label" text="Qty:" />
+                                             <Label fx:id="lblTotalQuantity" styleClass="pill-value" text="0" />
                                           </HBox>
-                                          <HBox alignment="CENTER" spacing="6" style="-fx-background-color: #1976D2; -fx-background-radius: 4; -fx-padding: 5 14;">
-                                             <children>
-                                                <Label style="-fx-font-size: 11px; -fx-text-fill: white;" text="Total:" />
-                                                <Label fx:id="lblBillAmount" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" text="₹0" />
-                                             </children>
+                                          <HBox alignment="CENTER" spacing="6" styleClass="summary-pill, pill-total">
+                                             <Label styleClass="pill-label" text="Total:" />
+                                             <Label fx:id="lblBillAmount" styleClass="pill-value" text="&#x20B9;0" />
                                           </HBox>
-                                          <HBox alignment="CENTER" spacing="6" style="-fx-background-color: #FFF3E0; -fx-background-radius: 4; -fx-padding: 5 14;">
-                                             <children>
-                                                <Label style="-fx-font-size: 11px; -fx-text-fill: #F57C00;" text="Discount:" />
-                                                <Label fx:id="lblDiscount" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #EF6C00;" text="₹0" />
-                                             </children>
+                                          <HBox alignment="CENTER" spacing="6" styleClass="summary-pill, pill-discount">
+                                             <Label styleClass="pill-label" text="Discount:" />
+                                             <Label fx:id="lblDiscount" styleClass="pill-value" text="&#x20B9;0" />
                                           </HBox>
-                                          <HBox alignment="CENTER" spacing="6" style="-fx-background-color: #4CAF50; -fx-background-radius: 4; -fx-padding: 5 14;">
-                                             <children>
-                                                <Label style="-fx-font-size: 11px; -fx-text-fill: white;" text="Net Amount:" />
-                                                <Label fx:id="lblNetAmount" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" text="₹0" />
-                                             </children>
+                                          <HBox alignment="CENTER" spacing="6" styleClass="summary-pill, pill-net">
+                                             <Label styleClass="pill-label" text="Net Amount:" />
+                                             <Label fx:id="lblNetAmount" styleClass="pill-value" text="&#x20B9;0" />
                                           </HBox>
-                                       </children>
-                                    </HBox>
-                                    <!-- Row 2: Payment Details - PayMode, Amount, Return, Change, Due (Label on top, Field below) -->
-                                    <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #EEEEEE; -fx-padding: 8 15; -fx-border-color: #E0E0E0; -fx-border-width: 1 0 0 0;">
-                                       <children>
+                                    </FlowPane>
+
+                                    <!-- Row 2: Payment Details -->
+                                    <FlowPane alignment="CENTER" hgap="8" vgap="6" styleClass="payment-details-row">
                                           <!-- Payment Mode Dropdown (CASH + Banks) -->
-                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #4CAF50; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 8;">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #4CAF50; -fx-font-weight: bold;" text="Pay Mode" />
-                                                <HBox alignment="CENTER" spacing="4">
-                                                   <children>
-                                                      <FontAwesomeIcon fill="#4CAF50" glyphName="MONEY" size="1em" />
-                                                      <ComboBox fx:id="cmbPaymentMode" prefHeight="26" prefWidth="180" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-color: transparent;" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
+                                          <VBox alignment="CENTER" spacing="2" styleClass="pay-field, pay-mode-box" HBox.hgrow="SOMETIMES">
+                                             <Label styleClass="pay-field-label, pay-mode-label" text="Pay Mode" />
+                                             <HBox alignment="CENTER" spacing="4">
+                                                <FontAwesomeIcon fill="#4CAF50" glyphName="MONEY" size="1em" />
+                                                <ComboBox fx:id="cmbPaymentMode" maxWidth="Infinity" prefHeight="26" styleClass="pay-mode-combo" HBox.hgrow="ALWAYS" />
+                                             </HBox>
                                           </VBox>
                                           <!-- Print QR Code Checkbox (visible only when bank selected with UPI) -->
-                                          <VBox fx:id="hboxPrintQR" alignment="CENTER" managed="false" spacing="2" style="-fx-background-color: #E8F5E9; -fx-border-color: #4CAF50; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 8;" visible="false">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;" text="QR Code" />
-                                                <HBox alignment="CENTER" spacing="4">
-                                                   <children>
-                                                      <FontAwesomeIcon fill="#4CAF50" glyphName="QRCODE" size="1em" />
-                                                      <CheckBox fx:id="chkPrintQR" style="-fx-font-size: 10px; -fx-text-fill: #2E7D32;" text="Print" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
+                                          <VBox fx:id="hboxPrintQR" alignment="CENTER" managed="false" spacing="2" styleClass="pay-field, qr-code-box" visible="false">
+                                             <Label styleClass="pay-field-label, qr-label" text="QR Code" />
+                                             <HBox alignment="CENTER" spacing="4">
+                                                <FontAwesomeIcon fill="#4CAF50" glyphName="QRCODE" size="1em" />
+                                                <CheckBox fx:id="chkPrintQR" styleClass="qr-checkbox" text="Print" />
+                                             </HBox>
                                           </VBox>
                                           <!-- Amount Received -->
-                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #1976D2; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 10;">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #1976D2; -fx-font-weight: bold;" text="Received" />
-                                                <TextField fx:id="txtCashReceived" alignment="CENTER" prefWidth="70" promptText="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1565C0; -fx-background-color: #E3F2FD; -fx-background-radius: 3; -fx-padding: 2;" />
-                                             </children>
+                                          <VBox alignment="CENTER" spacing="2" styleClass="pay-field, received-box">
+                                             <Label styleClass="pay-field-label, received-label" text="Received" />
+                                             <TextField fx:id="txtCashReceived" alignment="CENTER" promptText="0" styleClass="received-field" HBox.hgrow="SOMETIMES" />
                                           </VBox>
                                           <!-- Return -->
-                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: white; -fx-border-color: #FF9800; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 10;">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #F57C00; -fx-font-weight: bold;" text="Return" />
-                                                <TextField fx:id="txtReturnToCustomer" alignment="CENTER" prefWidth="60" promptText="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #EF6C00; -fx-background-color: #FFF3E0; -fx-background-radius: 3; -fx-padding: 2;" />
-                                             </children>
+                                          <VBox alignment="CENTER" spacing="2" styleClass="pay-field, return-box">
+                                             <Label styleClass="pay-field-label, return-label" text="Return" />
+                                             <TextField fx:id="txtReturnToCustomer" alignment="CENTER" promptText="0" styleClass="return-field" HBox.hgrow="SOMETIMES" />
                                           </VBox>
                                           <!-- Change -->
-                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #E1BEE7; -fx-background-radius: 4; -fx-padding: 4 10;">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #7B1FA2; -fx-font-weight: bold;" text="Change" />
-                                                <Label fx:id="lblChange" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #6A1B9A;" text="₹0" />
-                                             </children>
+                                          <VBox alignment="CENTER" spacing="2" styleClass="pay-field, change-box">
+                                             <Label styleClass="pay-field-label, change-label" text="Change" />
+                                             <Label fx:id="lblChange" styleClass="change-value" text="&#x20B9;0" />
                                           </VBox>
                                           <!-- Due -->
-                                          <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #FFCDD2; -fx-background-radius: 4; -fx-padding: 4 10;">
-                                             <children>
-                                                <Label style="-fx-font-size: 10px; -fx-text-fill: #C62828; -fx-font-weight: bold;" text="Due" />
-                                                <Label fx:id="lblBalance" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #B71C1C;" text="₹0" />
-                                             </children>
+                                          <VBox alignment="CENTER" spacing="2" styleClass="pay-field, due-box">
+                                             <Label styleClass="pay-field-label, due-label" text="Due" />
+                                             <Label fx:id="lblBalance" styleClass="due-value" text="&#x20B9;0" />
                                           </VBox>
-                                       </children>
-                                    </HBox>
+                                    </FlowPane>
                                  </children>
                               </VBox>
 
                               <!-- Bill Action Buttons Row -->
-                              <HBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 1 0 0 0; -fx-padding: 12;">
+                              <HBox alignment="CENTER" spacing="10" styleClass="bill-action-row">
                                  <children>
                                     <!-- CLOSE Button -->
-                                    <Button fx:id="btnClose" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="CLOSE">
+                                    <Button fx:id="btnClose" maxWidth="Infinity" styleClass="bill-action-btn, btn-bill-close" text="CLOSE" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="TIMES" size="1em" />
                                        </graphic>
                                     </Button>
 
                                     <!-- PAID Button -->
-                                    <Button fx:id="btnPaid" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="PAID">
+                                    <Button fx:id="btnPaid" maxWidth="Infinity" styleClass="bill-action-btn, btn-bill-paid" text="PAID" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="CHECK" size="1em" />
                                        </graphic>
                                     </Button>
 
                                     <!-- Shift Table Button -->
-                                    <Button fx:id="btnShiftTable" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="SHIFT">
+                                    <Button fx:id="btnShiftTable" maxWidth="Infinity" styleClass="bill-action-btn, btn-bill-shift" text="SHIFT" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="EXCHANGE" size="1em" />
                                        </graphic>
                                     </Button>
 
                                     <!-- OLD BILL Button -->
-                                    <Button fx:id="btnOldBill" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="OLD BILL">
+                                    <Button fx:id="btnOldBill" maxWidth="Infinity" styleClass="bill-action-btn, btn-bill-old" text="OLD BILL" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="HISTORY" size="1em" />
                                        </graphic>
                                     </Button>
 
                                     <!-- EDIT Button -->
-                                    <Button fx:id="btnEditBill" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-min-width: 100; -fx-pref-height: 35; -fx-cursor: hand;" text="EDIT">
+                                    <Button fx:id="btnEditBill" maxWidth="Infinity" styleClass="bill-action-btn, btn-bill-edit" text="EDIT" HBox.hgrow="ALWAYS">
                                        <graphic>
                                           <FontAwesomeIcon fill="white" glyphName="PENCIL" size="1em" />
                                        </graphic>
@@ -483,19 +456,18 @@
                            </children>
                         </VBox>
                      </children>
-                  </VBox>
-               </content></ScrollPane>
+                </VBox>
             </VBox>
 
-            <!-- Right Side of Split - Bill History (20%) - Modern Design -->
-            <VBox fx:id="orderDetailsContainer" spacing="0" style="-fx-background-color: #FFFFFF;" styleClass="bill-history-panel">
+            <!-- Right Side of Split - Bill History - Modern Design -->
+            <VBox fx:id="orderDetailsContainer" spacing="0" styleClass="bill-history-panel">
 
                 <!-- Panel Header - Gradient -->
-                <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: linear-gradient(to right, #7B1FA2, #9C27B0); -fx-padding: 10 12;">
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="bill-history-header">
                     <FontAwesomeIcon fill="white" glyphName="HISTORY" size="1.2em" />
-                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" text="BILL HISTORY" />
+                    <Label styleClass="panel-header-title" text="BILL HISTORY" />
                     <Region HBox.hgrow="ALWAYS" />
-                    <Button fx:id="btnRefreshBills" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10px; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 4 10;">
+                    <Button fx:id="btnRefreshBills" styleClass="refresh-btn-compact">
                         <graphic>
                             <FontAwesomeIcon fill="white" glyphName="REFRESH" size="0.9em" />
                         </graphic>
@@ -503,25 +475,25 @@
                 </HBox>
 
                 <!-- Search Filters Section -->
-                <VBox spacing="10" style="-fx-background-color: #FAFAFA; -fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
+                <VBox spacing="10" styleClass="bill-search-section">
 
                     <!-- Row 1: Date Picker -->
                     <HBox alignment="CENTER_LEFT" spacing="8">
                         <FontAwesomeIcon fill="#7B1FA2" glyphName="CALENDAR" size="1em" />
-                        <DatePicker fx:id="dpSearchDate" prefHeight="32" prefWidth="1000" promptText="Select Date" style="-fx-font-size: 11px; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+                        <DatePicker fx:id="dpSearchDate" prefHeight="32" promptText="Select Date" styleClass="bill-search-field" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <!-- Row 2: Bill No -->
                     <HBox alignment="CENTER_LEFT" spacing="8">
                         <FontAwesomeIcon fill="#7B1FA2" glyphName="FILE_TEXT_ALT" size="1em" />
-                        <TextField fx:id="txtSearchBillNo" prefHeight="32" promptText="Bill Number" style="-fx-font-size: 11px; -fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtSearchBillNo" prefHeight="32" promptText="Bill Number" styleClass="bill-search-input" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <!-- Row 3: Customer Search (AutoComplete container) -->
                     <HBox alignment="CENTER_LEFT" spacing="8">
                         <FontAwesomeIcon fill="#7B1FA2" glyphName="USER" size="1em" />
-                        <HBox fx:id="billHistoryCustomerSearchContainer" style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
-                            <TextField fx:id="txtSearchCustomer" prefHeight="32" promptText="ga`ahkacao naava" style="-fx-font-size: 11px; -fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS">
+                        <HBox fx:id="billHistoryCustomerSearchContainer" styleClass="bill-customer-search-container" HBox.hgrow="ALWAYS">
+                            <TextField fx:id="txtSearchCustomer" prefHeight="32" promptText="ga`ahkacao naava" styleClass="bill-search-input-transparent" HBox.hgrow="ALWAYS">
                         <font>
                            <Font name="Kiran" size="20.0" />
                         </font></TextField>
@@ -530,13 +502,13 @@
 
                     <!-- Action Buttons -->
                     <HBox alignment="CENTER" spacing="8">
-                        <Button fx:id="btnSearchBills" maxWidth="Infinity" prefHeight="30" style="-fx-background-color: #7B1FA2; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 6 16;" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnSearchBills" maxWidth="Infinity" prefHeight="30" styleClass="btn-search-bills" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <FontAwesomeIcon fill="white" glyphName="SEARCH" size="0.9em" />
                             </graphic>
                             <text>Search</text>
                         </Button>
-                        <Button fx:id="btnClearSearch" prefHeight="30" style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand; -fx-padding: 6 12;">
+                        <Button fx:id="btnClearSearch" prefHeight="30" styleClass="btn-clear-search">
                             <graphic>
                                 <FontAwesomeIcon fill="white" glyphName="TIMES" size="0.9em" />
                             </graphic>
@@ -545,7 +517,7 @@
                 </VBox>
 
                 <!-- Bills Table -->
-                <TableView fx:id="tblBillHistory" fixedCellSize="26" style="-fx-font-size: 11px; -fx-background-color: white;" styleClass="bill-history-table" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tblBillHistory" fixedCellSize="26" styleClass="bill-history-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colBillNo" minWidth="45" prefWidth="50" text="#" />
                         <TableColumn fx:id="colBillDate" minWidth="70" prefWidth="75" text="Date" />
@@ -559,23 +531,23 @@
                 </TableView>
 
                 <!-- Summary Footer -->
-                <VBox spacing="0" style="-fx-background-color: linear-gradient(to bottom, #F5F5F5, #EEEEEE); -fx-padding: 0; -fx-border-color: #E0E0E0; -fx-border-width: 1 0 0 0;">
+                <VBox spacing="0" styleClass="summary-footer">
                     <!-- Summary Stats -->
                     <HBox alignment="CENTER" spacing="0">
                         <!-- Cash -->
-                        <VBox alignment="CENTER" spacing="2" style="-fx-padding: 8 12; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" HBox.hgrow="ALWAYS">
-                            <Label style="-fx-font-size: 9px; -fx-text-fill: #9E9E9E;" text="CASH" />
-                            <Label fx:id="lblTotalCash" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="₹0" />
+                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-cash" HBox.hgrow="ALWAYS">
+                            <Label styleClass="summary-stat-label" text="CASH" />
+                            <Label fx:id="lblTotalCash" styleClass="summary-stat-value, stat-value-cash" text="&#x20B9;0" />
                         </VBox>
                         <!-- Credit -->
-                        <VBox alignment="CENTER" spacing="2" style="-fx-padding: 8 12; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" HBox.hgrow="ALWAYS">
-                            <Label style="-fx-font-size: 9px; -fx-text-fill: #9E9E9E;" text="CREDIT" />
-                            <Label fx:id="lblTotalCredit" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="₹0" />
+                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-credit" HBox.hgrow="ALWAYS">
+                            <Label styleClass="summary-stat-label" text="CREDIT" />
+                            <Label fx:id="lblTotalCredit" styleClass="summary-stat-value, stat-value-credit" text="&#x20B9;0" />
                         </VBox>
                         <!-- Total -->
-                        <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #7B1FA2; -fx-padding: 8 12;" HBox.hgrow="ALWAYS">
-                            <Label style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.7);" text="TOTAL" />
-                            <Label fx:id="lblTotalBills" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white;" text="₹0" />
+                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-total" HBox.hgrow="ALWAYS">
+                            <Label styleClass="summary-stat-label, stat-label-total" text="TOTAL" />
+                            <Label fx:id="lblTotalBills" styleClass="summary-stat-value, stat-value-total" text="&#x20B9;0" />
                         </VBox>
                     </HBox>
                 </VBox>

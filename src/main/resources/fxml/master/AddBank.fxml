@@ -302,14 +302,14 @@
                         <!-- Table -->
                         <TableView fx:id="tblBanks" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="colId" prefWidth="50" styleClass="id-column" text="ID" />
-                              <TableColumn fx:id="colBankName" prefWidth="150" text="Bank Name" />
+                              <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
+                              <TableColumn fx:id="colBankName" prefWidth="220" text="Bank Name" />
                               <TableColumn fx:id="colAccountNo" prefWidth="120" text="Account No" />
-                              <TableColumn fx:id="colAccountType" prefWidth="70" text="Type" />
-                              <TableColumn fx:id="colBranch" prefWidth="100" text="Branch" />
+                              <TableColumn fx:id="colAccountType" prefWidth="65" text="Type" />
+                              <TableColumn fx:id="colBranch" prefWidth="80" text="Branch" />
                               <TableColumn fx:id="colUpiId" prefWidth="120" text="UPI ID" />
-                              <TableColumn fx:id="colBalance" prefWidth="90" text="Balance" />
-                              <TableColumn fx:id="colStatus" prefWidth="80" text="Status" />
+                              <TableColumn fx:id="colBalance" prefWidth="80" text="Balance" />
+                              <TableColumn fx:id="colStatus" prefWidth="70" text="Status" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

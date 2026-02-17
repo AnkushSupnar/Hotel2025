@@ -1,58 +1,74 @@
 /* ==========================================
    BILLING SCREEN - MATERIAL DESIGN STYLES
+   Responsive layout with CSS classes
    ========================================== */
 
-/* Root Container */
+/* ==========================================
+   ROOT CONTAINER
+   ========================================== */
+
 .billing-root {
     -fx-background-color: #ECEFF1;
     -fx-font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* ==========================================
-   LEFT PANEL - SECTIONS
+   COMMON - PANEL HEADERS
    ========================================== */
 
-.left-panel {
-    -fx-background-color: #FAFAFA;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 0 1 0 0;
-}
-
-.refresh-button {
-    -fx-background-color: #2196F3;
+.panel-header-title {
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 12;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);
-}
-
-.refresh-button:hover {
-    -fx-background-color: #1976D2;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0, 0, 2);
-}
-
-.refresh-button:pressed {
-    -fx-background-color: #0D47A1;
 }
 
 /* ==========================================
-   LEFT PANEL - MODERN COMPACT DESIGN
+   COMMON - LEGEND DOTS
    ========================================== */
 
-/* Left Panel Container */
+.legend-dot {
+    -fx-min-width: 8;
+    -fx-min-height: 8;
+    -fx-max-width: 8;
+    -fx-max-height: 8;
+    -fx-background-radius: 2;
+}
+
+.legend-dot-open {
+    -fx-background-color: #FFFFFF;
+}
+
+.legend-dot-running {
+    -fx-background-color: #81C784;
+}
+
+.legend-dot-billed {
+    -fx-background-color: #FF8A65;
+}
+
+.legend-label {
+    -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-font-size: 9px;
+}
+
+/* ==========================================
+   LEFT PANEL - TABLE SECTIONS
+   ========================================== */
+
 .table-panel-left {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
     -fx-border-width: 0 1 0 0;
 }
 
-/* Panel Header */
 .table-panel-header {
     -fx-background-color: linear-gradient(to right, #1976D2, #1565C0);
-    -fx-padding: 10 12;
+    -fx-padding: 8 12;
+}
+
+.sections-container {
+    -fx-background-color: #FAFAFA;
+    -fx-padding: 4;
 }
 
 /* Refresh Button Compact */
@@ -73,6 +89,16 @@
     -fx-background-color: rgba(255,255,255,0.15);
 }
 
+/* Table Scroll Pane */
+.table-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
 /* Section Box Modern - Card Style */
 .section-box-modern {
     -fx-background-color: #FFFFFF;
@@ -86,21 +112,10 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
-/* Table Scroll Pane */
-.table-scroll-pane {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.table-scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-
 /* ==========================================
    TABLE BUTTON STYLES - COMPACT MODERN
    ========================================== */
 
-/* Base Table Button - Compact Grid Style */
 .table-button {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -118,7 +133,6 @@
     -fx-content-display: center;
 }
 
-/* Open Table - Available (White with darker border and text) */
 .table-button-available {
     -fx-background-color: #FFFFFF;
     -fx-text-fill: #424242;
@@ -136,7 +150,6 @@
     -fx-border-color: #616161;
 }
 
-/* Running Table - Ongoing orders (Green with darker border) */
 .table-button-ongoing {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
@@ -153,7 +166,6 @@
     -fx-background-color: #388E3C;
 }
 
-/* Billed Table - Closed/Billed (Deep Orange with darker border) */
 .table-button-closed {
     -fx-background-color: #FF5722;
     -fx-text-fill: white;
@@ -170,12 +182,210 @@
     -fx-background-color: #E64A19;
 }
 
-/* All Items Checkbox */
-#chkAllItems {
+/* ==========================================
+   CENTER PANEL - MENU & CUSTOMER
+   ========================================== */
+
+.center-panel {
+    -fx-background-color: #FAFAFA;
+}
+
+/* Top Bar */
+.top-bar {
+    -fx-padding: 0;
+    -fx-max-height: 80;
+    -fx-pref-height: 80;
+}
+
+/* Customer Search Card */
+.customer-search-card {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 1);
+    -fx-background-radius: 4;
+    -fx-padding: 8;
+}
+
+/* Search Input Row */
+.search-input-row {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 4;
+    -fx-padding: 4 8;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+/* Search Field */
+.search-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-prompt-text-fill: #9E9E9E;
+}
+
+/* Add Customer Button */
+.add-customer-btn {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-background-radius: 4;
     -fx-cursor: hand;
 }
 
-#chkAllItems .box {
+.add-customer-btn:hover {
+    -fx-background-color: #1565C0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 2);
+}
+
+/* Selected Customer Chip */
+.selected-customer-chip {
+    -fx-background-color: #E3F2FD;
+    -fx-border-color: #1976D2;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 4 12;
+}
+
+.customer-name-label {
+    -fx-text-fill: #1565C0;
+    -fx-font-weight: bold;
+}
+
+.customer-mobile-label {
+    -fx-text-fill: #616161;
+}
+
+.chip-separator {
+    -fx-text-fill: #90CAF9;
+    -fx-font-size: 10px;
+}
+
+.remove-customer-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #D32F2F;
+    -fx-cursor: hand;
+    -fx-font-size: 9px;
+    -fx-padding: 2 4;
+    -fx-background-radius: 12;
+}
+
+.remove-customer-btn:hover {
+    -fx-background-color: rgba(211, 47, 47, 0.1);
+}
+
+/* Table Number Badge */
+.table-number-badge {
+    -fx-background-color: linear-gradient(to bottom, #1976D2, #1565C0);
+    -fx-background-radius: 6;
+    -fx-padding: 12 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2);
+    -fx-pref-width: 140;
+}
+
+.table-number-label {
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.table-number-value {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-cursor: default;
+}
+
+/* Content Scroll Pane */
+.content-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.content-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Content Area */
+.content-area {
+    -fx-padding: 4;
+}
+
+/* ==========================================
+   INPUT FIELDS - RESPONSIVE
+   ========================================== */
+
+/* Input Group - Card-like container for each field */
+.input-group {
+    -fx-background-color: white;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
+}
+
+.input-group:focused-within {
+    -fx-border-color: #1976D2;
+    -fx-border-width: 2;
+    -fx-padding: 5 7;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.1), 4, 0, 0, 1);
+}
+
+.input-label {
+    -fx-text-fill: #616161;
+}
+
+/* Billing Input Field (TextFields inside input-group) */
+.billing-input-field {
+    -fx-background-color: #FAFAFA;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 6 8;
+}
+
+.billing-input-field:focused {
+    -fx-border-color: #1976D2;
+    -fx-border-width: 2;
+    -fx-background-color: white;
+}
+
+/* Waiter field - responsive proportional sizing */
+.waiter-field {
+    -fx-pref-width: 180;
+}
+
+/* Proportional field sizes (using pref-width as hints) */
+.field-code {
+    -fx-pref-width: 90;
+}
+
+.field-qty {
+    -fx-pref-width: 80;
+}
+
+.field-price {
+    -fx-pref-width: 90;
+}
+
+.field-amount {
+    -fx-pref-width: 100;
+}
+
+/* All Items Checkbox */
+.all-items-checkbox {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1976D2;
+    -fx-cursor: hand;
+}
+
+.all-items-checkbox .box {
     -fx-background-color: white;
     -fx-border-color: #1976D2;
     -fx-border-width: 2;
@@ -184,20 +394,20 @@
     -fx-padding: 2;
 }
 
-#chkAllItems:selected .box {
+.all-items-checkbox:selected .box {
     -fx-background-color: #1976D2;
 }
 
-#chkAllItems:selected .mark {
+.all-items-checkbox:selected .mark {
     -fx-background-color: white;
 }
 
-#chkAllItems:hover .box {
+.all-items-checkbox:hover .box {
     -fx-border-color: #1565C0;
     -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.3), 4, 0, 0, 1);
 }
 
-#chkAllItems .text {
+.all-items-checkbox .text {
     -fx-fill: #1976D2;
 }
 
@@ -242,14 +452,27 @@
     -fx-text-fill: white;
 }
 
-/* Action Buttons */
+/* ==========================================
+   ACTION BUTTONS - RESPONSIVE ROW
+   ========================================== */
+
+.action-buttons-container {
+    -fx-background-color: white;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
+}
+
 .action-button {
-    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-padding: 10 20;
     -fx-background-radius: 4;
     -fx-cursor: hand;
-    -fx-min-width: 100;
+    -fx-padding: 8 6;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
 }
 
@@ -265,238 +488,56 @@
 
 .btn-add {
     -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
 }
 
 .btn-add:hover {
     -fx-background-color: #45A049;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 6, 0, 0, 2);
 }
 
 .btn-order {
     -fx-background-color: #2196F3;
-    -fx-text-fill: white;
 }
 
 .btn-order:hover {
     -fx-background-color: #1976D2;
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.4), 6, 0, 0, 2);
 }
 
 .btn-edit {
     -fx-background-color: #FF9800;
-    -fx-text-fill: white;
 }
 
 .btn-edit:hover {
     -fx-background-color: #F57C00;
+    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.4), 6, 0, 0, 2);
 }
 
 .btn-remove {
     -fx-background-color: #F44336;
-    -fx-text-fill: white;
 }
 
 .btn-remove:hover {
     -fx-background-color: #D32F2F;
+    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.4), 6, 0, 0, 2);
 }
 
 .btn-clear {
     -fx-background-color: #757575;
-    -fx-text-fill: white;
 }
 
 .btn-clear:hover {
     -fx-background-color: #616161;
+    -fx-effect: dropshadow(gaussian, rgba(117, 117, 117, 0.4), 6, 0, 0, 2);
 }
 
-/* ==========================================
-   CENTER PANEL - MENU & CUSTOMER
-   ========================================== */
-
-.center-panel {
-    -fx-background-color: #FAFAFA;
-    -fx-padding: 12;
+.btn-kitchen {
+    -fx-background-color: #E65100;
 }
 
-/* Customer Search Bar */
-.customer-search-container {
-    -fx-background-color: white;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 1);
-    -fx-background-radius: 8;
-    -fx-padding: 8;
-    -fx-spacing: 12;
-}
-
-.search-box {
-    -fx-background-color: #F5F5F5;
-    -fx-background-radius: 4;
-    -fx-padding: 4 12;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-alignment: center-left;
-}
-
-.search-box:focused-within {
-    -fx-border-color: #1976D2;
-    -fx-background-color: white;
-}
-
-.search-field {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-prompt-text-fill: #9E9E9E;
-    -fx-padding: 4;
-    /* Font size handled by controller for Kiran font support */
-}
-
-.add-customer-btn {
-    -fx-background-color: #1976D2;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-padding: 8 16;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
-}
-
-.add-customer-btn:hover {
-    -fx-background-color: #1565C0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 2);
-}
-
-/* Selected Customer Chip */
-.selected-customer-chip {
-    -fx-background-color: #E3F2FD;
-    -fx-border-color: #1976D2;
-    -fx-border-width: 1;
-    -fx-border-radius: 20;
-    -fx-background-radius: 20;
-    -fx-padding: 4 12;
-    -fx-alignment: center-left;
-    -fx-spacing: 8;
-}
-
-.customer-name-label {
-    -fx-text-fill: #1565C0;
-    -fx-font-weight: bold;
-    /* Font family handled in controller */
-}
-
-.customer-mobile-label {
-    -fx-text-fill: #616161;
-    /* Font family handled in controller */
-}
-
-.remove-customer-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: #D32F2F;
-    -fx-cursor: hand;
-    -fx-font-size: 10px;
-    -fx-padding: 2 6;
-    -fx-background-radius: 10;
-}
-
-.remove-customer-btn:hover {
-    -fx-background-color: rgba(211, 47, 47, 0.1);
-}
-
-/* Table Number Badge */
-.table-number-badge {
-    -fx-background-color: linear-gradient(to bottom right, #1976D2, #0D47A1);
-    -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0, 0, 2);
-    -fx-padding: 8 16;
-    -fx-alignment: center;
-    -fx-min-width: 120px;
-}
-
-.table-number-label {
-    -fx-text-fill: rgba(255,255,255,0.8);
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-    -fx-letter-spacing: 1px;
-}
-
-.table-number-value {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-    -fx-padding: 0;
-}
-
-/* Menu Items Section */
-.menu-section-header {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #424242;
-    -fx-padding: 16 0 8 0;
-    -fx-alignment: center-left;
-    -fx-spacing: 8;
-}
-
-.menu-input-container {
-    -fx-background-color: white;
-    -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
-    -fx-padding: 16;
-    -fx-spacing: 12;
-    -fx-border-color: #EEEEEE;
-    -fx-border-width: 1;
-}
-
-/* Input Field Groups */
-.input-group {
-    -fx-background-color: white;
-    -fx-border-color: #BDBDBD;
-    -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-    -fx-padding: 4 8;
-    -fx-transition: all 0.2s ease;
-}
-
-.input-group:focused-within {
-    -fx-border-color: #1976D2;
-    -fx-border-width: 2;
-    -fx-padding: 3 7; /* Adjust padding to prevent layout shift with thicker border */
-    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.1), 4, 0, 0, 1);
-}
-
-.input-label {
-    -fx-text-fill: #757575;
-    -fx-font-size: 11px; /* Fallback if Kiran not used */
-}
-
-.input-field {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 2 0;
-    /* Font size handled by controller for Kiran font support */
-}
-
-/* ==========================================
-   RIGHT PANEL - ORDER DETAILS
-   ========================================== */
-
-.order-details-panel {
-    -fx-background-color: white;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
-}
-
-/* Kiran Font Bold Effect - Since custom fonts don't support FontWeight.BOLD */
-.kiran-font-bold {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 0, 0, 0.5, 0);
-}
-
-.kiran-label-bold {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 0, 0, 0.3, 0);
+.btn-kitchen:hover {
+    -fx-background-color: #BF360C;
+    -fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.4), 6, 0, 0, 2);
 }
 
 /* ==========================================
@@ -512,14 +553,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2);
 }
 
-.transaction-header {
-    -fx-background-color: #F5F5F5;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 0 0 1 0;
-    -fx-background-radius: 8 8 0 0;
-}
-
-/* Transaction Table Styling */
 .transaction-table {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -576,7 +609,6 @@
     -fx-text-fill: #424242;
 }
 
-/* Column-specific styling */
 .col-srno .table-cell {
     -fx-padding: 2 4;
     -fx-alignment: CENTER;
@@ -610,15 +642,6 @@
     -fx-text-fill: #388E3C;
 }
 
-/* Totals Row */
-.totals-row {
-    -fx-background-color: linear-gradient(to bottom, #F5F5F5, #EEEEEE);
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1 0 0 0;
-    -fx-background-radius: 0 0 8 8;
-}
-
-/* Empty table placeholder */
 .transaction-table .placeholder {
     -fx-background-color: white;
 }
@@ -629,10 +652,437 @@
 }
 
 /* ==========================================
-   RESPONSIVE & SCROLLPANE
+   PAYMENT SECTION - RESPONSIVE
    ========================================== */
 
-/* ScrollPane Clean Up */
+.payment-section {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1 0;
+}
+
+/* Bill Summary Row (FlowPane) */
+.bill-summary-row {
+    -fx-padding: 6 15;
+}
+
+/* Summary Pills */
+.summary-pill {
+    -fx-background-radius: 4;
+    -fx-padding: 5 14;
+}
+
+.pill-qty {
+    -fx-background-color: #E3F2FD;
+}
+
+.pill-qty .pill-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #1976D2;
+}
+
+.pill-qty .pill-value {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1565C0;
+}
+
+.pill-total {
+    -fx-background-color: #1976D2;
+}
+
+.pill-total .pill-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+}
+
+.pill-total .pill-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.pill-discount {
+    -fx-background-color: #FFF3E0;
+}
+
+.pill-discount .pill-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #F57C00;
+}
+
+.pill-discount .pill-value {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #EF6C00;
+}
+
+.pill-net {
+    -fx-background-color: #4CAF50;
+}
+
+.pill-net .pill-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+}
+
+.pill-net .pill-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Payment Details Row (FlowPane) */
+.payment-details-row {
+    -fx-background-color: #EEEEEE;
+    -fx-padding: 8 15;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* Pay Field - Common base for payment detail items */
+.pay-field {
+    -fx-background-color: white;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 4 8;
+}
+
+.pay-field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* Pay Mode Box */
+.pay-mode-box {
+    -fx-border-color: #4CAF50;
+    -fx-min-width: 160;
+}
+
+.pay-mode-label {
+    -fx-text-fill: #4CAF50;
+}
+
+.pay-mode-combo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* QR Code Box */
+.qr-code-box {
+    -fx-background-color: #E8F5E9;
+    -fx-border-color: #4CAF50;
+}
+
+.qr-label {
+    -fx-text-fill: #2E7D32;
+}
+
+.qr-checkbox {
+    -fx-font-size: 10px;
+    -fx-text-fill: #2E7D32;
+}
+
+/* Received Box */
+.received-box {
+    -fx-border-color: #1976D2;
+    -fx-padding: 4 10;
+}
+
+.received-label {
+    -fx-text-fill: #1976D2;
+}
+
+.received-field {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1565C0;
+    -fx-background-color: #E3F2FD;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+    -fx-pref-width: 70;
+}
+
+/* Return Box */
+.return-box {
+    -fx-border-color: #FF9800;
+    -fx-padding: 4 10;
+}
+
+.return-label {
+    -fx-text-fill: #F57C00;
+}
+
+.return-field {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #EF6C00;
+    -fx-background-color: #FFF3E0;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+    -fx-pref-width: 60;
+}
+
+/* Change Box */
+.change-box {
+    -fx-background-color: #E1BEE7;
+    -fx-border-color: transparent;
+    -fx-padding: 4 10;
+}
+
+.change-label {
+    -fx-text-fill: #7B1FA2;
+}
+
+.change-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A1B9A;
+}
+
+/* Due Box */
+.due-box {
+    -fx-background-color: #FFCDD2;
+    -fx-border-color: transparent;
+    -fx-padding: 4 10;
+}
+
+.due-label {
+    -fx-text-fill: #C62828;
+}
+
+.due-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #B71C1C;
+}
+
+/* ==========================================
+   BILL ACTION BUTTONS - RESPONSIVE ROW
+   ========================================== */
+
+.bill-action-row {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12;
+}
+
+.bill-action-btn {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-pref-height: 35;
+    -fx-cursor: hand;
+    -fx-padding: 8 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);
+}
+
+.bill-action-btn:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+    -fx-translate-y: -1;
+}
+
+.bill-action-btn:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 0);
+    -fx-translate-y: 1;
+}
+
+.btn-bill-close {
+    -fx-background-color: #607D8B;
+}
+
+.btn-bill-close:hover {
+    -fx-background-color: #546E7A;
+}
+
+.btn-bill-paid {
+    -fx-background-color: #4CAF50;
+}
+
+.btn-bill-paid:hover {
+    -fx-background-color: #43A047;
+}
+
+.btn-bill-shift {
+    -fx-background-color: #FF9800;
+}
+
+.btn-bill-shift:hover {
+    -fx-background-color: #F57C00;
+}
+
+.btn-bill-old {
+    -fx-background-color: #9C27B0;
+}
+
+.btn-bill-old:hover {
+    -fx-background-color: #8E24AA;
+}
+
+.btn-bill-edit {
+    -fx-background-color: #2196F3;
+}
+
+.btn-bill-edit:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* ==========================================
+   RIGHT PANEL - BILL HISTORY
+   ========================================== */
+
+.bill-history-panel {
+    -fx-background-color: #FFFFFF;
+}
+
+.bill-history-header {
+    -fx-background-color: linear-gradient(to right, #7B1FA2, #9C27B0);
+    -fx-padding: 10 12;
+}
+
+/* Bill Search Section */
+.bill-search-section {
+    -fx-background-color: #FAFAFA;
+    -fx-padding: 12;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.bill-search-field {
+    -fx-font-size: 11px;
+    -fx-background-radius: 4;
+}
+
+.bill-search-input {
+    -fx-font-size: 11px;
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.bill-customer-search-container {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.bill-search-input-transparent {
+    -fx-font-size: 11px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.btn-search-bills {
+    -fx-background-color: #7B1FA2;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 6 16;
+}
+
+.btn-search-bills:hover {
+    -fx-background-color: #6A1B9A;
+}
+
+.btn-clear-search {
+    -fx-background-color: #9E9E9E;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+}
+
+.btn-clear-search:hover {
+    -fx-background-color: #757575;
+}
+
+/* Bill History Table */
+.bill-history-table {
+    -fx-font-size: 11px;
+    -fx-background-color: white;
+}
+
+/* ==========================================
+   SUMMARY FOOTER - BILL HISTORY
+   ========================================== */
+
+.summary-footer {
+    -fx-background-color: linear-gradient(to bottom, #F5F5F5, #EEEEEE);
+    -fx-padding: 0;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1 0 0 0;
+}
+
+.summary-stat {
+    -fx-padding: 8 12;
+}
+
+.summary-stat-cash {
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 1 0 0;
+}
+
+.summary-stat-credit {
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 1 0 0;
+}
+
+.summary-stat-total {
+    -fx-background-color: #7B1FA2;
+}
+
+.summary-stat-label {
+    -fx-font-size: 9px;
+    -fx-text-fill: #9E9E9E;
+}
+
+.stat-label-total {
+    -fx-text-fill: rgba(255,255,255,0.7);
+}
+
+.summary-stat-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.stat-value-cash {
+    -fx-text-fill: #4CAF50;
+}
+
+.stat-value-credit {
+    -fx-text-fill: #FF9800;
+}
+
+.stat-value-total {
+    -fx-text-fill: white;
+}
+
+/* ==========================================
+   KIRAN FONT BOLD EFFECTS
+   ========================================== */
+
+.kiran-font-bold {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 0, 0, 0.5, 0);
+}
+
+.kiran-label-bold {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 0, 0, 0.3, 0);
+}
+
+/* ==========================================
+   SCROLLPANE & SCROLLBAR STYLING
+   ========================================== */
+
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -656,40 +1106,14 @@
 }
 
 /* ==========================================
-   INPUT FIELD FOCUS STATES
+   ORDER DETAILS PANEL
    ========================================== */
 
-.billing-input-field:focused {
-    -fx-border-color: #1976D2;
-    -fx-border-width: 0 0 2 0;
+.order-details-panel {
     -fx-background-color: white;
-}
-
-/* ==========================================
-   BUTTON HOVER EFFECTS
-   ========================================== */
-
-#btnAdd:hover {
-    -fx-background-color: #45A049;
-    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.4), 6, 0, 0, 2);
-}
-
-#btnOrder:hover {
-    -fx-background-color: #1976D2;
-    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.4), 6, 0, 0, 2);
-}
-
-#btnEdit:hover {
-    -fx-background-color: #F57C00;
-    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.4), 6, 0, 0, 2);
-}
-
-#btnRemove:hover {
-    -fx-background-color: #D32F2F;
-    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.4), 6, 0, 0, 2);
-}
-
-#btnClear:hover {
-    -fx-background-color: #616161;
-    -fx-effect: dropshadow(gaussian, rgba(117, 117, 117, 0.4), 6, 0, 0, 2);
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
 }

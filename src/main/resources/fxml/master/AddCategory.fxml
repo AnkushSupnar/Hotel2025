@@ -209,10 +209,10 @@
                   <!-- Table -->
                   <TableView fx:id="tblCategories" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colId" styleClass="id-column" text="ID" />
-                        <TableColumn fx:id="colCategory" styleClass="category-name-column" text="Category Name" />
-                        <TableColumn fx:id="colStock" styleClass="stock-column" text="Stock" />
-                        <TableColumn fx:id="colPurchase" styleClass="stock-column" text="Purchase" />
+                        <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
+                        <TableColumn fx:id="colCategory" prefWidth="300" styleClass="category-name-column" text="Category Name" />
+                        <TableColumn fx:id="colStock" prefWidth="80" styleClass="stock-column" text="Stock" />
+                        <TableColumn fx:id="colPurchase" prefWidth="80" styleClass="stock-column" text="Purchase" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

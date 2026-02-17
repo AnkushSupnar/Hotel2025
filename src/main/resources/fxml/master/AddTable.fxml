@@ -165,8 +165,8 @@
                   <!-- Table -->
                   <TableView fx:id="tblTables" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colId" prefWidth="80" styleClass="id-column" text="ID" />
-                        <TableColumn fx:id="colTableName" prefWidth="200" text="Table Name" />
+                        <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
+                        <TableColumn fx:id="colTableName" prefWidth="280" text="Table Name" />
                         <TableColumn fx:id="colDescription" prefWidth="300" text="Description" />
                      </columns>
                      <columnResizePolicy>

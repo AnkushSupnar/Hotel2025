@@ -418,13 +418,13 @@
                   <!-- Table -->
                   <TableView fx:id="tblEmployees" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colId" prefWidth="50" styleClass="id-column" text="ID" />
-                        <TableColumn fx:id="colFullName" prefWidth="200" text="Full Name" />
-                        <TableColumn fx:id="colMobile" prefWidth="120" text="Mobile" />
-                        <TableColumn fx:id="colDesignation" prefWidth="120" text="Designation" />
-                        <TableColumn fx:id="colCity" prefWidth="100" text="City" />
-                        <TableColumn fx:id="colSalary" prefWidth="100" text="Salary" />
-                        <TableColumn fx:id="colStatus" prefWidth="80" text="Status" />
+                        <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
+                        <TableColumn fx:id="colFullName" prefWidth="280" text="Full Name" />
+                        <TableColumn fx:id="colMobile" prefWidth="110" text="Mobile" />
+                        <TableColumn fx:id="colDesignation" prefWidth="110" text="Designation" />
+                        <TableColumn fx:id="colCity" prefWidth="75" text="City" />
+                        <TableColumn fx:id="colSalary" prefWidth="80" text="Salary" />
+                        <TableColumn fx:id="colStatus" prefWidth="70" text="Status" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

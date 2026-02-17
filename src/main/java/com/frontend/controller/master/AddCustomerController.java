@@ -21,14 +21,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javafx.stage.Stage;
+
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 @Component
 public class AddCustomerController implements Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AddCustomerController.class);
+
+    private Stage dialogStage;
+    private Consumer<Customer> onCustomerSaved;
 
     @Autowired
     private CustomerService customerService;
@@ -118,6 +124,14 @@ public class AddCustomerController implements Initializable {
     private FilteredList<CustomerData> filteredData;
     private CustomerData selectedCustomer = null;
 
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
+    }
+
+    public void setOnCustomerSaved(Consumer<Customer> onCustomerSaved) {
+        this.onCustomerSaved = onCustomerSaved;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupUI();
@@ -173,8 +187,13 @@ public class AddCustomerController implements Initializable {
     private void setupBackButton() {
         btnBack.setOnAction(e -> {
             try {
-                LOG.info("Back button clicked - returning to Master Menu");
-                navigateToMasterMenu();
+                if (dialogStage != null) {
+                    LOG.info("Back button clicked - closing dialog");
+                    dialogStage.close();
+                } else {
+                    LOG.info("Back button clicked - returning to Master Menu");
+                    navigateToMasterMenu();
+                }
             } catch (Exception ex) {
                 LOG.error("Error returning to Master Menu: ", ex);
             }
@@ -426,20 +445,29 @@ public class AddCustomerController implements Initializable {
             customer.setDistrict(txtDistrict.getText().trim());
             customer.setTaluka(txtTaluka.getText().trim());
 
+            Customer savedCustomer;
             if (selectedCustomer == null) {
                 // Create new customer
-                customerService.createCustomer(customer);
+                savedCustomer = customerService.createCustomer(customer);
                 alertNotification.showSuccess("Customer created successfully!");
             } else {
                 // Update existing customer
                 customer.setId(selectedCustomer.getId());
-                customerService.updateCustomer(selectedCustomer.getId(), customer);
+                savedCustomer = customerService.updateCustomer(selectedCustomer.getId(), customer);
                 alertNotification.showSuccess("Customer updated successfully!");
                 selectedCustomer = null;
             }
 
             clearForm();
             loadCustomers();
+
+            // If opened as dialog, notify caller and close
+            if (onCustomerSaved != null && savedCustomer != null) {
+                onCustomerSaved.accept(savedCustomer);
+            }
+            if (dialogStage != null) {
+                dialogStage.close();
+            }
 
         } catch (NumberFormatException e) {
             LOG.error("Invalid number format", e);

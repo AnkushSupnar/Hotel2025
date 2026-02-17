@@ -4,6 +4,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -19,150 +20,148 @@
    
    <!-- Left Sidebar -->
    <left>
-      <AnchorPane prefHeight="768.0" prefWidth="280.0" styleClass="sidebar-panel" BorderPane.alignment="CENTER">
-         <children>
-            <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <!-- Restaurant Header Section -->
-                  <VBox fx:id="sidebarHeader" alignment="CENTER" prefHeight="80.0" prefWidth="280.0" spacing="8.0" styleClass="sidebar-header">
-                     <children>
-                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2em" />
-                        <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Navigation Menu -->
-                  <VBox spacing="8.0" styleClass="menu-container">
-                     <children>
-                        <!-- Dashboard Menu -->
-                        <HBox fx:id="menuDashboard" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="DASHBOARD" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="DASHBOARD">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
+      <ScrollPane fx:id="sidebarScrollPane" fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll-pane" BorderPane.alignment="CENTER">
+         <VBox spacing="5.0" styleClass="sidebar-panel">
+            <children>
+               <!-- Restaurant Header Section -->
+               <VBox fx:id="sidebarHeader" alignment="CENTER" spacing="8.0" styleClass="sidebar-header">
+                  <children>
+                     <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2em" />
+                     <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
+                  </children>
+               </VBox>
 
-                        <!-- Sales Menu with Badge -->
-                        <HBox fx:id="menuSales" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="ivak`I">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                              <Label fx:id="lblSalesBadge" styleClass="menu-badge, sales-badge" text="0" visible="false" />
-                           </children>
-                        </HBox>
+               <!-- Navigation Menu -->
+               <VBox spacing="8.0" styleClass="menu-container">
+                  <children>
+                     <!-- Dashboard Menu -->
+                     <HBox fx:id="menuDashboard" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="DASHBOARD" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="DASHBOARD">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
 
-                        <!-- Purchase Menu with Badge -->
-                        <HBox fx:id="menuPurchase" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="KarodI">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                              <Label fx:id="lblPurchaseBadge" styleClass="menu-badge, purchase-badge" text="0" visible="false" />
-                           </children>
-                        </HBox>
+                     <!-- Sales Menu with Badge -->
+                     <HBox fx:id="menuSales" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="ivak`I">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                           <Label fx:id="lblSalesBadge" styleClass="menu-badge, sales-badge" text="0" visible="false" />
+                        </children>
+                     </HBox>
 
-                        <!-- Master Data Menu -->
-                        <HBox fx:id="menuMaster" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="DATABASE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="maasTr DoTa">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
+                     <!-- Purchase Menu with Badge -->
+                     <HBox fx:id="menuPurchase" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="KarodI">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                           <Label fx:id="lblPurchaseBadge" styleClass="menu-badge, purchase-badge" text="0" visible="false" />
+                        </children>
+                     </HBox>
 
-                        <!-- Reports Menu -->
-                        <HBox fx:id="menuReport" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="BAR_CHART" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="irpaaoT-">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
+                     <!-- Master Data Menu -->
+                     <HBox fx:id="menuMaster" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="DATABASE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="maasTr DoTa">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
 
-                        <!-- Employee Service Menu -->
-                        <HBox fx:id="menuEmployeeService" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="BRIEFCASE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="kamagaar maonau">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                              <Region HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                  </VBox>
-                  
-                  <!-- Bottom Menu Items -->
-                  <VBox alignment="BOTTOM_CENTER" prefHeight="180.0" prefWidth="280.0" spacing="8.0" styleClass="bottom-menu" VBox.vgrow="ALWAYS">
-                     <children>
-                        <!-- Settings Menu -->
-                        <HBox fx:id="menuSettings" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="COG" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="SETTINGS">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                        
-                        <!-- Support Menu -->
-                        <HBox fx:id="menuSupport" alignment="CENTER_LEFT" styleClass="menu-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FFFFFF" glyphName="PHONE" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="SUPPORT">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                        
-                        <!-- Logout Menu -->
-                        <HBox fx:id="menuExit" alignment="CENTER_LEFT" styleClass="menu-item, logout-item">
-                           <children>
-                              <FontAwesomeIcon fill="#FF5252" glyphName="SIGN_OUT" size="1.5em" styleClass="menu-icon" />
-                              <Text styleClass="menu-text" text="LOGOUT">
-                                 <HBox.margin>
-                                    <Insets left="15.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-         </children>
-      </AnchorPane>
+                     <!-- Reports Menu -->
+                     <HBox fx:id="menuReport" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="BAR_CHART" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="irpaaoT-">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+
+                     <!-- Employee Service Menu -->
+                     <HBox fx:id="menuEmployeeService" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="BRIEFCASE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="kamagaar maonau">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+                  </children>
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </VBox>
+
+               <!-- Bottom Menu Items -->
+               <VBox alignment="BOTTOM_CENTER" spacing="8.0" styleClass="bottom-menu" VBox.vgrow="ALWAYS">
+                  <children>
+                     <!-- Settings Menu -->
+                     <HBox fx:id="menuSettings" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="COG" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="SETTINGS">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+
+                     <!-- Support Menu -->
+                     <HBox fx:id="menuSupport" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="PHONE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="SUPPORT">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+
+                     <!-- Logout Menu -->
+                     <HBox fx:id="menuExit" alignment="CENTER_LEFT" styleClass="menu-item, logout-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FF5252" glyphName="SIGN_OUT" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="LOGOUT">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </children>
+         </VBox>
+      </ScrollPane>
    </left>
    
    <!-- Top Header -->

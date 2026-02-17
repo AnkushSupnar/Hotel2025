@@ -59,6 +59,7 @@ public class HomeController implements Initializable {
     // Number formatter for currency
     private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
+    @FXML private javafx.scene.control.ScrollPane sidebarScrollPane;
     @FXML private Label lblShopeeName;
     @FXML private Label lblSidebarShopName;
     @FXML private javafx.scene.layout.VBox sidebarHeader;
@@ -670,10 +671,10 @@ public class HomeController implements Initializable {
         try {
             // Load Kiran fonts with different sizes
             Font kiranFont28 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 28);
-            Font kiranFont30 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 30);
+            Font kiranFont20 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 20);
             Font kiranFont16 = Font.loadFont(getClass().getResourceAsStream("/fonts/kiran.ttf"), 16);
 
-            if (kiranFont28 != null && kiranFont30 != null && kiranFont16 != null) {
+            if (kiranFont28 != null && kiranFont20 != null && kiranFont16 != null) {
                 String fontFamily = kiranFont28.getFamily();
                 LOG.info("Kiran font loaded successfully, family: {}", fontFamily);
 
@@ -683,10 +684,10 @@ public class HomeController implements Initializable {
                     lblShopeeName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1565C0;");
                 }
 
-                // Apply to sidebar shop name (30px)
+                // Apply to sidebar shop name (20px)
                 if (lblSidebarShopName != null) {
-                    lblSidebarShopName.setFont(kiranFont30);
-                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 30px; -fx-text-fill: white; -fx-font-weight: bold;");
+                    lblSidebarShopName.setFont(kiranFont20);
+                    lblSidebarShopName.setStyle("-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
                 }
 
                 // Apply Kiran font to user name only (16px)
@@ -700,15 +701,15 @@ public class HomeController implements Initializable {
                     txtDesignation.setStyle("-fx-font-family: 'Segoe UI', 'Arial', sans-serif; -fx-font-size: 12px; -fx-fill: #757575;");
                 }
 
-                // Apply Kiran font to sidebar menu text items (inline style overrides CSS on hover)
-                String menuFontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 30px; -fx-font-weight: 600; -fx-fill: #FFFFFF;";
-                applyFontToMenuText(menuSales, kiranFont30, menuFontStyle);
-                applyFontToMenuText(menuPurchase, kiranFont30, menuFontStyle);
-                applyFontToMenuText(menuMaster, kiranFont30, menuFontStyle);
-                applyFontToMenuText(menuReport, kiranFont30, menuFontStyle);
-                applyFontToMenuText(menuEmployeeService, kiranFont30, menuFontStyle);
+                // Apply Kiran font to sidebar menu text items (20px - compact for responsive sidebar)
+                String menuFontStyle = "-fx-font-family: '" + fontFamily + "'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-fill: #FFFFFF;";
+                applyFontToMenuText(menuSales, kiranFont20, menuFontStyle);
+                applyFontToMenuText(menuPurchase, kiranFont20, menuFontStyle);
+                applyFontToMenuText(menuMaster, kiranFont20, menuFontStyle);
+                applyFontToMenuText(menuReport, kiranFont20, menuFontStyle);
+                applyFontToMenuText(menuEmployeeService, kiranFont20, menuFontStyle);
 
-                LOG.info("Kiran font applied to lblShopeeName (28px), lblSidebarShopName (30px), txtUserName (16px), menu items (30px). English font for txtDesignation.");
+                LOG.info("Kiran font applied to lblShopeeName (28px), lblSidebarShopName (20px), txtUserName (16px), menu items (20px). English font for txtDesignation.");
             } else {
                 LOG.warn("Could not load Kiran font from bundled resources");
             }

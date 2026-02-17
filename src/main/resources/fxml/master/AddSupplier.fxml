@@ -274,13 +274,13 @@
                   <!-- Table -->
                   <TableView fx:id="tblSuppliers" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colId" prefWidth="50" styleClass="id-column" text="ID" />
-                        <TableColumn fx:id="colName" prefWidth="180" text="Supplier Name" />
-                        <TableColumn fx:id="colContact" prefWidth="120" text="Contact" />
+                        <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
+                        <TableColumn fx:id="colName" prefWidth="250" text="Supplier Name" />
+                        <TableColumn fx:id="colContact" prefWidth="110" text="Contact" />
                         <TableColumn fx:id="colEmail" prefWidth="160" text="Email" />
                         <TableColumn fx:id="colAddress" prefWidth="200" text="Address" />
-                        <TableColumn fx:id="colCity" prefWidth="100" text="City" />
-                        <TableColumn fx:id="colGstNo" prefWidth="140" text="GST No" />
+                        <TableColumn fx:id="colCity" prefWidth="75" text="City" />
+                        <TableColumn fx:id="colGstNo" prefWidth="120" text="GST No" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

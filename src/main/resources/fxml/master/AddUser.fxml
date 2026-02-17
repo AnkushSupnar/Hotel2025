@@ -253,13 +253,13 @@
                   <!-- Table -->
                   <TableView fx:id="tblUsers" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colId" prefWidth="50" styleClass="id-column" text="ID" />
+                        <TableColumn fx:id="colId" maxWidth="50" minWidth="50" prefWidth="50" styleClass="id-column" text="ID" />
                         <TableColumn fx:id="colUsername" prefWidth="150" text="Username" />
-                        <TableColumn fx:id="colEmployeeName" prefWidth="200" text="Employee Name" />
-                        <TableColumn fx:id="colDesignation" prefWidth="120" text="Designation" />
-                        <TableColumn fx:id="colCity" prefWidth="120" text="City" />
-                        <TableColumn fx:id="colRole" prefWidth="100" text="Role" />
-                        <TableColumn fx:id="colCreatedAt" prefWidth="130" text="Created At" />
+                        <TableColumn fx:id="colEmployeeName" prefWidth="280" text="Employee Name" />
+                        <TableColumn fx:id="colDesignation" prefWidth="110" text="Designation" />
+                        <TableColumn fx:id="colCity" prefWidth="75" text="City" />
+                        <TableColumn fx:id="colRole" prefWidth="80" text="Role" />
+                        <TableColumn fx:id="colCreatedAt" prefWidth="120" text="Created At" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

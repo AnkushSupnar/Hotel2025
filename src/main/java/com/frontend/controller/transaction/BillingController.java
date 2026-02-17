@@ -2,6 +2,7 @@ package com.frontend.controller.transaction;
 
 import com.frontend.common.CommonMethod;
 import com.frontend.config.SpringFXMLLoader;
+import com.frontend.controller.master.AddCustomerController;
 import com.frontend.customUI.AutoCompleteTextField;
 import com.frontend.customUI.AutoCompleteTextField_old;
 import com.frontend.dto.CategoryMasterDto;
@@ -32,6 +33,7 @@ import com.frontend.print.KOTOrderPrint;
 import com.frontend.view.AlertNotification;
 
 import javafx.application.Platform;
+import javafx.scene.Parent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -45,6 +47,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -53,6 +56,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 import lombok.extern.java.Log;
 
 import org.slf4j.Logger;
@@ -63,6 +70,7 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @Component
@@ -117,6 +125,15 @@ public class BillingController implements Initializable {
 
     @Autowired
     AlertNotification alert;
+
+    @FXML
+    private BorderPane rootPane;
+
+    @FXML
+    private VBox leftPanel;
+
+    @FXML
+    private SplitPane mainSplitPane;
 
     @FXML
     private VBox sectionsContainer;
@@ -403,6 +420,7 @@ public class BillingController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Billing screen initialized");
         kiranFont = SessionService.getCustomFont(25.0);
+        setupResponsiveLayout();
         setupRefreshButton();
         setupCustomFont(); // Re-enabled to fix font issue
         setupKiranFontPersistence();
@@ -415,6 +433,56 @@ public class BillingController implements Initializable {
         setupCashCounter();
         setupPaymentMode();
         setupBillHistory();
+    }
+
+    /**
+     * Sets up responsive layout bindings so the UI adapts to any screen size/resolution.
+     * - Left panel width is bound to 33% of root width
+     * - Bill history panel hides on narrow screens (< 1200px)
+     * - DPI-aware font scaling is applied
+     */
+    private void setupResponsiveLayout() {
+        // Apply DPI-based font scaling on the root
+        double dpi = Screen.getPrimary().getDpi();
+        double scaleFactor = dpi / 96.0;
+        if (scaleFactor > 1.1) {
+            rootPane.setStyle("-fx-font-size: " + Math.round(12 * scaleFactor) + "px;");
+        }
+
+        // Bind left panel width to 33% of root pane width
+        rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double width = newVal.doubleValue();
+            if (width > 0) {
+                leftPanel.setPrefWidth(width * 0.33);
+            }
+        });
+
+        // Responsive breakpoint: hide/show bill history panel on narrow screens
+        rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double width = newVal.doubleValue();
+            if (width < 1200) {
+                // Compact mode: hide bill history, give more space to billing
+                orderDetailsContainer.setVisible(false);
+                orderDetailsContainer.setManaged(false);
+                mainSplitPane.setDividerPositions(1.0);
+            } else {
+                orderDetailsContainer.setVisible(true);
+                orderDetailsContainer.setManaged(true);
+                mainSplitPane.setDividerPositions(0.692);
+            }
+        });
+
+        // Responsive breakpoint: adjust left panel width for very small screens
+        rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double width = newVal.doubleValue();
+            if (width < 1000) {
+                leftPanel.setPrefWidth(width * 0.28);
+            } else if (width < 1400) {
+                leftPanel.setPrefWidth(width * 0.30);
+            } else {
+                leftPanel.setPrefWidth(width * 0.33);
+            }
+        });
     }
 
     private void setupActionButtons() {
@@ -561,18 +629,6 @@ public class BillingController implements Initializable {
                 txtQuantity.setPromptText("Quantity");
                 txtPrice.setPromptText("Rate");
                 txtAmount.setPromptText("Amount");
-
-                // Apply Kiran font to Bill History customer search field (smaller size for compact layout)
-                if (txtSearchCustomer != null) {
-                    Font kiranFont16 = SessionService.getCustomFont(16.0);
-                    if (kiranFont16 != null) {
-                        String searchFontStyle = String.format(
-                                "-fx-font-family: '%s'; -fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: transparent;",
-                                fontFamily);
-                        txtSearchCustomer.setFont(kiranFont16);
-                        txtSearchCustomer.setStyle(searchFontStyle);
-                    }
-                }
 
                 LOG.info("Kiran font applied to category/item fields, English font (18px) applied to code/numeric fields");
             }
@@ -723,8 +779,40 @@ public class BillingController implements Initializable {
 
     private void addNewCustomer() {
         LOG.info("Add new customer button clicked");
-        // TODO: Open customer registration dialog/window to add new customer
-        // After adding, reload customers: reloadCustomers()
+        try {
+            Map.Entry<Parent, AddCustomerController> entry =
+                    loader.loadWithController("/fxml/master/AddCustomer.fxml", AddCustomerController.class);
+            Parent root = entry.getKey();
+            AddCustomerController addCustomerController = entry.getValue();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add New Customer");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(rootPane.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.setMaximized(true);
+
+            // Set dialog mode on the controller
+            addCustomerController.setDialogStage(dialogStage);
+            addCustomerController.setOnCustomerSaved(savedCustomer -> {
+                // Reload customer list in autocomplete
+                reloadCustomers();
+                // Auto-select the newly added customer
+                selectedCustomer = savedCustomer;
+                displaySelectedCustomer(savedCustomer);
+                LOG.info("New customer auto-selected: {}", savedCustomer.getFullName());
+            });
+
+            dialogStage.showAndWait();
+
+            // Reset dialog fields after close
+            addCustomerController.setDialogStage(null);
+            addCustomerController.setOnCustomerSaved(null);
+
+        } catch (Exception e) {
+            LOG.error("Error opening Add Customer dialog", e);
+            alert.showError("Error opening Add Customer: " + e.getMessage());
+        }
     }
 
     public void reloadCustomers() {
@@ -2727,9 +2815,9 @@ public class BillingController implements Initializable {
             }
 
             // Get all customers for autocomplete
-            List<Customer> allCustomers = customerService.getAllCustomers();
+            List<Customer> customers = customerService.getAllCustomers();
             List<String> customerNames = new ArrayList<>();
-            for (Customer customer : allCustomers) {
+            for (Customer customer : customers) {
                 String fullName = customer.getFullName();
                 if (fullName != null && !fullName.trim().isEmpty()) {
                     customerNames.add(fullName);
@@ -2738,23 +2826,24 @@ public class BillingController implements Initializable {
 
             // Create a TextField for AutoComplete
             TextField customerTextField = new TextField();
-            customerTextField.setPromptText("Customer Name");
             customerTextField.setPrefHeight(32);
             HBox.setHgrow(customerTextField, javafx.scene.layout.Priority.ALWAYS);
 
             // Get custom font from SessionService
-            Font customFont = SessionService.getCustomFont(18.0);
+            Font customFont = SessionService.getCustomFont(20.0);
             if (customFont != null) {
                 customerTextField.setFont(customFont);
                 String fontFamily = customFont.getFamily();
+                customerTextField.setPromptText("ga`ahkacao naava");
                 customerTextField.setStyle(String.format(
-                        "-fx-font-family: '%s'; -fx-font-size: 18px; -fx-background-color: transparent; -fx-border-color: transparent;",
+                        "-fx-font-family: '%s'; -fx-font-size: 20px; -fx-background-color: transparent; -fx-border-color: transparent; -fx-prompt-text-fill: #757575;",
                         fontFamily));
 
                 // Create AutoComplete wrapper with custom font
                 billHistoryCustomerAutoComplete = new AutoCompleteTextField(customerTextField, customerNames, customFont);
             } else {
-                customerTextField.setStyle("-fx-font-size: 12px; -fx-background-color: transparent; -fx-border-color: transparent;");
+                customerTextField.setPromptText("Customer Name");
+                customerTextField.setStyle("-fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: transparent;");
                 // Create AutoComplete wrapper without custom font
                 billHistoryCustomerAutoComplete = new AutoCompleteTextField(customerTextField, customerNames);
             }
