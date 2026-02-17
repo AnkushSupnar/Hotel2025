@@ -6,6 +6,7 @@ import com.frontend.entity.Bank;
 import com.frontend.service.ApplicationSettingService;
 import com.frontend.service.BankService;
 import com.frontend.service.SessionService;
+import com.frontend.util.ApplicationSettingProperties;
 import com.frontend.view.AlertNotification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -564,49 +565,68 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("Font setting saved: {}", fontPath);
             }
 
-            // Save Billing Printer
+            // Determine document directory for saving machine-specific settings
+            String docDir = (documentPath != null && !documentPath.trim().isEmpty())
+                    ? documentPath : SessionService.getDocumentDirectory();
+
+            // Save Billing Printer (to local properties file)
             String billingPrinter = cmbBillingPrinter.getValue();
             if (billingPrinter != null && !billingPrinter.equals("-- None --")) {
-                applicationSettingService.saveSetting(BILLING_PRINTER_SETTING, billingPrinter);
+                if (docDir == null || docDir.trim().isEmpty()) {
+                    alertNotification.showError("Please configure document directory first to save printer/bank settings");
+                    return;
+                }
+                ApplicationSettingProperties.saveSetting(docDir, BILLING_PRINTER_SETTING, billingPrinter);
                 successMessage.append("Billing printer saved. ");
                 hasChanges = true;
-                LOG.info("Billing printer saved: {}", billingPrinter);
+                LOG.info("Billing printer saved to properties file: {}", billingPrinter);
             } else if (billingPrinter != null && billingPrinter.equals("-- None --")) {
-                // Clear the setting if "None" is selected
-                applicationSettingService.deleteSettingByName(BILLING_PRINTER_SETTING);
+                if (docDir != null && !docDir.trim().isEmpty()) {
+                    ApplicationSettingProperties.removeSetting(docDir, BILLING_PRINTER_SETTING);
+                }
                 successMessage.append("Billing printer cleared. ");
                 hasChanges = true;
-                LOG.info("Billing printer setting cleared");
+                LOG.info("Billing printer setting cleared from properties file");
             }
 
-            // Save KOT Printer
+            // Save KOT Printer (to local properties file)
             String kotPrinter = cmbKotPrinter.getValue();
             if (kotPrinter != null && !kotPrinter.equals("-- None --")) {
-                applicationSettingService.saveSetting(KOT_PRINTER_SETTING, kotPrinter);
+                if (docDir == null || docDir.trim().isEmpty()) {
+                    alertNotification.showError("Please configure document directory first to save printer/bank settings");
+                    return;
+                }
+                ApplicationSettingProperties.saveSetting(docDir, KOT_PRINTER_SETTING, kotPrinter);
                 successMessage.append("KOT printer saved. ");
                 hasChanges = true;
-                LOG.info("KOT printer saved: {}", kotPrinter);
+                LOG.info("KOT printer saved to properties file: {}", kotPrinter);
             } else if (kotPrinter != null && kotPrinter.equals("-- None --")) {
-                // Clear the setting if "None" is selected
-                applicationSettingService.deleteSettingByName(KOT_PRINTER_SETTING);
+                if (docDir != null && !docDir.trim().isEmpty()) {
+                    ApplicationSettingProperties.removeSetting(docDir, KOT_PRINTER_SETTING);
+                }
                 successMessage.append("KOT printer cleared. ");
                 hasChanges = true;
-                LOG.info("KOT printer setting cleared");
+                LOG.info("KOT printer setting cleared from properties file");
             }
 
-            // Save Default Bank for Billing
+            // Save Default Bank for Billing (to local properties file)
             String defaultBank = cmbDefaultBank.getValue();
             if (defaultBank != null && !defaultBank.equals("-- None --")) {
-                applicationSettingService.saveSetting(DEFAULT_BANK_SETTING, defaultBank);
+                if (docDir == null || docDir.trim().isEmpty()) {
+                    alertNotification.showError("Please configure document directory first to save printer/bank settings");
+                    return;
+                }
+                ApplicationSettingProperties.saveSetting(docDir, DEFAULT_BANK_SETTING, defaultBank);
                 successMessage.append("Default bank saved. ");
                 hasChanges = true;
-                LOG.info("Default bank saved: {}", defaultBank);
+                LOG.info("Default bank saved to properties file: {}", defaultBank);
             } else if (defaultBank != null && defaultBank.equals("-- None --")) {
-                // Clear the setting if "None" is selected
-                applicationSettingService.deleteSettingByName(DEFAULT_BANK_SETTING);
+                if (docDir != null && !docDir.trim().isEmpty()) {
+                    ApplicationSettingProperties.removeSetting(docDir, DEFAULT_BANK_SETTING);
+                }
                 successMessage.append("Default bank cleared. ");
                 hasChanges = true;
-                LOG.info("Default bank setting cleared");
+                LOG.info("Default bank setting cleared from properties file");
             }
 
             if (!hasChanges) {
@@ -662,12 +682,10 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("No font setting found");
             }
 
-            // Load Billing Printer Setting
-            Optional<ApplicationSetting> billingPrinterSetting = applicationSettingService.getSettingByName(BILLING_PRINTER_SETTING);
-            if (billingPrinterSetting.isPresent()) {
-                String billingPrinter = billingPrinterSetting.get().getSettingValue();
+            // Load Billing Printer Setting (from session, which includes properties file values)
+            String billingPrinter = SessionService.getApplicationSetting(BILLING_PRINTER_SETTING);
+            if (billingPrinter != null && !billingPrinter.trim().isEmpty()) {
                 lblCurrentBillingPrinter.setText(billingPrinter);
-                // Also select in combo box if available
                 if (cmbBillingPrinter.getItems().contains(billingPrinter)) {
                     cmbBillingPrinter.setValue(billingPrinter);
                 }
@@ -677,12 +695,10 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("No billing printer setting found");
             }
 
-            // Load KOT Printer Setting
-            Optional<ApplicationSetting> kotPrinterSetting = applicationSettingService.getSettingByName(KOT_PRINTER_SETTING);
-            if (kotPrinterSetting.isPresent()) {
-                String kotPrinter = kotPrinterSetting.get().getSettingValue();
+            // Load KOT Printer Setting (from session, which includes properties file values)
+            String kotPrinter = SessionService.getApplicationSetting(KOT_PRINTER_SETTING);
+            if (kotPrinter != null && !kotPrinter.trim().isEmpty()) {
                 lblCurrentKotPrinter.setText(kotPrinter);
-                // Also select in combo box if available
                 if (cmbKotPrinter.getItems().contains(kotPrinter)) {
                     cmbKotPrinter.setValue(kotPrinter);
                 }
@@ -692,12 +708,10 @@ public class ApplicationSettingController implements Initializable {
                 LOG.info("No KOT printer setting found");
             }
 
-            // Load Default Bank Setting
-            Optional<ApplicationSetting> defaultBankSetting = applicationSettingService.getSettingByName(DEFAULT_BANK_SETTING);
-            if (defaultBankSetting.isPresent()) {
-                String defaultBank = defaultBankSetting.get().getSettingValue();
+            // Load Default Bank Setting (from session, which includes properties file values)
+            String defaultBank = SessionService.getApplicationSetting(DEFAULT_BANK_SETTING);
+            if (defaultBank != null && !defaultBank.trim().isEmpty()) {
                 lblCurrentDefaultBank.setText(defaultBank);
-                // Also select in combo box if available
                 if (cmbDefaultBank.getItems().contains(defaultBank)) {
                     cmbDefaultBank.setValue(defaultBank);
                 }

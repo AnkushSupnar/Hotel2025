@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.frontend.util.ApplicationSettingProperties;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -218,6 +220,14 @@ public class SessionService {
 
             for (ApplicationSetting setting : settings) {
                 applicationSettings.put(setting.getSettingName(), setting.getSettingValue());
+            }
+
+            // Merge machine-specific settings from local properties file
+            String documentDir = applicationSettings.get("document_directory");
+            if (documentDir != null && !documentDir.trim().isEmpty()) {
+                Map<String, String> localSettings = ApplicationSettingProperties.loadSettings(documentDir);
+                applicationSettings.putAll(localSettings);
+                LOG.info("Merged {} local machine settings from properties file", localSettings.size());
             }
 
             LOG.info("Loaded {} application settings into session", applicationSettings.size());

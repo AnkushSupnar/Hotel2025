@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Compact Professional Payment Receipt Print
- * - Half A4 page size
+ * Professional Payment Receipt Print
+ * - A4 Portrait page size
  * - Table-based layout
  * - Custom font throughout
  */
@@ -39,8 +39,8 @@ public class PayReceiptPrint {
 
     private static final String PDF_DIR = "D:" + File.separator + "Hotel Software";
 
-    // Half A4 page with room for 20px fonts - A4 width, ~60% height
-    private static final Rectangle HALF_A4 = new Rectangle(595f, 500f); // A4 width, adjusted height
+    // A4 Portrait page size (595 x 842 points)
+    private static final Rectangle A4_PORTRAIT = PageSize.A4;
 
     // Colors
     private static final BaseColor BLACK = BaseColor.BLACK;
@@ -136,12 +136,8 @@ public class PayReceiptPrint {
      */
     private String generatePaymentReceiptPdf(PaymentReceipt receipt, Supplier supplier) {
         try {
-            // Fixed compact page size - fits all on one page
             int billsCount = receipt.getBillsCount() != null ? receipt.getBillsCount() : 1;
-            float pageHeight = 380f + (billsCount > 1 ? (billsCount * 22f) : 0f);
-            Rectangle pageSize = new Rectangle(595f, Math.min(pageHeight, 550f));
-
-            Document doc = new Document(pageSize, 20f, 20f, 10f, 10f);
+            Document doc = new Document(A4_PORTRAIT, 30f, 30f, 25f, 25f);
             String pdfPath = PDF_DIR + File.separator + "PayReceipt.pdf";
             PdfWriter.getInstance(doc, new FileOutputStream(pdfPath));
             doc.open();
@@ -184,16 +180,28 @@ public class PayReceiptPrint {
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.BOTTOM);
         cell.setBorderColor(BORDER_COLOR);
-        cell.setPadding(3f);
-        cell.setPaddingBottom(5f);
+        cell.setPadding(8f);
+        cell.setPaddingBottom(12f);
 
-        // Company name + Receipt title in one line
+        // Company name
         Paragraph header = new Paragraph();
         header.setAlignment(Element.ALIGN_CENTER);
         header.add(new Chunk("AMjanaI k^fo", fontHeader));
-        header.add(new Chunk("  |  ", new Font(Font.FontFamily.HELVETICA, 14f, Font.NORMAL, LIGHT_GRAY)));
-        header.add(new Chunk("paOsao BarlyacaI paavataI", fontTitle));
         cell.addElement(header);
+
+        // Receipt title on new line
+        Paragraph title = new Paragraph();
+        title.setAlignment(Element.ALIGN_CENTER);
+        title.add(new Chunk("paOsao BarlyacaI paavataI", fontTitle));
+        title.setSpacingBefore(5f);
+        cell.addElement(title);
+
+        // Horizontal line
+        Paragraph line = new Paragraph();
+        line.setAlignment(Element.ALIGN_CENTER);
+        line.add(new Chunk("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL, LIGHT_GRAY)));
+        line.setSpacingBefore(5f);
+        cell.addElement(line);
 
         return cell;
     }
@@ -212,7 +220,7 @@ public class PayReceiptPrint {
         PdfPCell col1 = new PdfPCell();
         col1.setBorder(Rectangle.RIGHT);
         col1.setBorderColor(BORDER_COLOR);
-        col1.setPadding(5f);
+        col1.setPadding(10f);
 
         Paragraph receiptInfo = new Paragraph();
         receiptInfo.add(new Chunk("pavataI k`. : ", fontLabel));
@@ -237,7 +245,7 @@ public class PayReceiptPrint {
         PdfPCell col2 = new PdfPCell();
         col2.setBorder(Rectangle.RIGHT);
         col2.setBorderColor(BORDER_COLOR);
-        col2.setPadding(5f);
+        col2.setPadding(10f);
 
         Paragraph supplierInfo = new Paragraph();
         supplierInfo.add(new Chunk("paurvazadar : ", fontLabel));
@@ -264,7 +272,7 @@ public class PayReceiptPrint {
         PdfPCell col3 = new PdfPCell();
         col3.setBorder(Rectangle.NO_BORDER);
         col3.setBackgroundColor(new BaseColor(232, 245, 233)); // Light green
-        col3.setPadding(8f);
+        col3.setPadding(12f);
         col3.setVerticalAlignment(Element.ALIGN_MIDDLE);
         col3.setHorizontalAlignment(Element.ALIGN_CENTER);
 
@@ -274,6 +282,7 @@ public class PayReceiptPrint {
 
         Paragraph amtValue = new Paragraph("Rs. " + String.format("%,.2f", totalAmt), englishFontLarge);
         amtValue.setAlignment(Element.ALIGN_CENTER);
+        amtValue.setSpacingBefore(5f);
         col3.addElement(amtValue);
 
         mainInfo.addCell(col3);
@@ -292,7 +301,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(5f);
+        wrapper.setPadding(10f);
 
         // Table: Bill No | Bill Date | Bill Amount | Paid Amount | Status
         PdfPTable billTable = new PdfPTable(5);
@@ -333,52 +342,52 @@ public class PayReceiptPrint {
     }
 
     private void addCompactTableHeader(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 14f, Font.BOLD, BLACK)));
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 16f, Font.BOLD, BLACK)));
         cell.setBorder(Rectangle.BOX);
         cell.setBorderColor(BORDER_COLOR);
         cell.setBackgroundColor(new BaseColor(240, 240, 240));
-        cell.setPadding(3f);
+        cell.setPadding(6f);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
 
     private void addCompactTableHeaderEng(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK)));
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, BLACK)));
         cell.setBorder(Rectangle.BOX);
         cell.setBorderColor(BORDER_COLOR);
         cell.setBackgroundColor(new BaseColor(240, 240, 240));
-        cell.setPadding(3f);
+        cell.setPadding(6f);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
 
     private void addCompactTableData(PdfPTable table, String text) {
-        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, BLACK);
+        Font font = new Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BLACK);
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setBorder(Rectangle.BOX);
         cell.setBorderColor(BORDER_COLOR);
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
 
     private void addCompactTableDataHighlight(PdfPTable table, String text) {
-        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK);
+        Font font = new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, BLACK);
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setBorder(Rectangle.BOX);
         cell.setBorderColor(BORDER_COLOR);
         cell.setBackgroundColor(new BaseColor(245, 255, 245));
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
 
     private void addCompactTableDataEng(PdfPTable table, String text) {
-        Font font = new Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD, BLACK);
+        Font font = new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, BLACK);
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setBorder(Rectangle.BOX);
         cell.setBorderColor(BORDER_COLOR);
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
@@ -389,13 +398,14 @@ public class PayReceiptPrint {
     private PdfPCell createCompactSummaryFooterCell(PaymentReceipt receipt, Supplier supplier) {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.NO_BORDER);
-        wrapper.setPadding(5f);
+        wrapper.setPadding(10f);
 
         // Summary row: Bills Count | Total Paid | Supplier Pending
         PdfPTable summaryTable = new PdfPTable(6);
         try {
             summaryTable.setWidthPercentage(100);
             summaryTable.setWidths(new float[]{18, 15, 18, 17, 17, 15});
+            summaryTable.setSpacingBefore(10f);
         } catch (Exception ignored) {}
 
         // Labels and values inline
@@ -411,67 +421,67 @@ public class PayReceiptPrint {
 
         wrapper.addElement(summaryTable);
 
-        // Compact signature section
+        // Signature section with more spacing for A4
         PdfPTable signTable = new PdfPTable(2);
         try {
             signTable.setWidthPercentage(100);
             signTable.setWidths(new float[]{50, 50});
-            signTable.setSpacingBefore(10f);
+            signTable.setSpacingBefore(40f);
         } catch (Exception ignored) {}
 
         PdfPCell recvCell = new PdfPCell();
         recvCell.setBorder(Rectangle.NO_BORDER);
-        recvCell.setPadding(2f);
+        recvCell.setPadding(8f);
         Paragraph recv = new Paragraph();
         recv.setAlignment(Element.ALIGN_CENTER);
-        recv.add(new Chunk("____________\n", englishFont));
-        recv.add(new Chunk("paOsao GaoNaar", new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        recv.add(new Chunk("_________________\n", englishFont));
+        recv.add(new Chunk("paOsao GaoNaar", fontValue));
         recvCell.addElement(recv);
         signTable.addCell(recvCell);
 
         PdfPCell authCell = new PdfPCell();
         authCell.setBorder(Rectangle.NO_BORDER);
-        authCell.setPadding(2f);
+        authCell.setPadding(8f);
         Paragraph auth = new Paragraph();
         auth.setAlignment(Element.ALIGN_CENTER);
-        auth.add(new Chunk("____________\n", englishFont));
-        auth.add(new Chunk("paOsao doNaar", new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        auth.add(new Chunk("_________________\n", englishFont));
+        auth.add(new Chunk("paOsao doNaar", fontValue));
         authCell.addElement(auth);
         signTable.addCell(authCell);
 
         wrapper.addElement(signTable);
 
-        // Compact footer
+        // Footer
         Paragraph footer = new Paragraph();
         footer.setAlignment(Element.ALIGN_CENTER);
-        footer.add(new Chunk(LocalDateTime.now().format(DATETIME_FMT) + " | Computer Generated",
-                new Font(Font.FontFamily.HELVETICA, 8f, Font.NORMAL, LIGHT_GRAY)));
-        footer.setSpacingBefore(3f);
+        footer.add(new Chunk("Generated: " + LocalDateTime.now().format(DATETIME_FMT) + " | Computer Generated Receipt",
+                new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL, LIGHT_GRAY)));
+        footer.setSpacingBefore(15f);
         wrapper.addElement(footer);
 
         return wrapper;
     }
 
     private void addCompactSummaryLabel(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 14f, Font.NORMAL, GRAY)));
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(customBaseFont, 18f, Font.NORMAL, GRAY)));
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
     }
 
     private void addCompactSummaryValue(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, BLACK)));
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD, BLACK)));
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(cell);
     }
 
     private void addCompactSummaryValueHighlight(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD, new BaseColor(211, 47, 47))));
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD, new BaseColor(211, 47, 47))));
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPadding(2f);
+        cell.setPadding(5f);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(cell);
     }
@@ -533,7 +543,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell(infoTable);
         wrapper.setBorder(Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
         return wrapper;
     }
 
@@ -548,10 +558,10 @@ public class PayReceiptPrint {
         PdfPCell leftCell = new PdfPCell();
         leftCell.setBorder(Rectangle.RIGHT);
         leftCell.setBorderColor(BORDER_COLOR);
-        leftCell.setPadding(10f);
+        leftCell.setPadding(12f);
 
         Paragraph supplierTitle = new Paragraph("paurvazadaracaO maaihtaI", fontTitle);
-        supplierTitle.setSpacingAfter(8f);
+        supplierTitle.setSpacingAfter(10f);
         leftCell.addElement(supplierTitle);
 
         PdfPTable supplierDetails = new PdfPTable(2);
@@ -569,10 +579,10 @@ public class PayReceiptPrint {
         // RIGHT: Payment Info + Total Amount
         PdfPCell rightCell = new PdfPCell();
         rightCell.setBorder(Rectangle.NO_BORDER);
-        rightCell.setPadding(10f);
+        rightCell.setPadding(12f);
 
         Paragraph paymentTitle = new Paragraph("Barlayaacao tpSaIla", fontTitle);
-        paymentTitle.setSpacingAfter(8f);
+        paymentTitle.setSpacingAfter(10f);
         rightCell.addElement(paymentTitle);
 
         PdfPTable paymentDetails = new PdfPTable(2);
@@ -623,11 +633,11 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
 
         // Title
         Paragraph title = new Paragraph("ibala vaaTpa tpSaIla", fontTitle);
-        title.setSpacingAfter(5f);
+        title.setSpacingAfter(8f);
         wrapper.addElement(title);
 
         // Table: Bill No | Bill Date | Bill Amount | Paid Amount | Status
@@ -677,7 +687,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.TOP);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
 
         // Get bill details if available
         BillPayment bp = receipt.getBillPayments() != null && !receipt.getBillPayments().isEmpty()
@@ -724,11 +734,11 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.TOP);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(10f);
+        wrapper.setPadding(12f);
 
         // Title
         Paragraph title = new Paragraph("samaroI (Summary)", fontTitle);
-        title.setSpacingAfter(8f);
+        title.setSpacingAfter(10f);
         wrapper.addElement(title);
 
         // Summary table - show paid bills info
@@ -834,8 +844,7 @@ public class PayReceiptPrint {
 
     private String generateCompactReceipt(BillPayment payment, Supplier supplier) {
         try {
-            // Half A4 with small margins
-            Document doc = new Document(HALF_A4, 25f, 25f, 15f, 15f);
+            Document doc = new Document(A4_PORTRAIT, 30f, 30f, 25f, 25f);
             String pdfPath = PDF_DIR + File.separator + "PayReceipt.pdf";
             PdfWriter.getInstance(doc, new FileOutputStream(pdfPath));
             doc.open();
@@ -878,9 +887,7 @@ public class PayReceiptPrint {
      */
     private String generateMultiBillReceipt(List<BillPayment> payments, Supplier supplier) {
         try {
-            // Use taller page for multiple bills
-            Rectangle pageSize = new Rectangle(595f, 550f + (payments.size() * 30f));
-            Document doc = new Document(pageSize, 25f, 25f, 15f, 15f);
+            Document doc = new Document(A4_PORTRAIT, 30f, 30f, 25f, 25f);
             String pdfPath = PDF_DIR + File.separator + "PayReceipt.pdf";
             PdfWriter.getInstance(doc, new FileOutputStream(pdfPath));
             doc.open();
@@ -949,7 +956,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell(infoTable);
         wrapper.setBorder(Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(5f);
+        wrapper.setPadding(10f);
         return wrapper;
     }
 
@@ -964,10 +971,10 @@ public class PayReceiptPrint {
         PdfPCell leftCell = new PdfPCell();
         leftCell.setBorder(Rectangle.RIGHT);
         leftCell.setBorderColor(BORDER_COLOR);
-        leftCell.setPadding(8f);
+        leftCell.setPadding(12f);
 
         Paragraph title = new Paragraph("paurvazadaracaO maaihtaI", fontTitle);
-        title.setSpacingAfter(5f);
+        title.setSpacingAfter(8f);
         leftCell.addElement(title);
 
         PdfPTable details = new PdfPTable(2);
@@ -985,7 +992,7 @@ public class PayReceiptPrint {
         // RIGHT: Total Payment Amount
         PdfPCell rightCell = new PdfPCell();
         rightCell.setBorder(Rectangle.NO_BORDER);
-        rightCell.setPadding(8f);
+        rightCell.setPadding(12f);
         rightCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
         Paragraph amtTitle = new Paragraph("ekUNa Barlaolao", fontTitle);
@@ -1007,11 +1014,11 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
 
         // Title
         Paragraph title = new Paragraph("Barlaolao ibala tpSaIla", fontTitle);
-        title.setSpacingAfter(5f);
+        title.setSpacingAfter(8f);
         wrapper.addElement(title);
 
         // Table header: Bill No | Bill Date | Bill Amount | Paid Amount | Status
@@ -1106,7 +1113,7 @@ public class PayReceiptPrint {
     private PdfPCell createMultiBillSummaryCell(List<BillPayment> payments, Supplier supplier, double totalPaid) {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.NO_BORDER);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
 
         // Summary table - 4 columns
         PdfPTable summaryTable = new PdfPTable(4);
@@ -1130,7 +1137,8 @@ public class PayReceiptPrint {
     private PdfPCell createHeaderCell() {
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPaddingBottom(8f);
+        cell.setPadding(8f);
+        cell.setPaddingBottom(12f);
 
         // Company name centered - single line
         Paragraph header = new Paragraph();
@@ -1172,7 +1180,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell(infoTable);
         wrapper.setBorder(Rectangle.BOTTOM);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(5f);
+        wrapper.setPadding(10f);
         return wrapper;
     }
 
@@ -1213,10 +1221,10 @@ public class PayReceiptPrint {
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.RIGHT);
         cell.setBorderColor(BORDER_COLOR);
-        cell.setPadding(8f);
+        cell.setPadding(12f);
 
         Paragraph title = new Paragraph("paurvazadaracaO maaihtaI", fontTitle);
-        title.setSpacingAfter(5f);
+        title.setSpacingAfter(8f);
         cell.addElement(title);
 
         PdfPTable details = new PdfPTable(2);
@@ -1241,10 +1249,10 @@ public class PayReceiptPrint {
     private PdfPCell createPaymentDetailsCell(BillPayment payment) {
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPadding(8f);
+        cell.setPadding(12f);
 
         Paragraph title = new Paragraph("Barlayaacao tpSaIla", fontTitle);
-        title.setSpacingAfter(5f);
+        title.setSpacingAfter(8f);
         cell.addElement(title);
 
         PdfPTable details = new PdfPTable(2);
@@ -1291,7 +1299,7 @@ public class PayReceiptPrint {
         PdfPCell wrapper = new PdfPCell();
         wrapper.setBorder(Rectangle.TOP);
         wrapper.setBorderColor(BORDER_COLOR);
-        wrapper.setPadding(8f);
+        wrapper.setPadding(12f);
 
         // Summary table - 4 columns for compact display
         PdfPTable summaryTable = new PdfPTable(4);
@@ -1361,19 +1369,20 @@ public class PayReceiptPrint {
     private PdfPCell createFooterCell() {
         PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setPadding(5f);
+        cell.setPadding(10f);
 
-        // Signature section - compact
+        // Signature section with generous spacing for A4 page
         PdfPTable signTable = new PdfPTable(2);
         try {
             signTable.setWidthPercentage(100);
             signTable.setWidths(new float[]{50, 50});
+            signTable.setSpacingBefore(40f);
         } catch (Exception ignored) {}
 
-        // Receiver - English font for symbols, Marathi 20px for text
+        // Receiver
         PdfPCell recvCell = new PdfPCell();
         recvCell.setBorder(Rectangle.NO_BORDER);
-        recvCell.setPadding(5f);
+        recvCell.setPadding(8f);
         Paragraph recv = new Paragraph();
         recv.setAlignment(Element.ALIGN_CENTER);
         recv.add(new Chunk("_________________\n", englishFont));
@@ -1381,10 +1390,10 @@ public class PayReceiptPrint {
         recvCell.addElement(recv);
         signTable.addCell(recvCell);
 
-        // Authorized - English font for symbols, Marathi 20px for text
+        // Authorized
         PdfPCell authCell = new PdfPCell();
         authCell.setBorder(Rectangle.NO_BORDER);
-        authCell.setPadding(5f);
+        authCell.setPadding(8f);
         Paragraph auth = new Paragraph();
         auth.setAlignment(Element.ALIGN_CENTER);
         auth.add(new Chunk("_________________\n", englishFont));
@@ -1394,13 +1403,13 @@ public class PayReceiptPrint {
 
         cell.addElement(signTable);
 
-        // Footer line - English 14px, Marathi 20px
+        // Footer line
         Paragraph footer = new Paragraph();
         footer.setAlignment(Element.ALIGN_CENTER);
         footer.add(new Chunk("Generated: " + LocalDateTime.now().format(DATETIME_FMT) + " | ", englishFont));
         footer.add(new Chunk("Computer Generated Receipt - ", englishFont));
         footer.add(new Chunk("QanyavaadÑ", fontValue));
-        footer.setSpacingBefore(5f);
+        footer.setSpacingBefore(15f);
         cell.addElement(footer);
 
         return cell;

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="item-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.employee.EmployeeAdvanceController">
+   <stylesheets>
+      <URL value="@../css/employee-advance.css" />
+   </stylesheets>
+   <children>
+
+      <!-- Header Bar -->
+      <HBox alignment="CENTER_LEFT" styleClass="item-header">
+         <children>
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER" spacing="10">
+               <children>
+                  <FontAwesomeIcon fill="white" glyphName="HAND_LIZARD_ALT" size="1.8em" />
+                  <Label styleClass="item-title" text="Employee Advance" />
+               </children>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+      </HBox>
+
+      <!-- Form + Summary Section -->
+      <HBox spacing="20">
+         <padding>
+            <Insets bottom="10.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+         <children>
+            <!-- Left: Input Form -->
+            <VBox spacing="12" styleClass="form-section" HBox.hgrow="ALWAYS">
+               <children>
+                  <!-- Row 1: Employee + Amount -->
+                  <HBox spacing="15" alignment="CENTER_LEFT">
+                     <children>
+                        <VBox spacing="4">
+                           <Label fx:id="lblEmployee" text="Employee" />
+                           <TextField fx:id="txtEmployee" prefWidth="220" prefHeight="36" promptText="kma-caarI SaaoQaa..." />
+                        </VBox>
+                        <VBox spacing="4">
+                           <Label text="Amount (₹)" />
+                           <TextField fx:id="txtAmount" prefWidth="140" promptText="Enter amount" />
+                        </VBox>
+                        <VBox spacing="4">
+                           <Label text="Reason" />
+                           <TextField fx:id="txtReason" prefWidth="180" promptText="Reason for advance" />
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- Row 2: Payment Mode + Bank + Remarks + Buttons -->
+                  <HBox spacing="15" alignment="CENTER_LEFT">
+                     <children>
+                        <VBox spacing="4">
+                           <Label text="Payment Mode" />
+                           <ComboBox fx:id="cmbPaymentMode" prefWidth="130" promptText="Mode" />
+                        </VBox>
+                        <VBox fx:id="bankSection" spacing="4">
+                           <Label text="Bank" />
+                           <ComboBox fx:id="cmbBank" prefWidth="180" promptText="Select Bank" />
+                        </VBox>
+                        <VBox spacing="4">
+                           <Label text="Remarks" />
+                           <TextField fx:id="txtRemarks" prefWidth="160" promptText="Optional remarks" />
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                           <padding>
+                              <Insets top="18.0" />
+                           </padding>
+                           <children>
+                              <Button fx:id="btnSave" styleClass="btn-save" text="SAVE">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="CHECK" size="1em" />
+                                 </graphic>
+                              </Button>
+                              <Button fx:id="btnClear" styleClass="btn-clear" text="CLEAR">
+                                 <graphic>
+                                    <FontAwesomeIcon fill="white" glyphName="ERASER" size="1em" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+
+            <!-- Right: Summary -->
+            <VBox alignment="CENTER" spacing="10" styleClass="summary-bar" minWidth="180">
+               <children>
+                  <VBox alignment="CENTER" styleClass="summary-item">
+                     <children>
+                        <Label styleClass="summary-label" text="Total Advances" />
+                        <Label fx:id="lblTotalAdvances" styleClass="summary-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" styleClass="summary-item">
+                     <children>
+                        <Label styleClass="summary-label" text="Total Amount" />
+                        <Label fx:id="lblTotalAmount" styleClass="advance-value" text="₹0.00" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+
+      <!-- Table View -->
+      <TableView fx:id="tblAdvances" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="10.0" />
+         </VBox.margin>
+         <columns>
+            <TableColumn fx:id="colId" text="ID" minWidth="50" />
+            <TableColumn fx:id="colEmployeeName" text="Employee Name" minWidth="180" />
+            <TableColumn fx:id="colAmount" text="Amount" minWidth="110" />
+            <TableColumn fx:id="colReason" text="Reason" minWidth="150" />
+            <TableColumn fx:id="colPaymentMode" text="Mode" minWidth="80" />
+            <TableColumn fx:id="colDate" text="Date" minWidth="150" />
+         </columns>
+      </TableView>
+
+   </children>
+</VBox>

@@ -47,6 +47,8 @@ public enum ScreenPermission {
     // Employee Service screens
     EMPLOYEE_ATTENDANCE("Employee Attendance", "/fxml/employee/EmployeeAttendance.fxml", "EMPLOYEE_SERVICE",
             "Access to mark daily employee attendance and absences"),
+    EMPLOYEE_ADVANCE("Employee Advance", "/fxml/employee/EmployeeAdvance.fxml", "EMPLOYEE_SERVICE",
+            "Access to record employee advance payments"),
 
     // Report screens
     SALES_REPORT("Sales Report", "/fxml/report/SalesReport.fxml", "REPORTS",

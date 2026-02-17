@@ -45,6 +45,12 @@ public class EmployeeServiceMenuController implements Initializable {
     @FXML
     private Label lblSalaryTitle;
 
+    @FXML
+    private VBox advanceCard;
+
+    @FXML
+    private Label lblAdvanceTitle;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupBackButton();
@@ -106,6 +112,14 @@ public class EmployeeServiceMenuController implements Initializable {
                 LOG.error("Error loading salary management: ", ex);
             }
         });
+
+        advanceCard.setOnMouseClicked(e -> {
+            try {
+                loadAdvanceManagement();
+            } catch (Exception ex) {
+                LOG.error("Error loading advance management: ", ex);
+            }
+        });
     }
 
     private void loadAttendanceManagement() {
@@ -122,9 +136,17 @@ public class EmployeeServiceMenuController implements Initializable {
         }
     }
 
+    private void loadAdvanceManagement() {
+        BorderPane mainPane = getMainPane();
+        if (mainPane != null) {
+            navigationGuard.navigateWithPermissionCheck(mainPane, "/fxml/employee/EmployeeAdvance.fxml");
+        }
+    }
+
     private void setupCardEffects() {
         addCardHoverEffect(attendanceCard, "rgba(255, 87, 34, 0.4)", "rgba(255, 87, 34, 0.55)");
         addCardHoverEffect(salaryCard, "rgba(46, 125, 50, 0.4)", "rgba(46, 125, 50, 0.55)");
+        addCardHoverEffect(advanceCard, "rgba(0, 137, 123, 0.4)", "rgba(0, 137, 123, 0.55)");
     }
 
     private void addCardHoverEffect(VBox card, String normalShadowColor, String hoverShadowColor) {
@@ -177,6 +199,7 @@ public class EmployeeServiceMenuController implements Initializable {
 
             if (lblAttendanceTitle != null) lblAttendanceTitle.setStyle(fontStyle);
             if (lblSalaryTitle != null) lblSalaryTitle.setStyle(fontStyle);
+            if (lblAdvanceTitle != null) lblAdvanceTitle.setStyle(fontStyle);
 
             LOG.info("Applied custom font '{}' to card titles", fontFamily);
         }

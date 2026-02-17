@@ -694,92 +694,79 @@ public class BillPrintWithLogo {
         headerTable.setLockedWidth(true);
         headerTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-        // ===== HEADER: LOGO (LEFT) + RESTAURANT INFO (RIGHT) =====
+        // ===== HEADER: LOGO (TOP) + RESTAURANT INFO (BELOW, no gap) =====
         PdfPCell cellHead;
         Image logoImage = loadBillLogoImage();
         if (logoImage != null) {
-            // Two-column layout: logo on left, restaurant info on right
-            float logoColWidth = contentWidth * 0.40f;
-            float infoColWidth = contentWidth * 0.60f;
-            PdfPTable twoColHeader = new PdfPTable(2);
-            twoColHeader.setTotalWidth(new float[]{logoColWidth, infoColWidth});
-            twoColHeader.setLockedWidth(true);
+            // Single cell: logo + all restaurant info together to eliminate inter-cell gaps
+            logoImage.scaleToFit(contentWidth * 0.65f, 120f);
+            logoImage.setSpacingBefore(0f);
+            logoImage.setSpacingAfter(0f);
+            logoImage.setAlignment(Element.ALIGN_CENTER);
 
-            // Left column: Logo image
-            logoImage.scaleToFit(logoColWidth - 4f, 70f);
-            PdfPCell logoCell = new PdfPCell(logoImage, false);
-            logoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            logoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            logoCell.setBorder(Rectangle.NO_BORDER);
-            logoCell.setPadding(2f);
-            twoColHeader.addCell(logoCell);
+            PdfPCell combinedCell = new PdfPCell();
+            combinedCell.setBorder(Rectangle.BOTTOM);
+            combinedCell.setPadding(0f);
+            combinedCell.setPaddingBottom(2f);
+            combinedCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-            // Right column: Restaurant details
-            PdfPTable infoTable = new PdfPTable(1);
-            infoTable.setTotalWidth(new float[]{infoColWidth});
-            infoTable.setLockedWidth(true);
+            // Logo paragraph
+            Paragraph logoPara = new Paragraph();
+            logoPara.setAlignment(Element.ALIGN_CENTER);
+            logoPara.setLeading(0f, 0f);
+            logoPara.setSpacingBefore(0f);
+            logoPara.setSpacingAfter(0f);
+            logoPara.add(new Chunk(logoImage, 0, 0, true));
+            combinedCell.addElement(logoPara);
 
-            PdfPCell cellInfo = new PdfPCell(new Phrase(getRestaurantName(), fontLarge));
-            cellInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cellInfo.setBorder(Rectangle.NO_BORDER);
-            cellInfo.setPaddingTop(0f);
-            cellInfo.setPaddingBottom(0f);
-            infoTable.addCell(cellInfo);
+            // Skip restaurant name when logo is present (logo already contains the name)
 
             String subTitle = getRestaurantSubTitle();
             if (!subTitle.isEmpty()) {
-                cellInfo = new PdfPCell(new Phrase(subTitle, fontMedium));
-                cellInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellInfo.setBorder(Rectangle.NO_BORDER);
-                cellInfo.setPaddingTop(0f);
-                cellInfo.setPaddingBottom(0f);
-                infoTable.addCell(cellInfo);
+                Paragraph subPara = new Paragraph(subTitle, fontMedium);
+                subPara.setAlignment(Element.ALIGN_CENTER);
+                subPara.setSpacingBefore(0f);
+                subPara.setSpacingAfter(0f);
+                combinedCell.addElement(subPara);
             }
 
             String address = getRestaurantAddress();
             if (!address.isEmpty()) {
-                cellInfo = new PdfPCell(new Phrase(address, fontSmall));
-                cellInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellInfo.setBorder(Rectangle.NO_BORDER);
-                cellInfo.setPaddingTop(0f);
-                cellInfo.setPaddingBottom(0f);
-                infoTable.addCell(cellInfo);
+                Paragraph addrPara = new Paragraph(address, fontSmall);
+                addrPara.setAlignment(Element.ALIGN_CENTER);
+                addrPara.setSpacingBefore(0f);
+                addrPara.setSpacingAfter(0f);
+                combinedCell.addElement(addrPara);
             }
 
             String contacts = getRestaurantContacts();
             if (!contacts.isEmpty()) {
-                Phrase phonePhrase = new Phrase();
-                phonePhrase.add(new Chunk("maaobaa[la naM.", fontSmall));
-                phonePhrase.add(new Chunk(contacts, fontEnglishSmall));
-                cellInfo = new PdfPCell(phonePhrase);
-                cellInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellInfo.setBorder(Rectangle.NO_BORDER);
-                cellInfo.setPaddingTop(0f);
-                cellInfo.setPaddingBottom(0f);
-                infoTable.addCell(cellInfo);
+                Paragraph contactPara = new Paragraph();
+                contactPara.setAlignment(Element.ALIGN_CENTER);
+                contactPara.setSpacingBefore(0f);
+                contactPara.setSpacingAfter(0f);
+                contactPara.add(new Chunk("maaobaa[la naM.", fontSmall));
+                contactPara.add(new Chunk(contacts, fontEnglishSmall));
+                combinedCell.addElement(contactPara);
             }
 
             String gstin = getRestaurantGstin();
             if (!gstin.isEmpty()) {
-                cellInfo = new PdfPCell(new Phrase("GSTIN:- " + gstin, fontEnglishSmall));
-                cellInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellInfo.setBorder(Rectangle.NO_BORDER);
-                cellInfo.setPaddingTop(0f);
-                cellInfo.setPaddingBottom(0f);
-                infoTable.addCell(cellInfo);
+                Paragraph gstPara = new Paragraph("GSTIN:- " + gstin, fontEnglishSmall);
+                gstPara.setAlignment(Element.ALIGN_CENTER);
+                gstPara.setSpacingBefore(0f);
+                gstPara.setSpacingAfter(0f);
+                combinedCell.addElement(gstPara);
             }
 
-            PdfPCell infoCell = new PdfPCell(infoTable);
-            infoCell.setBorder(Rectangle.NO_BORDER);
-            infoCell.setPadding(0f);
-            twoColHeader.addCell(infoCell);
+            headerTable.addCell(combinedCell);
 
-            // Add 2-column header to main table with bottom border separator
-            PdfPCell headerCell = new PdfPCell(twoColHeader);
-            headerCell.setBorder(Rectangle.BOTTOM);
-            headerCell.setPadding(0f);
-            headerCell.setPaddingBottom(2f);
-            headerTable.addCell(headerCell);
+            // No separate separator needed - combinedCell has BOTTOM border
+            PdfPCell separatorCell = new PdfPCell(new Phrase(""));
+            separatorCell.setBorder(Rectangle.NO_BORDER);
+            separatorCell.setFixedHeight(2f);
+            separatorCell.setPadding(0f);
+            headerTable.addCell(separatorCell);
         } else {
             // No logo - original single-column centered layout
             cellHead = new PdfPCell(new Phrase(getRestaurantName(), fontLarge));
