@@ -26,9 +26,7 @@ import java.io.InputStream;
 		"com.frontend.service",
 		"com.frontend.util",
 		"com.frontend.repository",
-		"com.frontend.entity",
 		"com.frontend.print",
-		"com.frontend.enums",
 		"com.frontend.api"
 })
 public class Main extends Application {
@@ -80,8 +78,8 @@ public class Main extends Application {
 		// Initialize MaterialFX theme
 		initializeMaterialFXTheme();
 
-		// Initialize default role permissions
-		initializeRolePermissions();
+		// Initialize default role permissions in background (non-blocking)
+		new Thread(this::initializeRolePermissions, "role-init").start();
 
 		stageManager = springContext.getBean(StageManager.class, stage);
 		displayInitialScene();
