@@ -27,8 +27,9 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
+        // Use allowedOriginPatterns to support any origin with credentials
         List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        config.setAllowedOrigins(origins);
+        config.setAllowedOriginPatterns(origins);
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));
