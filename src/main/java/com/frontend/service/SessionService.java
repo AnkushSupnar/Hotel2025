@@ -69,6 +69,22 @@ public class SessionService {
     }
 
     /**
+     * Set server-side session (for API/server profile).
+     * Loads shop and application settings without requiring a desktop user login.
+     * Called by ServerInitializer on startup so BillPrint/KOTOrderPrint get restaurant info.
+     */
+    public void setServerSession(Shop shop) {
+        LOG.info("Setting server session for shop: {}", shop != null ? shop.getRestaurantName() : "null");
+        currentShop = shop;
+
+        // Load application settings (fonts, printer config, logo setting, etc.)
+        loadApplicationSettings();
+
+        LOG.info("Server session established - Shop: {}",
+                shop != null ? shop.getRestaurantName() : "Not selected");
+    }
+
+    /**
      * Get current logged-in user
      */
     public static User getCurrentUser() {

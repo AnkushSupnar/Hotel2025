@@ -828,6 +828,79 @@ public class BillingApiController {
     }
 
     /**
+     * POST /api/billing/bills/{billNo}/print
+     * Print bill on the server's configured thermal printer (same as desktop "Print Bill" button).
+     * Uses the 'billing_printer' application setting to determine which printer to use.
+     * Supports logo and QR code based on server configuration.
+     */
+    @Operation(summary = "Print bill on server printer",
+               description = "Generates the thermal-receipt PDF and sends it to the server's configured billing printer. "
+                       + "Same output as the desktop 'Print Bill' button. Includes logo if configured, "
+                       + "and QR code if the default bank is non-cash with a UPI ID.")
+    @PostMapping("/bills/{billNo}/print")
+    public ResponseEntity<ApiResponse> printBillOnServer(
+            @Parameter(description = "Bill Number") @PathVariable Integer billNo) {
+        try {
+            Bill bill = billService.getBillWithTransactions(billNo);
+            if (bill == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Bill not found: " + billNo, false));
+            }
+
+            String tableName = "";
+            if (bill.getTableNo() != null) {
+                TableMaster table = tableMasterService.getTableById(bill.getTableNo());
+                if (table != null) {
+                    tableName = table.getTableName();
+                }
+            }
+
+            // Resolve default bank for QR code logic (same as desktop)
+            Bank defaultBank = resolveDefaultBank();
+            boolean isCash = defaultBank == null || "cash".equalsIgnoreCase(defaultBank.getIfsc());
+            boolean hasUpi = defaultBank != null && defaultBank.getUpiId() != null
+                    && !defaultBank.getUpiId().trim().isEmpty();
+            boolean useQR = !isCash && hasUpi;
+
+            boolean printSuccess;
+            if (SessionService.isUseBillLogo()) {
+                if (useQR) {
+                    printSuccess = billPrintWithLogo.printBillWithQR(bill, tableName, true,
+                            defaultBank.getUpiId(), defaultBank.getBankName());
+                } else {
+                    printSuccess = billPrintWithLogo.printBill(bill, tableName);
+                }
+            } else {
+                if (useQR) {
+                    printSuccess = billPrint.printBillWithQR(bill, tableName, true,
+                            defaultBank.getUpiId(), defaultBank.getBankName());
+                } else {
+                    printSuccess = billPrint.printBill(bill, tableName);
+                }
+            }
+
+            if (printSuccess) {
+                LOG.info("Bill #{} printed successfully on server printer", billNo);
+                java.util.Map<String, Object> result = new java.util.HashMap<>();
+                result.put("billNo", billNo);
+                result.put("printed", true);
+                result.put("withLogo", SessionService.isUseBillLogo());
+                result.put("withQR", useQR);
+                return ResponseEntity.ok(new ApiResponse("Bill printed successfully on server printer", true, result));
+            } else {
+                LOG.error("Failed to print bill #{} on server printer", billNo);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ApiResponse("Failed to print bill. Check printer configuration ('billing_printer' setting).", false));
+            }
+
+        } catch (Exception e) {
+            LOG.error("Error printing bill {} on server printer: {}", billNo, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error printing bill: " + e.getMessage(), false));
+        }
+    }
+
+    /**
      * GET /api/billing/bills/today
      * Get today's bills (PAID and CREDIT)
      */

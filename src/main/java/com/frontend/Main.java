@@ -2,18 +2,28 @@ package com.frontend;
 
 import com.frontend.service.RoleService;
 import com.frontend.view.FxmlView;
+import com.frontend.view.SplashScreen;
 import com.frontend.view.StageManager;
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.boot.context.event.ApplicationPreparedEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 @SpringBootApplication(scanBasePackages = {
@@ -66,23 +76,102 @@ public class Main extends Application {
 	}
 
 	@Override
-	public void init() throws IOException {
+	public void init() {
 		// Preload bundled Kiran font from resources BEFORE Spring context
+		// This is fast and does not require Spring
 		preloadBundledFont();
-
-		springContext = bootstrapSpringApplicationContext();
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
-		// Initialize MaterialFX theme
-		initializeMaterialFXTheme();
+	public void start(Stage stage) {
+		// Show splash screen immediately
+		SplashScreen splash = new SplashScreen();
+		splash.show();
 
-		// Initialize default role permissions in background (non-blocking)
-		new Thread(this::initializeRolePermissions, "role-init").start();
+		// Bootstrap Spring context in background with real-time progress
+		Task<ConfigurableApplicationContext> bootstrapTask = createBootstrapTask(splash);
 
-		stageManager = springContext.getBean(StageManager.class, stage);
-		displayInitialScene();
+		bootstrapTask.setOnSucceeded(event -> {
+			springContext = bootstrapTask.getValue();
+
+			// Initialize MaterialFX theme
+			initializeMaterialFXTheme();
+
+			// Initialize default role permissions in background (non-blocking)
+			new Thread(this::initializeRolePermissions, "role-init").start();
+
+			stageManager = springContext.getBean(StageManager.class, stage);
+
+			// Fade out splash, then show login
+			FadeTransition fadeOut = new FadeTransition(Duration.millis(400), splash.getStage().getScene().getRoot());
+			fadeOut.setFromValue(1.0);
+			fadeOut.setToValue(0.0);
+			fadeOut.setOnFinished(e -> {
+				splash.getStage().close();
+				displayInitialScene();
+			});
+			fadeOut.play();
+		});
+
+		bootstrapTask.setOnFailed(event -> {
+			Throwable ex = bootstrapTask.getException();
+			System.err.println("Failed to start application: " + ex.getMessage());
+			ex.printStackTrace();
+
+			splash.updateProgress(0, "Startup failed: " + ex.getMessage());
+
+			// Show error alert
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Startup Error");
+			alert.setHeaderText("Application failed to start");
+			alert.setContentText(ex.getMessage());
+			alert.showAndWait();
+
+			Platform.exit();
+		});
+
+		Thread bootstrapThread = new Thread(bootstrapTask, "spring-bootstrap");
+		bootstrapThread.setDaemon(true);
+		bootstrapThread.start();
+	}
+
+	/**
+	 * Create a Task that bootstraps the Spring context with real-time progress
+	 * updates driven by Spring lifecycle events.
+	 */
+	private Task<ConfigurableApplicationContext> createBootstrapTask(SplashScreen splash) {
+		return new Task<>() {
+			@Override
+			protected ConfigurableApplicationContext call() throws Exception {
+				splash.updateProgress(0.1, "Loading fonts...");
+				Thread.sleep(300);
+
+				splash.updateProgress(0.2, "Starting application...");
+
+				SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
+				String[] args = getParameters().getRaw().stream().toArray(String[]::new);
+				builder.headless(false);
+
+				// Register listeners for real-time progress during Spring bootstrap
+				builder.listeners(
+						(ApplicationListener<ApplicationEnvironmentPreparedEvent>) event ->
+								splash.updateProgress(0.35, "Loading configuration..."),
+						(ApplicationListener<ApplicationContextInitializedEvent>) event ->
+								splash.updateProgress(0.5, "Initializing context..."),
+						(ApplicationListener<ApplicationPreparedEvent>) event ->
+								splash.updateProgress(0.65, "Initializing database..."),
+						(ApplicationListener<ApplicationStartedEvent>) event ->
+								splash.updateProgress(0.85, "Preparing user interface...")
+				);
+
+				ConfigurableApplicationContext context = builder.run(args);
+
+				splash.updateProgress(1.0, "Ready!");
+				Thread.sleep(200);
+
+				return context;
+			}
+		};
 	}
 
 	/**
@@ -152,7 +241,9 @@ public class Main extends Application {
 
 	@Override
 	public void stop() {
-		springContext.close();
+		if (springContext != null) {
+			springContext.close();
+		}
 	}
 
 	protected void displayInitialScene() {
@@ -160,13 +251,5 @@ public class Main extends Application {
 		// Later, this will check with the backend API for shop configuration
 		stageManager.switchScene(FxmlView.LOGIN);
 		// stageManager.switchScene(FxmlView.BILLING);
-	}
-
-	private ConfigurableApplicationContext bootstrapSpringApplicationContext() {
-		SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
-		String[] args = getParameters().getRaw().stream().toArray(String[]::new);
-		builder.headless(false); // needed for TestFX integration testing or eles will get a
-									// java.awt.HeadlessException during tests
-		return builder.run(args);
 	}
 }

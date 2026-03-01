@@ -20,16 +20,20 @@ import java.util.List;
 @Profile("server")
 public class CorsConfig {
 
-    @Value("${cors.allowed-origins:http://localhost:3000,http://localhost:8081}")
+    @Value("${cors.allowed-origins:*}")
     private String allowedOrigins;
 
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Use allowedOriginPatterns to support any origin with credentials
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        config.setAllowedOriginPatterns(origins);
+        // Allow all origins on local network (IP address, hostname, etc.)
+        if ("*".equals(allowedOrigins.trim())) {
+            config.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            List<String> origins = Arrays.asList(allowedOrigins.split(","));
+            config.setAllowedOriginPatterns(origins);
+        }
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));

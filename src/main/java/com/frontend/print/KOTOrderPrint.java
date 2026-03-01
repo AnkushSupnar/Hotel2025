@@ -350,8 +350,12 @@ public class KOTOrderPrint {
         headerTable.setLockedWidth(true);
         headerTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-        // Hotel name - "ha^Tola AMjanaI"
-        PdfPCell cellHead = new PdfPCell(new Phrase("ha^Tola AMjanaI", fontLarge));
+        // Hotel name - dynamic from SessionService (selected shop)
+        String restaurantName = SessionService.getCurrentRestaurantName();
+        if (restaurantName == null || restaurantName.trim().isEmpty()) {
+            restaurantName = "Restaurant";
+        }
+        PdfPCell cellHead = new PdfPCell(new Phrase(restaurantName, fontLarge));
         cellHead.setHorizontalAlignment(Element.ALIGN_CENTER);
         cellHead.setBorder(Rectangle.NO_BORDER);
         cellHead.setPaddingTop(0f); // Cut to cut from top
