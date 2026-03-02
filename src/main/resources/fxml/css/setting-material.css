@@ -1428,3 +1428,60 @@
     -fx-opacity: 0.5;
     -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 15, 0, 0, 5);
 }
+
+/* ========================================
+   MERGE/SPLIT - SECTION ROW GROUPS
+   ======================================== */
+
+/* Merged Row Indicator */
+.merged-row {
+    -fx-border-color: #26A69A transparent #26A69A #26A69A;
+    -fx-border-width: 0 0 0 4;
+    -fx-background-color: rgba(38, 166, 154, 0.04);
+}
+
+.merged-row-first {
+    -fx-border-width: 0 0 0 4;
+}
+
+.merged-row-last {
+    -fx-border-width: 0 0 0 4;
+}
+
+/* Merged Badge */
+.merged-badge {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #26A69A 0%, #4DB6AC 100%);
+    -fx-background-radius: 10;
+    -fx-padding: 4 10;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* Section Select Checkbox */
+.section-select-checkbox {
+    -fx-cursor: hand;
+}
+
+.section-select-checkbox .box {
+    -fx-background-color: white;
+    -fx-border-color: #9e9e9e;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+}
+
+.section-select-checkbox:hover .box {
+    -fx-border-color: #26A69A;
+}
+
+.section-select-checkbox:selected .box {
+    -fx-background-color: #26A69A;
+    -fx-border-color: #26A69A;
+}
+
+.section-select-checkbox:selected .mark {
+    -fx-background-color: white;
+}

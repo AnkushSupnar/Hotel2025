@@ -59,21 +59,22 @@
 
     <center>
         <!-- Split Pane for Menu Items and Order Details (responsive ratio) -->
-        <SplitPane fx:id="mainSplitPane" dividerPositions="0.692" BorderPane.alignment="TOP_CENTER">
+        <SplitPane fx:id="mainSplitPane" dividerPositions="0.722" BorderPane.alignment="TOP_CENTER">
 
-            <!-- Left Side of Split - Customer & Menu Items -->
-            <VBox styleClass="center-panel">
+            <!-- Left Side of Split - Customer & Menu Items + Number Pad -->
+            <HBox spacing="0">
+            <VBox styleClass="center-panel" HBox.hgrow="ALWAYS">
                 <padding>
-                    <Insets bottom="8.0" left="8.0" right="8.0" />
+                    <Insets bottom="8.0" left="8.0" right="0" />
                 </padding>
 
                 <!-- Top Bar: Customer Search + Table Number -->
-                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="top-bar">
                     <!-- Customer Search Section -->
-                    <VBox spacing="6" styleClass="customer-search-card" HBox.hgrow="ALWAYS">
+                    <VBox spacing="2" styleClass="customer-search-card" HBox.hgrow="ALWAYS">
                         <!-- Search Box with Icon -->
-                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-input-row">
-                            <FontAwesomeIcon fill="#757575" glyphName="SEARCH" size="1em" />
+                        <HBox alignment="CENTER_LEFT" spacing="6" styleClass="search-input-row">
+                            <FontAwesomeIcon fill="#757575" glyphName="SEARCH" size="0.85em" />
                             <TextField fx:id="txtCustomerSearch" promptText="ga`ahkacao naava" styleClass="search-field" HBox.hgrow="ALWAYS">
                                 <font>
                                     <Font name="Kiran" size="14.0" />
@@ -81,7 +82,7 @@
                             </TextField>
                             <Button fx:id="btnAddNewCustomer" styleClass="add-customer-btn" text="ADD NEW">
                                 <graphic>
-                                    <FontAwesomeIcon fill="white" glyphName="USER_PLUS" size="0.9em" />
+                                    <FontAwesomeIcon fill="white" glyphName="USER_PLUS" size="0.8em" />
                                 </graphic>
                                 <font>
                                     <Font name="Kiran" size="10.0" />
@@ -90,8 +91,8 @@
                         </HBox>
 
                         <!-- Selected Customer Display - Material Chip Style -->
-                        <HBox fx:id="selectedCustomerDisplay" alignment="CENTER_LEFT" spacing="8" styleClass="selected-customer-chip" visible="false">
-                            <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="0.9em" />
+                        <HBox fx:id="selectedCustomerDisplay" alignment="CENTER_LEFT" spacing="6" styleClass="selected-customer-chip" visible="false">
+                            <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="0.8em" />
                             <Label fx:id="lblCustomerName" styleClass="customer-name-label" text="-">
                                 <font>
                                     <Font name="Kiran" size="12.0" />
@@ -128,19 +129,19 @@
                 </HBox>
 
                 <!-- Content area for menu items -->
-                <VBox spacing="8" styleClass="content-area" VBox.vgrow="ALWAYS">
+                <VBox spacing="2" styleClass="content-area" VBox.vgrow="ALWAYS">
                      <children>
                         <!-- First Row: Category Name and Waiter Name -->
-                        <HBox alignment="CENTER_LEFT" spacing="8">
+                        <HBox alignment="CENTER_LEFT" spacing="4">
                            <children>
                               <!-- Category Name with All Items Checkbox -->
-                              <VBox spacing="4" styleClass="input-group" HBox.hgrow="ALWAYS">
+                              <VBox spacing="1" styleClass="input-group" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <HBox alignment="CENTER_LEFT" spacing="6">
                                        <children>
                                           <Label styleClass="input-label" text="k^TogaIrIcao naava">
                                              <font>
-                                                <Font name="Kiran" size="25.0" />
+                                                <Font name="Kiran" size="20.0" />
                                              </font>
                                           </Label>
                                           <Region HBox.hgrow="ALWAYS" />
@@ -151,23 +152,23 @@
                                           </CheckBox>
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtCategoryName" prefHeight="36.0" promptText="k^TogaIrIcao naava" styleClass="billing-input-field" HBox.hgrow="ALWAYS">
+                                    <TextField fx:id="txtCategoryName" prefHeight="30.0" promptText="k^TogaIrIcao naava" styleClass="billing-input-field" HBox.hgrow="ALWAYS">
                                         <font>
-                                            <Font name="Kiran" size="25.0" />
+                                            <Font name="Kiran" size="20.0" />
                                         </font>
                                     </TextField>
                                  </children>
                               </VBox>
 
                               <!-- Waiter Name Dropdown -->
-                              <VBox spacing="4" styleClass="input-group, waiter-field" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="1" styleClass="input-group, waiter-field" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <Label styleClass="input-label" text="vaoTrcao naava">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ComboBox fx:id="cmbWaitorName" maxWidth="Infinity" prefHeight="36.0" promptText="vaoTrcao naava" styleClass="billing-input-field">
+                                    <ComboBox fx:id="cmbWaitorName" maxWidth="Infinity" prefHeight="30.0" promptText="vaoTrcao naava" styleClass="billing-input-field">
                                         <opaqueInsets>
                                             <Insets />
                                         </opaqueInsets>
@@ -178,83 +179,83 @@
                         </HBox>
 
                         <!-- Second Row: Code, Item Name, Quantity, Price, Amount -->
-                        <HBox alignment="CENTER_LEFT" spacing="6">
+                        <HBox alignment="CENTER_LEFT" spacing="4">
                            <children>
                               <!-- Code Field -->
-                              <VBox styleClass="input-group, field-code" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="1" styleClass="input-group, field-code" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <Label styleClass="input-label" text="kaoD">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtCode" prefHeight="36.0" promptText="kaoD" styleClass="billing-input-field">
+                                    <TextField fx:id="txtCode" prefHeight="30.0" promptText="kaoD" styleClass="billing-input-field">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </TextField>
                                  </children>
                               </VBox>
 
                               <!-- Item Name Field -->
-                              <VBox styleClass="input-group" HBox.hgrow="ALWAYS">
+                              <VBox spacing="1" styleClass="input-group" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label styleClass="input-label" text="maalaacao naava">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtItemName" prefHeight="36.0" promptText="maalaacao naava" styleClass="billing-input-field">
+                                    <TextField fx:id="txtItemName" prefHeight="30.0" promptText="maalaacao naava" styleClass="billing-input-field">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </TextField>
                                  </children>
                               </VBox>
 
                               <!-- Quantity Field -->
-                              <VBox styleClass="input-group, field-qty" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="1" styleClass="input-group, field-qty" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <Label styleClass="input-label" text="naga">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtQuantity" prefHeight="36.0" promptText="naga" styleClass="billing-input-field">
+                                    <TextField fx:id="txtQuantity" prefHeight="30.0" promptText="naga" styleClass="billing-input-field">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </TextField>
                                  </children>
                               </VBox>
 
                               <!-- Price Field -->
-                              <VBox styleClass="input-group, field-price" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="1" styleClass="input-group, field-price" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <Label styleClass="input-label" text="Baava">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtPrice" prefHeight="36.0" promptText="Baava" styleClass="billing-input-field">
+                                    <TextField fx:id="txtPrice" prefHeight="30.0" promptText="Baava" styleClass="billing-input-field">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </TextField>
                                  </children>
                               </VBox>
 
                               <!-- Amount Field -->
-                              <VBox styleClass="input-group, field-amount" HBox.hgrow="SOMETIMES">
+                              <VBox spacing="1" styleClass="input-group, field-amount" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <Label styleClass="input-label" text="r@kma">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtAmount" editable="false" prefHeight="36.0" promptText="r@kma" styleClass="billing-input-field">
+                                    <TextField fx:id="txtAmount" editable="false" prefHeight="30.0" promptText="r@kma" styleClass="billing-input-field">
                                        <font>
-                                          <Font name="Kiran" size="25.0" />
+                                          <Font name="Kiran" size="20.0" />
                                        </font>
                                     </TextField>
                                  </children>
@@ -459,6 +460,25 @@
                 </VBox>
             </VBox>
 
+            <!-- Vertical Number Pad on right side -->
+            <VBox fx:id="numberPadRow" alignment="TOP_CENTER" spacing="4"
+                  style="-fx-background-color: #ECEFF1; -fx-padding: 4;">
+               <children>
+                  <Button text="1" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="2" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="3" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="4" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="5" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="6" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="7" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="8" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="9" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="0" style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #F0F0F0); -fx-text-fill: #333333; -fx-border-color: #C0C0C0; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+                  <Button text="C" style="-fx-background-color: linear-gradient(to bottom, #FF7043, #F4511E); -fx-text-fill: white; -fx-border-color: #D84315; -fx-font-family: SansSerif; -fx-font-size: 25px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-min-width: 89; -fx-min-height: 50; -fx-pref-width: 89; -fx-pref-height: 50; -fx-padding: 4 8; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 2, 0, 0, 1);" />
+               </children>
+            </VBox>
+            </HBox>
+
             <!-- Right Side of Split - Bill History - Modern Design -->
             <VBox fx:id="orderDetailsContainer" spacing="0" styleClass="bill-history-panel">
 
@@ -530,27 +550,7 @@
                     </columnResizePolicy>
                 </TableView>
 
-                <!-- Summary Footer -->
-                <VBox spacing="0" styleClass="summary-footer">
-                    <!-- Summary Stats -->
-                    <HBox alignment="CENTER" spacing="0">
-                        <!-- Cash -->
-                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-cash" HBox.hgrow="ALWAYS">
-                            <Label styleClass="summary-stat-label" text="CASH" />
-                            <Label fx:id="lblTotalCash" styleClass="summary-stat-value, stat-value-cash" text="&#x20B9;0" />
-                        </VBox>
-                        <!-- Credit -->
-                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-credit" HBox.hgrow="ALWAYS">
-                            <Label styleClass="summary-stat-label" text="CREDIT" />
-                            <Label fx:id="lblTotalCredit" styleClass="summary-stat-value, stat-value-credit" text="&#x20B9;0" />
-                        </VBox>
-                        <!-- Total -->
-                        <VBox alignment="CENTER" spacing="2" styleClass="summary-stat, summary-stat-total" HBox.hgrow="ALWAYS">
-                            <Label styleClass="summary-stat-label, stat-label-total" text="TOTAL" />
-                            <Label fx:id="lblTotalBills" styleClass="summary-stat-value, stat-value-total" text="&#x20B9;0" />
-                        </VBox>
-                    </HBox>
-                </VBox>
+
             </VBox>
 
         </SplitPane>

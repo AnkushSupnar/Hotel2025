@@ -13,11 +13,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service for TableMaster operations
@@ -27,6 +30,7 @@ public class TableMasterService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TableMasterService.class);
     private static final String SECTION_SEQUENCE_SETTING = "section_sequence";
+    public static final String SECTION_ROW_GROUPS_SETTING = "section_row_groups";
 
     @Autowired
     private TableMasterRepository tableMasterRepository;
@@ -253,6 +257,88 @@ public class TableMasterService {
             LOG.error("Error fetching ordered descriptions", e);
             // Fallback to default method
             return getUniqueDescriptions();
+        }
+    }
+
+    /**
+     * Get section row groups for display on billing screen.
+     * Returns a list of groups, where each group is a list of section names
+     * that should be displayed together in the same bordered box.
+     * Falls back to one-section-per-group if no setting exists.
+     */
+    public List<List<String>> getSectionRowGroups() {
+        try {
+            List<String> orderedSections = getUniqueDescriptionsOrdered();
+
+            if (orderedSections.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            // Try to load saved groups from database
+            Optional<ApplicationSetting> settingOpt = applicationSettingService.getSettingByName(SECTION_ROW_GROUPS_SETTING);
+
+            if (settingOpt.isPresent()) {
+                String jsonValue = settingOpt.get().getSettingValue();
+                if (jsonValue != null && !jsonValue.trim().isEmpty()) {
+                    List<List<String>> savedGroups = objectMapper.readValue(jsonValue,
+                            new TypeReference<List<List<String>>>() {});
+
+                    // Validate: remove stale sections, add missing ones
+                    Set<String> currentSections = new LinkedHashSet<>(orderedSections);
+                    Set<String> accountedFor = new LinkedHashSet<>();
+                    List<List<String>> validatedGroups = new ArrayList<>();
+
+                    for (List<String> group : savedGroups) {
+                        List<String> validGroup = new ArrayList<>();
+                        for (String section : group) {
+                            if (currentSections.contains(section)) {
+                                validGroup.add(section);
+                                accountedFor.add(section);
+                            }
+                        }
+                        if (!validGroup.isEmpty()) {
+                            validatedGroups.add(validGroup);
+                        }
+                    }
+
+                    // Add any missing sections as individual groups
+                    for (String section : orderedSections) {
+                        if (!accountedFor.contains(section)) {
+                            List<String> singleGroup = new ArrayList<>();
+                            singleGroup.add(section);
+                            validatedGroups.add(singleGroup);
+                        }
+                    }
+
+                    // Sort groups by the position of their first section in orderedSections
+                    validatedGroups.sort(Comparator.comparingInt(
+                            group -> orderedSections.indexOf(group.get(0))));
+
+                    LOG.info("Loaded section row groups: {}", validatedGroups);
+                    return validatedGroups;
+                }
+            }
+
+            // Fallback: each section is its own group
+            List<List<String>> defaultGroups = new ArrayList<>();
+            for (String section : orderedSections) {
+                List<String> singleGroup = new ArrayList<>();
+                singleGroup.add(section);
+                defaultGroups.add(singleGroup);
+            }
+            return defaultGroups;
+
+        } catch (Exception e) {
+            LOG.error("Error loading section row groups", e);
+            // Fallback: each section is its own group
+            List<String> sections = getUniqueDescriptionsOrdered();
+            List<List<String>> fallback = new ArrayList<>();
+            for (String section : sections) {
+                List<String> singleGroup = new ArrayList<>();
+                singleGroup.add(section);
+                fallback.add(singleGroup);
+            }
+            return fallback;
         }
     }
 

@@ -89,7 +89,7 @@ public class ShopService {
      */
     public Optional<Shop> getFirstShop() {
         LOG.debug("Fetching first shop");
-        return shopRepository.findFirstShop();
+        return shopRepository.findFirstByOrderByShopIdAsc();
     }
 
     /**

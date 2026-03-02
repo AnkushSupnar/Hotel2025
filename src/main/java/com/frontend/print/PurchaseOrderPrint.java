@@ -329,7 +329,7 @@ public class PurchaseOrderPrint {
                 table.addCell(cellUnit);
 
                 // Quantity
-                PdfPCell cellQty = new PdfPCell(new Phrase(String.format("%.0f", trans.getQty()), fontEnglishNormal));
+                PdfPCell cellQty = new PdfPCell(new Phrase((trans.getQty() == Math.floor(trans.getQty()) ? String.valueOf(trans.getQty().intValue()) : String.valueOf(trans.getQty())), fontEnglishNormal));
                 cellQty.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cellQty.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cellQty.setPadding(4f);

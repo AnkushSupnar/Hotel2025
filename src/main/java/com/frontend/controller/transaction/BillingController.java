@@ -50,6 +50,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.StackPane;
@@ -192,6 +193,9 @@ public class BillingController implements Initializable {
 
     @FXML
     private TextField txtAmount;
+
+    @FXML
+    private VBox numberPadRow;
 
     // Action Buttons
     @FXML
@@ -369,15 +373,6 @@ public class BillingController implements Initializable {
     @FXML
     private TableColumn<Bill, String> colBillStatus;
 
-    @FXML
-    private Label lblTotalCash;
-
-    @FXML
-    private Label lblTotalCredit;
-
-    @FXML
-    private Label lblTotalBills;
-
     // Bill history data
     private ObservableList<Bill> billHistoryList = FXCollections.observableArrayList();
 
@@ -419,7 +414,8 @@ public class BillingController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         LOG.info("Billing screen initialized");
-        kiranFont = SessionService.getCustomFont(25.0);
+        kiranFont = SessionService.getCustomFont(20.0);
+        resetScreenState();
         setupResponsiveLayout();
         setupRefreshButton();
         setupCustomFont(); // Re-enabled to fix font issue
@@ -430,16 +426,38 @@ public class BillingController implements Initializable {
         loadSections();
         setUpTempTransactionTable();
         setupActionButtons();
+        setupNumberPad();
         setupCashCounter();
         setupPaymentMode();
         setupBillHistory();
     }
 
     /**
+     * Reset all screen state to a clean slate.
+     * Called on initialize to ensure no stale data from previous session.
+     */
+    private void resetScreenState() {
+        tempTransactionList.clear();
+        currentClosedBill = null;
+        selectedCustomer = null;
+        selectedTransaction = null;
+        selectedCategory = null;
+        isEditMode = false;
+        isShiftTableMode = false;
+        isEditBillMode = false;
+        shiftSourceTableId = null;
+        shiftSourceTableName = null;
+        billBeingEdited = null;
+        tableButtonMap.clear();
+        txtTableNumber.clear();
+        LOG.info("Screen state reset to clean slate");
+    }
+
+    /**
      * Sets up responsive layout bindings so the UI adapts to any screen size/resolution.
-     * - Left panel width is bound to 33% of root width
-     * - Bill history panel hides on narrow screens (< 1200px)
+     * Layout ratio: 30% (tables) | 40% (transaction) | 30% (bill history)
      * - DPI-aware font scaling is applied
+     * - Bill history hides on narrow screens (< 1200px)
      */
     private void setupResponsiveLayout() {
         // Apply DPI-based font scaling on the root
@@ -449,38 +467,26 @@ public class BillingController implements Initializable {
             rootPane.setStyle("-fx-font-size: " + Math.round(12 * scaleFactor) + "px;");
         }
 
-        // Bind left panel width to 33% of root pane width
+        // Single width listener for all responsive behavior
         rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             double width = newVal.doubleValue();
-            if (width > 0) {
-                leftPanel.setPrefWidth(width * 0.33);
-            }
-        });
+            if (width <= 0) return;
 
-        // Responsive breakpoint: hide/show bill history panel on narrow screens
-        rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double width = newVal.doubleValue();
+            // Left panel always 28% of screen
+            leftPanel.setPrefWidth(width * 0.28);
+
+            // Responsive breakpoint: hide/show bill history on narrow screens
             if (width < 1200) {
-                // Compact mode: hide bill history, give more space to billing
+                // Compact mode: hide bill history, transaction takes full remaining width
                 orderDetailsContainer.setVisible(false);
                 orderDetailsContainer.setManaged(false);
                 mainSplitPane.setDividerPositions(1.0);
             } else {
+                // Normal mode: 52% transaction, 20% bill history within the 72% SplitPane
+                // SplitPane divider = 52/72 = 0.722
                 orderDetailsContainer.setVisible(true);
                 orderDetailsContainer.setManaged(true);
-                mainSplitPane.setDividerPositions(0.692);
-            }
-        });
-
-        // Responsive breakpoint: adjust left panel width for very small screens
-        rootPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double width = newVal.doubleValue();
-            if (width < 1000) {
-                leftPanel.setPrefWidth(width * 0.28);
-            } else if (width < 1400) {
-                leftPanel.setPrefWidth(width * 0.30);
-            } else {
-                leftPanel.setPrefWidth(width * 0.33);
+                mainSplitPane.setDividerPositions(0.722);
             }
         });
     }
@@ -520,10 +526,89 @@ public class BillingController implements Initializable {
 
         // Enable row selection for edit/remove
         tblTransaction.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
+            if (newSelection != null && !isNumberPadUpdate) {
                 populateFormFromSelection(newSelection);
             }
         });
+    }
+
+    /**
+     * Setup number pad buttons for quick quantity entry.
+     * Digit buttons append to quantity field, C button clears it.
+     */
+    private void setupNumberPad() {
+        for (javafx.scene.Node node : numberPadRow.getChildren()) {
+            if (node instanceof Button) {
+                Button btn = (Button) node;
+                String text = btn.getText();
+                if ("C".equals(text)) {
+                    btn.setOnAction(e -> {
+                        tblTransaction.getSelectionModel().clearSelection();
+                        txtQuantity.clear();
+                    });
+                } else {
+                    btn.setOnAction(e -> handleNumberPadClick(text));
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle number pad button click.
+     * If a row is selected in the transaction table, add the clicked digit
+     * to the existing quantity, update database and refresh table view.
+     * Otherwise, append digit to the quantity text field.
+     */
+    // Flag to suppress form population during number pad updates
+    private boolean isNumberPadUpdate = false;
+
+    private void handleNumberPadClick(String digit) {
+        TempTransaction selected = tblTransaction.getSelectionModel().getSelectedItem();
+
+        if (selected != null && !isEditMode) {
+            try {
+                int addQty = Integer.parseInt(digit);
+                float currentQty = selected.getQty();
+                float newQty = currentQty + addQty;
+
+                // Remember which item to re-select after reload
+                String itemName = selected.getItemName();
+                Integer tableNo = selected.getTableNo();
+
+                selected.setQty(newQty);
+                selected.setAmt(newQty * selected.getRate());
+                selected.setPrintQty(newQty);
+
+                // Update in database
+                tempTransactionService.updateTransaction(selected);
+
+                // Clear input fields and table selection
+                isNumberPadUpdate = true;
+                txtCategoryName.clear();
+                txtCode.clear();
+                txtItemName.clear();
+                txtQuantity.clear();
+                txtPrice.clear();
+                txtAmount.clear();
+                tblTransaction.getSelectionModel().clearSelection();
+
+                // Refresh table view and totals
+                loadTransactionsForTable(tableNo);
+                updateTotals();
+                isNumberPadUpdate = false;
+
+                LOG.info("Number pad: added {} to '{}', qty {} -> {}",
+                        addQty, itemName, currentQty, newQty);
+
+            } catch (Exception ex) {
+                LOG.error("Error updating quantity via number pad", ex);
+                alert.showError("Error updating quantity: " + ex.getMessage());
+            }
+        } else {
+            // No row selected or in edit mode - append to quantity text field
+            txtQuantity.appendText(digit);
+            txtQuantity.requestFocus();
+        }
     }
 
     private void setupRefreshButton() {
@@ -539,7 +624,6 @@ public class BillingController implements Initializable {
 
         // Disable button during refresh to prevent multiple clicks
         btnRefreshTables.setDisable(true);
-        btnRefreshTables.setText("⏳");
 
         // Clear the table button map (will be repopulated in loadSections)
         tableButtonMap.clear();
@@ -547,10 +631,9 @@ public class BillingController implements Initializable {
         // Reload sections with table buttons
         loadSections();
 
-        // Re-enable button after a short delay
+        // Re-enable button after refresh
         Platform.runLater(() -> {
             btnRefreshTables.setDisable(false);
-            btnRefreshTables.setText("🔄 REFRESH");
             LOG.info("Tables refreshed successfully");
         });
     }
@@ -569,13 +652,13 @@ public class BillingController implements Initializable {
                 suggestions.add(suggestion);
             }
 
-            // Get custom Kiran font for suggestions dropdown (size 25 for consistency)
-            Font kiranFont25 = SessionService.getCustomFont(25.0);
+            // Get custom Kiran font for suggestions dropdown (size 14 for compact display)
+            Font kiranFont14 = SessionService.getCustomFont(14.0);
 
             // Initialize autocomplete with custom suggestions and custom font
-            if (kiranFont25 != null) {
-                customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions, kiranFont25);
-                LOG.info("Customer autocomplete initialized with Kiran font (size 25)");
+            if (kiranFont14 != null) {
+                customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions, kiranFont14);
+                LOG.info("Customer autocomplete initialized with Kiran font (size 14)");
             } else {
                 customerAutoComplete = new AutoCompleteTextField_old(txtCustomerSearch, suggestions);
                 LOG.warn("Kiran font not available, using default font for customer suggestions");
@@ -602,12 +685,12 @@ public class BillingController implements Initializable {
 
     private void setupKiranFontPersistence() {
         try {
-            // Use size 25 for Kiran font (same as txtCustomerSearch for consistency)
-            Font kiranFont25 = SessionService.getCustomFont(25.0);
+            // Use size 20 for Kiran font (same as txtCustomerSearch for consistency)
+            Font kiranFont25 = SessionService.getCustomFont(20.0);
 
             if (kiranFont25 != null) {
                 String fontFamily = kiranFont25.getFamily();
-                String fontStyle = String.format("-fx-font-family: '%s'; -fx-font-size: 25px;", fontFamily);
+                String fontStyle = String.format("-fx-font-family: '%s'; -fx-font-size: 20px;", fontFamily);
 
                 // Apply to Category field (regular TextField with autocomplete)
                 txtCategoryName.setFont(kiranFont25);
@@ -646,8 +729,8 @@ public class BillingController implements Initializable {
 
     private void setupCustomFont() {
         try {
-            // Use size 25 for Kiran font (Marathi typing)
-            Font customFont = SessionService.getCustomFont(25.0);
+            // Use size 14 for Kiran font in customer search (compact)
+            Font customFont = SessionService.getCustomFont(14.0);
             if (customFont != null) {
                 // Apply custom font
                 txtCustomerSearch.setFont(customFont);
@@ -658,7 +741,7 @@ public class BillingController implements Initializable {
                 // Apply inline style with custom font and bold effect
                 String style = String.format(
                         "-fx-font-family: '%s'; " +
-                                "-fx-font-size: 25px; " +
+                                "-fx-font-size: 14px; " +
                                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 0, 0, 0.5, 0);",
                         fontFamily);
                 txtCustomerSearch.setStyle(style);
@@ -677,13 +760,13 @@ public class BillingController implements Initializable {
                     // Reapply style with bold effect to prevent CSS overrides
                     String boldStyle = String.format(
                             "-fx-font-family: '%s'; " +
-                                    "-fx-font-size: 25px; " +
+                                    "-fx-font-size: 14px; " +
                                     "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 0, 0, 0.5, 0);",
                             customFont.getFamily());
                     txtCustomerSearch.setStyle(boldStyle);
                 });
 
-                LOG.info("Custom Kiran font (size 25) applied to customer search field with persistence");
+                LOG.info("Custom Kiran font (size 14) applied to customer search field with persistence");
             } else {
                 LOG.debug("No custom font available, using default font");
             }
@@ -722,8 +805,8 @@ public class BillingController implements Initializable {
             lblCustomerName.setText(customer.getFullName());
             lblCustomerMobile.setText(customer.getMobileNo());
 
-            // Apply custom Kiran font to selected customer labels (size 25 for consistency)
-            Font customFont = SessionService.getCustomFont(25.0);
+            // Apply custom Kiran font to selected customer labels (size 14 for compact display)
+            Font customFont = SessionService.getCustomFont(14.0);
             if (customFont != null) {
                 lblCustomerName.setFont(customFont);
                 lblCustomerMobile.setFont(customFont);
@@ -731,11 +814,11 @@ public class BillingController implements Initializable {
                 // Apply inline style with custom font to ensure persistence
                 String fontFamily = customFont.getFamily();
                 lblCustomerName.setStyle(String.format(
-                        "-fx-font-size: 25px; " +
+                        "-fx-font-size: 14px; " +
                                 "-fx-font-family: '%s';",
                         fontFamily));
                 lblCustomerMobile.setStyle(String.format(
-                        "-fx-font-size: 25px; " +
+                        "-fx-font-size: 14px; " +
                                 "-fx-font-family: '%s';",
                         fontFamily));
             }
@@ -753,16 +836,16 @@ public class BillingController implements Initializable {
         lblCustomerName.setText("-");
         lblCustomerMobile.setText("-");
 
-        // Reset label styles with size 25 for consistency
-        Font customFont = SessionService.getCustomFont(25.0);
+        // Reset label styles with size 14 for compact display
+        Font customFont = SessionService.getCustomFont(14.0);
         if (customFont != null) {
             String fontFamily = customFont.getFamily();
             lblCustomerName.setStyle(String.format(
-                    "-fx-font-size: 25px; " +
+                    "-fx-font-size: 14px; " +
                             "-fx-font-family: '%s';",
                     fontFamily));
             lblCustomerMobile.setStyle(String.format(
-                    "-fx-font-size: 25px; " +
+                    "-fx-font-size: 14px; " +
                             "-fx-font-family: '%s';",
                     fontFamily));
         }
@@ -1039,10 +1122,10 @@ public class BillingController implements Initializable {
 
         Font systemFont14 = Font.font(14);
 
-        // Get Kiran font with size 25 (consistent with all other Kiran font usage)
-        Font kiranFontForTable = SessionService.getCustomFont(25.0);
+        // Get Kiran font with size 20 (consistent with all other Kiran font usage)
+        Font kiranFontForTable = SessionService.getCustomFont(20.0);
         if (kiranFontForTable == null) {
-            kiranFontForTable = Font.font(25);
+            kiranFontForTable = Font.font(20);
             LOG.warn("Kiran font not available for table, using system font");
         }
 
@@ -1055,7 +1138,7 @@ public class BillingController implements Initializable {
 
         tblTransaction.setItems(tempTransactionList);
 
-        LOG.info("Transaction table setup complete with Kiran font (size 25) for ItemName column");
+        LOG.info("Transaction table setup complete with Kiran font (size 20) for ItemName column");
     }
 
     /**
@@ -1096,10 +1179,10 @@ public class BillingController implements Initializable {
                     setText(item.toString());
                     setFont(cellFont);
 
-                    // Apply inline style for Kiran font to ensure persistence (size 25)
+                    // Apply inline style for Kiran font to ensure persistence (size 20)
                     if (isKiranFont && fontFamily != null) {
                         setStyle(String.format(
-                            "-fx-font-family: '%s'; -fx-font-size: 25px;",
+                            "-fx-font-family: '%s'; -fx-font-size: 20px;",
                             fontFamily
                         ));
                     }
@@ -1412,108 +1495,118 @@ public class BillingController implements Initializable {
             mainContainer.setSpacing(4);
             mainContainer.setStyle("-fx-background-color: transparent;");
 
-            // Get all sections and their tables (ordered by configured sequence)
-            List<String> sections = tableMasterService.getUniqueDescriptionsOrdered();
+            // Get section row groups (respects merge configuration)
+            List<List<String>> sectionGroups = tableMasterService.getSectionRowGroups();
             int totalTables = 0;
 
-            for (int i = 0; i < sections.size(); i++) {
-                String section = sections.get(i);
-                List<TableMaster> tables = tableMasterService.getTablesByDescription(section);
+            for (List<String> group : sectionGroups) {
+                boolean isMergedGroup = group.size() > 1;
 
-                if (tables.isEmpty()) continue;
-
-                // Get section color from Material palette
-                String sectionColor = getMaterialColorForSection(section);
-
-                // Create TilePane for this section's tables
-                TilePane tilePane = new TilePane();
-                tilePane.setHgap(3);
-                tilePane.setVgap(3);
-                tilePane.setPrefColumns(7);
-                tilePane.setTileAlignment(Pos.CENTER);
-                tilePane.setAlignment(Pos.TOP_LEFT);
-                tilePane.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
-
-                for (TableMaster table : tables) {
-                    Button tableButton = createTableButton(table);
-                    tilePane.getChildren().add(tableButton);
-
-                    // Set up click handler
-                    tableButton.setOnAction(e -> {
-                        // Block table selection during edit bill mode
-                        if (isEditBillMode) {
-                            alert.showWarning("Cannot change table while editing a bill. Save or cancel first.");
-                            return;
-                        }
-
-                        // Check if we are in shift table mode
-                        if (isShiftTableMode) {
-                            handleShiftTableTarget(table.getId(), table.getTableName());
-                            return;
-                        }
-
-                        txtTableNumber.setText(table.getTableName());
-
-                        // Check if table has any existing transactions before loading
-                        boolean hasExistingTransactions = tempTransactionService.hasTransactions(table.getId())
-                                || billService.hasClosedBill(table.getId());
-
-                        // Load existing transactions for this table from database
-                        loadTransactionsForTable(table.getId());
-                        refreshKotStatusPanel(table.getId());
-                        LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
-
-                        // If table is fresh (no transactions), focus on waiter dropdown
-                        // If table has existing transactions, focus on category field for faster data entry
-                        if (!hasExistingTransactions) {
-                            Platform.runLater(() -> {
-                                cmbWaitorName.requestFocus();
-                                cmbWaitorName.show();
-                            });
-                        } else {
-                            Platform.runLater(() -> txtCategoryName.requestFocus());
-                        }
-                    });
-                    totalTables++;
+                // For merged groups: use HBox to place sections side by side
+                // For single sections: just add the bordered box directly
+                HBox rowContainer = null;
+                if (isMergedGroup) {
+                    rowContainer = new HBox();
+                    rowContainer.setSpacing(4);
+                    rowContainer.setStyle("-fx-background-color: transparent;");
                 }
 
-                // --- Swing-style TitledBorder using StackPane ---
-                // Inner content box with border (top padding leaves room for the title label)
-                VBox borderedBox = new VBox();
-                borderedBox.getChildren().add(tilePane);
-                borderedBox.setStyle(
-                    "-fx-border-color: " + sectionColor + ";" +
-                    "-fx-border-width: 1.5;" +
-                    "-fx-border-radius: 4;" +
-                    "-fx-background-color: #FAFAFA;" +
-                    "-fx-background-radius: 4;" +
-                    "-fx-padding: 16 4 4 4;"
-                );
+                boolean hasAnyTables = false;
 
-                // Title label that sits on top of the border line
-                Label titleLabel = new Label("  " + section + " (" + tables.size() + ")  ");
-                titleLabel.setStyle(
-                    "-fx-background-color: #FAFAFA;" +
-                    "-fx-text-fill: " + sectionColor + ";" +
-                    "-fx-font-size: 11px;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-padding: 0 6;"
-                );
+                for (String section : group) {
+                    List<TableMaster> tables = tableMasterService.getTablesByDescription(section);
 
-                // StackPane to overlay the title on the border
-                StackPane titledPane = new StackPane();
-                titledPane.getChildren().addAll(borderedBox, titleLabel);
-                StackPane.setAlignment(titleLabel, Pos.TOP_LEFT);
-                StackPane.setMargin(titleLabel, new Insets(-7, 0, 0, 10));
+                    if (tables.isEmpty()) continue;
+                    hasAnyTables = true;
 
-                mainContainer.getChildren().add(titledPane);
+                    String sectionColor = getMaterialColorForSection(section);
+
+                    // Create TilePane for this section's tables
+                    TilePane tilePane = new TilePane();
+                    tilePane.setHgap(3);
+                    tilePane.setVgap(3);
+                    tilePane.setPrefColumns(isMergedGroup ? Math.max(2, 7 / group.size()) : 7);
+                    tilePane.setTileAlignment(Pos.CENTER);
+                    tilePane.setAlignment(Pos.TOP_LEFT);
+                    tilePane.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
+
+                    for (TableMaster table : tables) {
+                        Button tableButton = createTableButton(table);
+                        tilePane.getChildren().add(tableButton);
+
+                        // Set up click handler
+                        tableButton.setOnAction(e -> {
+                            // Block table selection during edit bill mode
+                            if (isEditBillMode) {
+                                alert.showWarning("Cannot change table while editing a bill. Save or cancel first.");
+                                return;
+                            }
+
+                            // Check if we are in shift table mode
+                            if (isShiftTableMode) {
+                                handleShiftTableTarget(table.getId(), table.getTableName());
+                                return;
+                            }
+
+                            txtTableNumber.setText(table.getTableName());
+
+                            // Check if table has any existing transactions before loading
+                            boolean hasExistingTransactions = tempTransactionService.hasTransactions(table.getId())
+                                    || billService.hasClosedBill(table.getId());
+
+                            // Load existing transactions for this table from database
+                            loadTransactionsForTable(table.getId());
+                            refreshKotStatusPanel(table.getId());
+                            LOG.info("Table selected: {} (ID: {})", table.getTableName(), table.getId());
+
+                            // If table is fresh (no transactions), focus on waiter dropdown
+                            // If table has existing transactions, focus on category field for faster data entry
+                            if (!hasExistingTransactions) {
+                                Platform.runLater(() -> {
+                                    cmbWaitorName.requestFocus();
+                                    cmbWaitorName.show();
+                                });
+                            } else {
+                                Platform.runLater(() -> txtCategoryName.requestFocus());
+                            }
+                        });
+                        totalTables++;
+                    }
+
+                    // Each section gets its own bordered box with its own color
+                    VBox borderedBox = new VBox();
+                    borderedBox.getChildren().add(tilePane);
+                    borderedBox.setStyle(
+                        "-fx-border-color: " + sectionColor + ";" +
+                        "-fx-border-width: 1.5;" +
+                        "-fx-border-radius: 4;" +
+                        "-fx-background-color: #FAFAFA;" +
+                        "-fx-background-radius: 4;" +
+                        "-fx-padding: 4;"
+                    );
+
+                    if (isMergedGroup) {
+                        // In merged group: each section shares row width equally
+                        HBox.setHgrow(borderedBox, Priority.ALWAYS);
+                        rowContainer.getChildren().add(borderedBox);
+                    } else {
+                        // Single section: add directly to main container
+                        mainContainer.getChildren().add(borderedBox);
+                    }
+                }
+
+                // Add the merged row to main container
+                if (isMergedGroup && hasAnyTables) {
+                    mainContainer.getChildren().add(rowContainer);
+                }
             }
 
             final int count = totalTables;
+            final int groupCount = sectionGroups.size();
             Platform.runLater(() -> {
                 sectionsContainer.getChildren().clear();
                 sectionsContainer.getChildren().add(mainContainer);
-                LOG.info("Loaded {} tables in {} sections", count, sections.size());
+                LOG.info("Loaded {} tables in {} groups", count, groupCount);
             });
 
         } catch (Exception e) {
@@ -1583,26 +1676,6 @@ public class BillingController implements Initializable {
         // Apply CSS classes based on status
         button.getStyleClass().add("table-button");
         applyTableButtonStatus(button, status);
-
-        // Adjust button width based on table name length to prevent text truncation
-        String tableName = table.getTableName();
-        int nameLength = (tableName != null) ? tableName.length() : 0;
-
-        // Calculate appropriate width based on character count
-        // Base: 65px for 3 chars, add 14px for each additional character
-        int width;
-        if (nameLength <= 3) {
-            width = 65;
-        } else {
-            width = 65 + ((nameLength - 3) * 14);
-        }
-
-        // Use inline style to override CSS (inline styles have highest priority)
-        button.setStyle("-fx-min-width: " + width + "px; -fx-pref-width: " + width + "px;");
-
-        // Prevent text truncation
-        button.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
-        button.setWrapText(false);
 
         // Store button in map for later status updates
         tableButtonMap.put(table.getId(), button);
@@ -2164,9 +2237,13 @@ public class BillingController implements Initializable {
             txtItemName.setText(transaction.getItemName());
         }
 
-        // Display quantity with decimals if needed, otherwise show as integer
-        float qty = transaction.getQty();
-        txtQuantity.setText(qty == Math.floor(qty) ? String.valueOf((int) qty) : String.valueOf(qty));
+        // Only load quantity when in edit mode (user clicked Edit button)
+        if (isEditMode) {
+            float qty = transaction.getQty();
+            txtQuantity.setText(qty == Math.floor(qty) ? String.valueOf((int) qty) : String.valueOf(qty));
+        } else {
+            txtQuantity.clear();
+        }
         txtPrice.setText(String.valueOf(transaction.getRate()));
         txtAmount.setText(String.format("%.2f", transaction.getAmt()));
 
@@ -2675,9 +2752,6 @@ public class BillingController implements Initializable {
             // Sort combined list by bill number ascending
             billHistoryList.sort((b1, b2) -> b1.getBillNo().compareTo(b2.getBillNo()));
 
-            // Update summary totals
-            updateBillSummary(paidBills, creditBills);
-
             LOG.info("Loaded {} PAID and {} CREDIT bills for today", paidBills.size(), creditBills.size());
 
         } catch (Exception e) {
@@ -2769,15 +2843,6 @@ public class BillingController implements Initializable {
             // Sort by bill number ascending
             billHistoryList.sort((b1, b2) -> b1.getBillNo().compareTo(b2.getBillNo()));
 
-            // Update summary
-            List<Bill> paidBills = results.stream()
-                    .filter(b -> "PAID".equalsIgnoreCase(b.getStatus()))
-                    .collect(java.util.stream.Collectors.toList());
-            List<Bill> creditBills = results.stream()
-                    .filter(b -> "CREDIT".equalsIgnoreCase(b.getStatus()))
-                    .collect(java.util.stream.Collectors.toList());
-            updateBillSummary(paidBills, creditBills);
-
             LOG.info("Search found {} bills", results.size());
 
         } catch (Exception e) {
@@ -2859,30 +2924,6 @@ public class BillingController implements Initializable {
         }
     }
 
-    /**
-     * Update bill summary totals
-     */
-    private void updateBillSummary(List<Bill> paidBills, List<Bill> creditBills) {
-        float totalCash = 0f;
-        float totalCredit = 0f;
-
-        for (Bill bill : paidBills) {
-            totalCash += bill.getBillAmt();
-        }
-        for (Bill bill : creditBills) {
-            totalCredit += bill.getBillAmt();
-        }
-
-        if (lblTotalCash != null) {
-            lblTotalCash.setText(String.format("₹%.0f", totalCash));
-        }
-        if (lblTotalCredit != null) {
-            lblTotalCredit.setText(String.format("₹%.0f", totalCredit));
-        }
-        if (lblTotalBills != null) {
-            lblTotalBills.setText(String.format("₹%.0f", totalCash + totalCredit));
-        }
-    }
 
     /**
      * View bill details (load into transaction table)

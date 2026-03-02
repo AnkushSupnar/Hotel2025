@@ -494,7 +494,7 @@ public class KOTOrderPrint {
             table.addCell(c2);
 
             // Qty in English font (using printQty)
-            PdfPCell c3 = new PdfPCell(new Phrase(String.valueOf(item.getPrintQty().intValue()), fontEnglishBold));
+            PdfPCell c3 = new PdfPCell(new Phrase((item.getPrintQty() == Math.floor(item.getPrintQty()) ? String.valueOf(item.getPrintQty().intValue()) : String.valueOf(item.getPrintQty())), fontEnglishBold));
             c3.setBorder(Rectangle.NO_BORDER);
             c3.setHorizontalAlignment(Element.ALIGN_CENTER);
             c3.setPaddingTop(2f);

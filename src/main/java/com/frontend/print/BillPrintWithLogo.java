@@ -390,7 +390,7 @@ public class BillPrintWithLogo {
                 c1.setPaddingBottom(2f);
                 table.addCell(c1);
 
-                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontEnglishMedium));
+                PdfPCell c2 = new PdfPCell(new Phrase((trans.getQty() == Math.floor(trans.getQty()) ? String.valueOf(trans.getQty().intValue()) : String.valueOf(trans.getQty())), fontEnglishMedium));
                 c2.setBorder(Rectangle.NO_BORDER);
                 c2.setHorizontalAlignment(Element.ALIGN_CENTER);
                 c2.setPaddingTop(1f);
@@ -980,7 +980,7 @@ public class BillPrintWithLogo {
                 c1.setPaddingBottom(2f);
                 table.addCell(c1);
 
-                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontEnglishMedium));
+                PdfPCell c2 = new PdfPCell(new Phrase((trans.getQty() == Math.floor(trans.getQty()) ? String.valueOf(trans.getQty().intValue()) : String.valueOf(trans.getQty())), fontEnglishMedium));
                 c2.setBorder(Rectangle.NO_BORDER);
                 c2.setHorizontalAlignment(Element.ALIGN_CENTER);
                 c2.setPaddingTop(1f);
@@ -1382,7 +1382,7 @@ public class BillPrintWithLogo {
 
                 addItemDataCell(itemsTable, String.valueOf(srNo++), tableDataFont, rowBg, Element.ALIGN_CENTER);
                 addItemDataCell(itemsTable, trans.getItemName() != null ? trans.getItemName() : "-", tableDataMarathiFont, rowBg, Element.ALIGN_LEFT);
-                addItemDataCell(itemsTable, String.valueOf(trans.getQty().intValue()), tableDataFont, rowBg, Element.ALIGN_CENTER);
+                addItemDataCell(itemsTable, (trans.getQty() == Math.floor(trans.getQty()) ? String.valueOf(trans.getQty().intValue()) : String.valueOf(trans.getQty())), tableDataFont, rowBg, Element.ALIGN_CENTER);
                 addItemDataCell(itemsTable, String.format("%.2f", trans.getRate()), tableDataFont, rowBg, Element.ALIGN_RIGHT);
                 addItemDataCell(itemsTable, String.format("%.2f", trans.getAmt()), tableDataFont, rowBg, Element.ALIGN_RIGHT);
 
@@ -1813,7 +1813,7 @@ public class BillPrintWithLogo {
                 c1.setPaddingBottom(2f);
                 table.addCell(c1);
 
-                PdfPCell c2 = new PdfPCell(new Phrase(String.valueOf(trans.getQty().intValue()), fontEnglishMedium));
+                PdfPCell c2 = new PdfPCell(new Phrase((trans.getQty() == Math.floor(trans.getQty()) ? String.valueOf(trans.getQty().intValue()) : String.valueOf(trans.getQty())), fontEnglishMedium));
                 c2.setBorder(Rectangle.NO_BORDER);
                 c2.setHorizontalAlignment(Element.ALIGN_CENTER);
                 c2.setPaddingTop(1f);

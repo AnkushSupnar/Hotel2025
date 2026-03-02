@@ -14,10 +14,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -35,13 +35,15 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Controller for Table Section Sequence settings
- * Allows users to drag and drop to set display order for table sections in BillingFrame
+ * Allows users to drag and drop to set display order, and merge/split sections into row groups
  */
 @Component
 public class SectionSequenceController implements Initializable {
@@ -74,12 +76,22 @@ public class SectionSequenceController implements Initializable {
     @FXML
     private Button btnReset;
 
+    @FXML
+    private Button btnMerge;
+
+    @FXML
+    private Button btnSplit;
+
     private ObservableList<String> orderedSections = FXCollections.observableArrayList();
     private ObjectMapper objectMapper = new ObjectMapper();
 
     // Drag and drop state
     private HBox draggedRow = null;
     private int draggedIndex = -1;
+
+    // Merge/split state
+    private Set<String> selectedSections = new LinkedHashSet<>();
+    private List<List<String>> rowGroups = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -124,6 +136,8 @@ public class SectionSequenceController implements Initializable {
     private void setupEventHandlers() {
         btnSave.setOnAction(e -> saveSequences());
         btnReset.setOnAction(e -> resetSequences());
+        btnMerge.setOnAction(e -> mergeSelectedSections());
+        btnSplit.setOnAction(e -> splitSelectedSections());
     }
 
     /**
@@ -148,7 +162,6 @@ public class SectionSequenceController implements Initializable {
             // Order sections based on saved sequence
             orderedSections.clear();
             if (!existingSequences.isEmpty()) {
-                // Sort by saved sequence
                 List<String> sortedSections = new ArrayList<>(allSections);
                 sortedSections.sort((a, b) -> {
                     int seqA = existingSequences.getOrDefault(a, Integer.MAX_VALUE);
@@ -159,6 +172,12 @@ public class SectionSequenceController implements Initializable {
             } else {
                 orderedSections.addAll(allSections);
             }
+
+            // Load existing row groups
+            rowGroups = loadExistingRowGroups();
+
+            // Clear selection
+            selectedSections.clear();
 
             // Render the UI
             renderSectionRows();
@@ -172,14 +191,19 @@ public class SectionSequenceController implements Initializable {
     }
 
     /**
-     * Render all section rows with drag-drop support
+     * Render all section rows with drag-drop support and merge indicators
      */
     private void renderSectionRows() {
         sectionsContainer.getChildren().clear();
 
         for (int i = 0; i < orderedSections.size(); i++) {
             String section = orderedSections.get(i);
-            HBox row = createDraggableSectionRow(section, i);
+            List<String> group = findGroupForSection(section);
+            boolean isMerged = group != null && group.size() > 1;
+            boolean isFirstInGroup = isMerged && group.get(0).equals(section);
+            boolean isLastInGroup = isMerged && group.get(group.size() - 1).equals(section);
+
+            HBox row = createDraggableSectionRow(section, i, isMerged, isFirstInGroup, isLastInGroup);
             sectionsContainer.getChildren().add(row);
 
             // Add separator between rows (not after the last one)
@@ -189,17 +213,33 @@ public class SectionSequenceController implements Initializable {
                 sectionsContainer.getChildren().add(separator);
             }
         }
+
+        updateMergeSplitButtonState();
     }
 
     /**
-     * Create a draggable row for a section
+     * Create a draggable row for a section with checkbox and merge indicators
      */
-    private HBox createDraggableSectionRow(String sectionName, int index) {
+    private HBox createDraggableSectionRow(String sectionName, int index,
+                                            boolean isMerged, boolean isFirstInGroup, boolean isLastInGroup) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setSpacing(15);
+        row.setSpacing(12);
         row.getStyleClass().addAll("setting-row", "draggable-row");
         row.setUserData(sectionName);
+
+        // Checkbox for merge/split selection
+        CheckBox checkBox = new CheckBox();
+        checkBox.getStyleClass().add("section-select-checkbox");
+        checkBox.setSelected(selectedSections.contains(sectionName));
+        checkBox.setOnAction(e -> {
+            if (checkBox.isSelected()) {
+                selectedSections.add(sectionName);
+            } else {
+                selectedSections.remove(sectionName);
+            }
+            updateMergeSplitButtonState();
+        });
 
         // Sequence number label
         Label seqLabel = new Label(String.valueOf(index + 1));
@@ -241,11 +281,29 @@ public class SectionSequenceController implements Initializable {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Drag hint
-        Label dragHint = new Label("Drag to reorder");
-        dragHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #BDBDBD;");
+        row.getChildren().addAll(checkBox, seqLabel, dragIcon, icon, labelBox, spacer);
 
-        row.getChildren().addAll(seqLabel, dragIcon, icon, labelBox, spacer, dragHint);
+        // Add MERGED badge if this section is part of a merged group
+        if (isMerged) {
+            Label mergedBadge = new Label("MERGED");
+            mergedBadge.getStyleClass().add("merged-badge");
+            row.getChildren().add(mergedBadge);
+
+            // Add colored left border to indicate merge group
+            row.getStyleClass().add("merged-row");
+            if (isFirstInGroup) {
+                row.getStyleClass().add("merged-row-first");
+            }
+            if (isLastInGroup) {
+                row.getStyleClass().add("merged-row-last");
+            }
+        } else {
+            // Drag hint for non-merged sections
+            Label dragHint = new Label("Drag to reorder");
+            dragHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #BDBDBD;");
+            row.getChildren().add(dragHint);
+        }
+
         row.setPadding(new Insets(16, 24, 16, 24));
 
         // Setup drag and drop handlers
@@ -304,8 +362,13 @@ public class SectionSequenceController implements Initializable {
                 int targetIndex = orderedSections.indexOf(row.getUserData());
 
                 if (sourceIndex != targetIndex && sourceIndex >= 0 && targetIndex >= 0) {
+                    String movedSection = orderedSections.get(sourceIndex);
+
+                    // Remove the dragged section from its current group
+                    removeFromGroup(movedSection);
+
                     // Reorder the list
-                    String movedSection = orderedSections.remove(sourceIndex);
+                    orderedSections.remove(sourceIndex);
                     orderedSections.add(targetIndex, movedSection);
 
                     LOG.info("Moved section '{}' from position {} to {}", movedSection, sourceIndex + 1, targetIndex + 1);
@@ -329,6 +392,158 @@ public class SectionSequenceController implements Initializable {
             draggedIndex = -1;
             event.consume();
         });
+    }
+
+    /**
+     * Find the group that a section belongs to
+     */
+    private List<String> findGroupForSection(String section) {
+        for (List<String> group : rowGroups) {
+            if (group.contains(section)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove a section from its current group (used when dragging)
+     */
+    private void removeFromGroup(String section) {
+        for (int i = 0; i < rowGroups.size(); i++) {
+            List<String> group = rowGroups.get(i);
+            if (group.contains(section)) {
+                group.remove(section);
+                if (group.isEmpty()) {
+                    rowGroups.remove(i);
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * Merge selected adjacent sections into a single row group
+     */
+    private void mergeSelectedSections() {
+        if (selectedSections.size() < 2) {
+            alertNotification.showWarning("Select at least 2 sections to merge.");
+            return;
+        }
+
+        // Get selected sections in their current order
+        List<String> selected = new ArrayList<>();
+        for (String section : orderedSections) {
+            if (selectedSections.contains(section)) {
+                selected.add(section);
+            }
+        }
+
+        // Check adjacency: selected sections must be consecutive in orderedSections
+        int firstIndex = orderedSections.indexOf(selected.get(0));
+        for (int i = 0; i < selected.size(); i++) {
+            if (orderedSections.indexOf(selected.get(i)) != firstIndex + i) {
+                alertNotification.showWarning("Selected sections must be adjacent to merge.");
+                return;
+            }
+        }
+
+        // Remove selected sections from any existing groups
+        for (String section : selected) {
+            removeFromGroup(section);
+        }
+
+        // Remove any empty groups
+        rowGroups.removeIf(List::isEmpty);
+
+        // Create new merged group
+        List<String> newGroup = new ArrayList<>(selected);
+        rowGroups.add(newGroup);
+
+        LOG.info("Merged sections into group: {}", newGroup);
+
+        // Clear selection and re-render
+        selectedSections.clear();
+        renderSectionRows();
+        alertNotification.showSuccess("Sections merged: " + String.join(", ", newGroup));
+    }
+
+    /**
+     * Split selected sections back into individual groups
+     */
+    private void splitSelectedSections() {
+        if (selectedSections.isEmpty()) {
+            alertNotification.showWarning("Select sections to split.");
+            return;
+        }
+
+        boolean anySplit = false;
+        Set<String> toSplit = new LinkedHashSet<>(selectedSections);
+
+        for (String section : toSplit) {
+            List<String> group = findGroupForSection(section);
+            if (group != null && group.size() > 1) {
+                // Split this entire group into individual sections
+                List<String> members = new ArrayList<>(group);
+                rowGroups.remove(group);
+
+                for (String member : members) {
+                    List<String> singleGroup = new ArrayList<>();
+                    singleGroup.add(member);
+                    rowGroups.add(singleGroup);
+                }
+
+                anySplit = true;
+                LOG.info("Split group containing: {}", members);
+            }
+        }
+
+        if (!anySplit) {
+            alertNotification.showWarning("Selected sections are not in any merged group.");
+            return;
+        }
+
+        // Clear selection and re-render
+        selectedSections.clear();
+        renderSectionRows();
+        alertNotification.showSuccess("Sections split successfully!");
+    }
+
+    /**
+     * Update merge/split button enabled state based on current selection
+     */
+    private void updateMergeSplitButtonState() {
+        // Merge: need 2+ selected, and they must be adjacent
+        boolean canMerge = false;
+        if (selectedSections.size() >= 2) {
+            List<String> selected = new ArrayList<>();
+            for (String section : orderedSections) {
+                if (selectedSections.contains(section)) {
+                    selected.add(section);
+                }
+            }
+            // Check adjacency
+            int firstIndex = orderedSections.indexOf(selected.get(0));
+            canMerge = true;
+            for (int i = 0; i < selected.size(); i++) {
+                if (orderedSections.indexOf(selected.get(i)) != firstIndex + i) {
+                    canMerge = false;
+                    break;
+                }
+            }
+        }
+        btnMerge.setDisable(!canMerge);
+
+        // Split: need at least one selected section that is in a merged group
+        boolean canSplit = false;
+        for (String section : selectedSections) {
+            List<String> group = findGroupForSection(section);
+            if (group != null && group.size() > 1) {
+                canSplit = true;
+                break;
+            }
+        }
+        btnSplit.setDisable(!canSplit);
     }
 
     /**
@@ -384,32 +599,72 @@ public class SectionSequenceController implements Initializable {
     }
 
     /**
-     * Save sequence settings to database based on current order
+     * Load existing row groups from database
+     */
+    private List<List<String>> loadExistingRowGroups() {
+        try {
+            var settingOpt = applicationSettingService.getSettingByName(TableMasterService.SECTION_ROW_GROUPS_SETTING);
+
+            if (settingOpt.isPresent()) {
+                String jsonValue = settingOpt.get().getSettingValue();
+                if (jsonValue != null && !jsonValue.trim().isEmpty()) {
+                    List<List<String>> groups = objectMapper.readValue(jsonValue,
+                            new TypeReference<List<List<String>>>() {});
+                    LOG.info("Loaded existing row groups: {}", groups);
+
+                    // Validate against current sections
+                    Set<String> currentSections = new LinkedHashSet<>(orderedSections);
+                    List<List<String>> validated = new ArrayList<>();
+                    for (List<String> group : groups) {
+                        List<String> validGroup = new ArrayList<>();
+                        for (String section : group) {
+                            if (currentSections.contains(section)) {
+                                validGroup.add(section);
+                            }
+                        }
+                        if (!validGroup.isEmpty()) {
+                            validated.add(validGroup);
+                        }
+                    }
+                    return validated;
+                }
+            }
+        } catch (Exception e) {
+            LOG.warn("Error loading row groups, using defaults: {}", e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    /**
+     * Save sequence settings and row groups to database
      */
     private void saveSequences() {
         try {
+            // Save section order
             Map<String, Integer> sequences = new HashMap<>();
-
-            // Build sequence map from current order
             for (int i = 0; i < orderedSections.size(); i++) {
                 sequences.put(orderedSections.get(i), i + 1);
             }
+            String seqJson = objectMapper.writeValueAsString(sequences);
+            applicationSettingService.saveSetting(SECTION_SEQUENCE_SETTING, seqJson);
 
-            // Convert to JSON and save
-            String jsonValue = objectMapper.writeValueAsString(sequences);
-            applicationSettingService.saveSetting(SECTION_SEQUENCE_SETTING, jsonValue);
+            // Save row groups (only groups with 2+ sections, singles are implicit)
+            String groupsJson = objectMapper.writeValueAsString(rowGroups);
+            applicationSettingService.saveSetting(TableMasterService.SECTION_ROW_GROUPS_SETTING, groupsJson);
 
-            LOG.info("Section sequences saved successfully: {}", jsonValue);
-            alertNotification.showSuccess("Section order saved successfully!");
+            LOG.info("Section sequences saved: {}", seqJson);
+            LOG.info("Section row groups saved: {}", groupsJson);
+            alertNotification.showSuccess("Section order and groups saved successfully!");
 
         } catch (Exception e) {
             LOG.error("Error saving section sequences: ", e);
-            alertNotification.showError("Error saving order: " + e.getMessage());
+            alertNotification.showError("Error saving: " + e.getMessage());
         }
     }
 
     /**
-     * Reset sequences to default alphabetical order
+     * Reset sequences and groups to default
      */
     private void resetSequences() {
         try {
@@ -418,15 +673,21 @@ public class SectionSequenceController implements Initializable {
             orderedSections.clear();
             orderedSections.addAll(sections);
 
+            // Reset row groups
+            rowGroups.clear();
+
+            // Clear selection
+            selectedSections.clear();
+
             // Re-render UI
             renderSectionRows();
 
-            LOG.info("Section sequences reset to default alphabetical order");
-            alertNotification.showSuccess("Order reset to default (alphabetical)");
+            LOG.info("Section sequences and groups reset to default");
+            alertNotification.showSuccess("Order and groups reset to default (alphabetical)");
 
         } catch (Exception e) {
             LOG.error("Error resetting sequences: ", e);
-            alertNotification.showError("Error resetting order: " + e.getMessage());
+            alertNotification.showError("Error resetting: " + e.getMessage());
         }
     }
 }

@@ -43,8 +43,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     /**
      * Get the first shop (for single shop applications)
      */
-    @Query("SELECT s FROM Shop s ORDER BY s.shopId ASC")
-    Optional<Shop> findFirstShop();
+    Optional<Shop> findFirstByOrderByShopIdAsc();
 
     /**
      * Count total shops
