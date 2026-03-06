@@ -2,13 +2,14 @@ package com.frontend.controller.setting;
 
 import com.frontend.service.MobileAppSettingService;
 import com.frontend.view.AlertNotification;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,8 @@ public class MobileAppSettingController implements Initializable {
 
     // Store feature checkboxes for each role
     private Map<String, Map<String, CheckBox>> roleFeatureCheckboxes = new HashMap<>();
+    // Category select-all checkboxes per role
+    private Map<String, Map<String, CheckBox>> roleCategorySelectAll = new HashMap<>();
     private String currentSelectedRole = null;
 
     @Override
@@ -112,109 +115,218 @@ public class MobileAppSettingController implements Initializable {
 
         // Get or create checkboxes for this role
         Map<String, CheckBox> checkboxes = roleFeatureCheckboxes.computeIfAbsent(role, k -> new HashMap<>());
+        Map<String, CheckBox> categorySelectAlls = roleCategorySelectAll.computeIfAbsent(role, k -> new HashMap<>());
 
-        Map<String, String> features = MobileAppSettingService.FEATURE_DEFINITIONS;
+        // Get features grouped by category
+        Map<String, List<Map.Entry<String, String>>> featuresByCategory = MobileAppSettingService.getFeaturesByCategory();
 
-        for (Map.Entry<String, String> feature : features.entrySet()) {
-            String featureCode = feature.getKey();
-            String featureName = feature.getValue();
+        int totalFeatures = 0;
 
-            // Check if we already have a checkbox for this feature
-            CheckBox checkBox;
-            if (checkboxes.containsKey(featureCode)) {
-                checkBox = checkboxes.get(featureCode);
-            } else {
-                // Create new checkbox
-                checkBox = new CheckBox();
-                checkBox.setStyle("-fx-font-size: 14px;");
+        for (String category : MobileAppSettingService.CATEGORY_ORDER) {
+            List<Map.Entry<String, String>> categoryFeatures = featuresByCategory.get(category);
+            if (categoryFeatures == null || categoryFeatures.isEmpty()) continue;
 
-                // Load current value from database
-                boolean isEnabled = mobileAppSettingService.isFeatureEnabledForRole(role, featureCode);
-                checkBox.setSelected(isEnabled);
+            // Category section container
+            VBox categorySection = new VBox(8);
+            categorySection.setStyle("-fx-padding: 10 0 5 0;");
 
-                checkboxes.put(featureCode, checkBox);
+            // Category header with icon and select-all
+            HBox categoryHeader = new HBox(12);
+            categoryHeader.setAlignment(Pos.CENTER_LEFT);
+            categoryHeader.setStyle("-fx-padding: 8 15; -fx-background-color: linear-gradient(to right, #667eea22, #764ba222); -fx-background-radius: 8;");
+
+            FontAwesomeIcon categoryIcon = new FontAwesomeIcon();
+            categoryIcon.setGlyphName(getCategoryIconName(category));
+            categoryIcon.setSize("1.3em");
+            categoryIcon.setFill(javafx.scene.paint.Color.web(getCategoryColor(category)));
+
+            Label categoryLabel = new Label(category);
+            categoryLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #444;");
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            // Select All checkbox for this category
+            CheckBox selectAllCb = categorySelectAlls.computeIfAbsent(category, k -> new CheckBox("Select All"));
+            selectAllCb.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
+
+            // Handle Select All click
+            final String cat = category;
+            selectAllCb.setOnAction(e -> {
+                boolean selected = selectAllCb.isSelected();
+                selectAllCb.setIndeterminate(false);
+                List<Map.Entry<String, String>> catFeatures = featuresByCategory.get(cat);
+                if (catFeatures != null) {
+                    for (Map.Entry<String, String> f : catFeatures) {
+                        CheckBox cb = checkboxes.get(f.getKey());
+                        if (cb != null) cb.setSelected(selected);
+                    }
+                }
+            });
+
+            categoryHeader.getChildren().addAll(categoryIcon, categoryLabel, spacer, selectAllCb);
+            categorySection.getChildren().add(categoryHeader);
+
+            // Separator
+            Separator separator = new Separator();
+            separator.setStyle("-fx-padding: 0 0 5 0;");
+            categorySection.getChildren().add(separator);
+
+            // Feature rows for this category
+            for (Map.Entry<String, String> feature : categoryFeatures) {
+                String featureCode = feature.getKey();
+                String featureName = feature.getValue();
+
+                // Get or create checkbox
+                CheckBox checkBox;
+                if (checkboxes.containsKey(featureCode)) {
+                    checkBox = checkboxes.get(featureCode);
+                } else {
+                    checkBox = new CheckBox();
+                    checkBox.setStyle("-fx-font-size: 14px;");
+
+                    boolean isEnabled = mobileAppSettingService.isFeatureEnabledForRole(role, featureCode);
+                    checkBox.setSelected(isEnabled);
+
+                    // Listen for changes to update select-all state
+                    checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                        updateCategorySelectAllState(cat, checkboxes, categorySelectAlls.get(cat), featuresByCategory.get(cat));
+                    });
+
+                    checkboxes.put(featureCode, checkBox);
+                }
+
+                // Create feature row
+                HBox featureRow = new HBox(15);
+                featureRow.setAlignment(Pos.CENTER_LEFT);
+                featureRow.setStyle("-fx-padding: 8 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5;");
+
+                String iconColor = getFeatureIconColor(featureCode);
+                Label iconLabel = new Label(getFeatureIcon(featureCode));
+                iconLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: " + iconColor + ";");
+
+                VBox featureInfo = new VBox(2);
+                Label nameLabel = new Label(featureName);
+                nameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;");
+                Label descLabel = new Label(getFeatureDescription(featureCode));
+                descLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #888;");
+                featureInfo.getChildren().addAll(nameLabel, descLabel);
+
+                Region rowSpacer = new Region();
+                HBox.setHgrow(rowSpacer, Priority.ALWAYS);
+
+                featureRow.getChildren().addAll(iconLabel, featureInfo, rowSpacer, checkBox);
+                categorySection.getChildren().add(featureRow);
+                totalFeatures++;
             }
 
-            // Create feature row
-            HBox featureRow = new HBox(15);
-            featureRow.setAlignment(Pos.CENTER_LEFT);
-            featureRow.setStyle("-fx-padding: 8 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5;");
+            // Update select-all state for this category
+            updateCategorySelectAllState(category, checkboxes, selectAllCb, categoryFeatures);
 
-            // Feature icon based on type
-            String iconColor = getFeatureIconColor(featureCode);
-            Label iconLabel = new Label(getFeatureIcon(featureCode));
-            iconLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: " + iconColor + ";");
-
-            // Feature name and description
-            VBox featureInfo = new VBox(2);
-            Label nameLabel = new Label(featureName);
-            nameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;");
-            Label descLabel = new Label(getFeatureDescription(featureCode));
-            descLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #888;");
-            featureInfo.getChildren().addAll(nameLabel, descLabel);
-
-            // Spacer
-            javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
-            javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-
-            featureRow.getChildren().addAll(iconLabel, featureInfo, spacer, checkBox);
-            vboxFeatures.getChildren().add(featureRow);
+            vboxFeatures.getChildren().add(categorySection);
         }
 
-        LOG.info("Loaded {} features for role: {}", features.size(), role);
+        LOG.info("Loaded {} features in {} categories for role: {}", totalFeatures, featuresByCategory.size(), role);
+    }
+
+    /**
+     * Update category select-all checkbox state based on individual feature checkboxes
+     */
+    private void updateCategorySelectAllState(String category, Map<String, CheckBox> checkboxes,
+                                               CheckBox selectAllCb, List<Map.Entry<String, String>> categoryFeatures) {
+        if (selectAllCb == null || categoryFeatures == null) return;
+
+        long selectedCount = categoryFeatures.stream()
+                .map(f -> checkboxes.get(f.getKey()))
+                .filter(Objects::nonNull)
+                .filter(CheckBox::isSelected)
+                .count();
+
+        long totalCount = categoryFeatures.size();
+
+        if (selectedCount == 0) {
+            selectAllCb.setSelected(false);
+            selectAllCb.setIndeterminate(false);
+        } else if (selectedCount == totalCount) {
+            selectAllCb.setSelected(true);
+            selectAllCb.setIndeterminate(false);
+        } else {
+            selectAllCb.setIndeterminate(true);
+        }
     }
 
     private String getFeatureIcon(String featureCode) {
         switch (featureCode) {
-            case "VIEW_TABLES": return "\uf0ce"; // table
-            case "TAKE_ORDER": return "\uf067"; // plus
-            case "VIEW_ORDERS": return "\uf03a"; // list
-            case "EDIT_ORDER": return "\uf044"; // edit
-            case "CANCEL_ORDER": return "\uf00d"; // times
-            case "VIEW_BILLS": return "\uf0d6"; // money
-            case "GENERATE_BILL": return "\uf1c1"; // file
-            case "ACCEPT_PAYMENT": return "\uf09d"; // credit card
-            case "VIEW_MENU": return "\uf0f5"; // cutlery
-            case "VIEW_REPORTS": return "\uf080"; // chart
-            case "MANAGE_TABLES": return "\uf013"; // cog
-            case "KOT_PRINT": return "\uf02f"; // print
+            case "dashboard": return "\uf0e4"; // dashboard
+            case "tables_overview": return "\uf0ce"; // table
+            case "orders_overview": return "\uf03a"; // list
+            case "menu_items": return "\uf0f5"; // cutlery
+            case "kitchen_overview": return "\uf2dc"; // kitchen/fire
+            case "sync_data": return "\uf021"; // refresh/sync
+            case "reports": return "\uf080"; // chart
+            case "favorite_tables": return "\uf005"; // star
+            case "favorite_items": return "\uf004"; // heart
+            case "table_selection": return "\uf245"; // mouse pointer/select
+            case "order_page": return "\uf07a"; // shopping cart
+            case "kitchen_page": return "\uf0f5"; // cutlery
+            case "bill_preview": return "\uf0d6"; // money/bill
             default: return "\uf111"; // circle
         }
     }
 
     private String getFeatureIconColor(String featureCode) {
         switch (featureCode) {
-            case "VIEW_TABLES": return "#2196F3";
-            case "TAKE_ORDER": return "#4CAF50";
-            case "VIEW_ORDERS": return "#9C27B0";
-            case "EDIT_ORDER": return "#FF9800";
-            case "CANCEL_ORDER": return "#f44336";
-            case "VIEW_BILLS": return "#009688";
-            case "GENERATE_BILL": return "#3F51B5";
-            case "ACCEPT_PAYMENT": return "#E91E63";
-            case "VIEW_MENU": return "#795548";
-            case "VIEW_REPORTS": return "#607D8B";
-            case "MANAGE_TABLES": return "#FF5722";
-            case "KOT_PRINT": return "#00BCD4";
+            case "dashboard": return "#2196F3";
+            case "tables_overview": return "#4CAF50";
+            case "orders_overview": return "#9C27B0";
+            case "menu_items": return "#FF9800";
+            case "kitchen_overview": return "#f44336";
+            case "sync_data": return "#009688";
+            case "reports": return "#607D8B";
+            case "favorite_tables": return "#FFC107";
+            case "favorite_items": return "#E91E63";
+            case "table_selection": return "#3F51B5";
+            case "order_page": return "#795548";
+            case "kitchen_page": return "#FF5722";
+            case "bill_preview": return "#00BCD4";
             default: return "#666";
         }
     }
 
     private String getFeatureDescription(String featureCode) {
         switch (featureCode) {
-            case "VIEW_TABLES": return "View table layout and status";
-            case "TAKE_ORDER": return "Add items to table orders";
-            case "VIEW_ORDERS": return "View existing orders";
-            case "EDIT_ORDER": return "Modify existing orders";
-            case "CANCEL_ORDER": return "Cancel orders";
-            case "VIEW_BILLS": return "View generated bills";
-            case "GENERATE_BILL": return "Create bills for tables";
-            case "ACCEPT_PAYMENT": return "Process payments";
-            case "VIEW_MENU": return "View menu items and categories";
-            case "VIEW_REPORTS": return "Access reports and analytics";
-            case "MANAGE_TABLES": return "Add/edit table configuration";
-            case "KOT_PRINT": return "Print kitchen order tickets";
+            case "dashboard": return "Main dashboard with overview and stats";
+            case "tables_overview": return "View all tables and their status";
+            case "orders_overview": return "View all active and past orders";
+            case "menu_items": return "Browse menu items and categories";
+            case "kitchen_overview": return "Kitchen display with order queue";
+            case "sync_data": return "Sync data with server";
+            case "reports": return "Access reports and analytics";
+            case "favorite_tables": return "Manage favorite tables list";
+            case "favorite_items": return "Manage favorite menu items";
+            case "table_selection": return "Select table for new order";
+            case "order_page": return "Create and manage order details";
+            case "kitchen_page": return "Kitchen order preparation view";
+            case "bill_preview": return "Preview and print bill";
             default: return "";
+        }
+    }
+
+    private String getCategoryIconName(String category) {
+        switch (category) {
+            case "Main Menu": return "TH_LARGE";
+            case "Settings": return "COGS";
+            case "Sub-Screen": return "WINDOW_RESTORE";
+            default: return "FOLDER";
+        }
+    }
+
+    private String getCategoryColor(String category) {
+        switch (category) {
+            case "Main Menu": return "#667eea";
+            case "Settings": return "#764ba2";
+            case "Sub-Screen": return "#f093fb";
+            default: return "#666";
         }
     }
 
@@ -246,6 +358,7 @@ public class MobileAppSettingController implements Initializable {
 
             // Clear cached checkboxes to reload from DB
             roleFeatureCheckboxes.clear();
+            roleCategorySelectAll.clear();
 
             // Select first role by default
             if (!cmbRole.getItems().isEmpty()) {

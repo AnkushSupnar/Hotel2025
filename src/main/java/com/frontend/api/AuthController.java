@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * REST API Controller for authentication endpoints
@@ -222,7 +222,7 @@ public class AuthController {
             String token = authHeader.substring(7);
             var claims = jwtService.validateToken(token);
 
-            java.util.Map<String, Object> result = new java.util.HashMap<>();
+            Map<String, Object> result = new HashMap<>();
             result.put("username", claims.getSubject());
             result.put("role", claims.get("role"));
             result.put("userId", claims.get("userId"));
@@ -256,7 +256,7 @@ public class AuthController {
         LOG.info("API request to get mobile config");
 
         try {
-            java.util.Map<String, Object> config = new java.util.HashMap<>();
+            Map<String, Object> config = new HashMap<>();
             config.put("mobileAccessEnabled", mobileAppSettingService.isMobileAccessEnabled());
             config.put("minAppVersion", mobileAppSettingService.getSettingValue(MobileAppSettingService.MOBILE_APP_VERSION));
             config.put("forceUpdate", mobileAppSettingService.getSettingBoolean(MobileAppSettingService.FORCE_UPDATE_ENABLED, false));
@@ -267,6 +267,82 @@ public class AuthController {
             LOG.error("Error retrieving mobile config: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error: " + e.getMessage(), false));
+        }
+    }
+
+    /**
+     * GET /api/v1/auth/screen-access
+     * Get screen access permissions for the authenticated user.
+     * Reads the user's role from the JWT token and fetches the latest
+     * enabled screens from the database, grouped by category.
+     */
+    @Operation(summary = "Get Screen Access", description = "Get the list of mobile screens the authenticated user has access to, grouped by category")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Screen access retrieved successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Invalid or expired token")
+    })
+    @GetMapping("/screen-access")
+    public ResponseEntity<ApiResponse> getScreenAccess(@RequestHeader("Authorization") String authHeader) {
+        LOG.info("API request to get screen access");
+
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Invalid authorization header. Use 'Bearer <token>'", false));
+            }
+
+            String token = authHeader.substring(7);
+            var claims = jwtService.validateToken(token);
+
+            String username = claims.getSubject();
+            String role = claims.get("role", String.class);
+
+            // Fetch latest enabled screen codes from the database (not from JWT cache)
+            List<String> enabledScreens = mobileAppSettingService.getEnabledFeatureCodesForRole(role);
+
+            // Build category-wise screen access
+            Map<String, List<Map.Entry<String, String>>> featuresByCategory = MobileAppSettingService.getFeaturesByCategory();
+            List<Map<String, Object>> screensByCategory = new ArrayList<>();
+
+            for (String category : MobileAppSettingService.CATEGORY_ORDER) {
+                List<Map.Entry<String, String>> categoryFeatures = featuresByCategory.get(category);
+                if (categoryFeatures == null || categoryFeatures.isEmpty()) continue;
+
+                List<Map<String, Object>> screens = new ArrayList<>();
+                for (Map.Entry<String, String> feature : categoryFeatures) {
+                    boolean enabled = enabledScreens.contains(feature.getKey());
+                    Map<String, Object> screen = new LinkedHashMap<>();
+                    screen.put("screenKey", feature.getKey());
+                    screen.put("screenName", feature.getValue());
+                    screen.put("enabled", enabled);
+                    screens.add(screen);
+                }
+
+                Map<String, Object> categoryGroup = new LinkedHashMap<>();
+                categoryGroup.put("category", category);
+                categoryGroup.put("screens", screens);
+                screensByCategory.add(categoryGroup);
+            }
+
+            // Build response
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("username", username);
+            result.put("role", role);
+            result.put("enabledScreens", enabledScreens);
+            result.put("screensByCategory", screensByCategory);
+
+            LOG.info("Screen access retrieved for user: {} (role: {}, enabled: {})",
+                    username, role, enabledScreens.size());
+            return ResponseEntity.ok(new ApiResponse("Screen access retrieved successfully", true, result));
+
+        } catch (ExpiredJwtException e) {
+            LOG.warn("Token expired: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.tokenExpired());
+        } catch (Exception e) {
+            LOG.error("Error retrieving screen access: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.tokenInvalid());
         }
     }
 }

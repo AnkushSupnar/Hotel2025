@@ -29,19 +29,30 @@ public class MobileAppSettingService {
     public static final String MOBILE_APP_VERSION = "MOBILE_APP_VERSION";
     public static final String FORCE_UPDATE_ENABLED = "FORCE_UPDATE_ENABLED";
 
-    // Mobile Features
-    public static final String FEATURE_VIEW_TABLES = "VIEW_TABLES";
-    public static final String FEATURE_TAKE_ORDER = "TAKE_ORDER";
-    public static final String FEATURE_VIEW_ORDERS = "VIEW_ORDERS";
-    public static final String FEATURE_EDIT_ORDER = "EDIT_ORDER";
-    public static final String FEATURE_CANCEL_ORDER = "CANCEL_ORDER";
-    public static final String FEATURE_VIEW_BILLS = "VIEW_BILLS";
-    public static final String FEATURE_GENERATE_BILL = "GENERATE_BILL";
-    public static final String FEATURE_ACCEPT_PAYMENT = "ACCEPT_PAYMENT";
-    public static final String FEATURE_VIEW_MENU = "VIEW_MENU";
-    public static final String FEATURE_VIEW_REPORTS = "VIEW_REPORTS";
-    public static final String FEATURE_MANAGE_TABLES = "MANAGE_TABLES";
-    public static final String FEATURE_KOT_PRINT = "KOT_PRINT";
+    // Mobile Screen Keys
+    public static final String SCREEN_DASHBOARD = "dashboard";
+    public static final String SCREEN_TABLES_OVERVIEW = "tables_overview";
+    public static final String SCREEN_ORDERS_OVERVIEW = "orders_overview";
+    public static final String SCREEN_MENU_ITEMS = "menu_items";
+    public static final String SCREEN_KITCHEN_OVERVIEW = "kitchen_overview";
+    public static final String SCREEN_SYNC_DATA = "sync_data";
+    public static final String SCREEN_REPORTS = "reports";
+    public static final String SCREEN_FAVORITE_TABLES = "favorite_tables";
+    public static final String SCREEN_FAVORITE_ITEMS = "favorite_items";
+    public static final String SCREEN_TABLE_SELECTION = "table_selection";
+    public static final String SCREEN_ORDER_PAGE = "order_page";
+    public static final String SCREEN_KITCHEN_PAGE = "kitchen_page";
+    public static final String SCREEN_BILL_PREVIEW = "bill_preview";
+
+    // Feature Categories
+    public static final String CATEGORY_MAIN_MENU = "Main Menu";
+    public static final String CATEGORY_SETTINGS = "Settings";
+    public static final String CATEGORY_SUB_SCREEN = "Sub-Screen";
+
+    // Category order for display
+    public static final List<String> CATEGORY_ORDER = Arrays.asList(
+            CATEGORY_MAIN_MENU, CATEGORY_SETTINGS, CATEGORY_SUB_SCREEN
+    );
 
     // Default roles
     public static final String[] DEFAULT_ROLES = {"ADMIN", "MANAGER", "CASHIER", "CAPTAIN", "WAITER"};
@@ -49,18 +60,55 @@ public class MobileAppSettingService {
     // Feature definitions with display names
     public static final Map<String, String> FEATURE_DEFINITIONS = new LinkedHashMap<>();
     static {
-        FEATURE_DEFINITIONS.put(FEATURE_VIEW_TABLES, "View Tables");
-        FEATURE_DEFINITIONS.put(FEATURE_TAKE_ORDER, "Take Order");
-        FEATURE_DEFINITIONS.put(FEATURE_VIEW_ORDERS, "View Orders");
-        FEATURE_DEFINITIONS.put(FEATURE_EDIT_ORDER, "Edit Order");
-        FEATURE_DEFINITIONS.put(FEATURE_CANCEL_ORDER, "Cancel Order");
-        FEATURE_DEFINITIONS.put(FEATURE_VIEW_BILLS, "View Bills");
-        FEATURE_DEFINITIONS.put(FEATURE_GENERATE_BILL, "Generate Bill");
-        FEATURE_DEFINITIONS.put(FEATURE_ACCEPT_PAYMENT, "Accept Payment");
-        FEATURE_DEFINITIONS.put(FEATURE_VIEW_MENU, "View Menu");
-        FEATURE_DEFINITIONS.put(FEATURE_VIEW_REPORTS, "View Reports");
-        FEATURE_DEFINITIONS.put(FEATURE_MANAGE_TABLES, "Manage Tables");
-        FEATURE_DEFINITIONS.put(FEATURE_KOT_PRINT, "KOT Print");
+        // Main Menu
+        FEATURE_DEFINITIONS.put(SCREEN_DASHBOARD, "Dashboard");
+        FEATURE_DEFINITIONS.put(SCREEN_TABLES_OVERVIEW, "Tables Overview");
+        FEATURE_DEFINITIONS.put(SCREEN_ORDERS_OVERVIEW, "Orders Overview");
+        FEATURE_DEFINITIONS.put(SCREEN_MENU_ITEMS, "Menu Items");
+        FEATURE_DEFINITIONS.put(SCREEN_KITCHEN_OVERVIEW, "Kitchen Overview");
+        FEATURE_DEFINITIONS.put(SCREEN_SYNC_DATA, "Sync Data");
+        FEATURE_DEFINITIONS.put(SCREEN_REPORTS, "Reports");
+        // Settings
+        FEATURE_DEFINITIONS.put(SCREEN_FAVORITE_TABLES, "Favorite Tables");
+        FEATURE_DEFINITIONS.put(SCREEN_FAVORITE_ITEMS, "Favorite Items");
+        // Sub-Screen
+        FEATURE_DEFINITIONS.put(SCREEN_TABLE_SELECTION, "Table Selection");
+        FEATURE_DEFINITIONS.put(SCREEN_ORDER_PAGE, "Order Page");
+        FEATURE_DEFINITIONS.put(SCREEN_KITCHEN_PAGE, "Kitchen Page");
+        FEATURE_DEFINITIONS.put(SCREEN_BILL_PREVIEW, "Bill Preview");
+    }
+
+    // Feature to category mapping
+    public static final Map<String, String> FEATURE_CATEGORIES = new LinkedHashMap<>();
+    static {
+        FEATURE_CATEGORIES.put(SCREEN_DASHBOARD, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_TABLES_OVERVIEW, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_ORDERS_OVERVIEW, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_MENU_ITEMS, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_KITCHEN_OVERVIEW, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_SYNC_DATA, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_REPORTS, CATEGORY_MAIN_MENU);
+        FEATURE_CATEGORIES.put(SCREEN_FAVORITE_TABLES, CATEGORY_SETTINGS);
+        FEATURE_CATEGORIES.put(SCREEN_FAVORITE_ITEMS, CATEGORY_SETTINGS);
+        FEATURE_CATEGORIES.put(SCREEN_TABLE_SELECTION, CATEGORY_SUB_SCREEN);
+        FEATURE_CATEGORIES.put(SCREEN_ORDER_PAGE, CATEGORY_SUB_SCREEN);
+        FEATURE_CATEGORIES.put(SCREEN_KITCHEN_PAGE, CATEGORY_SUB_SCREEN);
+        FEATURE_CATEGORIES.put(SCREEN_BILL_PREVIEW, CATEGORY_SUB_SCREEN);
+    }
+
+    /**
+     * Get features grouped by category
+     */
+    public static Map<String, List<Map.Entry<String, String>>> getFeaturesByCategory() {
+        Map<String, List<Map.Entry<String, String>>> grouped = new LinkedHashMap<>();
+        for (String category : CATEGORY_ORDER) {
+            grouped.put(category, new ArrayList<>());
+        }
+        for (Map.Entry<String, String> feature : FEATURE_DEFINITIONS.entrySet()) {
+            String category = FEATURE_CATEGORIES.getOrDefault(feature.getKey(), CATEGORY_MAIN_MENU);
+            grouped.computeIfAbsent(category, k -> new ArrayList<>()).add(feature);
+        }
+        return grouped;
     }
 
     @Autowired
@@ -255,10 +303,9 @@ public class MobileAppSettingService {
         for (String role : DEFAULT_ROLES) {
             for (Map.Entry<String, String> feature : FEATURE_DEFINITIONS.entrySet()) {
                 if (!featureAccessRepository.existsByRoleAndFeatureCode(role, feature.getKey())) {
-                    // Default: ADMIN has all features, others have basic features
+                    // Default: ADMIN has all features, others have dashboard only
                     boolean defaultEnabled = "ADMIN".equals(role) ||
-                            feature.getKey().equals(FEATURE_VIEW_TABLES) ||
-                            feature.getKey().equals(FEATURE_VIEW_MENU);
+                            feature.getKey().equals(SCREEN_DASHBOARD);
                     saveFeatureAccess(role, feature.getKey(), feature.getValue(), defaultEnabled);
                 }
             }
