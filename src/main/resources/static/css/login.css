@@ -1,0 +1,457 @@
+/* ========================================
+   HOTEL MANAGEMENT - WEB LOGIN PAGE
+   Exact replica of desktop Login.css
+   Two-panel layout: Brand | Login Form
+   ======================================== */
+
+/* Root - Full screen two-panel layout */
+.login-root {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #F5F5F5;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========================================
+   BRAND PANEL (Left Side)
+   Matches desktop: .brand-panel min-width:350, gradient
+   ======================================== */
+
+.brand-panel {
+    flex: 1;
+    min-width: 350px;
+    background: linear-gradient(to bottom right, #1976D2 0%, #1565C0 50%, #0D47A1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-content {
+    padding: 60px 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px; /* desktop: spacing="40" */
+}
+
+/* Logo Circle - desktop: 120x120, rgba(255,255,255,0.15), dropshadow */
+.logo-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Brand Text - desktop: 36px bold white with dropshadow */
+.brand-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand-subtitle {
+    font-size: 16px;
+    color: white;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* Features List - desktop: padding 30 20 0 20, spacing=18 */
+.features-list {
+    padding: 30px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-self: flex-start;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* desktop: 28x28, rgba(255,255,255,0.2), radius 20 */
+.feature-icon-box {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* desktop: 15px, white, weight 400 */
+.feature-text {
+    font-size: 15px;
+    color: white;
+    font-weight: 400;
+}
+
+/* desktop: 12px, white, padding-top 20 */
+.version-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    padding-top: 0;
+}
+
+/* ========================================
+   FORM PANEL (Right Side)
+   desktop: background #F5F5F5, padding 30 40, min-width 400
+   ======================================== */
+
+.form-panel {
+    flex: 1;
+    min-width: 400px;
+    background-color: #F5F5F5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 40px;
+    overflow-y: auto;
+}
+
+/* ========================================
+   LOGIN CARD
+   desktop: white, radius 16, shadow, max-width 420
+   ======================================== */
+
+.login-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+}
+
+/* Card Header - desktop: padding 25 40 20 40 */
+.card-header-section {
+    padding: 25px 40px 20px 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* desktop: 60x60, #E3F2FD, radius 50, dropshadow */
+.header-icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #E3F2FD;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(25, 118, 210, 0.2);
+}
+
+/* desktop: 26px bold #212121, padding-top 10 */
+.welcome-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #212121;
+    margin: 10px 0 0 0;
+}
+
+/* desktop: 14px #757575 */
+.welcome-subtitle {
+    font-size: 14px;
+    color: #757575;
+    margin: 0;
+}
+
+/* Card Body / Form - desktop: padding 10 40 20 40, spacing=15 */
+.card-body-section {
+    padding: 10px 40px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form Group - desktop: spacing=6 */
+.form-group-custom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* desktop: 12px, weight 600, #1976D2 */
+.input-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1976D2;
+    margin: 0;
+}
+
+/* Input Container - desktop: bg #FAFAFA, border #E0E0E0 1.5px, radius 10, padding 4 16, height 50 */
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #FAFAFA;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 10px;
+    padding: 4px 16px;
+    min-height: 50px;
+    transition: all 0.2s;
+}
+
+.input-container:hover {
+    border-color: #90CAF9;
+    background-color: #FFFFFF;
+}
+
+.input-container:focus-within {
+    border-color: #1976D2;
+    border-width: 2px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+}
+
+/* desktop: fill #90CAF9, opacity 0.7 */
+.field-icon {
+    color: #90CAF9;
+    font-size: 1.2em;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+/* Material Input - desktop: 20px, bold, #1a1a1a, prompt #616161 */
+.material-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a1a1a;
+    padding: 10px 0;
+    min-width: 0;
+}
+
+/* Kiran font class for input fields - matches desktop Font name="Kiran" size="20.0" */
+.material-input.kiran-font {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.material-input::placeholder {
+    color: #616161;
+    font-weight: 400;
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+}
+
+.material-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Select specific styling - desktop: ComboBox with Kiran font, arrow #1976D2 */
+select.material-input {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231976D2'/%3E%3C/svg%3E") no-repeat right center;
+    padding-right: 20px;
+}
+
+select.material-input option {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    padding: 12px 16px;
+}
+
+/* ========================================
+   BUTTONS - desktop: .btn-primary gradient, radius 10, padding 12 32
+   ======================================== */
+
+.button-section {
+    padding: 10px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* SIGN IN button - desktop: .btn-primary linear-gradient #1976D2 -> #1565C0, shadow */
+.btn-login-primary {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 32px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(to right, #1976D2, #1565C0);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-login-primary:hover {
+    background: linear-gradient(to right, #1565C0, #0D47A1);
+    box-shadow: 0 6px 16px rgba(25, 118, 210, 0.5);
+    transform: scale(1.01);
+}
+
+.btn-login-primary:active {
+    background: linear-gradient(to right, #0D47A1, #0D47A1);
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.btn-login-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* CANCEL button - desktop: .btn-secondary white, border #E0E0E0, radius 10 */
+.btn-login-secondary {
+    width: 100%;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 10px;
+    padding: 14px 32px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #757575;
+    background: white;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-login-secondary:hover {
+    background-color: #FAFAFA;
+    border-color: #BDBDBD;
+}
+
+.btn-login-secondary:active {
+    background-color: #F5F5F5;
+    transform: scale(0.98);
+}
+
+/* ========================================
+   CARD FOOTER - desktop: padding 15 40 20 40, border-top #EEEEEE, bg #FAFAFA
+   ======================================== */
+
+.card-footer-section {
+    padding: 15px 40px 20px 40px;
+    border-top: 1px solid #EEEEEE;
+    background-color: #FAFAFA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* desktop: 13px #9E9E9E */
+.footer-text {
+    font-size: 13px;
+    color: #9E9E9E;
+}
+
+/* Copyright - desktop: 12px #BDBDBD, margin-top 20 */
+.copyright-text {
+    font-size: 12px;
+    color: #BDBDBD;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .login-root {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .brand-panel {
+        min-width: auto;
+        min-height: auto;
+        padding: 30px 20px;
+    }
+
+    .brand-content {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .brand-title {
+        font-size: 24px;
+    }
+
+    .features-list {
+        display: none;
+    }
+
+    .form-panel {
+        min-width: auto;
+        padding: 20px;
+    }
+
+    .card-body-section {
+        padding: 10px 20px 20px 20px;
+    }
+
+    .card-header-section {
+        padding: 20px 20px 15px 20px;
+    }
+
+    .card-footer-section {
+        padding: 12px 20px;
+    }
+
+    .material-input { font-size: 16px; }
+    .material-input.kiran-font { font-size: 16px; }
+}
+
+@media (max-width: 576px) {
+    .brand-panel { padding: 20px 15px; }
+    .brand-content { padding: 15px; gap: 15px; }
+    .logo-circle { width: 80px; height: 80px; }
+    .brand-title { font-size: 20px; }
+    .brand-subtitle { font-size: 14px; }
+    .form-panel { padding: 15px; }
+    .login-card { border-radius: 12px; }
+    .card-body-section { padding: 10px 16px 16px 16px; }
+    .card-header-section { padding: 16px 16px 12px 16px; }
+    .welcome-title { font-size: 22px; }
+    .card-footer-section { padding: 10px 16px; }
+    .input-container { min-height: 44px; padding: 4px 12px; }
+    .btn-login-primary { padding: 12px 24px; }
+    .btn-login-secondary { padding: 12px 24px; }
+}

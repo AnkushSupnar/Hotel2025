@@ -1,0 +1,443 @@
+/* ========================================
+   HOTEL MANAGEMENT - LOGIN PAGE STYLES
+   Modern Material Design Theme
+   Consistent with Dashboard Color Scheme
+   ======================================== */
+
+/* Root Styles */
+.login-root {
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ========================================
+   BRAND PANEL (Left Side)
+   ======================================== */
+
+.brand-panel {
+    -fx-background-color: linear-gradient(to bottom right, #1976D2 0%, #1565C0 50%, #0D47A1 100%);
+    -fx-min-width: 350;
+}
+
+.brand-content {
+    -fx-padding: 60 50;
+}
+
+/* Logo Styles */
+.logo-container {
+    -fx-padding: 0;
+}
+
+.logo-circle {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 100;
+    -fx-min-width: 120;
+    -fx-min-height: 120;
+    -fx-pref-width: 120;
+    -fx-pref-height: 120;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 8);
+}
+
+/* Brand Text - White Colors */
+.brand-title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.brand-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+}
+
+/* Features List */
+.features-list {
+    -fx-padding: 30 20 0 20;
+}
+
+.feature-item {
+    -fx-padding: 0;
+}
+
+.feature-icon-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 20;
+    -fx-min-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-width: 28;
+    -fx-pref-height: 28;
+    -fx-alignment: center;
+}
+
+.feature-text {
+    -fx-font-size: 15px;
+    -fx-text-fill: white;
+    -fx-font-weight: 400;
+}
+
+.version-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-padding: 20 0 0 0;
+}
+
+/* ========================================
+   FORM PANEL (Right Side)
+   ======================================== */
+
+/* ScrollPane wrapper for the form panel */
+.form-scroll-pane {
+    -fx-background-color: #F5F5F5;
+    -fx-background: #F5F5F5;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.form-scroll-pane > .viewport {
+    -fx-background-color: #F5F5F5;
+}
+
+.form-scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 8;
+    -fx-background-color: transparent;
+}
+
+.form-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #BDBDBD;
+    -fx-background-radius: 4;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #9E9E9E;
+}
+
+.form-panel {
+    -fx-background-color: #F5F5F5;
+    -fx-padding: 30 40;
+    -fx-alignment: center;
+    -fx-min-width: 400;
+}
+
+/* ========================================
+   LOGIN CARD
+   ======================================== */
+
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 30, 0, 0, 8);
+    -fx-padding: 0;
+}
+
+/* Card Header */
+.card-header {
+    -fx-padding: 25 40 20 40;
+    -fx-background-color: white;
+    -fx-background-radius: 16 16 0 0;
+}
+
+.header-icon-container {
+    -fx-background-color: #E3F2FD;
+    -fx-background-radius: 50;
+    -fx-min-width: 60;
+    -fx-min-height: 60;
+    -fx-pref-width: 60;
+    -fx-pref-height: 60;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.2), 10, 0, 0, 3);
+}
+
+.welcome-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+    -fx-padding: 10 0 0 0;
+}
+
+.welcome-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #757575;
+}
+
+/* Card Body */
+.card-body {
+    -fx-padding: 10 40 20 40;
+}
+
+/* Form Group */
+.form-group {
+    -fx-padding: 0;
+}
+
+/* Input Label */
+.input-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1976D2;
+    -fx-padding: 0 0 2 0;
+}
+
+/* Input Container */
+.input-container {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 10;
+    -fx-padding: 4 16;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-min-height: 50;
+    -fx-pref-height: 50;
+}
+
+.input-container:hover {
+    -fx-border-color: #90CAF9;
+    -fx-background-color: #FFFFFF;
+}
+
+.input-container:focused,
+.input-container:focus-within {
+    -fx-border-color: #1976D2;
+    -fx-border-width: 2;
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.15), 8, 0, 0, 2);
+}
+
+.field-icon {
+    -fx-opacity: 0.7;
+}
+
+/* Material Input */
+.material-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 12 0;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+    -fx-prompt-text-fill: #616161;
+}
+
+.material-input:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Text visibility fix - Dark and bold text */
+.text-field, .password-field {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-weight: bold;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-weight: bold;
+}
+
+/* ========================================
+   COMBOBOX (MATERIAL DESIGN)
+   ======================================== */
+
+.material-combo {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-font-size: 15px;
+    -fx-pref-height: 42;
+}
+
+.material-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-padding: 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.material-combo:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.material-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 8;
+}
+
+.material-combo .arrow {
+    -fx-background-color: #1976D2;
+    -fx-padding: 4;
+    -fx-shape: "M 0 0 L 5 5 L 10 0 Z";
+}
+
+.material-combo:showing .arrow {
+    -fx-rotate: 180;
+}
+
+/* ComboBox Popup */
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 6);
+    -fx-padding: 6;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-padding: 12 16;
+    -fx-background-radius: 6;
+    /* font-size removed - let controller control it for Kiran font */
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #E3F2FD;
+    -fx-text-fill: #1976D2;
+}
+
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #BBDEFB;
+    -fx-text-fill: #1565C0;
+    -fx-font-weight: 600;
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+.button-section {
+    -fx-padding: 5 0 0 0;
+}
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #1976D2, #1565C0);
+    -fx-background-radius: 10;
+    -fx-padding: 12 32;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.4), 12, 0, 0, 4);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #1565C0, #0D47A1);
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.5), 16, 0, 0, 6);
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: linear-gradient(to right, #0D47A1, #0D47A1);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.3), 8, 0, 0, 2);
+}
+
+.btn-secondary {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-padding: 12 32;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #FAFAFA;
+    -fx-border-color: #BDBDBD;
+}
+
+.btn-secondary:pressed {
+    -fx-background-color: #F5F5F5;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* ========================================
+   CARD FOOTER
+   ======================================== */
+
+.card-footer {
+    -fx-padding: 15 40 20 40;
+    -fx-border-color: #EEEEEE transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 0 0 16 16;
+}
+
+.footer-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #9E9E9E;
+}
+
+.register-link {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1976D2;
+    -fx-cursor: hand;
+}
+
+.register-link:hover {
+    -fx-text-fill: #1565C0;
+    -fx-underline: true;
+}
+
+.register-link:pressed {
+    -fx-text-fill: #0D47A1;
+}
+
+/* Copyright */
+.copyright-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #BDBDBD;
+}
+
+/* ========================================
+   SCROLLBAR CUSTOMIZATION
+   ======================================== */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #BDBDBD;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #9E9E9E;
+}
+
+/* ========================================
+   GLOBAL TEXT VISIBILITY
+   ======================================== */
+
+.label {
+    -fx-text-fill: inherit;
+}
+
+.text-input {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-weight: bold;
+    -fx-prompt-text-fill: #616161;
+}

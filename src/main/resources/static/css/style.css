@@ -1,0 +1,483 @@
+/* ========================================
+   HOTEL MANAGEMENT - WEB APPLICATION STYLES
+   Exact match of desktop home-material.css
+   ======================================== */
+
+/* Kiran Font - loaded from bundled fonts/kiran.ttf */
+@font-face {
+    font-family: 'Kiran';
+    src: url('/fonts/kiran.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --primary: #1976D2;
+    --primary-dark: #1565C0;
+    --primary-darker: #0D47A1;
+    --primary-light: #BBDEFB;
+    --primary-lighter: #E3F2FD;
+    --accent: #FF9800;
+    --success: #4CAF50;
+    --danger: #F44336;
+    --warning: #FFC107;
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --divider: #E0E0E0;
+    --bg-light: #F5F5F5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Kiran font utility class */
+.kiran-font {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+}
+
+/* =============== LAYOUT: SIDEBAR + MAIN =============== */
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =============== SIDEBAR (matches desktop sidebar-panel) =============== */
+
+.sidebar-panel {
+    width: 220px;
+    min-width: 220px;
+    height: 100vh;
+    background: linear-gradient(to bottom, #1976D2, #1565C0, #0D47A1);
+    border-radius: 0 0 25px 0;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 20px 15px 15px;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-header .sidebar-icon {
+    color: white;
+    font-size: 2em;
+    margin-bottom: 6px;
+}
+
+.sidebar-header .app-title-sidebar {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+
+/* Menu Container */
+.menu-container {
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+/* Menu Items (matches desktop .menu-item) */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #E3F2FD;
+    transform: scale(1.02);
+}
+
+.menu-item:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(0.98);
+}
+
+.menu-item.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: white;
+}
+
+.menu-item .menu-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 1.3em;
+    margin-right: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item .menu-text {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.menu-item .menu-text-en {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Logout item */
+.menu-item.logout-item:hover {
+    border-left-color: #FF5252;
+    background-color: rgba(255, 82, 82, 0.1);
+}
+
+.menu-item.logout-item .menu-icon {
+    color: #FF5252;
+}
+
+/* Bottom Menu */
+.bottom-menu {
+    padding: 10px 8px 15px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* =============== MAIN CONTENT AREA =============== */
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =============== HEADER BAR (matches desktop .header-bar) =============== */
+
+.header-bar {
+    background-color: #FFFFFF;
+    padding: 8px 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #E0E0E0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-title {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1565C0;
+    text-shadow: 0 1px 3px rgba(21, 101, 192, 0.2);
+    margin: 0;
+}
+
+.user-info-container {
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-info-text {
+    font-family: 'Kiran', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #424242;
+}
+
+.designation-text {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 12px;
+    color: #757575;
+}
+
+/* =============== DASHBOARD CONTENT (matches desktop .main-content-area) =============== */
+
+.main-content-area {
+    flex: 1;
+    background: linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 50%, #E8F5E8 100%);
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.dashboard-container {
+    padding: 28px 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* =============== WELCOME BANNER (matches desktop .welcome-banner) =============== */
+
+.welcome-banner {
+    background: linear-gradient(to right, #1976D2, #1565C0, #0D47A1);
+    border-radius: 14px;
+    padding: 22px 28px;
+    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.welcome-icon-box {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    background-color: rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.2em;
+}
+
+.welcome-banner .welcome-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.welcome-banner .welcome-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 4px 0 0;
+}
+
+/* =============== SECTION HEADER (matches desktop .section-header) =============== */
+
+.section-header {
+    padding: 4px 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #37474F;
+    margin: 0;
+}
+
+.section-subtitle {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4CAF50;
+}
+
+.refresh-btn {
+    background-color: #E3F2FD;
+    border: 1px solid #BBDEFB;
+    border-radius: 16px;
+    padding: 6px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+    background-color: #BBDEFB;
+    border-color: #90CAF9;
+    transform: scale(1.05);
+}
+
+.refresh-btn-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1976D2;
+}
+
+/* =============== GRADIENT CARDS (matches desktop .gradient-card) =============== */
+
+.cards-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.gradient-card {
+    width: 185px;
+    height: 185px;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.gradient-card:hover {
+    transform: scale(1.05);
+}
+
+/* Card color variants */
+.card-blue {
+    background: linear-gradient(to bottom right, #4099ff, #5cb3ff);
+    box-shadow: 0 4px 12px rgba(64, 153, 255, 0.4);
+}
+.card-blue:hover { box-shadow: 0 6px 18px rgba(64, 153, 255, 0.55); }
+
+.card-orange {
+    background: linear-gradient(to bottom right, #FF9800, #FFB74D);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+.card-orange:hover { box-shadow: 0 6px 18px rgba(255, 152, 0, 0.55); }
+
+.card-red {
+    background: linear-gradient(to bottom right, #FF5370, #ff869a);
+    box-shadow: 0 4px 12px rgba(255, 83, 112, 0.4);
+}
+.card-red:hover { box-shadow: 0 6px 18px rgba(255, 83, 112, 0.55); }
+
+.card-green {
+    background: linear-gradient(to bottom right, #2ed8b6, #59e0c5);
+    box-shadow: 0 4px 12px rgba(46, 216, 182, 0.4);
+}
+.card-green:hover { box-shadow: 0 6px 18px rgba(46, 216, 182, 0.55); }
+
+.card-purple {
+    background: linear-gradient(to bottom right, #7C4DFF, #B388FF);
+    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.4);
+}
+.card-purple:hover { box-shadow: 0 6px 18px rgba(124, 77, 255, 0.55); }
+
+/* Card icon circle */
+.card-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8em;
+}
+
+/* Card number */
+.card-number {
+    font-size: 42px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    margin: 0;
+}
+
+/* Card label */
+.card-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    margin: 0;
+}
+
+/* =============== RESPONSIVE =============== */
+
+/* Tablet landscape / small desktop */
+@media (max-width: 1024px) {
+    .sidebar-panel {
+        width: 180px;
+        min-width: 180px;
+    }
+    .header-title { font-size: 22px; }
+    .gradient-card { width: 160px; height: 160px; }
+    .card-number { font-size: 36px; }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .sidebar-panel {
+        width: 60px;
+        min-width: 60px;
+    }
+    .sidebar-header .app-title-sidebar,
+    .menu-item .menu-text,
+    .menu-item .menu-text-en {
+        display: none;
+    }
+    .menu-item .menu-icon {
+        margin-right: 0;
+    }
+    .menu-item { justify-content: center; padding: 10px 8px; }
+    .header-bar {
+        padding: 8px 15px;
+    }
+    .header-title { font-size: 18px; }
+    .user-info-container { padding: 6px 10px; }
+    .user-info-text { font-size: 14px; }
+    .dashboard-container {
+        padding: 15px;
+    }
+    .gradient-card {
+        width: 140px;
+        height: 140px;
+    }
+    .card-number {
+        font-size: 30px;
+    }
+    .card-icon-circle { width: 44px; height: 44px; font-size: 1.5em; }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .header-bar {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 10px;
+    }
+    .header-title { font-size: 16px; flex: 1; }
+    .user-info-container { order: 2; width: 100%; justify-content: center; }
+    .dashboard-container {
+        padding: 10px;
+        gap: 16px;
+    }
+    .cards-row { gap: 12px; justify-content: center; }
+    .gradient-card {
+        width: 120px;
+        height: 120px;
+        padding: 12px;
+    }
+    .card-number { font-size: 24px; }
+    .card-label { font-size: 12px; }
+    .card-icon-circle { width: 36px; height: 36px; font-size: 1.2em; }
+    .welcome-banner { padding: 14px 16px; gap: 12px; }
+    .welcome-banner .welcome-title { font-size: 16px; }
+    .welcome-icon-box { width: 40px; height: 40px; min-width: 40px; font-size: 1.6em; }
+}

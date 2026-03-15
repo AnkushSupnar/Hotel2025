@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Settings - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/settings-material.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="settings-root">
+
+    <!-- ======== HEADER ======== -->
+    <div class="settings-header">
+        <button class="back-btn" onclick="window.location.href='/pages/setting/SettingMenu.html'">
+            <i class="bi bi-arrow-left"></i> BACK
+        </button>
+        <h1 class="header-title">Application Settings</h1>
+    </div>
+
+    <!-- ======== CONTENT ======== -->
+    <div class="settings-content">
+
+        <!-- Settings Container Card -->
+        <div class="settings-card">
+
+            <!-- Row 1: Document Directory -->
+            <div class="setting-row">
+                <i class="bi bi-folder setting-icon" style="color:#7E57C2;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">Document Directory</p>
+                    <p class="setting-row-value" id="lblCurrentDocument">Not configured</p>
+                </div>
+                <input type="text" class="setting-input" id="txtDocumentPath"
+                       placeholder="Enter document directory path..." />
+                <button class="setting-btn btn-purple" id="btnBrowseDocument" title="Browse is available in desktop app only" disabled style="opacity:0.5;">
+                    <i class="bi bi-folder2-open"></i> Browse
+                </button>
+            </div>
+
+            <hr class="setting-separator" />
+
+            <!-- Row 2: Font File -->
+            <div class="setting-row">
+                <i class="bi bi-fonts setting-icon" style="color:#42A5F5;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">Input Font File</p>
+                    <p class="setting-row-value" id="lblCurrentFont">Not configured</p>
+                </div>
+                <input type="text" class="setting-input" id="txtFontPath"
+                       placeholder="Enter font file path (.ttf, .otf)..." />
+                <button class="setting-btn btn-blue" id="btnBrowseFont" title="Browse is available in desktop app only" disabled style="opacity:0.5;">
+                    <i class="bi bi-file-earmark-font"></i> Browse
+                </button>
+            </div>
+
+            <hr class="setting-separator" />
+
+            <!-- Row 3: Billing Printer -->
+            <div class="setting-row">
+                <i class="bi bi-printer setting-icon" style="color:#43A047;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">Billing Printer</p>
+                    <p class="setting-row-value" id="lblCurrentBillingPrinter">Not configured</p>
+                </div>
+                <input type="text" class="setting-input" id="txtBillingPrinter"
+                       placeholder="Enter billing printer name..." />
+            </div>
+
+            <hr class="setting-separator" />
+
+            <!-- Row 4: KOT Printer -->
+            <div class="setting-row">
+                <i class="bi bi-cup-hot setting-icon" style="color:#FB8C00;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">KOT Printer</p>
+                    <p class="setting-row-value" id="lblCurrentKotPrinter">Not configured</p>
+                </div>
+                <input type="text" class="setting-input" id="txtKotPrinter"
+                       placeholder="Enter KOT printer name..." />
+            </div>
+
+            <hr class="setting-separator" />
+
+            <!-- Row 5: Default Bank for Billing -->
+            <div class="setting-row">
+                <i class="bi bi-bank setting-icon" style="color:#5C6BC0;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">Default Bank for Billing</p>
+                    <p class="setting-row-value" id="lblCurrentDefaultBank">Not configured</p>
+                </div>
+                <select class="setting-dropdown" id="cmbDefaultBank">
+                    <option value="">-- None --</option>
+                </select>
+                <button class="setting-btn-icon btn-indigo" id="btnRefreshBanks" title="Refresh bank list">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+
+            <hr class="setting-separator" />
+
+            <!-- Row 6: Bill Logo Image -->
+            <div class="setting-row">
+                <i class="bi bi-image setting-icon" style="color:#26A69A;"></i>
+                <div class="setting-label-section">
+                    <p class="setting-row-title">Bill Logo Image</p>
+                    <p class="setting-row-value" id="lblCurrentBillLogo">Not configured</p>
+                </div>
+                <input type="file" class="setting-input" id="fileBillLogo"
+                       accept="image/*" style="padding:8px 10px;" />
+                <button class="setting-btn btn-teal" id="btnUploadBillLogo">
+                    <i class="bi bi-upload"></i> Upload
+                </button>
+                <label class="setting-checkbox">
+                    <input type="checkbox" id="chkUseBillLogo" /> Use Logo
+                </label>
+            </div>
+
+        </div><!-- /settings-card -->
+
+        <!-- Action Buttons -->
+        <div class="settings-action-row">
+            <button class="action-btn-primary" id="btnSave">
+                <i class="bi bi-save"></i> Save Settings
+            </button>
+            <button class="action-btn-secondary" id="btnClear">
+                <i class="bi bi-arrow-clockwise"></i> Clear Form
+            </button>
+        </div>
+
+    </div><!-- /settings-content -->
+
+</div><!-- /settings-root -->
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/pages/setting/ApplicationSetting.js"></script>
+
+</body>
+</html>

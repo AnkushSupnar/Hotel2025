@@ -1,0 +1,1101 @@
+/* ==========================================
+   BILLING SCREEN - MATERIAL DESIGN STYLES
+   Exact replica of desktop billing-material.css
+   Desktop layout ratio: 28% tables | 52% transaction | 20% bill history
+   ========================================== */
+
+* { box-sizing: border-box; }
+
+@font-face {
+    font-family: 'Kiran';
+    src: url('/fonts/kiran.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Root - 3-column flex using desktop percentages: 28% | 52% | 20% */
+.billing-root {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: #ECEFF1;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ==========================================
+   LEFT PANEL - TABLE SECTIONS (28% of screen)
+   Desktop: leftPanel.setPrefWidth(width * 0.28)
+   ========================================== */
+.table-panel-left {
+    flex: 0 1 28%;
+    min-width: 180px;
+    height: 100vh;
+    background: #FFFFFF;
+    border-right: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.table-panel-header {
+    background: linear-gradient(to right, #1976D2, #1565C0);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    min-height: 40px;
+    flex-shrink: 0;
+}
+.table-panel-header .panel-header-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+}
+
+/* Legend dots */
+.legend-dot {
+    width: 10px; height: 10px;
+    min-width: 10px; min-height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.legend-dot-open { background: #FFFFFF; border: 1px solid #ccc; }
+.legend-dot-running { background: #81C784; }
+.legend-dot-billed { background: #FF8A65; }
+.legend-label { font-size: 11px; color: rgba(255,255,255,0.9); white-space: nowrap; }
+
+.refresh-btn-compact {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.refresh-btn-compact:hover { background: rgba(255,255,255,0.35); }
+
+/* Table scroll area */
+.table-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    background: #FAFAFA;
+    padding: 6px;
+}
+
+/* Table buttons - matches desktop .table-button: Tahoma 18px, gradient bg */
+.table-btn {
+    font-family: 'Tahoma', sans-serif;
+    font-size: 15px;
+    font-weight: normal;
+    min-width: 0;
+    min-height: 32px;
+    padding: 3px 3px;
+    border-radius: 5px;
+    border: 1px solid #C0C0C0;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    background: linear-gradient(to bottom, #FFFFFF, #F0F0F0);
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* Available table (default white) */
+.table-btn.table-btn-available {
+    background: linear-gradient(to bottom, #FFFFFF, #F0F0F0) !important;
+    color: #333 !important;
+    border-color: #C0C0C0 !important;
+}
+.table-btn.table-btn-available:hover {
+    background: linear-gradient(to bottom, #F5F9FF, #E3ECFA) !important;
+    color: #1565C0 !important;
+    border-color: #90B4DE !important;
+    box-shadow: 0 2px 4px rgba(25,118,210,0.25);
+}
+
+/* Ongoing table (green - has items in temp_transaction) */
+.table-btn.table-btn-ongoing {
+    background: linear-gradient(to bottom, #66BB6A, #43A047) !important;
+    color: white !important;
+    border-color: #2E7D32 !important;
+}
+.table-btn.table-btn-ongoing:hover {
+    background: linear-gradient(to bottom, #81C784, #4CAF50) !important;
+    color: white !important;
+    border-color: #1B5E20 !important;
+    box-shadow: 0 2px 4px rgba(46,125,50,0.35);
+}
+
+/* Closed table (red/orange - bill created, awaiting payment) */
+.table-btn.table-btn-closed {
+    background: linear-gradient(to bottom, #FF7043, #F4511E) !important;
+    color: white !important;
+    border-color: #D84315 !important;
+}
+.table-btn.table-btn-closed:hover {
+    background: linear-gradient(to bottom, #FF8A65, #FF5722) !important;
+    color: white !important;
+    border-color: #BF360C !important;
+    box-shadow: 0 2px 4px rgba(216,67,21,0.35);
+}
+
+.table-btn:hover {
+    box-shadow: 0 2px 4px rgba(25,118,210,0.25);
+}
+.table-btn:active {
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+}
+
+/* ==========================================
+   CENTER AREA - 52% of screen
+   Desktop: SplitPane left side (72.2% of 72%) = ~52%
+   Contains: HBox [VBox center-panel (flex:1), VBox numberPad (fixed)]
+   ========================================== */
+.center-area {
+    flex: 1 1 52%;
+    display: flex;
+    min-width: 0;
+    height: 100vh;
+}
+
+.center-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: #FAFAFA;
+    padding: 0 0 8px 8px;
+}
+
+/* Top bar: Customer + Table Number - desktop: maxHeight 56 */
+.billing-top-bar {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    padding: 6px 8px 4px 0;
+    max-height: 56px;
+    flex-shrink: 0;
+}
+
+/* Customer search card */
+.customer-search-card {
+    flex: 1;
+    background: white;
+    border-radius: 4px;
+    padding: 4px 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+.search-input-row input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Kiran', sans-serif;
+    font-size: 14px;
+    padding: 2px 4px;
+    color: #212121;
+    min-width: 0;
+}
+.search-input-row input::placeholder { color: #9E9E9E; }
+.add-customer-btn {
+    background: #1976D2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.add-customer-btn:hover { background: #1565C0; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+/* Selected customer chip - animated show/hide */
+.selected-customer-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #E3F2FD;
+    border: 1px solid #1976D2;
+    border-radius: 16px;
+    padding: 2px 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.selected-customer-chip.visible {
+    max-height: 40px;
+    opacity: 1;
+    padding: 2px 8px;
+}
+.customer-name-label { color: #1565C0; font-weight: bold; font-family: 'Kiran', sans-serif; font-size: 12px; }
+.customer-mobile-label { color: #616161; font-family: 'Kiran', sans-serif; font-size: 12px; }
+.chip-separator { color: #90CAF9; font-size: 10px; }
+.remove-customer-btn {
+    background: transparent;
+    border: none;
+    color: #D32F2F;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 12px;
+}
+.remove-customer-btn:hover { background: rgba(211,47,47,0.1); }
+
+/* Table number badge - desktop: prefWidth 140, font 28px bold */
+.table-number-badge {
+    background: linear-gradient(to bottom, #1976D2, #1565C0);
+    border-radius: 6px;
+    padding: 8px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    text-align: center;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.table-number-label { color: rgba(255,255,255,0.7); font-size: 9px; font-weight: bold; margin: 0; }
+.table-number-value {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+    background: transparent;
+    border: none;
+    text-align: center;
+    width: 80px;
+    outline: none;
+    font-family: Arial, sans-serif;
+}
+
+/* ==========================================
+   ITEM ENTRY FORM
+   Desktop: Kiran 20pt font, prefHeight 30
+   ========================================== */
+.content-area {
+    padding: 2px 8px 4px 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 2px;
+}
+
+.input-row {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.input-group-billing {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+.input-group-billing.flex-grow { flex: 1; min-width: 0; }
+.input-group-billing.field-code { width: 90px; min-width: 70px; flex-shrink: 0; }
+.input-group-billing.field-qty { width: 80px; min-width: 60px; flex-shrink: 0; }
+.input-group-billing.field-price { width: 90px; min-width: 70px; flex-shrink: 0; }
+.input-group-billing.field-amount { width: 100px; min-width: 80px; flex-shrink: 0; }
+.input-group-billing.waiter-field { width: 180px; min-width: 140px; flex-shrink: 0; }
+
+/* Labels - desktop: Kiran 20pt with dropshadow bold effect */
+.input-label-billing {
+    font-family: 'Kiran', sans-serif;
+    font-size: 20px;
+    color: #616161;
+    text-shadow: 0 0.5px 0 rgba(0,0,0,0.5);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Input fields - desktop: prefHeight 30, Kiran 20pt */
+.billing-input-field {
+    background: #FAFAFA;
+    border: 1px solid #E0E0E0;
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-family: 'Kiran', sans-serif;
+    font-size: 20px;
+    text-shadow: 0 0.3px 0 rgba(0,0,0,0.4);
+    outline: none;
+    width: 100%;
+    height: 32px;
+    color: #212121;
+}
+.billing-input-field::placeholder {
+    color: #BDBDBD;
+    text-shadow: none;
+}
+.billing-input-field:focus {
+    border-color: #1976D2;
+    border-width: 2px;
+    background: white;
+    padding: 2px 5px;
+}
+
+.all-items-check {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Kiran', sans-serif;
+    font-size: 18px;
+    color: #1976D2;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.all-items-check input { accent-color: #1976D2; width: 16px; height: 16px; }
+
+select.billing-input-field {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #FAFAFA url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231976D2'/%3E%3C/svg%3E") no-repeat right 8px center;
+    padding-right: 24px;
+}
+
+/* ==========================================
+   ACTION BUTTONS
+   Desktop: spacing 10, all HBox.hgrow ALWAYS, font 12px bold
+   ========================================== */
+.action-buttons-container {
+    background: white;
+    border: 1px solid #BDBDBD;
+    border-radius: 4px;
+    padding: 5px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+}
+.action-buttons-row {
+    display: flex;
+    gap: 6px;
+}
+
+.action-button {
+    flex: 1;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 8px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.action-button:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.3); transform: translateY(-1px); }
+.action-button:active { transform: translateY(1px); box-shadow: 0 0 2px rgba(0,0,0,0.15); }
+
+.btn-add { background: #4CAF50; }
+.btn-add:hover { background: #45A049; box-shadow: 0 2px 5px rgba(76,175,80,0.4); }
+.btn-order { background: #2196F3; }
+.btn-order:hover { background: #1976D2; box-shadow: 0 2px 5px rgba(33,150,243,0.4); }
+.btn-edit { background: #FF9800; }
+.btn-edit:hover { background: #F57C00; box-shadow: 0 2px 5px rgba(255,152,0,0.4); }
+.btn-remove { background: #F44336; }
+.btn-remove:hover { background: #D32F2F; box-shadow: 0 2px 5px rgba(244,67,54,0.4); }
+.btn-clear { background: #757575; }
+.btn-clear:hover { background: #616161; box-shadow: 0 2px 5px rgba(117,117,117,0.4); }
+.btn-kitchen { background: #E65100; }
+.btn-kitchen:hover { background: #BF360C; box-shadow: 0 2px 5px rgba(230,81,0,0.4); }
+
+/* ==========================================
+   TRANSACTION TABLE
+   Desktop: fixedCellSize 30, constrained resize
+   ========================================== */
+.transaction-table-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.transaction-table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+table.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table.transaction-table thead th {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(to bottom, #FAFAFA, #F0F0F0);
+    border-bottom: 2px solid #E0E0E0;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #616161;
+    text-align: left;
+    z-index: 1;
+}
+table.transaction-table thead th.col-srno,
+table.transaction-table thead th.col-qty { text-align: center; }
+table.transaction-table thead th.col-rate,
+table.transaction-table thead th.col-amount { text-align: right; }
+
+table.transaction-table tbody tr {
+    border-bottom: 1px solid #EEEEEE;
+    cursor: pointer;
+    transition: background 0.1s;
+    height: 30px;
+}
+table.transaction-table tbody tr:nth-child(odd) { background: #FAFAFA; }
+table.transaction-table tbody tr:hover { background: #F5F5F5; }
+table.transaction-table tbody tr.selected { background: #E3F2FD; }
+table.transaction-table tbody tr.selected:hover { background: #BBDEFB; }
+
+table.transaction-table td {
+    padding: 4px 8px;
+    font-size: 15px;
+    color: #424242;
+    height: 30px;
+}
+table.transaction-table td.col-srno { text-align: center; font-weight: bold; color: #757575; }
+table.transaction-table td.col-item-name {
+    font-size: 20px;
+    color: #212121;
+    font-family: 'Kiran', sans-serif;
+    text-shadow: 0.5px 0 0 currentColor;
+    text-shadow: 0 0.3px 0 rgba(0,0,0,0.4);
+}
+table.transaction-table td.col-qty { text-align: center; font-weight: bold; color: #1976D2; }
+table.transaction-table td.col-rate { text-align: right; color: #616161; }
+table.transaction-table td.col-amount { text-align: right; font-weight: bold; color: #388E3C; }
+
+.table-empty-msg {
+    padding: 30px;
+    text-align: center;
+    color: #9E9E9E;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* ==========================================
+   PAYMENT SECTION
+   ========================================== */
+.payment-section {
+    background: #F5F5F5;
+    border-top: 1px solid #E0E0E0;
+    flex-shrink: 0;
+}
+
+.bill-summary-row {
+    padding: 6px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.summary-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    padding: 5px 14px;
+}
+.pill-label { font-size: 11px; }
+.pill-value { font-weight: bold; }
+
+/* Discount input inside pill */
+.discount-input {
+    font-size: 14px;
+    font-weight: bold;
+    color: #EF6C00;
+    background: #FFF3E0;
+    border: 1px solid #FFB74D;
+    border-radius: 3px;
+    padding: 2px 4px;
+    width: 70px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.discount-input:focus {
+    border-color: #F57C00;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 2px rgba(255,152,0,0.2);
+}
+.discount-input::placeholder { color: #FFCC80; }
+
+.pill-qty { background: #E3F2FD; }
+.pill-qty .pill-label { color: #1976D2; }
+.pill-qty .pill-value { color: #1565C0; font-size: 15px; }
+
+.pill-total { background: #1976D2; }
+.pill-total .pill-label { color: white; }
+.pill-total .pill-value { color: white; font-size: 16px; }
+
+.pill-discount { background: #FFF3E0; }
+.pill-discount .pill-label { color: #F57C00; }
+.pill-discount .pill-value { color: #EF6C00; font-size: 15px; }
+
+.pill-net { background: #4CAF50; }
+.pill-net .pill-label { color: white; }
+.pill-net .pill-value { color: white; font-size: 16px; }
+
+.payment-details-row {
+    background: #EEEEEE;
+    padding: 8px 15px;
+    border-top: 1px solid #E0E0E0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+.pay-field {
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    text-align: center;
+}
+.pay-field-label { font-size: 10px; font-weight: bold; margin: 0 0 2px; }
+
+.pay-mode-box { border-color: #4CAF50; min-width: 160px; }
+.pay-mode-label { color: #4CAF50; }
+.pay-mode-combo {
+    border: none;
+    background: transparent;
+    font-family: 'Kiran', sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.qr-code-box { background: #E8F5E9; border-color: #4CAF50; display: none; }
+.qr-code-box.visible { display: flex; flex-direction: column; align-items: center; }
+.qr-label { color: #2E7D32; }
+
+.received-box { border-color: #1976D2; padding: 4px 10px; }
+.received-label { color: #1976D2; }
+.received-field {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1565C0;
+    background: #E3F2FD;
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+    width: 70px;
+    text-align: center;
+    outline: none;
+}
+
+.return-box { border-color: #FF9800; padding: 4px 10px; }
+.return-label { color: #F57C00; }
+.return-field {
+    font-size: 14px;
+    font-weight: bold;
+    color: #EF6C00;
+    background: #FFF3E0;
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+    width: 60px;
+    text-align: center;
+    outline: none;
+}
+
+.change-box { background: #E1BEE7; border-color: transparent; padding: 4px 10px; }
+.change-label { color: #7B1FA2; }
+.change-value { font-size: 14px; font-weight: bold; color: #6A1B9A; margin: 0; }
+
+.due-box { background: #FFCDD2; border-color: transparent; padding: 4px 10px; }
+.due-label { color: #C62828; }
+.due-value { font-size: 14px; font-weight: bold; color: #B71C1C; margin: 0; }
+
+/* ==========================================
+   BILL ACTION BUTTONS
+   ========================================== */
+.bill-action-row {
+    background: white;
+    border-top: 1px solid #E0E0E0;
+    padding: 8px 12px;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.bill-action-btn {
+    flex: 1;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    height: 35px;
+    cursor: pointer;
+    padding: 8px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.bill-action-btn:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.3); transform: translateY(-1px); }
+.bill-action-btn:active { transform: translateY(1px); }
+
+.btn-bill-close { background: #607D8B; }
+.btn-bill-close:hover { background: #546E7A; }
+.btn-bill-paid { background: #4CAF50; }
+.btn-bill-paid:hover { background: #43A047; }
+.btn-bill-shift { background: #FF9800; }
+.btn-bill-shift:hover { background: #F57C00; }
+.btn-bill-old { background: #9C27B0; }
+.btn-bill-old:hover { background: #8E24AA; }
+.btn-bill-edit { background: #2196F3; }
+.btn-bill-edit:hover { background: #1976D2; }
+
+/* ==========================================
+   NUMBER PAD - Desktop: buttons 89x50, font 25px bold
+   Sits to the right of center-panel inside center-area
+   ========================================== */
+.number-pad {
+    background: #ECEFF1;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+}
+.numpad-btn {
+    width: 89px;
+    height: 50px;
+    font-family: SansSerif, sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 1px solid #C0C0C0;
+    cursor: pointer;
+    background: linear-gradient(to bottom, #FFFFFF, #F0F0F0);
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: all 0.1s;
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+.numpad-btn:hover {
+    background: linear-gradient(to bottom, #F5F9FF, #E3ECFA);
+    color: #1565C0;
+    box-shadow: 0 2px 4px rgba(25,118,210,0.25);
+}
+.numpad-btn:active {
+    background: linear-gradient(to bottom, #E0E0E0, #EEEEEE);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+}
+.numpad-btn-dot {
+    background: linear-gradient(to bottom, #E3F2FD, #BBDEFB);
+    color: #1565C0;
+    border-color: #90CAF9;
+}
+.numpad-btn-dot:hover {
+    background: linear-gradient(to bottom, #BBDEFB, #90CAF9);
+    color: #0D47A1;
+}
+.numpad-btn-clear {
+    background: linear-gradient(to bottom, #FF7043, #F4511E);
+    color: white;
+    border-color: #D84315;
+}
+.numpad-btn-clear:hover {
+    background: linear-gradient(to bottom, #FF8A65, #FF5722);
+}
+
+/* ==========================================
+   RIGHT PANEL - BILL HISTORY (20% of screen)
+   Desktop: SplitPane right = 27.8% of 72% = ~20%
+   ========================================== */
+.bill-history-panel {
+    flex: 0 1 20%;
+    min-width: 180px;
+    height: 100vh;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #E0E0E0;
+    overflow: hidden;
+}
+
+.bill-history-header {
+    background: linear-gradient(to right, #7B1FA2, #9C27B0);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    min-height: 40px;
+    flex-shrink: 0;
+}
+
+.bill-search-section {
+    background: #FAFAFA;
+    padding: 10px;
+    border-bottom: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.bill-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.bill-search-input {
+    flex: 1;
+    font-size: 11px;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 6px 8px;
+    outline: none;
+    height: 32px;
+    min-width: 0;
+}
+.bill-search-input:focus { border-color: #7B1FA2; }
+
+.btn-search-bills {
+    flex: 1;
+    background: #7B1FA2;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: background 0.15s;
+}
+.btn-search-bills:hover { background: #6A1B9A; }
+
+.btn-clear-search {
+    background: #9E9E9E;
+    color: white;
+    font-size: 11px;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: background 0.15s;
+}
+.btn-clear-search:hover { background: #757575; }
+
+/* Bill history table - desktop: fixedCellSize 26 */
+.bill-history-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+table.bill-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+table.bill-history-table thead th {
+    position: sticky;
+    top: 0;
+    background: #F5F5F5;
+    padding: 6px 4px;
+    font-weight: bold;
+    color: #616161;
+    border-bottom: 1px solid #E0E0E0;
+    text-align: left;
+    z-index: 1;
+    font-size: 11px;
+}
+table.bill-history-table tbody tr {
+    border-bottom: 1px solid #F0F0F0;
+    cursor: pointer;
+    transition: background 0.1s;
+    height: 26px;
+}
+table.bill-history-table tbody tr:hover { background: #F3E5F5; }
+table.bill-history-table tbody tr.selected { background: #E1BEE7; }
+table.bill-history-table td { padding: 3px 4px; font-size: 11px; }
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+.status-paid { background: #E8F5E9; color: #4CAF50; }
+.status-credit { background: #FFF8E1; color: #FF9800; }
+.status-close { background: #FFEBEE; color: #F44336; }
+
+/* ==========================================
+   BUTTON LOADING / DISABLED STATES
+   ========================================== */
+.action-button:disabled,
+.bill-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none !important;
+}
+.action-button.loading,
+.bill-action-btn.loading {
+    opacity: 0.7;
+    cursor: wait;
+    pointer-events: none;
+}
+.action-button.loading::after,
+.bill-action-btn.loading::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-left: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Table button selected highlight */
+.table-btn.table-btn-selected {
+    outline: 3px solid #1976D2;
+    outline-offset: 1px;
+}
+
+/* Custom scrollbars */
+.table-scroll-area::-webkit-scrollbar,
+.transaction-table-wrapper::-webkit-scrollbar,
+.bill-history-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+.table-scroll-area::-webkit-scrollbar-thumb,
+.transaction-table-wrapper::-webkit-scrollbar-thumb,
+.bill-history-wrapper::-webkit-scrollbar-thumb {
+    background: #CFD8DC;
+    border-radius: 8px;
+}
+.table-scroll-area::-webkit-scrollbar-thumb:hover,
+.transaction-table-wrapper::-webkit-scrollbar-thumb:hover,
+.bill-history-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #B0BEC5;
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS
+   Desktop: < 1200 hides bill history, divider goes to 1.0
+   Small screens: stack all 3 sections vertically
+   ========================================== */
+
+/* < 1200px: Hide bill history, center takes its space */
+@media (max-width: 1200px) {
+    .bill-history-panel { display: none; }
+    .table-panel-left { flex: 0 1 28%; }
+    .center-area { flex: 1 1 72%; }
+    .numpad-btn { width: 78px; height: 44px; font-size: 22px; }
+}
+
+/* < 1024px: Shrink table panel, smaller numpad */
+@media (max-width: 1024px) {
+    .table-panel-left { flex: 0 1 24%; min-width: 160px; }
+    .center-area { flex: 1 1 76%; }
+    .table-panel-header { padding: 6px 8px; gap: 4px; }
+    .legend-label { display: none; }
+    .table-btn { font-size: 16px; min-width: 50px; min-height: 34px; }
+    .numpad-btn { width: 68px; height: 42px; font-size: 20px; }
+    .input-label-billing { font-size: 18px; }
+    .billing-input-field { font-size: 18px; height: 30px; }
+}
+
+/* < 900px: Hide numpad, slightly smaller table panel */
+@media (max-width: 900px) {
+    .number-pad { display: none; }
+    .table-panel-left { flex: 0 1 22%; min-width: 140px; }
+    .center-area { flex: 1 1 78%; }
+    .table-btn { font-size: 15px; min-width: 46px; min-height: 32px; padding: 3px 6px; }
+    .input-group-billing.waiter-field { width: 150px; min-width: 120px; }
+}
+
+/* ====================================================
+   < 768px: VERTICAL STACK LAYOUT
+   All 3 sections stack top-to-bottom and scroll.
+   Tables (horizontal strip) -> Billing -> Bill History
+   ==================================================== */
+@media (max-width: 768px) {
+    .billing-root {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* --- Tables panel: horizontal strip at top --- */
+    .table-panel-left {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        max-height: 180px;
+        border-right: none;
+        border-bottom: 2px solid #E0E0E0;
+        overflow: visible;
+    }
+    .table-scroll-area {
+        max-height: 140px;
+        overflow-y: auto;
+    }
+    .table-panel-header .panel-header-title { display: inline; }
+    .legend-label { display: inline; }
+    .legend-dot { display: inline-block; }
+
+    /* --- Center area: full width --- */
+    .center-area {
+        flex: 0 0 auto;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+    }
+    .center-panel {
+        padding: 0 8px 8px 8px;
+    }
+    .number-pad { display: none; }
+
+    /* Content area should not use flex:1 in vertical mode */
+    .content-area {
+        flex: none;
+    }
+    /* Transaction table needs explicit min-height in vertical mode */
+    .transaction-table-container {
+        flex: none;
+        min-height: 200px;
+        max-height: 350px;
+    }
+    .transaction-table-wrapper {
+        max-height: 250px;
+    }
+
+    /* --- Bill history panel: full width at bottom --- */
+    .bill-history-panel {
+        display: flex;
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        max-height: 400px;
+        border-left: none;
+        border-top: 2px solid #E0E0E0;
+        overflow: visible;
+    }
+    .bill-history-wrapper {
+        max-height: 200px;
+    }
+
+    /* Smaller UI elements */
+    .table-btn { font-size: 15px; min-width: 50px; min-height: 34px; }
+    .input-label-billing { font-size: 16px; }
+    .billing-input-field { font-size: 16px; height: 30px; }
+    .action-buttons-row { flex-wrap: wrap; }
+    .action-button { font-size: 11px; padding: 6px 4px; min-width: calc(33.33% - 4px); }
+    .bill-action-row { flex-wrap: wrap; gap: 6px; }
+    .bill-action-btn { font-size: 11px; padding: 6px 8px; min-width: calc(33.33% - 6px); height: 32px; }
+    .table-number-badge { padding: 4px 12px; min-width: 90px; }
+    .table-number-value { font-size: 22px; width: 65px; }
+    .billing-top-bar { padding: 4px 0; gap: 4px; }
+}
+
+/* < 576px: Mobile - tighter spacing */
+@media (max-width: 576px) {
+    .table-panel-left { max-height: 150px; }
+    .table-scroll-area { max-height: 110px; }
+    .table-btn { font-size: 13px; min-width: 42px; min-height: 30px; padding: 2px 5px; }
+    .table-panel-header { padding: 5px 8px; }
+
+    .input-row { flex-wrap: wrap; }
+    .input-group-billing.flex-grow { width: 100%; }
+    .input-group-billing.field-code,
+    .input-group-billing.field-qty,
+    .input-group-billing.field-price,
+    .input-group-billing.field-amount { width: calc(25% - 3px); min-width: 0; flex: 1; }
+    .input-group-billing.waiter-field { width: 100%; min-width: 0; }
+    .input-label-billing { font-size: 14px; }
+    .billing-input-field { font-size: 14px; height: 28px; }
+    .billing-top-bar { flex-direction: column; }
+    .table-number-badge { flex-direction: row; gap: 8px; min-width: 0; padding: 4px 10px; }
+    .payment-details-row { padding: 6px 8px; gap: 6px; }
+    .pay-field { padding: 3px 6px; }
+    .pay-mode-box { min-width: 120px; }
+    .bill-summary-row { padding: 4px 8px; gap: 4px; }
+    .summary-pill { padding: 3px 8px; }
+    .action-button { min-width: calc(33.33% - 4px); font-size: 10px; }
+    .bill-action-btn { min-width: calc(33.33% - 6px); font-size: 10px; }
+
+    .transaction-table-container { min-height: 180px; max-height: 300px; }
+    .transaction-table-wrapper { max-height: 200px; }
+    .bill-history-panel { max-height: 350px; }
+    .bill-history-wrapper { max-height: 180px; }
+}

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.employee.EmployeeServiceMenuController">
+   <stylesheets>
+      <URL value="@../css/master-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="master-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="master-title" text="Employee Service" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Cards Content Area -->
+      <VBox alignment="TOP_CENTER" spacing="25" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER" spacing="30">
+               <children>
+                  <!-- Attendance Card - Deep Orange -->
+                  <VBox fx:id="attendanceCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #FF5722, #FF8A65); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 87, 34, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CALENDAR_CHECK_ALT" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblAttendanceTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="hjaorI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Attendance" />
+                  </VBox>
+
+                  <!-- Salary Card - Green -->
+                  <VBox fx:id="salaryCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #2E7D32, #66BB6A); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(46, 125, 50, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="MONEY" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblSalaryTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="pgaar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Salary" />
+                  </VBox>
+
+                  <!-- Advance Card - Teal -->
+                  <VBox fx:id="advanceCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #00897B, #4DB6AC); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(0, 137, 123, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="HAND_LIZARD_ALT" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblAdvanceTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="A^Dga`hma" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Advance" />
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

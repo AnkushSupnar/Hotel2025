@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="mainPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.HomeController">
+   <stylesheets>
+      <URL value="@../css/home-material.css" />
+   </stylesheets>
+   
+   <!-- Left Sidebar -->
+   <left>
+      <ScrollPane fx:id="sidebarScrollPane" fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll-pane" BorderPane.alignment="CENTER">
+         <VBox spacing="5.0" styleClass="sidebar-panel">
+            <children>
+               <!-- Restaurant Header Section -->
+               <VBox fx:id="sidebarHeader" alignment="CENTER" spacing="8.0" styleClass="sidebar-header">
+                  <children>
+                     <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2em" />
+                     <Label fx:id="lblSidebarShopName" styleClass="app-title-sidebar" text="Restaurant Name" />
+                  </children>
+               </VBox>
+
+               <!-- Navigation Menu -->
+               <VBox spacing="8.0" styleClass="menu-container">
+                  <children>
+                     <!-- Dashboard Menu -->
+                     <HBox fx:id="menuDashboard" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="DASHBOARD" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="DASHBOARD">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+
+                     <!-- Sales Menu with Badge -->
+                     <HBox fx:id="menuSales" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="SHOPPING_CART" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="ivak`I">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                           <Label fx:id="lblSalesBadge" styleClass="menu-badge, sales-badge" text="0" visible="false" />
+                        </children>
+                     </HBox>
+
+                     <!-- Purchase Menu with Badge -->
+                     <HBox fx:id="menuPurchase" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="KarodI">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                           <Label fx:id="lblPurchaseBadge" styleClass="menu-badge, purchase-badge" text="0" visible="false" />
+                        </children>
+                     </HBox>
+
+                     <!-- Master Data Menu -->
+                     <HBox fx:id="menuMaster" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="DATABASE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="maasTr DoTa">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+
+                     <!-- Reports Menu -->
+                     <HBox fx:id="menuReport" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="BAR_CHART" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="irpaaoT-">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+
+                     <!-- Employee Service Menu -->
+                     <HBox fx:id="menuEmployeeService" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="BRIEFCASE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="kamagaar maonau">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                           <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                     </HBox>
+                  </children>
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </VBox>
+
+               <!-- Bottom Menu Items -->
+               <VBox alignment="BOTTOM_CENTER" spacing="8.0" styleClass="bottom-menu" VBox.vgrow="ALWAYS">
+                  <children>
+                     <!-- Settings Menu -->
+                     <HBox fx:id="menuSettings" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="COG" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="SETTINGS">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+
+                     <!-- Support Menu -->
+                     <HBox fx:id="menuSupport" alignment="CENTER_LEFT" styleClass="menu-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FFFFFF" glyphName="PHONE" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="SUPPORT">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+
+                     <!-- Logout Menu -->
+                     <HBox fx:id="menuExit" alignment="CENTER_LEFT" styleClass="menu-item, logout-item">
+                        <children>
+                           <FontAwesomeIcon fill="#FF5252" glyphName="SIGN_OUT" size="1.3em" styleClass="menu-icon" />
+                           <Text styleClass="menu-text" text="LOGOUT">
+                              <HBox.margin>
+                                 <Insets left="12.0" />
+                              </HBox.margin>
+                           </Text>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </children>
+         </VBox>
+      </ScrollPane>
+   </left>
+   
+   <!-- Top Header -->
+   <top>
+      <HBox alignment="CENTER_LEFT" styleClass="header-bar" BorderPane.alignment="CENTER">
+         <children>
+            <!-- Hotel Name -->
+            <Label fx:id="lblShopeeName" styleClass="header-title" text="Gurukrupa Hotel Management" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- User Info - Single Line -->
+            <HBox alignment="CENTER_RIGHT" spacing="8.0" styleClass="user-info-container">
+               <children>
+                  <FontAwesomeIcon fill="#1976D2" glyphName="USER" size="1.5em" />
+                  <Text fx:id="txtUserName" styleClass="user-info-text" text="Welcome, User" />
+                  <Text styleClass="designation-text" text="|" />
+                  <Text fx:id="txtDesignation" styleClass="designation-text" text="Designation" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   
+   <!-- Main Content Area -->
+   <center>
+      <StackPane styleClass="main-content-area">
+         <children>
+            <VBox alignment="TOP_CENTER" spacing="24.0" styleClass="dashboard-container">
+               <children>
+
+                  <!-- ===== Welcome Banner ===== -->
+                  <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="welcome-banner">
+                     <children>
+                        <VBox alignment="CENTER" styleClass="welcome-icon-box">
+                           <children>
+                              <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="2.2em" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="4.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="welcome-title" text="Welcome to Hotel Management System" />
+                              <Label styleClass="welcome-description" text="Real-time table overview and daily performance at a glance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- ===== Section Header ===== -->
+                  <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
+                     <children>
+                        <FontAwesomeIcon fill="#455A64" glyphName="TH_LARGE" size="1.1em" />
+                        <Label styleClass="section-title" text="Table Overview" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label styleClass="section-subtitle" text="Live Status" />
+                        <FontAwesomeIcon fill="#4CAF50" glyphName="CIRCLE" size="0.6em" />
+                        <HBox fx:id="btnRefreshDashboard" alignment="CENTER" spacing="6.0" styleClass="refresh-btn">
+                           <children>
+                              <FontAwesomeIcon fx:id="refreshIcon" fill="#1976D2" glyphName="REFRESH" size="1.1em" />
+                              <Label styleClass="refresh-btn-text" text="Refresh" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="12.0" />
+                           </HBox.margin>
+                        </HBox>
+                     </children>
+                  </HBox>
+
+                  <!-- ===== Row 1: Total, Active, Closed Bill ===== -->
+                  <HBox alignment="CENTER" spacing="24.0">
+                     <children>
+                        <!-- Total Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-blue, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="TH" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblTotalTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Total Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Active Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-orange, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="FIRE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblActiveTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Active Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Closed Bill Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-red, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="FILE_TEXT" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblClosedBillTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Closed Bill" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- ===== Row 2: Available, Today's Completed ===== -->
+                  <HBox alignment="CENTER" spacing="24.0">
+                     <children>
+                        <!-- Available Tables -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-green, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="CHECK_CIRCLE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblAvailableTables" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Available Tables" />
+                           </children>
+                        </VBox>
+
+                        <!-- Today's Completed -->
+                        <VBox alignment="CENTER" styleClass="gradient-card, card-purple, square-card">
+                           <children>
+                              <StackPane styleClass="card-icon-circle">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FFFFFF" glyphName="CHECK_SQUARE" size="1.8em" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblTodayCompleted" styleClass="card-number" text="0" />
+                              <Label styleClass="card-label" text="Completed Today" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

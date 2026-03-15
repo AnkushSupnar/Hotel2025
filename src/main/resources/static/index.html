@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management - Login</title>
+    <!-- Bootstrap 5 CSS (local) -->
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons (local) -->
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- SweetAlert2 (local) -->
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/login.css" rel="stylesheet">
+    <style>
+        /* Kiran Font for Marathi text - same as desktop LoginController */
+        @font-face {
+            font-family: 'Kiran';
+            src: url('/fonts/kiran.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Two Panel Layout (same as desktop login.fxml) -->
+<div class="login-root">
+
+    <!-- Left Panel - Brand Section with Gradient -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <!-- Logo Circle -->
+            <div class="logo-circle">
+                <i class="bi bi-shop" style="font-size: 3.5em; color: white;"></i>
+            </div>
+
+            <!-- Brand Text (desktop: VBox spacing="12") -->
+            <div style="text-align: center; display: flex; flex-direction: column; gap: 12px;">
+                <h1 class="brand-title">Hotel Management</h1>
+                <p class="brand-subtitle">Complete Restaurant &amp; Hotel Solution</p>
+            </div>
+
+            <!-- Feature List -->
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <span class="feature-text">Smart Billing & Invoicing</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <span class="feature-text">Real-time Inventory Management</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <span class="feature-text">Detailed Reports & Analytics</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <span class="feature-text">Multi-user Role Management</span>
+                </div>
+            </div>
+
+            <!-- Version -->
+            <p class="version-text">Version 2.0</p>
+        </div>
+    </div>
+
+    <!-- Right Panel - Login Form -->
+    <div class="form-panel">
+        <div class="login-card">
+
+            <!-- Card Header -->
+            <div class="card-header-section">
+                <div class="header-icon-container">
+                    <i class="bi bi-box-arrow-in-right" style="font-size: 1.8em; color: #1976D2;"></i>
+                </div>
+                <h2 class="welcome-title">Welcome Back</h2>
+                <p class="welcome-subtitle">Sign in to continue to your dashboard</p>
+            </div>
+
+            <!-- Error Alert -->
+            <div id="loginError" class="alert alert-danger mx-4 mb-0 d-none" role="alert"></div>
+
+            <!-- Form Body -->
+            <form id="loginForm" class="card-body-section">
+
+                <!-- Restaurant Selection -->
+                <div class="form-group-custom">
+                    <div class="input-label-row">
+                        <i class="bi bi-building" style="color: #1976D2;"></i>
+                        <label class="input-label">Restaurant</label>
+                    </div>
+                    <div class="input-container">
+                        <i class="bi bi-house-door field-icon"></i>
+                        <select id="shopSelect" class="material-input kiran-font" required>
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Username Field -->
+                <div class="form-group-custom">
+                    <div class="input-label-row">
+                        <i class="bi bi-person" style="color: #1976D2;"></i>
+                        <label class="input-label">Username</label>
+                    </div>
+                    <div class="input-container">
+                        <i class="bi bi-person field-icon"></i>
+                        <input type="text" id="username" class="material-input kiran-font"
+                               placeholder="yaujar inavaDa" autocomplete="off" required>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group-custom">
+                    <div class="input-label-row">
+                        <i class="bi bi-lock" style="color: #1976D2;"></i>
+                        <label class="input-label">Password</label>
+                    </div>
+                    <div class="input-container">
+                        <i class="bi bi-key field-icon"></i>
+                        <input type="password" id="password" class="material-input kiran-font" placeholder="paasavaD- Taka" required>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-section">
+                    <button type="submit" id="loginBtn" class="btn-login-primary">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        <span>SIGN IN</span>
+                    </button>
+                    <button type="button" id="cancelBtn" class="btn-login-secondary" onclick="window.close();">
+                        <i class="bi bi-x-lg me-2"></i>
+                        <span>CANCEL</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Card Footer -->
+            <div class="card-footer-section">
+                <i class="bi bi-question-circle" style="color: #9E9E9E;"></i>
+                <span class="footer-text">Need help? Contact support</span>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <p class="copyright-text">&copy; 2025 Hotel Management System. All rights reserved.</p>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS (local) -->
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- App JS -->
+<script src="/js/app.js"></script>
+<!-- Reusable Components -->
+<script src="/js/components/autocomplete-textfield.js"></script>
+<script src="/js/auth.js"></script>
+
+</body>
+</html>

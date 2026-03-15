@@ -1,0 +1,56 @@
+.root{
+    /*-fx-background-color:#bdbdbd;*/
+}
+.pane{
+
+   -fx-background-radius: 0px 50px 0px 0px;
+   -fx-border-radius:   0px 50px 0px 0px;
+   -fx-border-color: #F1F2F7;
+   -fx-border-width:1;
+   /*-fx-background-color:#2262C6;*/
+    -fx-background-color:linear-gradient(to bottom, #2262C6,#E839F6);
+}
+.pane .glyph-icon{
+          -fx-fill:white;
+      }
+.headingtext{
+    -fx-font-smoothing-type: lcd;
+     -fx-fill: white;
+}
+.pane1{
+
+   -fx-background-radius:15px 50px 30px;
+   -fx-border-radius:  15px 50px 30px;
+   -fx-border-width:1;
+   -fx-background-color:white;
+}
+.menupane{
+    -fx-background-radius:15px 50px 30px;
+       -fx-border-radius:  15px 50px 30px 0px;
+       -fx-border-width:1;
+       -fx-background-color:red;
+}
+.menupane .glyph-icon{
+    -fx-fill:white;
+}
+
+.button{
+/*-fx-background-color:#2262C6;*/
+-fx-background-color:transparent;
+-fx-text-fill:white;
+-fx-font-size:16px;
+}
+
+.button .glyph-icon{
+	-fx-fill:white;
+}
+.button:hover {
+	-fx-background-color:#34e7e4e0;
+	-fx-text-fill:white;
+}.button:hover .glyph-icon {
+    -fx-fill:white;
+	-fx-background-color:#00e676;
+}
+.button:pressed{
+	-fx-background-color:#2262C6;
+}

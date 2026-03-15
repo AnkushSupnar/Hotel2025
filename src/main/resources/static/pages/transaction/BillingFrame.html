@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/billing-material.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="billing-root">
+
+    <!-- ======== LEFT PANEL - TABLE SECTIONS ======== -->
+    <div class="table-panel-left">
+        <div class="table-panel-header">
+            <i class="bi bi-grid-3x3-gap" style="font-size:1.2em;"></i>
+            <span class="panel-header-title">TABLES</span>
+            <div style="flex:1;"></div>
+            <span class="legend-dot legend-dot-open"></span><span class="legend-label">Open</span>
+            <span class="legend-dot legend-dot-running"></span><span class="legend-label">Running</span>
+            <span class="legend-dot legend-dot-billed"></span><span class="legend-label">Billed</span>
+            <button class="refresh-btn-compact" id="btnRefreshTables" title="Refresh Tables">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+        <div class="table-scroll-area" id="sectionsContainer">
+            <p style="text-align:center; color:#9E9E9E; padding:20px;">Loading tables...</p>
+        </div>
+    </div>
+
+    <!-- ======== CENTER AREA - Order Entry + Number Pad ======== -->
+    <!-- Desktop: HBox containing [VBox center-panel, VBox numberPad] -->
+    <div class="center-area">
+
+        <div class="center-panel">
+
+            <!-- Top Bar: Customer Search + Table Number -->
+            <div class="billing-top-bar">
+                <div class="customer-search-card">
+                    <div class="search-input-row" id="customerSearchRow">
+                        <i class="bi bi-search" style="color:#757575;"></i>
+                        <input type="text" id="txtCustomerSearch" placeholder="ga`ahkacao naava" />
+                        <button class="add-customer-btn" id="btnAddNewCustomer" title="Add New Customer">
+                            <i class="bi bi-person-plus"></i> ADD NEW
+                        </button>
+                    </div>
+                    <div class="selected-customer-chip" id="selectedCustomerDisplay">
+                        <i class="bi bi-person-fill" style="color:#1976D2;"></i>
+                        <span class="customer-name-label" id="lblCustomerName">-</span>
+                        <span class="chip-separator">&bull;</span>
+                        <span class="customer-mobile-label" id="lblCustomerMobile">-</span>
+                        <div style="flex:1;"></div>
+                        <button class="remove-customer-btn" id="btnClearCustomer" title="Clear Customer">&times;</button>
+                    </div>
+                </div>
+                <div class="table-number-badge">
+                    <p class="table-number-label">TABLE NO</p>
+                    <input type="text" class="table-number-value" id="txtTableNumber" readonly value="-" />
+                </div>
+            </div>
+
+            <!-- Content Area: Item Entry + Table + Payment -->
+            <div class="content-area">
+
+                <!-- Row 1: Category Name + Waiter Name -->
+                <div class="input-row">
+                    <div class="input-group-billing flex-grow">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <label class="input-label-billing">k^TogaIrIcao naava</label>
+                            <div style="flex:1;"></div>
+                            <label class="all-items-check">
+                                <input type="checkbox" id="chkAllItems" /> sava- AayaTma
+                            </label>
+                        </div>
+                        <input type="text" class="billing-input-field" id="txtCategoryName" placeholder="k^TogaIrIcao naava" autocomplete="off" />
+                    </div>
+                    <div class="input-group-billing waiter-field">
+                        <label class="input-label-billing">vaoTrcao naava</label>
+                        <select class="billing-input-field" id="cmbWaitorName">
+                            <option value="">vaoTrcao naava</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Code, Item Name, Quantity, Price, Amount -->
+                <div class="input-row">
+                    <div class="input-group-billing field-code">
+                        <label class="input-label-billing">kaoD</label>
+                        <input type="text" class="billing-input-field" id="txtCode" placeholder="kaoD" autocomplete="off" />
+                    </div>
+                    <div class="input-group-billing flex-grow">
+                        <label class="input-label-billing">maalaacao naava</label>
+                        <input type="text" class="billing-input-field" id="txtItemName" placeholder="maalaacao naava" autocomplete="off" />
+                    </div>
+                    <div class="input-group-billing field-qty">
+                        <label class="input-label-billing">naga</label>
+                        <input type="text" class="billing-input-field" id="txtQuantity" placeholder="naga" autocomplete="off" />
+                    </div>
+                    <div class="input-group-billing field-price">
+                        <label class="input-label-billing">Baava</label>
+                        <input type="text" class="billing-input-field" id="txtPrice" placeholder="Baava" autocomplete="off" />
+                    </div>
+                    <div class="input-group-billing field-amount">
+                        <label class="input-label-billing">r@kma</label>
+                        <input type="text" class="billing-input-field" id="txtAmount" placeholder="r@kma" readonly />
+                    </div>
+                </div>
+
+                <!-- Action Buttons Row -->
+                <div class="action-buttons-container">
+                    <div class="action-buttons-row">
+                        <button class="action-button btn-add" id="btnAdd" title="Add item to order"><i class="bi bi-plus"></i> ADD</button>
+                        <button class="action-button btn-order" id="btnOrder" title="Send order to kitchen (KOT)"><i class="bi bi-cart3"></i> ORDER</button>
+                        <button class="action-button btn-edit" id="btnEditItem" title="Edit selected item"><i class="bi bi-pencil"></i> EDIT</button>
+                        <button class="action-button btn-remove" id="btnRemove" title="Remove selected item"><i class="bi bi-trash"></i> REMOVE</button>
+                        <button class="action-button btn-clear" id="btnClear" title="Clear form fields"><i class="bi bi-x-circle"></i> CLEAR</button>
+                        <button class="action-button btn-kitchen" id="btnKitchenStatus" title="View kitchen order status"><i class="bi bi-cup-hot"></i> KITCHEN</button>
+                    </div>
+                </div>
+
+                <!-- Transaction Table -->
+                <div class="transaction-table-container">
+                    <div class="transaction-table-wrapper">
+                        <table class="transaction-table" id="tblTransaction">
+                            <thead>
+                                <tr>
+                                    <th class="col-srno" style="width:50px;">Sr.No</th>
+                                    <th class="col-item-name">Item Name</th>
+                                    <th class="col-qty" style="width:60px;">Qty</th>
+                                    <th class="col-rate" style="width:70px;">Rate</th>
+                                    <th class="col-amount" style="width:80px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionBody">
+                                <tr><td colspan="5" class="table-empty-msg">Select a table to start billing</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="payment-section">
+                        <!-- Row 1: Bill Summary Pills -->
+                        <div class="bill-summary-row">
+                            <div class="summary-pill pill-qty">
+                                <span class="pill-label">Qty:</span>
+                                <span class="pill-value" id="lblTotalQuantity">0</span>
+                            </div>
+                            <div class="summary-pill pill-total">
+                                <span class="pill-label">Total:</span>
+                                <span class="pill-value" id="lblBillAmount">&#x20B9;0</span>
+                            </div>
+                            <div class="summary-pill pill-discount">
+                                <span class="pill-label">Discount:</span>
+                                <input type="text" class="discount-input" id="txtDiscount" placeholder="0" title="Enter discount amount" />
+                            </div>
+                            <div class="summary-pill pill-net">
+                                <span class="pill-label">Net Amount:</span>
+                                <span class="pill-value" id="lblNetAmount">&#x20B9;0</span>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Payment Details -->
+                        <div class="payment-details-row">
+                            <div class="pay-field pay-mode-box">
+                                <p class="pay-field-label pay-mode-label">Pay Mode</p>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <i class="bi bi-cash-stack" style="color:#4CAF50;"></i>
+                                    <select class="pay-mode-combo" id="cmbPaymentMode">
+                                        <option value="CASH">CASH</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pay-field qr-code-box" id="hboxPrintQR">
+                                <p class="pay-field-label qr-label">QR Code</p>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <i class="bi bi-qr-code" style="color:#4CAF50;"></i>
+                                    <label style="font-size:10px; color:#2E7D32; cursor:pointer;">
+                                        <input type="checkbox" id="chkPrintQR" /> Print
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="pay-field received-box">
+                                <p class="pay-field-label received-label">Received</p>
+                                <input type="text" class="received-field" id="txtCashReceived" placeholder="0" />
+                            </div>
+                            <div class="pay-field return-box">
+                                <p class="pay-field-label return-label">Return</p>
+                                <input type="text" class="return-field" id="txtReturnToCustomer" placeholder="0" />
+                            </div>
+                            <div class="pay-field change-box">
+                                <p class="pay-field-label change-label">Change</p>
+                                <p class="change-value" id="lblChange">&#x20B9;0</p>
+                            </div>
+                            <div class="pay-field due-box">
+                                <p class="pay-field-label due-label">Due</p>
+                                <p class="due-value" id="lblBalance">&#x20B9;0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bill Action Buttons Row -->
+                    <div class="bill-action-row">
+                        <button class="bill-action-btn btn-bill-close" id="btnClose" title="Close table and generate bill"><i class="bi bi-x-lg"></i> CLOSE</button>
+                        <button class="bill-action-btn btn-bill-paid" id="btnPaid" title="Mark bill as paid"><i class="bi bi-check-lg"></i> PAID</button>
+                        <button class="bill-action-btn btn-bill-shift" id="btnShiftTable" title="Shift items to another table"><i class="bi bi-arrow-left-right"></i> SHIFT</button>
+                        <button class="bill-action-btn btn-bill-old" id="btnOldBill" title="Reprint old bill"><i class="bi bi-clock-history"></i> OLD BILL</button>
+                        <button class="bill-action-btn btn-bill-edit" id="btnEditBill" title="Edit a paid/credit bill"><i class="bi bi-pencil-square"></i> EDIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number Pad (right side of center area) -->
+        <div class="number-pad" id="numberPadRow">
+            <button class="numpad-btn" data-num="1">1</button>
+            <button class="numpad-btn" data-num="2">2</button>
+            <button class="numpad-btn" data-num="3">3</button>
+            <button class="numpad-btn" data-num="4">4</button>
+            <button class="numpad-btn" data-num="5">5</button>
+            <button class="numpad-btn" data-num="6">6</button>
+            <button class="numpad-btn" data-num="7">7</button>
+            <button class="numpad-btn" data-num="8">8</button>
+            <button class="numpad-btn" data-num="9">9</button>
+            <button class="numpad-btn numpad-btn-dot" data-num=".">.</button>
+            <button class="numpad-btn" data-num="0">0</button>
+            <button class="numpad-btn numpad-btn-clear" data-num="C">C</button>
+        </div>
+
+    </div>
+
+    <!-- ======== RIGHT PANEL - BILL HISTORY ======== -->
+    <div class="bill-history-panel">
+        <div class="bill-history-header">
+            <i class="bi bi-clock-history" style="font-size:1.2em;"></i>
+            <span class="panel-header-title">BILL HISTORY</span>
+            <div style="flex:1;"></div>
+            <button class="refresh-btn-compact" id="btnRefreshBills" title="Refresh Bills">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+
+        <!-- Search Filters -->
+        <div class="bill-search-section">
+            <div class="bill-search-row">
+                <i class="bi bi-calendar3" style="color:#7B1FA2;"></i>
+                <input type="date" class="bill-search-input" id="dpSearchDate" />
+            </div>
+            <div class="bill-search-row">
+                <i class="bi bi-file-earmark-text" style="color:#7B1FA2;"></i>
+                <input type="text" class="bill-search-input" id="txtSearchBillNo" placeholder="Bill Number" />
+            </div>
+            <div class="bill-search-row">
+                <i class="bi bi-person" style="color:#7B1FA2;"></i>
+                <input type="text" class="bill-search-input" id="txtSearchCustomer" placeholder="ga`ahkacao naava"
+                       style="font-family:'Kiran',sans-serif; font-size:16px;" />
+            </div>
+            <div class="bill-search-row">
+                <button class="btn-search-bills" id="btnSearchBills">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <button class="btn-clear-search" id="btnClearSearch">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bills Table -->
+        <div class="bill-history-wrapper">
+            <table class="bill-history-table" id="tblBillHistory">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="billHistoryBody">
+                    <tr><td colspan="5" style="text-align:center; color:#9E9E9E; padding:20px;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/components/autocomplete-textfield.js"></script>
+<script src="/js/pages/transaction/BillingFrame.js"></script>
+
+</body>
+</html>

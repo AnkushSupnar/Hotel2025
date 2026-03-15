@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="master-menu-root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.master.MasterMenuController">
+   <stylesheets>
+      <URL value="@../css/master-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="master-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="master-title" text="Master Data Management" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Cards Content Area -->
+      <VBox alignment="TOP_CENTER" spacing="25" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+
+            <!-- First Row: Category, Item, Table -->
+            <HBox alignment="CENTER" spacing="25">
+               <children>
+                  <!-- Category Card - Pink (#E91E63) -->
+                  <VBox fx:id="categoryCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #E91E63, #F06292); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(233, 30, 99, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="SITEMAP" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblCategoryTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="k^TogaIrI" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Category Master" />
+                  </VBox>
+
+                  <!-- Item Card - Orange (#FF9800) -->
+                  <VBox fx:id="itemCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #FF9800, #FFB74D); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(255, 152, 0, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="CUTLERY" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblItemTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="AayaTma" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Item Master" />
+                  </VBox>
+
+                  <!-- Table Card - Red (#F44336) -->
+                  <VBox fx:id="tableCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #F44336, #E57373); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(244, 67, 54, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="TABLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblTableTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="Tobala" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Table Master" />
+                  </VBox>
+
+                  <!-- Customer Card - Green (#4CAF50) -->
+                  <VBox fx:id="customerCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #4CAF50, #81C784); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(76, 175, 80, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USERS" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblCustomerTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="ksTmar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Customer Master" />
+                  </VBox>
+               </children>
+            </HBox>
+
+            <!-- Second Row: Employee, Supplier, User, Bank -->
+            <HBox alignment="CENTER" spacing="25">
+               <children>
+                  <!-- Employee Card - Purple (#9C27B0) -->
+                  <VBox fx:id="employeeCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #9C27B0, #CE93D8); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(156, 39, 176, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USER_CIRCLE" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblEmployeeTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="kamagaar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Employee Master" />
+                  </VBox>
+
+                  <!-- Supplier Card - Blue (#2196F3) -->
+                  <VBox fx:id="supplierCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #2196F3, #64B5F6); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="TRUCK" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblSupplierTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="paurvazadar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Supplier Master" />
+                  </VBox>
+
+                  <!-- User Card - Cyan (#00BCD4) -->
+                  <VBox fx:id="userCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #00BCD4, #4DD0E1); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(0, 188, 212, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="USER_PLUS" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblUserTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="yaujar" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="User Master" />
+                  </VBox>
+
+                  <!-- Bank Card - Blue Grey (#607D8B) -->
+                  <VBox fx:id="bankCard" alignment="CENTER" spacing="8"
+                        style="-fx-background-color: linear-gradient(to bottom right, #607D8B, #90A4AE); -fx-background-radius: 16; -fx-padding: 18; -fx-cursor: hand; -fx-pref-width: 185; -fx-pref-height: 185; -fx-min-width: 185; -fx-min-height: 185; -fx-max-width: 185; -fx-max-height: 185; -fx-effect: dropshadow(three-pass-box, rgba(96, 125, 139, 0.4), 12, 0, 0, 4);">
+                     <StackPane style="-fx-min-width: 54; -fx-min-height: 54; -fx-max-width: 54; -fx-max-height: 54; -fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 27;">
+                        <FontAwesomeIcon fill="#FFFFFF" glyphName="BANK" size="1.8em" />
+                     </StackPane>
+                     <Label fx:id="lblBankTitle" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="ba^Mk" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;" text="Bank Master" />
+                  </VBox>
+               </children>
+            </HBox>
+
+         </children>
+      </VBox>
+   </children>
+</VBox>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/dashboard-material.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- App Layout: Sidebar + Main (matches desktop Home.fxml BorderPane) -->
+<div class="app-layout">
+
+    <!-- =============== LEFT SIDEBAR (matches desktop sidebar-panel) =============== -->
+    <nav class="sidebar-panel">
+        <div class="sidebar-header" id="sidebarHeader" style="cursor: pointer;" title="Go to Home"
+             onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+            <div class="sidebar-icon"><i class="bi bi-shop"></i></div>
+            <p class="app-title-sidebar" id="lblSidebarShopName">Restaurant Name</p>
+        </div>
+
+        <div class="menu-container">
+            <a class="menu-item active" id="menuDashboard" href="/pages/dashboard/Dashboard.html">
+                <i class="bi bi-speedometer2 menu-icon"></i>
+                <span class="menu-text-en">DASHBOARD</span>
+            </a>
+            <a class="menu-item" id="menuSales" href="/pages/transaction/SalesMenu.html">
+                <i class="bi bi-cart3 menu-icon"></i>
+                <span class="menu-text">ivak`I</span>
+            </a>
+            <a class="menu-item" id="menuPurchase" href="/pages/transaction/purchase-order.html">
+                <i class="bi bi-truck menu-icon"></i>
+                <span class="menu-text">KarodI</span>
+            </a>
+            <a class="menu-item" id="menuMaster" href="/pages/master/customers.html">
+                <i class="bi bi-database menu-icon"></i>
+                <span class="menu-text">maasTr DoTa</span>
+            </a>
+            <a class="menu-item" id="menuReport" href="/pages/report/sales.html">
+                <i class="bi bi-bar-chart menu-icon"></i>
+                <span class="menu-text">irpaaoT-</span>
+            </a>
+            <a class="menu-item" id="menuEmployeeService" href="/pages/employee/attendance.html">
+                <i class="bi bi-briefcase menu-icon"></i>
+                <span class="menu-text">kamagaar maonau</span>
+            </a>
+        </div>
+
+        <div class="bottom-menu">
+            <a class="menu-item" id="menuSettings" href="/pages/setting/SettingMenu.html">
+                <i class="bi bi-gear menu-icon"></i>
+                <span class="menu-text-en">SETTINGS</span>
+            </a>
+            <a class="menu-item" id="menuSupport" href="#" onclick="showSupportDialog(); return false;">
+                <i class="bi bi-telephone menu-icon"></i>
+                <span class="menu-text-en">SUPPORT</span>
+            </a>
+            <a class="menu-item logout-item" id="menuExit" href="#" onclick="logout(); return false;">
+                <i class="bi bi-box-arrow-left menu-icon" style="color: #FF5252;"></i>
+                <span class="menu-text-en">LOGOUT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- =============== MAIN CONTENT =============== -->
+    <div class="main-content">
+
+        <!-- Top Header Bar -->
+        <div class="header-bar">
+            <h1 class="header-title" id="lblShopeeName">Hotel Management System</h1>
+            <div class="user-info-container">
+                <i class="bi bi-person-fill" style="color: #1976D2; font-size: 1.5em;"></i>
+                <span class="user-info-text" id="txtUserName">Welcome, User</span>
+                <span class="designation-text">|</span>
+                <span class="designation-text" id="txtDesignation">Designation</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Content Area -->
+        <div class="dashboard-scroll">
+            <div class="dashboard-main-container">
+
+                <!-- Dashboard Header (greeting, date/time, refresh) -->
+                <div class="dashboard-header">
+                    <i class="bi bi-speedometer2 dashboard-header-icon"></i>
+                    <div>
+                        <p class="dashboard-greeting" id="lblGreeting">Good Morning!</p>
+                        <h2 class="dashboard-title">Dashboard</h2>
+                    </div>
+                    <div style="flex:1;"></div>
+                    <div class="datetime-container">
+                        <p class="current-date" id="lblCurrentDate">Loading...</p>
+                        <p class="current-time" id="lblCurrentTime">--:-- --</p>
+                    </div>
+                    <div class="notification-container">
+                        <button class="notification-button" id="btnNotification" title="Notifications">
+                            <i class="bi bi-bell"></i>
+                        </button>
+                        <span class="notification-badge" id="lblNotificationBadge" style="display:none;">0</span>
+                    </div>
+                    <button class="refresh-button" id="btnRefresh" onclick="loadFullDashboard()">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span class="refresh-text">Refresh</span>
+                    </button>
+                </div>
+
+                <!-- Row 1: Primary KPI Cards -->
+                <div class="kpi-row">
+                    <!-- Today's Sales -->
+                    <div class="kpi-card sales-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container sales-icon-bg"><i class="bi bi-cash-stack"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Today's Sales</p>
+                                <p class="kpi-value sales-value" id="lblTodaysSales">...</p>
+                                <div class="trend-indicator trend-neutral" id="salesTrendBox">
+                                    <i class="bi bi-dash" id="salesTrendIcon"></i>
+                                    <span class="trend-text" id="lblSalesTrend">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Today's Orders -->
+                    <div class="kpi-card orders-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container orders-icon-bg"><i class="bi bi-cart3"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Today's Orders</p>
+                                <p class="kpi-value orders-value" id="lblTodaysOrders">...</p>
+                                <div class="trend-indicator trend-neutral" id="ordersTrendBox">
+                                    <i class="bi bi-dash" id="ordersTrendIcon"></i>
+                                    <span class="trend-text" id="lblOrdersTrend">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Today's Purchase -->
+                    <div class="kpi-card purchase-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container purchase-icon-bg"><i class="bi bi-truck"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Today's Purchase</p>
+                                <p class="kpi-value purchase-value" id="lblTodaysPurchase">...</p>
+                                <div class="trend-indicator trend-neutral" id="purchaseTrendBox">
+                                    <i class="bi bi-dash" id="purchaseTrendIcon"></i>
+                                    <span class="trend-text" id="lblPurchaseTrend">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pending Credit -->
+                    <div class="kpi-card credit-card-accent">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container credit-icon-bg"><i class="bi bi-credit-card"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Pending Credit</p>
+                                <p class="kpi-value credit-value" id="lblPendingCredit">...</p>
+                                <p class="kpi-sub-label" id="lblPendingCreditCount">0 pending</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Financial Summary Cards -->
+                <div class="kpi-row">
+                    <div class="kpi-card profit-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container profit-icon-bg"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Gross Profit</p>
+                                <p class="kpi-value profit-value" id="lblGrossProfit">...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kpi-card cash-card-accent">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container cash-icon-bg"><i class="bi bi-bank"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Cash in Hand</p>
+                                <p class="kpi-value cash-value" id="lblCashInHand">...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kpi-card due-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container due-icon-bg"><i class="bi bi-clock-history"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Payments Due</p>
+                                <p class="kpi-value due-value" id="lblPaymentsDue">...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kpi-card avg-card">
+                        <div class="kpi-card-inner">
+                            <div class="kpi-icon-container avg-icon-bg"><i class="bi bi-calculator"></i></div>
+                            <div class="kpi-info">
+                                <p class="kpi-label">Avg Order Value</p>
+                                <p class="kpi-value avg-value" id="lblAvgOrderValue">...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Charts -->
+                <div class="chart-row">
+                    <div class="chart-card">
+                        <p class="chart-title">Sales Trend (Last 7 Days)</p>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="salesTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <p class="chart-title">Sales vs Purchase (Last 7 Days)</p>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="salesVsPurchaseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 4: Low Stock, Payment Breakdown, Monthly Target -->
+                <div class="widget-row">
+                    <!-- Low Stock Alerts -->
+                    <div class="widget-card alert-card">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                            <i class="bi bi-exclamation-triangle" style="color:#F44336; font-size:1.3em;"></i>
+                            <span class="widget-title" style="margin:0;">Low Stock Alerts</span>
+                            <div style="flex:1;"></div>
+                            <span class="alert-badge" id="lblLowStockCount">0</span>
+                        </div>
+                        <div id="lowStockContainer">
+                            <p class="empty-list-label">Loading...</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Breakdown -->
+                    <div class="widget-card">
+                        <p class="widget-title">Payment Methods (Today)</p>
+                        <div class="payment-breakdown">
+                            <!-- Cash -->
+                            <div class="payment-row">
+                                <div class="payment-icon-box cash-bg"><i class="bi bi-cash-stack"></i></div>
+                                <div class="payment-info">
+                                    <p class="payment-label">Cash</p>
+                                    <div class="progress-bar-track cash-payment-track">
+                                        <div class="progress-bar-fill cash-payment-fill" id="cashPaymentProgress" style="width:0%;"></div>
+                                    </div>
+                                </div>
+                                <span class="payment-amount" id="lblCashPayment">₹0</span>
+                            </div>
+                            <!-- Bank -->
+                            <div class="payment-row">
+                                <div class="payment-icon-box bank-bg"><i class="bi bi-bank"></i></div>
+                                <div class="payment-info">
+                                    <p class="payment-label">Bank</p>
+                                    <div class="progress-bar-track bank-payment-track">
+                                        <div class="progress-bar-fill bank-payment-fill" id="bankPaymentProgress" style="width:0%;"></div>
+                                    </div>
+                                </div>
+                                <span class="payment-amount" id="lblBankPayment">₹0</span>
+                            </div>
+                            <!-- Credit -->
+                            <div class="payment-row">
+                                <div class="payment-icon-box credit-pay-bg"><i class="bi bi-clock-history"></i></div>
+                                <div class="payment-info">
+                                    <p class="payment-label">Credit</p>
+                                    <div class="progress-bar-track credit-payment-track">
+                                        <div class="progress-bar-fill credit-payment-fill" id="creditPaymentProgress" style="width:0%;"></div>
+                                    </div>
+                                </div>
+                                <span class="payment-amount" id="lblCreditPayment">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Sales Target -->
+                    <div class="widget-card target-card">
+                        <p class="widget-title">Monthly Sales Target</p>
+                        <div class="target-container">
+                            <div class="target-progress-wrapper">
+                                <svg class="target-progress-ring" viewBox="0 0 120 120">
+                                    <circle class="target-ring-bg" cx="60" cy="60" r="50"></circle>
+                                    <circle class="target-ring-fill" id="targetRingFill" cx="60" cy="60" r="50"
+                                            stroke-dasharray="314.16" stroke-dashoffset="314.16"></circle>
+                                </svg>
+                                <div class="target-center">
+                                    <p class="target-percentage" id="lblTargetPercentage">0%</p>
+                                    <p class="target-sub-label">achieved</p>
+                                </div>
+                            </div>
+                            <div class="target-details">
+                                <div class="target-detail-item">
+                                    <p class="target-current" id="lblCurrentSales">₹0</p>
+                                    <p class="target-detail-label">Current</p>
+                                </div>
+                                <span class="target-divider">/</span>
+                                <div class="target-detail-item">
+                                    <p class="target-goal" id="lblTargetAmount">₹1,00,000</p>
+                                    <p class="target-detail-label">Target</p>
+                                </div>
+                            </div>
+                            <span class="days-remaining" id="lblDaysRemaining">-- days remaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 5: Table Status, Order Status, Top Selling Items -->
+                <div class="widget-row">
+                    <!-- Table Status -->
+                    <div class="widget-card">
+                        <p class="widget-title">Table Status</p>
+                        <div class="status-container">
+                            <div class="status-item">
+                                <p class="status-value" id="lblDashTotalTables">0</p>
+                                <p class="status-label">Total</p>
+                            </div>
+                            <div class="status-item">
+                                <p class="status-value active-value" id="lblDashActiveTables">0</p>
+                                <p class="status-label">Active</p>
+                            </div>
+                            <div class="status-item">
+                                <p class="status-value available-value" id="lblDashAvailableTables">0</p>
+                                <p class="status-label">Available</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Status -->
+                    <div class="widget-card">
+                        <p class="widget-title">Today's Order Status</p>
+                        <div class="order-status-container">
+                            <div class="order-status-row">
+                                <div class="order-status-header">
+                                    <span class="order-status-label">PAID</span>
+                                    <span class="order-status-count" id="lblPaidCount">0</span>
+                                </div>
+                                <div class="progress-bar-track paid-progress-track">
+                                    <div class="progress-bar-fill paid-progress-fill" id="paidProgress" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="order-status-row">
+                                <div class="order-status-header">
+                                    <span class="order-status-label">CREDIT</span>
+                                    <span class="order-status-count" id="lblCreditCount">0</span>
+                                </div>
+                                <div class="progress-bar-track credit-progress-track">
+                                    <div class="progress-bar-fill credit-progress-fill" id="creditOrderProgress" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="order-status-row">
+                                <div class="order-status-header">
+                                    <span class="order-status-label">PENDING</span>
+                                    <span class="order-status-count" id="lblPendingCount">0</span>
+                                </div>
+                                <div class="progress-bar-track pending-progress-track">
+                                    <div class="progress-bar-fill pending-progress-fill" id="pendingProgress" style="width:0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Selling Items -->
+                    <div class="widget-card" style="flex:2;">
+                        <p class="widget-title">Top Selling Items (Today)</p>
+                        <div class="top-items-list" id="topItemsContainer">
+                            <p class="empty-list-label">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Quick Actions & Recent Transactions -->
+                <div class="widget-row">
+                    <!-- Quick Actions -->
+                    <div class="widget-card" style="min-width:280px; max-width:320px;">
+                        <p class="widget-title">Quick Actions</p>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn new-order-btn" id="btnNewOrder">
+                                <i class="bi bi-plus-circle action-icon" style="color:#4CAF50;"></i>
+                                <span class="action-text">New Order</span>
+                            </button>
+                            <button class="quick-action-btn payment-btn" id="btnReceivePayment">
+                                <i class="bi bi-cash-stack action-icon" style="color:#2196F3;"></i>
+                                <span class="action-text">Receive Payment</span>
+                            </button>
+                            <button class="quick-action-btn purchase-btn" id="btnNewPurchase">
+                                <i class="bi bi-truck action-icon" style="color:#FF9800;"></i>
+                                <span class="action-text">New Purchase</span>
+                            </button>
+                            <button class="quick-action-btn reports-btn" id="btnViewReports">
+                                <i class="bi bi-bar-chart action-icon" style="color:#9C27B0;"></i>
+                                <span class="action-text">View Reports</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="widget-card" style="flex:1;">
+                        <p class="widget-title">Recent Transactions</p>
+                        <div class="transactions-list" id="recentTransactionsContainer">
+                            <p class="empty-list-label">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Stats -->
+                <div class="footer-stats">
+                    <div class="footer-stat-item">
+                        <i class="bi bi-people footer-stat-icon" style="color:#1976D2;"></i>
+                        <span class="footer-stat-value" id="lblTotalCustomers">0</span>
+                        <span class="footer-stat-label">Customers</span>
+                    </div>
+                    <div class="footer-stat-item">
+                        <i class="bi bi-egg-fried footer-stat-icon" style="color:#4CAF50;"></i>
+                        <span class="footer-stat-value" id="lblTotalItems">0</span>
+                        <span class="footer-stat-label">Menu Items</span>
+                    </div>
+                    <div class="footer-stat-item">
+                        <i class="bi bi-person-badge footer-stat-icon" style="color:#FF9800;"></i>
+                        <span class="footer-stat-value" id="lblTotalEmployees">0</span>
+                        <span class="footer-stat-label">Employees</span>
+                    </div>
+                    <div class="footer-stat-item">
+                        <i class="bi bi-grid-3x3 footer-stat-icon" style="color:#9C27B0;"></i>
+                        <span class="footer-stat-value" id="lblTotalTablesFooter">0</span>
+                        <span class="footer-stat-label">Tables</span>
+                    </div>
+                    <div class="system-status" id="systemStatus">
+                        <i class="bi bi-check-circle-fill" style="color:#4CAF50;" id="statusIcon"></i>
+                        <span class="system-status-text status-online" id="lblSystemStatus">System Online</span>
+                    </div>
+                </div>
+
+            </div><!-- /dashboard-main-container -->
+        </div><!-- /dashboard-scroll -->
+    </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js (local, replaces JavaFX LineChart/AreaChart) -->
+<script src="/lib/chartjs/chart.umd.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/pages/dashboard/Dashboard.js"></script>
+
+</body>
+</html>

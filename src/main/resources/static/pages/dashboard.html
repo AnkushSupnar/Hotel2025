@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- App Layout: Sidebar + Main (matches desktop BorderPane) -->
+<div class="app-layout">
+
+    <!-- =============== LEFT SIDEBAR (matches desktop sidebar-panel) =============== -->
+    <nav class="sidebar-panel">
+        <!-- Restaurant Header (matches desktop sidebarHeader) -->
+        <div class="sidebar-header" id="sidebarHeader" style="cursor: pointer;" title="Go to Dashboard">
+            <div class="sidebar-icon"><i class="bi bi-shop"></i></div>
+            <p class="app-title-sidebar" id="lblSidebarShopName">Restaurant Name</p>
+        </div>
+
+        <!-- Navigation Menu (matches desktop menu-container) -->
+        <div class="menu-container">
+            <!-- DASHBOARD -->
+            <a class="menu-item active" id="menuDashboard" href="/pages/dashboard/Dashboard.html">
+                <i class="bi bi-speedometer2 menu-icon"></i>
+                <span class="menu-text-en">DASHBOARD</span>
+            </a>
+
+            <!-- Sales / विक्री -->
+            <a class="menu-item" id="menuSales" href="/pages/transactions/billing.html">
+                <i class="bi bi-cart3 menu-icon"></i>
+                <span class="menu-text">ivak`I</span>
+            </a>
+
+            <!-- Purchase / खरेदी -->
+            <a class="menu-item" id="menuPurchase" href="/pages/transactions/purchase-order.html">
+                <i class="bi bi-truck menu-icon"></i>
+                <span class="menu-text">KarodI</span>
+            </a>
+
+            <!-- Master Data / मास्टर डेटा -->
+            <a class="menu-item" id="menuMaster" href="/pages/master/customers.html">
+                <i class="bi bi-database menu-icon"></i>
+                <span class="menu-text">maasTr DoTa</span>
+            </a>
+
+            <!-- Reports / रिपोर्ट -->
+            <a class="menu-item" id="menuReport" href="/pages/reports/sales.html">
+                <i class="bi bi-bar-chart menu-icon"></i>
+                <span class="menu-text">irpaaoT-</span>
+            </a>
+
+            <!-- Employee Service / कामगार मेनू -->
+            <a class="menu-item" id="menuEmployeeService" href="/pages/employee/attendance.html">
+                <i class="bi bi-briefcase menu-icon"></i>
+                <span class="menu-text">kamagaar maonau</span>
+            </a>
+        </div>
+
+        <!-- Bottom Menu -->
+        <div class="bottom-menu">
+            <!-- SETTINGS -->
+            <a class="menu-item" id="menuSettings" href="/pages/settings/index.html">
+                <i class="bi bi-gear menu-icon"></i>
+                <span class="menu-text-en">SETTINGS</span>
+            </a>
+
+            <!-- SUPPORT -->
+            <a class="menu-item" id="menuSupport" href="#" onclick="showSupportDialog(); return false;">
+                <i class="bi bi-telephone menu-icon"></i>
+                <span class="menu-text-en">SUPPORT</span>
+            </a>
+
+            <!-- LOGOUT -->
+            <a class="menu-item logout-item" id="menuExit" href="#" onclick="logout(); return false;">
+                <i class="bi bi-box-arrow-left menu-icon" style="color: #FF5252;"></i>
+                <span class="menu-text-en">LOGOUT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- =============== MAIN CONTENT =============== -->
+    <div class="main-content">
+
+        <!-- Top Header Bar (matches desktop header-bar) -->
+        <div class="header-bar">
+            <h1 class="header-title" id="lblShopeeName">Hotel Management System</h1>
+            <div class="user-info-container">
+                <i class="bi bi-person-fill" style="color: #1976D2; font-size: 1.5em;"></i>
+                <span class="user-info-text" id="txtUserName">Welcome, User</span>
+                <span class="designation-text">|</span>
+                <span class="designation-text" id="txtDesignation">Designation</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Content (matches desktop main-content-area) -->
+        <div class="main-content-area">
+            <div class="dashboard-container">
+
+                <!-- Welcome Banner (matches desktop .welcome-banner) -->
+                <div class="welcome-banner">
+                    <div class="welcome-icon-box">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div>
+                        <h3 class="welcome-title">Welcome to Hotel Management System</h3>
+                        <p class="welcome-desc">Real-time table overview and daily performance at a glance</p>
+                    </div>
+                </div>
+
+                <!-- Section Header (matches desktop .section-header) -->
+                <div class="section-header">
+                    <i class="bi bi-grid-3x3-gap" style="color: #455A64;"></i>
+                    <span class="section-title">Table Overview</span>
+                    <div style="flex: 1;"></div>
+                    <span class="section-subtitle">Live Status</span>
+                    <i class="bi bi-circle-fill" style="color: #4CAF50; font-size: 0.6em;"></i>
+                    <div class="refresh-btn" onclick="loadDashboardData()">
+                        <i class="bi bi-arrow-clockwise" style="color: #1976D2;"></i>
+                        <span class="refresh-btn-text">Refresh</span>
+                    </div>
+                </div>
+
+                <!-- Row 1: Total, Active, Closed Bill (matches desktop) -->
+                <div class="cards-row">
+                    <!-- Total Tables (blue) -->
+                    <div class="gradient-card card-blue">
+                        <div class="card-icon-circle">
+                            <i class="bi bi-grid-3x3"></i>
+                        </div>
+                        <p class="card-number" id="lblTotalTables">...</p>
+                        <p class="card-label">Total Tables</p>
+                    </div>
+
+                    <!-- Active Tables (orange) -->
+                    <div class="gradient-card card-orange">
+                        <div class="card-icon-circle">
+                            <i class="bi bi-fire"></i>
+                        </div>
+                        <p class="card-number" id="lblActiveTables">...</p>
+                        <p class="card-label">Active Tables</p>
+                    </div>
+
+                    <!-- Closed Bill (red) -->
+                    <div class="gradient-card card-red">
+                        <div class="card-icon-circle">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <p class="card-number" id="lblClosedBillTables">...</p>
+                        <p class="card-label">Closed Bill</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: Available, Today's Completed (matches desktop) -->
+                <div class="cards-row">
+                    <!-- Available Tables (green) -->
+                    <div class="gradient-card card-green">
+                        <div class="card-icon-circle">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <p class="card-number" id="lblAvailableTables">...</p>
+                        <p class="card-label">Available Tables</p>
+                    </div>
+
+                    <!-- Completed Today (purple) -->
+                    <div class="gradient-card card-purple">
+                        <div class="card-icon-circle">
+                            <i class="bi bi-check2-square"></i>
+                        </div>
+                        <p class="card-number" id="lblTodayCompleted">...</p>
+                        <p class="card-label">Completed Today</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+
+</body>
+</html>

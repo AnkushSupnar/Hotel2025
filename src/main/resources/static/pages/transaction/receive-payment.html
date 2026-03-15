@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Payment - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Kiran';
+            src: url('/fonts/kiran.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ===== RECEIVE PAYMENT - TEAL THEME (matches desktop receive-payment.css) ===== */
+
+        .rp-split-layout {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* LEFT PANEL - Payment Entry (60%) */
+        .rp-left-panel {
+            flex: 0 0 60%;
+            display: flex;
+            flex-direction: column;
+            background: #FAFAFA;
+            border-right: 1px solid #E0E0E0;
+            overflow: hidden;
+        }
+
+        .rp-header {
+            background: linear-gradient(to right, #00796B, #009688);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .rp-header .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .rp-header .back-btn:hover { background: rgba(255,255,255,0.35); }
+        .rp-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        .rp-header-title i { font-size: 1.8em; }
+        .rp-header-title span { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
+        .rp-header .spacer { flex: 1; }
+        .rp-header .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2em;
+            transition: all 0.2s;
+        }
+        .rp-header .refresh-btn:hover { background: rgba(255,255,255,0.35); }
+
+        .rp-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 15px;
+            gap: 10px;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        /* Customer Section */
+        .rp-customer-section {
+            background: white;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .rp-customer-input-group {
+            flex: 1;
+            position: relative;
+        }
+        .rp-customer-label {
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            font-size: 16px;
+            color: #757575;
+            margin: 0 0 4px 0;
+        }
+        .rp-customer-input {
+            width: 100%;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 15px;
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .rp-customer-input:focus { border-color: #009688; }
+        .rp-autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+        .rp-autocomplete-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            font-size: 15px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+        .rp-autocomplete-item:hover { background: #E0F2F1; }
+        .rp-customer-separator {
+            width: 1px;
+            height: 40px;
+            background: #E0E0E0;
+        }
+        .rp-pending-total {
+            text-align: center;
+            min-width: 120px;
+        }
+        .rp-pending-total-label {
+            font-size: 11px;
+            color: #757575;
+            margin: 0;
+        }
+        .rp-pending-total-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF5722;
+            margin: 0;
+        }
+
+        /* Pending Bills Table */
+        .rp-bills-container {
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            min-height: 150px;
+            overflow: hidden;
+        }
+        .rp-bills-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .rp-bills-header-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #009688;
+            margin: 0;
+        }
+        .rp-bills-header-hint {
+            font-size: 10px;
+            color: #757575;
+            margin: 0;
+        }
+        .rp-bills-table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        .rp-bills-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .rp-bills-table thead th {
+            background: #E0F2F1;
+            color: #00796B;
+            padding: 8px 6px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            border-bottom: 2px solid #B2DFDB;
+        }
+        .rp-bills-table tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .rp-bills-table tbody tr:hover { background: #F5F5F5; }
+        .rp-bills-table tbody tr.selected { background: #E0F2F1; }
+        .rp-bills-table tbody td {
+            padding: 7px 6px;
+            text-align: center;
+            border-bottom: 1px solid #F0F0F0;
+        }
+        .rp-bills-table .status-credit { color: #FF5722; font-weight: bold; }
+        .rp-bills-table .status-paid { color: #4CAF50; font-weight: bold; }
+        .rp-bills-table .status-partial { color: #FF9800; font-weight: bold; }
+
+        /* Payment Section */
+        .rp-payment-section {
+            background: white;
+            border-radius: 8px;
+            padding: 12px 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .rp-payment-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00796B;
+            margin: 0 0 8px 0;
+        }
+
+        /* Selected Bills Info Bar */
+        .rp-selected-info {
+            display: none;
+            background: #E8F5E9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            gap: 20px;
+            align-items: center;
+        }
+        .rp-selected-info.visible { display: flex; }
+        .rp-info-item { text-align: center; }
+        .rp-info-label { font-size: 10px; color: #757575; margin: 0; }
+        .rp-info-value { font-size: 14px; font-weight: bold; color: #2E7D32; margin: 0; }
+        .rp-info-sep { width: 1px; height: 30px; background: #C8E6C9; }
+
+        /* Payment Input Fields */
+        .rp-payment-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+        .rp-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .rp-field-group.flex1 { flex: 1; }
+        .rp-field-label {
+            font-size: 11px;
+            color: #757575;
+            font-weight: 600;
+            margin: 0;
+        }
+        .rp-field-input {
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+            height: 36px;
+        }
+        .rp-field-input:focus { border-color: #009688; }
+        .rp-field-input.amount-input {
+            width: 130px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #2E7D32;
+        }
+        .rp-field-select {
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: 14px;
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            outline: none;
+            height: 36px;
+            background: white;
+            cursor: pointer;
+        }
+        .rp-field-select:focus { border-color: #009688; }
+
+        /* Action Buttons */
+        .rp-action-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding-top: 18px;
+        }
+        .rp-btn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .rp-btn-new {
+            background: linear-gradient(to right, #43A047, #66BB6A);
+            color: white;
+        }
+        .rp-btn-new:hover { box-shadow: 0 2px 8px rgba(67,160,71,0.4); }
+        .rp-btn-clear {
+            background: white;
+            color: #303F9F;
+            border: 1px solid #C5CAE9;
+        }
+        .rp-btn-clear:hover { background: #E8EAF6; }
+        .rp-btn-receive {
+            background: linear-gradient(to right, #00796B, #009688);
+            color: white;
+            min-width: 120px;
+        }
+        .rp-btn-receive:hover { box-shadow: 0 2px 8px rgba(0,121,107,0.4); }
+        .rp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* RIGHT PANEL - Payment History (40%) */
+        .rp-right-panel {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            background: #FAFAFA;
+            overflow: hidden;
+        }
+
+        .rp-history-header {
+            background: linear-gradient(to right, #455A64, #607D8B);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        .rp-history-header i { font-size: 1.3em; }
+        .rp-history-title {
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .rp-history-header .spacer { flex: 1; }
+        .rp-history-header .hist-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .rp-history-header .hist-btn:hover { background: rgba(255,255,255,0.35); }
+
+        /* Filter Section */
+        .rp-filter-section {
+            padding: 10px 12px;
+            background: white;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .rp-filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .rp-filter-row:last-child { margin-bottom: 0; }
+        .rp-filter-label { font-size: 11px; color: #757575; }
+        .rp-filter-date {
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            padding: 5px 8px;
+            font-size: 13px;
+            outline: none;
+            width: 130px;
+        }
+        .rp-filter-date:focus { border-color: #607D8B; }
+        .rp-filter-search {
+            flex: 1;
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            outline: none;
+        }
+        .rp-filter-search:focus { border-color: #607D8B; }
+        .rp-filter-btn {
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .rp-filter-btn-search { background: #607D8B; color: white; }
+        .rp-filter-btn-search:hover { background: #455A64; }
+        .rp-filter-btn-clear { background: #ECEFF1; color: #455A64; }
+        .rp-filter-btn-clear:hover { background: #CFD8DC; }
+
+        /* History Table */
+        .rp-history-table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        .rp-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .rp-history-table thead th {
+            background: #ECEFF1;
+            color: #455A64;
+            padding: 8px 6px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            border-bottom: 2px solid #CFD8DC;
+        }
+        .rp-history-table tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .rp-history-table tbody tr:hover { background: #F5F5F5; }
+        .rp-history-table tbody tr.selected { background: #E3F2FD; }
+        .rp-history-table tbody td {
+            padding: 7px 6px;
+            text-align: center;
+            border-bottom: 1px solid #F0F0F0;
+        }
+        .rp-history-table .kiran-cell {
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+        }
+
+        /* Summary Footer */
+        .rp-summary-footer {
+            display: flex;
+            border-top: 1px solid #E0E0E0;
+        }
+        .rp-summary-box {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+        }
+        .rp-summary-box-today { background: #E8F5E9; }
+        .rp-summary-box-month { background: #E3F2FD; }
+        .rp-summary-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #757575;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .rp-summary-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #212121;
+            margin: 0;
+        }
+
+        /* Loading state */
+        .rp-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Empty state */
+        .rp-empty-state {
+            text-align: center;
+            color: #9E9E9E;
+            padding: 30px 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .rp-split-layout { flex-direction: column; }
+            .rp-left-panel, .rp-right-panel { flex: none; }
+            .rp-left-panel { min-height: 55vh; }
+            .rp-right-panel { min-height: 45vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <nav class="sidebar-panel">
+        <div class="sidebar-header" id="sidebarHeader" style="cursor: pointer;" title="Go to Home"
+             onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+            <div class="sidebar-icon"><i class="bi bi-shop"></i></div>
+            <p class="app-title-sidebar" id="lblSidebarShopName">Restaurant Name</p>
+        </div>
+        <div class="menu-container">
+            <a class="menu-item" id="menuDashboard" href="/pages/dashboard/Dashboard.html">
+                <i class="bi bi-speedometer2 menu-icon"></i>
+                <span class="menu-text-en">DASHBOARD</span>
+            </a>
+            <a class="menu-item active" id="menuSales" href="/pages/transaction/SalesMenu.html">
+                <i class="bi bi-cart3 menu-icon"></i>
+                <span class="menu-text">ivak`I</span>
+            </a>
+            <a class="menu-item" id="menuPurchase" href="/pages/transaction/purchase-order.html">
+                <i class="bi bi-truck menu-icon"></i>
+                <span class="menu-text">KarodI</span>
+            </a>
+            <a class="menu-item" id="menuMaster" href="/pages/master/customers.html">
+                <i class="bi bi-database menu-icon"></i>
+                <span class="menu-text">maasTr DoTa</span>
+            </a>
+            <a class="menu-item" id="menuReport" href="/pages/report/sales.html">
+                <i class="bi bi-bar-chart menu-icon"></i>
+                <span class="menu-text">irpaaoT-</span>
+            </a>
+            <a class="menu-item" id="menuEmployeeService" href="/pages/employee/attendance.html">
+                <i class="bi bi-briefcase menu-icon"></i>
+                <span class="menu-text">kamagaar maonau</span>
+            </a>
+        </div>
+        <div class="bottom-menu">
+            <a class="menu-item" id="menuSettings" href="/pages/setting/SettingMenu.html">
+                <i class="bi bi-gear menu-icon"></i>
+                <span class="menu-text-en">SETTINGS</span>
+            </a>
+            <a class="menu-item" id="menuSupport" href="#" onclick="showSupportDialog(); return false;">
+                <i class="bi bi-telephone menu-icon"></i>
+                <span class="menu-text-en">SUPPORT</span>
+            </a>
+            <a class="menu-item logout-item" id="menuExit" href="#" onclick="logout(); return false;">
+                <i class="bi bi-box-arrow-left menu-icon" style="color: #FF5252;"></i>
+                <span class="menu-text-en">LOGOUT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- Top Header Bar -->
+        <div class="header-bar">
+            <h1 class="header-title" id="lblShopeeName">Hotel Management System</h1>
+            <div class="user-info-container">
+                <i class="bi bi-person-fill" style="color: #1976D2; font-size: 1.5em;"></i>
+                <span class="user-info-text" id="txtUserName">Welcome, User</span>
+                <span class="designation-text">|</span>
+                <span class="designation-text" id="txtDesignation">Designation</span>
+            </div>
+        </div>
+
+        <!-- Split Layout: Left = Payment Entry, Right = History -->
+        <div class="rp-split-layout">
+
+            <!-- ===== LEFT PANEL: Payment Entry (60%) ===== -->
+            <div class="rp-left-panel">
+                <!-- Header -->
+                <div class="rp-header">
+                    <button class="back-btn" onclick="window.location.href='/pages/transaction/SalesMenu.html';">
+                        <i class="bi bi-arrow-left"></i> BACK
+                    </button>
+                    <div class="rp-header-title">
+                        <i class="bi bi-cash-coin"></i>
+                        <span>RECEIVE PAYMENT</span>
+                    </div>
+                    <div class="spacer"></div>
+                    <button class="refresh-btn" id="btnRefreshAll" title="Refresh all data">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="rp-body">
+
+                    <!-- Customer Selection -->
+                    <div class="rp-customer-section">
+                        <div class="rp-customer-input-group">
+                            <p class="rp-customer-label">ga`ahkacao naava:</p>
+                            <input type="text" class="rp-customer-input" id="txtCustomer"
+                                   placeholder="ga`ahk SaaoQaa..." autocomplete="off" />
+                            <div class="rp-autocomplete-list" id="customerAutocomplete"></div>
+                        </div>
+                        <div class="rp-customer-separator"></div>
+                        <div class="rp-pending-total">
+                            <p class="rp-pending-total-label">Total Pending:</p>
+                            <p class="rp-pending-total-value" id="lblTotalPending">Rs. 0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending Bills Table -->
+                    <div class="rp-bills-container">
+                        <div class="rp-bills-header">
+                            <p class="rp-bills-header-title">Pending Credit Bills</p>
+                            <p class="rp-bills-header-hint">(Ctrl+Click to select multiple bills)</p>
+                        </div>
+                        <div class="rp-bills-table-wrapper">
+                            <table class="rp-bills-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:30px;"><input type="checkbox" id="chkSelectAll" title="Select All" /></th>
+                                        <th>Bill #</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Bill Amt</th>
+                                        <th>Paid</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pendingBillsBody">
+                                    <tr><td colspan="8" class="rp-empty-state">Select a customer to view pending bills</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payment Details Section -->
+                    <div class="rp-payment-section">
+                        <p class="rp-payment-title">Payment Details</p>
+
+                        <!-- Selected Bills Info -->
+                        <div class="rp-selected-info" id="selectedBillsInfo">
+                            <div class="rp-info-item">
+                                <p class="rp-info-label">Selected Bills:</p>
+                                <p class="rp-info-value" id="lblSelectedBillNo">0 bills</p>
+                            </div>
+                            <div class="rp-info-sep"></div>
+                            <div class="rp-info-item">
+                                <p class="rp-info-label">Total Bill Amount:</p>
+                                <p class="rp-info-value" id="lblSelectedBillAmount">Rs. 0.00</p>
+                            </div>
+                            <div class="rp-info-sep"></div>
+                            <div class="rp-info-item">
+                                <p class="rp-info-label">Total Balance:</p>
+                                <p class="rp-info-value" id="lblSelectedBalance">Rs. 0.00</p>
+                            </div>
+                        </div>
+
+                        <!-- Row 1: Amount, Mode, Cheque, Reference -->
+                        <div class="rp-payment-row">
+                            <div class="rp-field-group">
+                                <p class="rp-field-label">Amount *</p>
+                                <input type="number" class="rp-field-input amount-input" id="txtPaymentAmount"
+                                       placeholder="Enter amount..." step="0.01" min="0" />
+                            </div>
+                            <div class="rp-field-group flex1">
+                                <p class="rp-field-label">Payment Mode *</p>
+                                <select class="rp-field-select" id="cmbPaymentMode">
+                                    <option value="">-- Select Bank --</option>
+                                </select>
+                            </div>
+                            <div class="rp-field-group">
+                                <p class="rp-field-label">Cheque No</p>
+                                <input type="text" class="rp-field-input" id="txtChequeNo"
+                                       placeholder="Cheque #" style="width:100px;" />
+                            </div>
+                            <div class="rp-field-group">
+                                <p class="rp-field-label">Reference No</p>
+                                <input type="text" class="rp-field-input" id="txtReferenceNo"
+                                       placeholder="Ref #" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Remarks + Buttons -->
+                        <div class="rp-payment-row">
+                            <div class="rp-field-group flex1">
+                                <p class="rp-field-label">Remarks</p>
+                                <input type="text" class="rp-field-input" id="txtRemarks"
+                                       placeholder="Remarks..." style="width:100%;" />
+                            </div>
+                            <div class="rp-action-buttons">
+                                <button class="rp-btn rp-btn-new" id="btnNew">
+                                    <i class="bi bi-plus"></i> NEW
+                                </button>
+                                <button class="rp-btn rp-btn-clear" id="btnClear">
+                                    <i class="bi bi-eraser"></i> CLEAR
+                                </button>
+                                <button class="rp-btn rp-btn-receive" id="btnReceive">
+                                    <i class="bi bi-check-lg"></i> RECEIVE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /rp-body -->
+            </div><!-- /rp-left-panel -->
+
+            <!-- ===== RIGHT PANEL: Payment History (40%) ===== -->
+            <div class="rp-right-panel">
+                <!-- History Header -->
+                <div class="rp-history-header">
+                    <i class="bi bi-clock-history"></i>
+                    <p class="rp-history-title">RECEIPT HISTORY</p>
+                    <div class="spacer"></div>
+                    <button class="hist-btn" id="btnPrintReceipt">
+                        <i class="bi bi-printer"></i> PRINT
+                    </button>
+                    <button class="hist-btn" id="btnRefreshHistory">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="rp-filter-section">
+                    <div class="rp-filter-row">
+                        <span class="rp-filter-label">From:</span>
+                        <input type="date" class="rp-filter-date" id="dpHistoryFrom" />
+                        <span class="rp-filter-label">To:</span>
+                        <input type="date" class="rp-filter-date" id="dpHistoryTo" />
+                    </div>
+                    <div class="rp-filter-row">
+                        <input type="text" class="rp-filter-search" id="txtHistorySearch"
+                               placeholder="ga`ahk SaaoQaa..." />
+                        <button class="rp-filter-btn rp-filter-btn-search" id="btnSearchHistory">Search</button>
+                        <button class="rp-filter-btn rp-filter-btn-clear" id="btnClearSearch">Clear</button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="rp-history-table-wrapper">
+                    <table class="rp-history-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt #</th>
+                                <th>Date</th>
+                                <th>Bills</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Mode</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr><td colspan="6" class="rp-empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Footer -->
+                <div class="rp-summary-footer">
+                    <div class="rp-summary-box rp-summary-box-today">
+                        <p class="rp-summary-label">TODAY'S RECEIPTS</p>
+                        <p class="rp-summary-value" id="lblTodayReceipts">Rs. 0.00</p>
+                    </div>
+                    <div class="rp-summary-box rp-summary-box-month">
+                        <p class="rp-summary-label">THIS MONTH</p>
+                        <p class="rp-summary-value" id="lblMonthReceipts">Rs. 0.00</p>
+                    </div>
+                </div>
+            </div><!-- /rp-right-panel -->
+
+        </div><!-- /rp-split-layout -->
+    </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/pages/transaction/receive-payment.js"></script>
+
+</body>
+</html>

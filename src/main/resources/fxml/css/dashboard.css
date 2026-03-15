@@ -1,0 +1,25 @@
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", sans-serif;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4b4b4b;
+    -fx-cursor: hand;
+    -fx-padding: 8 16 8 16;
+}
+
+.button:hover {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 5;
+}
+
+#btnMenu {
+    -fx-background-color: #7c4dff;
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-background-radius: 25;
+    -fx-pref-width: 35;
+    -fx-pref-height: 35;
+    -fx-cursor: hand;
+}

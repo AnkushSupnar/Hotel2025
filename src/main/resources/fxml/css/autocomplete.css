@@ -1,0 +1,26 @@
+.auto-complete-popup {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+}
+
+.auto-complete-item {
+    -fx-padding: 10 14;
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+}
+
+.auto-complete-item:hover {
+    -fx-background-color: #E3F2FD;
+}
+
+.auto-complete-item:selected {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+}

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox styleClass="mobile-setting-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.setting.MobileAppSettingController">
+   <stylesheets>
+      <URL value="@../css/setting-material.css" />
+   </stylesheets>
+   <children>
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+         <content>
+            <VBox spacing="25.0" style="-fx-background-color: #f5f5f5; -fx-padding: 30;">
+
+               <!-- Header -->
+               <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-padding: 0 0 10 0;">
+                  <children>
+                     <FontAwesomeIcon fill="#4CAF50" glyphName="MOBILE" size="2.5em" />
+                     <VBox spacing="3.0">
+                        <children>
+                           <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Mobile Application Settings" />
+                           <Label style="-fx-font-size: 13px; -fx-text-fill: #666;" text="Configure mobile app access, JWT tokens and feature permissions" />
+                        </children>
+                     </VBox>
+                  </children>
+               </HBox>
+
+               <!-- General Settings Card -->
+               <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 25;">
+                  <children>
+                     <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" text="General Settings" />
+                     <Separator />
+
+                     <!-- Mobile Access Enable -->
+                     <HBox alignment="CENTER_LEFT" spacing="20.0">
+                        <children>
+                           <CheckBox fx:id="chkMobileAccessEnabled" style="-fx-font-size: 14px;" />
+                           <VBox spacing="2.0">
+                              <children>
+                                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Enable Mobile App Access" />
+                                 <Label style="-fx-font-size: 12px; -fx-text-fill: #888;" text="Allow users to login via mobile application API" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+
+                     <!-- JWT Token Expiry -->
+                     <VBox spacing="10.0">
+                        <children>
+                           <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="JWT Token Expiry Duration" />
+                           <HBox alignment="CENTER_LEFT" spacing="15.0">
+                              <children>
+                                 <Spinner fx:id="spinnerExpiryDays" prefWidth="80.0" style="-fx-font-size: 13px;" />
+                                 <Label style="-fx-font-size: 13px;" text="Days" />
+                                 <Region prefWidth="20.0" />
+                                 <Spinner fx:id="spinnerExpiryHours" prefWidth="80.0" style="-fx-font-size: 13px;" />
+                                 <Label style="-fx-font-size: 13px;" text="Hours" />
+                              </children>
+                           </HBox>
+                           <Label style="-fx-font-size: 12px; -fx-text-fill: #888;" text="Token will expire after specified duration. User needs to login again after expiry." />
+                        </children>
+                     </VBox>
+
+                     <!-- Min App Version -->
+                     <HBox spacing="30.0">
+                        <children>
+                           <VBox spacing="8.0">
+                              <children>
+                                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Minimum App Version" />
+                                 <TextField fx:id="txtMinAppVersion" prefWidth="120.0" promptText="e.g., 1.0.0" style="-fx-font-size: 13px;" />
+                              </children>
+                           </VBox>
+                           <VBox spacing="8.0">
+                              <children>
+                                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Force Update" />
+                                 <CheckBox fx:id="chkForceUpdate" style="-fx-font-size: 13px;" text="Require users to update app" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+
+                     <!-- JWT Secret -->
+                     <VBox spacing="8.0">
+                        <children>
+                           <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="JWT Secret Key" />
+                           <HBox alignment="CENTER_LEFT" spacing="15.0">
+                              <children>
+                                 <Label fx:id="lblJwtSecret" style="-fx-font-size: 13px; -fx-font-family: monospace; -fx-background-color: #f0f0f0; -fx-padding: 8 15; -fx-background-radius: 5;" text="••••••••" />
+                                 <Button fx:id="btnRegenerateSecret" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 12px; -fx-cursor: hand;" text="Regenerate">
+                                    <graphic>
+                                       <FontAwesomeIcon fill="white" glyphName="REFRESH" size="1.0em" />
+                                    </graphic>
+                                 </Button>
+                              </children>
+                           </HBox>
+                           <Label style="-fx-font-size: 11px; -fx-text-fill: #e74c3c;" text="Warning: Regenerating will invalidate all existing mobile tokens!" />
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Feature Access Card -->
+               <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 25;">
+                  <children>
+                     <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Feature Access by Role" />
+                     <Separator />
+
+                     <!-- Role Selection -->
+                     <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <children>
+                           <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Select Role:" />
+                           <ComboBox fx:id="cmbRole" prefWidth="200.0" promptText="-- Select Role --" style="-fx-font-size: 13px;" />
+                        </children>
+                     </HBox>
+
+                     <!-- Features List -->
+                     <VBox fx:id="vboxFeatures" spacing="12.0" style="-fx-padding: 15 0 0 0;">
+                        <!-- Features will be added dynamically -->
+                     </VBox>
+                  </children>
+               </VBox>
+
+               <!-- Action Buttons -->
+               <HBox alignment="CENTER_RIGHT" spacing="15.0" style="-fx-padding: 10 0 0 0;">
+                  <children>
+                     <Button fx:id="btnReset" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;" text="Reset">
+                        <graphic>
+                           <FontAwesomeIcon fill="white" glyphName="UNDO" size="1.0em" />
+                        </graphic>
+                     </Button>
+                     <Button fx:id="btnSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;" text="Save Settings">
+                        <graphic>
+                           <FontAwesomeIcon fill="white" glyphName="SAVE" size="1.0em" />
+                        </graphic>
+                     </Button>
+                  </children>
+               </HBox>
+
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

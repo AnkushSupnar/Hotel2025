@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Menu - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        /* Sales Menu specific styles - matches desktop SalesMenu.fxml */
+        .sales-menu-area {
+            flex: 1;
+            background-color: #ECEFF1;
+            overflow-y: auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .sales-menu-header {
+            width: 100%;
+            background: linear-gradient(to right, #4CAF50, #388E3C);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sales-menu-header .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .sales-menu-header .back-btn:hover { background: rgba(255,255,255,0.35); }
+
+        .sales-menu-header .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .sales-menu-header .header-title-group i { color: white; font-size: 1.8em; }
+        .sales-menu-header .header-title-group span { color: white; font-size: 22px; font-weight: bold; }
+
+        .sales-cards-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .sales-card {
+            width: 185px;
+            height: 185px;
+            min-width: 185px;
+            min-height: 185px;
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+        .sales-card:hover { transform: scale(1.05); }
+        .sales-card:active { transform: scale(0.95); }
+
+        .sales-card-blue {
+            background: linear-gradient(to bottom right, #4099ff, #5cb3ff);
+            box-shadow: 0 4px 12px rgba(64, 153, 255, 0.4);
+        }
+        .sales-card-blue:hover { box-shadow: 0 6px 18px rgba(64, 153, 255, 0.55); }
+
+        .sales-card-green {
+            background: linear-gradient(to bottom right, #2ed8b6, #59e0c5);
+            box-shadow: 0 4px 12px rgba(46, 216, 182, 0.4);
+        }
+        .sales-card-green:hover { box-shadow: 0 6px 18px rgba(46, 216, 182, 0.55); }
+
+        .sales-card .card-icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .sales-card .card-title {
+            font-family: 'Kiran', 'Segoe UI', sans-serif;
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+
+        .sales-card .card-subtitle {
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+            margin: 0;
+        }
+
+        @media (max-width: 576px) {
+            .sales-card { width: 150px; height: 150px; min-width: 150px; min-height: 150px; }
+            .sales-card .card-title { font-size: 20px; }
+            .sales-cards-container { gap: 16px; padding: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <nav class="sidebar-panel">
+        <div class="sidebar-header" id="sidebarHeader" style="cursor: pointer;" title="Go to Home"
+             onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+            <div class="sidebar-icon"><i class="bi bi-shop"></i></div>
+            <p class="app-title-sidebar" id="lblSidebarShopName">Restaurant Name</p>
+        </div>
+        <div class="menu-container">
+            <a class="menu-item" id="menuDashboard" href="/pages/dashboard/Dashboard.html">
+                <i class="bi bi-speedometer2 menu-icon"></i>
+                <span class="menu-text-en">DASHBOARD</span>
+            </a>
+            <a class="menu-item active" id="menuSales" href="/pages/transaction/SalesMenu.html">
+                <i class="bi bi-cart3 menu-icon"></i>
+                <span class="menu-text">ivak`I</span>
+            </a>
+            <a class="menu-item" id="menuPurchase" href="/pages/transaction/purchase-order.html">
+                <i class="bi bi-truck menu-icon"></i>
+                <span class="menu-text">KarodI</span>
+            </a>
+            <a class="menu-item" id="menuMaster" href="/pages/master/customers.html">
+                <i class="bi bi-database menu-icon"></i>
+                <span class="menu-text">maasTr DoTa</span>
+            </a>
+            <a class="menu-item" id="menuReport" href="/pages/report/sales.html">
+                <i class="bi bi-bar-chart menu-icon"></i>
+                <span class="menu-text">irpaaoT-</span>
+            </a>
+            <a class="menu-item" id="menuEmployeeService" href="/pages/employee/attendance.html">
+                <i class="bi bi-briefcase menu-icon"></i>
+                <span class="menu-text">kamagaar maonau</span>
+            </a>
+        </div>
+        <div class="bottom-menu">
+            <a class="menu-item" id="menuSettings" href="/pages/setting/SettingMenu.html">
+                <i class="bi bi-gear menu-icon"></i>
+                <span class="menu-text-en">SETTINGS</span>
+            </a>
+            <a class="menu-item" id="menuSupport" href="#" onclick="showSupportDialog(); return false;">
+                <i class="bi bi-telephone menu-icon"></i>
+                <span class="menu-text-en">SUPPORT</span>
+            </a>
+            <a class="menu-item logout-item" id="menuExit" href="#" onclick="logout(); return false;">
+                <i class="bi bi-box-arrow-left menu-icon" style="color: #FF5252;"></i>
+                <span class="menu-text-en">LOGOUT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- Top Header Bar -->
+        <div class="header-bar">
+            <h1 class="header-title" id="lblShopeeName">Hotel Management System</h1>
+            <div class="user-info-container">
+                <i class="bi bi-person-fill" style="color: #1976D2; font-size: 1.5em;"></i>
+                <span class="user-info-text" id="txtUserName">Welcome, User</span>
+                <span class="designation-text">|</span>
+                <span class="designation-text" id="txtDesignation">Designation</span>
+            </div>
+        </div>
+
+        <!-- Sales Menu Content -->
+        <div class="sales-menu-area">
+            <!-- Header with back button -->
+            <div class="sales-menu-header" style="position: relative;">
+                <button class="back-btn" onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+                    <i class="bi bi-arrow-left"></i> BACK
+                </button>
+                <div class="header-title-group">
+                    <i class="bi bi-cart3"></i>
+                    <span>SALES MENU</span>
+                </div>
+            </div>
+
+            <!-- Sales Cards -->
+            <div class="sales-cards-container">
+                <!-- Billing Card (Blue) - opens in new tab -->
+                <div class="sales-card sales-card-blue" id="btnBilling"
+                     onclick="window.open('/pages/transaction/BillingFrame.html', '_blank');">
+                    <div class="card-icon-circle">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <p class="card-title">DolaI ibalaIMga</p>
+                    <p class="card-subtitle">New Bill</p>
+                </div>
+
+                <!-- Receive Payment Card (Green) -->
+                <div class="sales-card sales-card-green" id="btnReceivePayment"
+                     onclick="window.location.href='/pages/transaction/receive-payment.html';">
+                    <div class="card-icon-circle">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <p class="card-title">jamaa pavataI</p>
+                    <p class="card-subtitle">Payment Received</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+<script>
+    // Initialize header on load (reuse from dashboard.js)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!requireAuth()) return;
+        initializeHeader();
+    });
+</script>
+
+</body>
+</html>

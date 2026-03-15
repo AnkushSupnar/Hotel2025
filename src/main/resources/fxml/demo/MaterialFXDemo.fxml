@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #FAFAFA;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.demo.MaterialFXDemoController">
+    <VBox spacing="20" style="-fx-background-color: #FAFAFA; -fx-padding: 30;">
+
+        <!-- Header -->
+        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: linear-gradient(to right, #1976D2, #2196F3); -fx-padding: 30; -fx-background-radius: 8;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;" text="MaterialFX Components Demo">
+                <font>
+                    <Font name="System Bold" size="32.0" />
+                </font>
+            </Label>
+            <Label style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 16px;" text="Modern Material Design Controls for JavaFX" />
+
+            <!-- Back to Home Button -->
+            <MFXButton fx:id="btnBackToHome" style="-fx-background-color: white; -fx-text-fill: #1976D2;" text="← Back to Home">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </MFXButton>
+        </VBox>
+
+        <!-- Status Message -->
+        <Label fx:id="lblStatusMessage" style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-color: #E3F2FD; -fx-background-radius: 4; -fx-text-fill: #1976D2;" text="Welcome to MaterialFX Demo! Click any button to see it in action." wrapText="true" />
+
+        <!-- Section 1: Buttons -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="1. Buttons">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <HBox spacing="15">
+                <MFXButton fx:id="btnPrimary" prefWidth="150" style="-fx-background-color: #1976D2; -fx-text-fill: white;" text="Primary">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </MFXButton>
+                <MFXButton fx:id="btnSecondary" prefWidth="150" style="-fx-background-color: #757575; -fx-text-fill: white;" text="Secondary">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </MFXButton>
+                <MFXButton fx:id="btnSuccess" prefWidth="150" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Success">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </MFXButton>
+                <MFXButton fx:id="btnDanger" prefWidth="150" style="-fx-background-color: #F44336; -fx-text-fill: white;" text="Danger">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </MFXButton>
+            </HBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Ripple effect on click  ✓ Material Design styling  ✓ Hover animations" />
+        </VBox>
+
+        <!-- Section 2: Text Fields -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="2. Text Fields">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <HBox spacing="20">
+                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <MFXTextField fx:id="txtName" floatingText="Enter your name" prefWidth="300">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXTextField>
+
+                    <MFXTextField fx:id="txtEmail" floatingText="Enter your email" prefWidth="300">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXTextField>
+
+                    <MFXPasswordField fx:id="txtPassword" floatingText="Enter password" prefWidth="300">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXPasswordField>
+                </VBox>
+            </HBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Floating labels  ✓ Material Design animation  ✓ Built-in validation support" />
+        </VBox>
+
+        <!-- Section 3: ComboBoxes -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="3. ComboBox &amp; FilterComboBox">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <HBox spacing="20">
+                <VBox spacing="8">
+                    <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="Regular ComboBox:" />
+                    <MFXComboBox fx:id="cmbCategory" floatingText="Select category" prefWidth="280">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXComboBox>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="FilterComboBox (with search):" />
+                    <MFXFilterComboBox fx:id="cmbFilterCategory" floatingText="Search items..." prefWidth="280">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXFilterComboBox>
+                </VBox>
+            </HBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Built-in search/filter  ✓ Keyboard navigation  ✓ Custom font support  ✓ Material animations" />
+        </VBox>
+
+        <!-- Section 4: Selection Controls -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="4. Selection Controls">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <VBox spacing="12">
+                <MFXCheckbox fx:id="chkAgree" text="I agree to the terms and conditions">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </MFXCheckbox>
+
+                <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="Gender:" />
+                <HBox spacing="20">
+                    <MFXRadioButton fx:id="radioMale" text="Male">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXRadioButton>
+                    <MFXRadioButton fx:id="radioFemale" text="Female">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXRadioButton>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="Toggle Switch:" />
+                    <MFXToggleButton fx:id="toggleSwitch" />
+                </HBox>
+            </VBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Material ripple effect  ✓ Smooth animations  ✓ Modern styling" />
+        </VBox>
+
+        <!-- Section 5: Date Picker & Slider -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="5. Date Picker &amp; Slider">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <HBox spacing="30">
+                <VBox spacing="8">
+                    <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="Date Picker:" />
+                    <MFXDatePicker fx:id="datePicker" prefWidth="250">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </MFXDatePicker>
+                </VBox>
+
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label style="-fx-text-fill: #616161; -fx-font-weight: bold;" text="Slider:" />
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <MFXSlider fx:id="slider" max="100" min="0" prefWidth="300" />
+                        <Label fx:id="lblSliderValue" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1976D2;" text="50" />
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Modern calendar popup  ✓ Smooth slider animation  ✓ Material Design colors" />
+        </VBox>
+
+        <!-- Section 6: Progress Indicator -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #212121;" text="6. Progress Spinner">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <Separator />
+
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <MFXProgressSpinner fx:id="progressSpinner" prefHeight="50.0" prefWidth="50.0" />
+                <Label style="-fx-text-fill: #616161;" text="Loading animation for async operations..." />
+            </HBox>
+
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="✓ Smooth circular animation  ✓ Material Design style  ✓ Customizable colors" />
+        </VBox>
+
+        <!-- Action Buttons -->
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+            <MFXButton onAction="#handleSubmit" prefWidth="150" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;" text="Submit Form">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </MFXButton>
+            <MFXButton onAction="#handleClear" prefWidth="150" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-font-size: 14px;" text="Clear Form">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </MFXButton>
+        </HBox>
+
+        <!-- Footer -->
+        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #E3F2FD; -fx-padding: 15; -fx-background-radius: 8;">
+            <Label style="-fx-text-fill: #1976D2; -fx-font-weight: bold;" text="MaterialFX v11.17.0" />
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 12px;" text="Modern Material Design Components for JavaFX" />
+            <Label style="-fx-text-fill: #757575; -fx-font-size: 10px;" text="GitHub: https://github.com/palexdev/MaterialFX" />
+        </VBox>
+
+    </VBox>
+</ScrollPane>

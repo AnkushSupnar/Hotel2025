@@ -1,0 +1,2 @@
+mvn clean package -Pclient -DskipTests
+mvn clean package -Pserver -DskipTests

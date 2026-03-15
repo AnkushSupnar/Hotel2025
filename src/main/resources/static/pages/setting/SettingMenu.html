@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Hotel Management</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/settings-material.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Kiran';
+            src: url('/fonts/kiran.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <nav class="sidebar-panel">
+        <div class="sidebar-header" id="sidebarHeader" style="cursor: pointer;" title="Go to Home"
+             onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+            <div class="sidebar-icon"><i class="bi bi-shop"></i></div>
+            <p class="app-title-sidebar" id="lblSidebarShopName">Restaurant Name</p>
+        </div>
+        <div class="menu-container">
+            <a class="menu-item" id="menuDashboard" href="/pages/dashboard/Dashboard.html">
+                <i class="bi bi-speedometer2 menu-icon"></i>
+                <span class="menu-text-en">DASHBOARD</span>
+            </a>
+            <a class="menu-item" id="menuSales" href="/pages/transaction/SalesMenu.html">
+                <i class="bi bi-cart3 menu-icon"></i>
+                <span class="menu-text">ivak`I</span>
+            </a>
+            <a class="menu-item" id="menuPurchase" href="/pages/transaction/purchase-order.html">
+                <i class="bi bi-truck menu-icon"></i>
+                <span class="menu-text">KarodI</span>
+            </a>
+            <a class="menu-item" id="menuMaster" href="/pages/master/customers.html">
+                <i class="bi bi-database menu-icon"></i>
+                <span class="menu-text">maasTr DoTa</span>
+            </a>
+            <a class="menu-item" id="menuReport" href="/pages/report/sales.html">
+                <i class="bi bi-bar-chart menu-icon"></i>
+                <span class="menu-text">irpaaoT-</span>
+            </a>
+            <a class="menu-item" id="menuEmployeeService" href="/pages/employee/attendance.html">
+                <i class="bi bi-briefcase menu-icon"></i>
+                <span class="menu-text">kamagaar maonau</span>
+            </a>
+        </div>
+        <div class="bottom-menu">
+            <a class="menu-item active" id="menuSettings" href="/pages/setting/SettingMenu.html">
+                <i class="bi bi-gear menu-icon"></i>
+                <span class="menu-text-en">SETTINGS</span>
+            </a>
+            <a class="menu-item" id="menuSupport" href="#" onclick="showSupportDialog(); return false;">
+                <i class="bi bi-telephone menu-icon"></i>
+                <span class="menu-text-en">SUPPORT</span>
+            </a>
+            <a class="menu-item logout-item" id="menuExit" href="#" onclick="logout(); return false;">
+                <i class="bi bi-box-arrow-left menu-icon" style="color: #FF5252;"></i>
+                <span class="menu-text-en">LOGOUT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- Top Header Bar -->
+        <div class="header-bar">
+            <h1 class="header-title" id="lblShopeeName">Hotel Management System</h1>
+            <div class="user-info-container">
+                <i class="bi bi-person-fill" style="color: #1976D2; font-size: 1.5em;"></i>
+                <span class="user-info-text" id="txtUserName">Welcome, User</span>
+                <span class="designation-text">|</span>
+                <span class="designation-text" id="txtDesignation">Designation</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Content Area -->
+        <div class="setting-menu-area" id="settingContentArea">
+
+            <!-- ===== VIEW 1: Setting Menu Cards ===== -->
+            <div id="settingMenuView">
+                <div class="setting-menu-header" style="position: relative;">
+                    <button class="back-btn" onclick="window.location.href='/pages/dashboard/Dashboard.html';">
+                        <i class="bi bi-arrow-left"></i> BACK
+                    </button>
+                    <div class="header-title-group">
+                        <i class="bi bi-gear"></i>
+                        <span>SETTINGS</span>
+                    </div>
+                </div>
+
+                <div class="setting-cards-container">
+                    <!-- Row 1 -->
+                    <div class="setting-cards-row">
+                        <div class="setting-menu-card card-app-setting" id="cardAppSetting">
+                            <div class="card-icon-circle icon-bg-blue">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                            <p class="card-title">Application Settings</p>
+                            <p class="card-description">Configure application font and preferences</p>
+                        </div>
+
+                        <div class="setting-menu-card card-user-rights" id="cardUserRights">
+                            <div class="card-icon-circle icon-bg-purple">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <p class="card-title">User Rights</p>
+                            <p class="card-description">Manage screen access permissions per role</p>
+                        </div>
+
+                        <div class="setting-menu-card card-shop-details" id="cardShopDetails">
+                            <div class="card-icon-circle icon-bg-orange">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <p class="card-title">Shop Details</p>
+                            <p class="card-description">Manage restaurants and shop information</p>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="setting-cards-row">
+                        <div class="setting-menu-card card-section-sequence" id="cardSectionSequence">
+                            <div class="card-icon-circle icon-bg-teal">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </div>
+                            <p class="card-title">Table Section Sequence</p>
+                            <p class="card-description">Drag and drop to reorder table sections</p>
+                        </div>
+
+                        <div class="setting-menu-card card-mobile-app" id="cardMobileApp">
+                            <div class="card-icon-circle icon-bg-green">
+                                <i class="bi bi-phone"></i>
+                            </div>
+                            <p class="card-title">Mobile App Settings</p>
+                            <p class="card-description">Configure mobile app access, JWT tokens and features</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW 2: Application Settings ===== -->
+            <div id="appSettingView" class="setting-subview" style="display: none;">
+                <div class="settings-root" style="min-height: auto; background: transparent;">
+                    <div class="settings-header">
+                        <button class="back-btn" id="btnBackToMenu">
+                            <i class="bi bi-arrow-left"></i> BACK
+                        </button>
+                        <h1 class="header-title">Application Settings</h1>
+                    </div>
+                    <div class="settings-content">
+                        <div class="settings-card">
+                            <div class="setting-row">
+                                <i class="bi bi-folder setting-icon" style="color:#7E57C2;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">Document Directory</p>
+                                    <p class="setting-row-value" id="lblCurrentDocument">Not configured</p>
+                                </div>
+                                <input type="text" class="setting-input" id="txtDocumentPath"
+                                       placeholder="Enter document directory path..." />
+                                <button class="setting-btn btn-purple" disabled style="opacity:0.5;"
+                                        title="Browse is available in desktop app only">
+                                    <i class="bi bi-folder2-open"></i> Browse
+                                </button>
+                            </div>
+                            <hr class="setting-separator" />
+                            <div class="setting-row">
+                                <i class="bi bi-fonts setting-icon" style="color:#42A5F5;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">Input Font File</p>
+                                    <p class="setting-row-value" id="lblCurrentFont">Not configured</p>
+                                </div>
+                                <input type="text" class="setting-input" id="txtFontPath"
+                                       placeholder="Enter font file path (.ttf, .otf)..." />
+                                <button class="setting-btn btn-blue" disabled style="opacity:0.5;"
+                                        title="Browse is available in desktop app only">
+                                    <i class="bi bi-file-earmark-font"></i> Browse
+                                </button>
+                            </div>
+                            <hr class="setting-separator" />
+                            <div class="setting-row">
+                                <i class="bi bi-printer setting-icon" style="color:#43A047;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">Billing Printer</p>
+                                    <p class="setting-row-value" id="lblCurrentBillingPrinter">Not configured</p>
+                                </div>
+                                <select class="setting-dropdown" id="cmbBillingPrinter">
+                                    <option value="">-- Select Printer --</option>
+                                </select>
+                                <button class="setting-btn-icon btn-green" id="btnRefreshBillingPrinter" title="Refresh printer list">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                            <hr class="setting-separator" />
+                            <div class="setting-row">
+                                <i class="bi bi-cup-hot setting-icon" style="color:#FB8C00;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">KOT Printer</p>
+                                    <p class="setting-row-value" id="lblCurrentKotPrinter">Not configured</p>
+                                </div>
+                                <select class="setting-dropdown" id="cmbKotPrinter">
+                                    <option value="">-- Select Printer --</option>
+                                </select>
+                                <button class="setting-btn-icon btn-orange" id="btnRefreshKotPrinter" title="Refresh printer list">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                            <hr class="setting-separator" />
+                            <div class="setting-row">
+                                <i class="bi bi-bank setting-icon" style="color:#5C6BC0;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">Default Bank for Billing</p>
+                                    <p class="setting-row-value" id="lblCurrentDefaultBank">Not configured</p>
+                                </div>
+                                <select class="setting-dropdown" id="cmbDefaultBank">
+                                    <option value="">-- None --</option>
+                                </select>
+                                <button class="setting-btn-icon btn-indigo" id="btnRefreshBanks" title="Refresh bank list">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                            <hr class="setting-separator" />
+                            <div class="setting-row">
+                                <i class="bi bi-image setting-icon" style="color:#26A69A;"></i>
+                                <div class="setting-label-section">
+                                    <p class="setting-row-title">Bill Logo Image</p>
+                                    <p class="setting-row-value" id="lblCurrentBillLogo">Not configured</p>
+                                </div>
+                                <input type="file" class="setting-input" id="fileBillLogo"
+                                       accept="image/*" style="padding:8px 10px;" />
+                                <button class="setting-btn btn-teal" id="btnUploadBillLogo">
+                                    <i class="bi bi-upload"></i> Upload
+                                </button>
+                                <label class="setting-checkbox">
+                                    <input type="checkbox" id="chkUseBillLogo" /> Use Logo
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-action-row">
+                            <button class="action-btn-primary" id="btnSave">
+                                <i class="bi bi-save"></i> Save Settings
+                            </button>
+                            <button class="action-btn-secondary" id="btnClear">
+                                <i class="bi bi-arrow-clockwise"></i> Clear Form
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW 3: User Rights ===== -->
+            <div id="userRightsView" class="setting-subview" style="display: none;">
+                <div class="settings-root" style="min-height: auto; background: transparent;">
+                    <div class="settings-header" style="background: linear-gradient(to right, #7B1FA2, #9C27B0);">
+                        <button class="back-btn" id="btnBackFromUserRights">
+                            <i class="bi bi-arrow-left"></i> BACK
+                        </button>
+                        <h1 class="header-title">User Rights Management</h1>
+                    </div>
+
+                    <div class="user-rights-content">
+                        <div class="user-rights-layout">
+                            <!-- Left Panel: Role Selection -->
+                            <div class="ur-left-panel">
+                                <div class="ur-panel-header">
+                                    <div class="ur-panel-icon" style="background: rgba(156,39,176,0.1);">
+                                        <i class="bi bi-shield-lock" style="color: #9C27B0; font-size: 1.4em;"></i>
+                                    </div>
+                                    <h3 class="ur-panel-title">Role Configuration</h3>
+                                </div>
+                                <hr class="setting-separator" />
+
+                                <div class="ur-form-group">
+                                    <label class="ur-label">SELECT ROLE</label>
+                                    <div class="ur-input-row">
+                                        <i class="bi bi-person-circle" style="color: #7E57C2; font-size: 1.2em;"></i>
+                                        <select id="cmbRole" class="setting-dropdown" style="flex:1;">
+                                            <option value="">Select a role...</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="ur-actions">
+                                    <button class="action-btn-primary" id="btnSavePermissions" style="width:100%;">
+                                        <i class="bi bi-save"></i> SAVE PERMISSIONS
+                                    </button>
+                                    <button class="action-btn-secondary" id="btnResetPermissions" style="width:100%;">
+                                        <i class="bi bi-arrow-clockwise"></i> RESET TO DEFAULT
+                                    </button>
+                                </div>
+
+                                <hr class="setting-separator" />
+
+                                <div class="ur-info-box">
+                                    <p class="ur-info-title">Role Information</p>
+                                    <p class="ur-info-text" id="lblRoleInfo">Select a role to view its permissions</p>
+                                </div>
+                            </div>
+
+                            <!-- Right Panel: Screen Permissions -->
+                            <div class="ur-right-panel">
+                                <div class="ur-permissions-header">
+                                    <div class="ur-panel-icon" style="background: rgba(102,126,234,0.1);">
+                                        <i class="bi bi-list-check" style="color: #667eea; font-size: 1.4em;"></i>
+                                    </div>
+                                    <h3 class="ur-panel-title">Screen Permissions</h3>
+                                    <span class="ur-permission-count" id="lblPermissionCount">0 of 0 selected</span>
+                                </div>
+                                <hr class="setting-separator" style="margin:0;" />
+
+                                <div class="ur-search-section">
+                                    <div class="ur-search-box">
+                                        <i class="bi bi-search" style="color: #9e9e9e;"></i>
+                                        <input type="text" id="txtSearchPermission" class="ur-search-input"
+                                               placeholder="Search permissions..." />
+                                    </div>
+                                </div>
+
+                                <div id="noResultsContainer" class="ur-no-results" style="display:none;">
+                                    <i class="bi bi-search" style="font-size: 3em; color: #bdbdbd;"></i>
+                                    <p>No permissions found</p>
+                                </div>
+
+                                <div class="ur-permissions-scroll" id="permissionsContainer">
+                                    <!-- Permission categories rendered dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW 4: Shop Details ===== -->
+            <div id="shopDetailsView" class="setting-subview" style="display: none;">
+                <div class="settings-root" style="min-height: auto; background: transparent;">
+                    <div class="settings-header" style="background: linear-gradient(to right, #E64A19, #FF5722);">
+                        <button class="back-btn" id="btnBackFromShop">
+                            <i class="bi bi-arrow-left"></i> BACK
+                        </button>
+                        <h1 class="header-title">Shop / Restaurant Management</h1>
+                    </div>
+
+                    <div class="shop-details-content">
+                        <div class="shop-layout">
+                            <!-- Left: Form -->
+                            <div class="shop-form-panel">
+                                <div class="ur-panel-header">
+                                    <i class="bi bi-plus-circle" style="color: #FF5722; font-size: 1.6em;"></i>
+                                    <h3 class="ur-panel-title" id="shopFormTitle">Add New Restaurant</h3>
+                                </div>
+
+                                <div class="shop-form-scroll">
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">RESTAURANT NAME *</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-building" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtRestaurantName" class="setting-input" placeholder="Enter restaurant name" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">SUB TITLE / TAGLINE</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-tag" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtSubTitle" class="setting-input" placeholder="Enter subtitle (optional)" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">OWNER NAME *</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-person" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtOwnerName" class="setting-input" placeholder="Enter owner name" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">ADDRESS *</label>
+                                        <div class="ur-input-row" style="align-items: flex-start;">
+                                            <i class="bi bi-geo-alt" style="color: #FF5722; margin-top: 10px;"></i>
+                                            <textarea id="txtAddress" class="setting-input" rows="3" placeholder="Enter address"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">CONTACT NUMBER *</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-telephone" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtContactNumber" class="setting-input" placeholder="Enter contact number" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">ALTERNATE CONTACT NUMBER</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-telephone-plus" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtContactNumber2" class="setting-input" placeholder="Enter alternate number (optional)" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">GSTIN NUMBER</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-file-earmark-text" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtGstinNumber" class="setting-input" placeholder="Enter GSTIN number (optional)" />
+                                        </div>
+                                    </div>
+                                    <div class="shop-form-field">
+                                        <label class="ur-label">LICENSE KEY</label>
+                                        <div class="ur-input-row">
+                                            <i class="bi bi-key" style="color: #FF5722;"></i>
+                                            <input type="text" id="txtLicenseKey" class="setting-input" placeholder="Enter license key (optional)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="shop-form-actions">
+                                        <button class="action-btn-primary" id="btnSaveShop" style="width:100%; background: linear-gradient(to right, #E64A19, #FF5722);">
+                                            <i class="bi bi-save"></i> SAVE RESTAURANT
+                                        </button>
+                                        <button class="action-btn-primary" id="btnUpdateShop" style="width:100%; display:none; background: linear-gradient(to right, #F57C00, #FF9800);">
+                                            <i class="bi bi-pencil-square"></i> UPDATE RESTAURANT
+                                        </button>
+                                        <button class="action-btn-secondary" id="btnClearShop" style="width:100%;">
+                                            <i class="bi bi-eraser"></i> CLEAR FORM
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Table -->
+                            <div class="shop-table-panel">
+                                <div class="ur-panel-header">
+                                    <i class="bi bi-list-ul" style="color: #FF5722; font-size: 1.6em;"></i>
+                                    <h3 class="ur-panel-title">Existing Restaurants</h3>
+                                    <button class="setting-btn-icon btn-orange" id="btnRefreshShops" title="Refresh list" style="margin-left:auto;">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+
+                                <div class="shop-search-box">
+                                    <label class="ur-label">Search by Restaurant Name or Contact</label>
+                                    <div class="ur-search-box">
+                                        <i class="bi bi-search" style="color: #9e9e9e;"></i>
+                                        <input type="text" id="txtShopSearch" class="ur-search-input"
+                                               placeholder="Search restaurants..." />
+                                    </div>
+                                </div>
+
+                                <div class="shop-table-scroll">
+                                    <table class="shop-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;">ID</th>
+                                                <th>Restaurant Name</th>
+                                                <th>Owner Name</th>
+                                                <th>Contact</th>
+                                                <th>Address</th>
+                                                <th>GSTIN</th>
+                                                <th style="width:100px;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="shopTableBody">
+                                            <tr><td colspan="7" class="text-center text-muted py-4">Loading...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW 5: Section Sequence ===== -->
+            <div id="sectionSequenceView" class="setting-subview" style="display: none;">
+                <div class="settings-root" style="min-height: auto; background: transparent;">
+                    <div class="settings-header" style="background: linear-gradient(to right, #00796B, #26A69A);">
+                        <button class="back-btn" id="btnBackFromSection">
+                            <i class="bi bi-arrow-left"></i> BACK
+                        </button>
+                        <h1 class="header-title">Table Section Sequence</h1>
+                    </div>
+
+                    <div class="settings-content" style="max-width:650px;">
+                        <!-- Info Box -->
+                        <div class="section-info-box">
+                            <i class="bi bi-info-circle" style="color: #1565C0; font-size: 1.3em; flex-shrink:0;"></i>
+                            <div>
+                                <p class="section-info-title">Drag, Merge & Split Sections</p>
+                                <p class="section-info-text">Drag to reorder. Use checkboxes to select adjacent sections, then Merge to group them in one row on Billing screen. Split to separate them.</p>
+                            </div>
+                        </div>
+
+                        <!-- Sections Container -->
+                        <div class="settings-card" id="sectionsContainer" style="min-height: 100px;">
+                            <div class="text-center text-muted py-4">Loading sections...</div>
+                        </div>
+
+                        <!-- Merge/Split Buttons -->
+                        <div class="settings-action-row">
+                            <button class="action-btn-primary" id="btnMergeSections" disabled
+                                    style="background: linear-gradient(to right, #00796B, #26A69A);">
+                                <i class="bi bi-arrows-collapse"></i> Merge Selected
+                            </button>
+                            <button class="action-btn-secondary" id="btnSplitSections" disabled
+                                    style="border-color: #26A69A; color: #26A69A;">
+                                <i class="bi bi-arrows-expand"></i> Split Selected
+                            </button>
+                        </div>
+
+                        <!-- Save/Reset Buttons -->
+                        <div class="settings-action-row" style="margin-top: 5px;">
+                            <button class="action-btn-primary" id="btnSaveSequence"
+                                    style="background: linear-gradient(to right, #00796B, #26A69A);">
+                                <i class="bi bi-save"></i> Save Order
+                            </button>
+                            <button class="action-btn-secondary" id="btnResetSequence"
+                                    style="border-color: #26A69A; color: #26A69A;">
+                                <i class="bi bi-arrow-clockwise"></i> Reset Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW 6: Mobile App Settings ===== -->
+            <div id="mobileSettingView" class="setting-subview" style="display: none;">
+                <div class="settings-root" style="min-height: auto; background: transparent;">
+                    <div class="settings-header" style="background: linear-gradient(to right, #2E7D32, #4CAF50);">
+                        <button class="back-btn" id="btnBackFromMobile">
+                            <i class="bi bi-arrow-left"></i> BACK
+                        </button>
+                        <h1 class="header-title">Mobile Application Settings</h1>
+                    </div>
+
+                    <div class="mobile-settings-content">
+                        <!-- Header Info -->
+                        <div class="mobile-header-info">
+                            <i class="bi bi-phone" style="color: #4CAF50; font-size: 2.2em;"></i>
+                            <div>
+                                <h2 class="mobile-main-title">Mobile Application Settings</h2>
+                                <p class="mobile-subtitle">Configure mobile app access, JWT tokens and feature permissions</p>
+                            </div>
+                        </div>
+
+                        <!-- General Settings Card -->
+                        <div class="settings-card" style="padding: 25px;">
+                            <h4 class="mobile-section-title">General Settings</h4>
+                            <hr class="setting-separator" />
+
+                            <!-- Mobile Access Enable -->
+                            <div class="mobile-setting-row">
+                                <label class="mobile-toggle-row">
+                                    <input type="checkbox" id="chkMobileAccessEnabled" />
+                                    <div>
+                                        <p class="mobile-setting-name">Enable Mobile App Access</p>
+                                        <p class="mobile-setting-desc">Allow users to login via mobile application API</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- JWT Token Expiry -->
+                            <div class="mobile-setting-row">
+                                <p class="mobile-setting-name">JWT Token Expiry Duration</p>
+                                <div class="mobile-expiry-row">
+                                    <input type="number" id="inputExpiryDays" class="mobile-spinner" min="0" max="365" value="7" />
+                                    <span class="mobile-spin-label">Days</span>
+                                    <div style="width:20px;"></div>
+                                    <input type="number" id="inputExpiryHours" class="mobile-spinner" min="0" max="23" value="0" />
+                                    <span class="mobile-spin-label">Hours</span>
+                                </div>
+                                <p class="mobile-setting-desc">Token will expire after specified duration. User needs to login again after expiry.</p>
+                            </div>
+
+                            <!-- Min App Version & Force Update -->
+                            <div class="mobile-setting-row">
+                                <div style="display:flex; gap:30px; flex-wrap:wrap;">
+                                    <div>
+                                        <p class="mobile-setting-name">Minimum App Version</p>
+                                        <input type="text" id="txtMinAppVersion" class="setting-input" placeholder="e.g., 1.0.0" style="width:140px;" />
+                                    </div>
+                                    <div>
+                                        <p class="mobile-setting-name">Force Update</p>
+                                        <label class="mobile-toggle-row" style="margin-top:4px;">
+                                            <input type="checkbox" id="chkForceUpdate" />
+                                            <span style="font-size:13px;">Require users to update app</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- JWT Secret -->
+                            <div class="mobile-setting-row">
+                                <p class="mobile-setting-name">JWT Secret Key</p>
+                                <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                    <code class="mobile-jwt-display" id="lblJwtSecret">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</code>
+                                    <button class="setting-btn btn-blue" id="btnToggleSecret" title="Show/Hide secret">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="setting-btn btn-orange" id="btnRegenerateSecret">
+                                        <i class="bi bi-arrow-clockwise"></i> Regenerate
+                                    </button>
+                                </div>
+                                <p class="mobile-warning-text">Warning: Regenerating will invalidate all existing mobile tokens!</p>
+                            </div>
+                        </div>
+
+                        <!-- Feature Access Card -->
+                        <div class="settings-card" style="padding: 25px;">
+                            <h4 class="mobile-section-title">Feature Access by Role</h4>
+                            <hr class="setting-separator" />
+
+                            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                                <p class="mobile-setting-name" style="margin:0;">Select Role:</p>
+                                <select id="cmbMobileRole" class="setting-dropdown" style="flex:0 0 200px;">
+                                    <option value="">-- Select Role --</option>
+                                </select>
+                            </div>
+
+                            <div id="mobileFeatureContainer">
+                                <p class="text-muted" style="padding:15px 0;">Select a role to view feature access</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="settings-action-row">
+                            <button class="action-btn-secondary" id="btnResetMobile"
+                                    style="border-color: #4CAF50; color: #4CAF50;">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                            <button class="action-btn-primary" id="btnSaveMobile"
+                                    style="background: linear-gradient(to right, #2E7D32, #4CAF50);">
+                                <i class="bi bi-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /settingContentArea -->
+    </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/pages/setting/ApplicationSetting.js"></script>
+<script src="/js/pages/setting/UserRights.js"></script>
+<script src="/js/pages/setting/ShopDetails.js"></script>
+<script src="/js/pages/setting/SectionSequence.js"></script>
+<script src="/js/pages/setting/MobileAppSetting.js"></script>
+<script>
+    // Navigation helper: show one view, hide all others
+    function showSettingView(viewId) {
+        document.querySelectorAll('#settingContentArea > div').forEach(function(v) {
+            v.style.display = 'none';
+        });
+        document.getElementById(viewId).style.display = '';
+    }
+
+    function backToMenu() {
+        showSettingView('settingMenuView');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!requireAuth()) return;
+        initializeHeader();
+
+        // Card clicks -> show corresponding view + init
+        document.getElementById('cardAppSetting').addEventListener('click', function() {
+            showSettingView('appSettingView');
+            initSettings();
+        });
+        document.getElementById('cardUserRights').addEventListener('click', function() {
+            showSettingView('userRightsView');
+            initUserRights();
+        });
+        document.getElementById('cardShopDetails').addEventListener('click', function() {
+            showSettingView('shopDetailsView');
+            initShopDetails();
+        });
+        document.getElementById('cardSectionSequence').addEventListener('click', function() {
+            showSettingView('sectionSequenceView');
+            initSectionSequence();
+        });
+        document.getElementById('cardMobileApp').addEventListener('click', function() {
+            showSettingView('mobileSettingView');
+            initMobileSettings();
+        });
+
+        // Back buttons -> return to menu
+        document.getElementById('btnBackToMenu').addEventListener('click', backToMenu);
+        document.getElementById('btnBackFromUserRights').addEventListener('click', backToMenu);
+        document.getElementById('btnBackFromShop').addEventListener('click', backToMenu);
+        document.getElementById('btnBackFromSection').addEventListener('click', backToMenu);
+        document.getElementById('btnBackFromMobile').addEventListener('click', backToMenu);
+    });
+</script>
+
+</body>
+</html>

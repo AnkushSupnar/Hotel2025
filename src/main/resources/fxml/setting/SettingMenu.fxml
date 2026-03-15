@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="setting-menu-root" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.controller.setting.SettingMenuController">
+   <stylesheets>
+      <URL value="@../css/setting-material.css" />
+   </stylesheets>
+   <children>
+      <!-- Header with Back Button -->
+      <HBox alignment="CENTER_LEFT" styleClass="setting-header">
+         <children>
+            <!-- Back Button -->
+            <Button fx:id="btnBack" styleClass="back-button">
+               <graphic>
+                  <HBox alignment="CENTER" spacing="8">
+                     <children>
+                        <FontAwesomeIcon glyphName="ARROW_LEFT" size="1.5em" styleClass="back-icon" />
+                        <Label styleClass="back-text" text="BACK" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Title -->
+            <Label styleClass="setting-title" text="Settings" />
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+      </HBox>
+
+      <!-- Content Area with Cards -->
+      <VBox spacing="25.0" styleClass="setting-content" alignment="TOP_CENTER">
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+
+            <!-- First Row of Cards -->
+            <HBox alignment="CENTER" spacing="25.0" maxWidth="1200">
+               <children>
+                  <!-- Application Settings Card -->
+                  <StackPane fx:id="applicationSettingCard" styleClass="setting-card, app-setting-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, app-setting-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#2196F3" glyphName="COG" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Application Settings" />
+                              <Label styleClass="card-description" text="Configure application font and preferences" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- User Rights Card -->
+                  <StackPane fx:id="userRightsCard" styleClass="setting-card, user-rights-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, user-rights-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#9C27B0" glyphName="SHIELD" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="User Rights" />
+                              <Label styleClass="card-description" text="Manage screen access permissions per role" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- Shop Details Card -->
+                  <StackPane fx:id="shopDetailsCard" styleClass="setting-card, shop-details-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, shop-details-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#FF5722" glyphName="BUILDING" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Shop Details" />
+                              <Label styleClass="card-description" text="Manage restaurants and shop information" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+
+            <!-- Second Row of Cards -->
+            <HBox alignment="CENTER" spacing="25.0" maxWidth="1200">
+               <children>
+                  <!-- Table Section Sequence Card -->
+                  <StackPane fx:id="sectionSequenceCard" styleClass="setting-card, section-sequence-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, section-sequence-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#26A69A" glyphName="TH_LARGE" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Table Section Sequence" />
+                              <Label styleClass="card-description" text="Drag and drop to reorder table sections" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- Mobile App Settings Card -->
+                  <StackPane fx:id="mobileAppSettingCard" styleClass="setting-card, mobile-app-card" maxWidth="350" minWidth="280" prefWidth="320">
+                     <children>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="card-icon-container, mobile-app-icon-bg" maxWidth="60" maxHeight="60" minWidth="60" minHeight="60" prefWidth="60" prefHeight="60">
+                                 <children>
+                                    <FontAwesomeIcon fill="#4CAF50" glyphName="MOBILE" size="2.0em" styleClass="card-icon" />
+                                 </children>
+                              </StackPane>
+                              <Label styleClass="card-title" text="Mobile App Settings" />
+                              <Label styleClass="card-description" text="Configure mobile app access, JWT tokens and features" wrapText="true" textAlignment="CENTER" maxWidth="280" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>
